@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <template id="appointment_form_csj" inherit_id="website_calendar.appointment_form" name="Website Appointment: Your Data CSJ">
+            <xpath expr="//div[1]/div[1]/form[1]" position="replace">
+                <form class="mt32 appointment_submit_form" t-attf-action="/website/calendar/#{ slug(appointment_type) }/submit" method="POST">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                    <input type="hidden" name="datetime_str" t-att-value="datetime_str" />
+                    <input type="hidden" name="employee_id" t-att-value="employee_id" />
+                    <input type="hidden" name="types" t-att-value="types" />
+                    <div class="form-group row col-xl-8">
+                        <label for="room_id" class="col-md-4 col-form-label">Request room</label>
+                        <div class="col-md-8">
+                            <select class="form-control" name="room_id" id="room_id">
+                                <t t-foreach="suggested_rooms" t-as="room">
+                                    <option t-att-value="room.id" t-esc="room.virtual_room" />
+                                </t>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="class_id" class="col-md-4 col-form-label">Request class</label>
+                        <div class="col-md-8">
+                            <select class="form-control" name="class_id" id="class_id">
+                                <t t-foreach="suggested_class" t-as="cal_class">
+                                    <option t-att-value="cal_class.id" t-esc="cal_class.name" />
+                                </t>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="duration" class="col-md-4 col-form-label">Duration</label>
+                        <div class="col-md-8">
+                            <select name="duration" class="form-control" id="duration">
+                                <option t-att-value="0.5">00:30</option>
+                                <option t-att-value="1">1:00</option>
+                                <option t-att-value="1.5">1:30</option>
+                                <option t-att-value="2">2:00</option>
+                                <option t-att-value="2.5">2:30</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label class="col-md-4 col-form-label">Applicant:</label>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="name" class="col-md-4 col-form-label">Name</label>
+                        <div class="col-md-8">
+                            <input type="char" class="form-control" name="name" required="1" />
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="phone" class="col-md-4 col-form-label">Phone</label>
+                        <div class="col-md-8">
+                            <input type="number" class="form-control" name="phone" required="1" />
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="email" class="col-md-4 col-form-label">e-mail</label>
+                        <div class="col-md-8">
+                            <input type="email" class="form-control" name="email" required="1" />
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="declarant_text" class="col-md-4 col-form-label">Declarant</label>
+                        <div class="col-md-8">
+                            <input type="char" class="form-control" name="declarant_text" />
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="indicted_text" class="col-md-4 col-form-label">Processed</label>
+                        <div class="col-md-8">
+                            <input type="char" class="form-control" name="indicted_text" />
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8" style="display: none">
+                        <label for="destination_id" class="col-md-4 col-form-label">Destination</label>
+                        <div class="col-md-8">
+                            <select class="form-control" id="destination_id" name="destination_id">
+                                <t t-foreach="suggested_partners" t-as="partner">
+                                    <option t-esc="partner.name" t-att-value="partner.id" />
+                                </t>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row col-xl-8">
+                        <label for="destino" class="col-md-4 col-form-label">Destination</label>
+                        <div class="col-md-8">
+                            <input type="char" class="form-control search-destino" name="destino" id="destino" required="1" />
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="request_type" class="col-md-4 col-form-label">Request type</label>
+                        <div class="col-md-8">
+                            <select name="request_type" class="form-control" id="request_type">
+                                <option t-att-value="r">Reserved</option>
+                                <option t-att-value="l">Free</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="process_number" class="col-md-4 col-form-label">Process number</label>
+                        <div class="col-md-8">
+                            <input type="char" class="form-control" name="process_number" required="1" />
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="reception_id" class="col-md-4 col-form-label">Reception medium</label>
+                        <div class="col-md-8">
+                            <!-- <input type="char" class="form-control" name="reception_id" required="0"/> -->
+                            <select class="form-control" name="reception_id" id="reception_id">
+                                <t t-foreach="suggested_reception" t-as="res">
+                                    <option t-att-value="res.id" t-esc="res.name" t-att-selected="res.name" />
+                                </t>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="description" class="col-md-4 col-form-label">Observations</label>
+                        <div class="col-md-8">
+                            <textarea class="form-control" rows="8" t-att-required="False" t-attf-name="description" />
+                            <!-- t-att-placeholder="question.placeholder"-->
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="help_id" class="col-md-4 col-form-label">Help in place</label>
+                        <div class="col-md-8">
+                            <!-- <input type="char" class="form-control" name="reception_id" required="0"/> -->
+                            <select class="form-control" name="help_id" id="help_id">
+                                <t t-foreach="suggested_help" t-as="res">
+                                    <option t-att-value="res.id" t-esc="res.name" t-att-selected="res.name" />
+                                </t>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label class="col-md-4 col-form-label">Guests:</label>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="name1" class="col-md-2 col-form-label">Name</label>
+                        <div class="col-md-4">
+                            <input type="char" class="form-control" name="name1" />
+                        </div>
+                        <label for="email1" class="col-md-2 col-form-label">e-mail</label>
+                        <div class="col-md-4">
+                            <input type="email" class="form-control" name="email1" />
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="name2" class="col-md-2 col-form-label">Name</label>
+                        <div class="col-md-4">
+                            <input type="char" class="form-control" name="name2" />
+                        </div>
+                        <label for="email2" class="col-md-2 col-form-label">e-mail</label>
+                        <div class="col-md-4">
+                            <input type="email" class="form-control" name="email2" />
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="name3" class="col-md-2 col-form-label">Name</label>
+                        <div class="col-md-4">
+                            <input type="char" class="form-control" name="name3" />
+                        </div>
+                        <label for="email3" class="col-md-2 col-form-label">e-mail</label>
+                        <div class="col-md-4">
+                            <input type="email" class="form-control" name="email3" />
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="name4" class="col-md-2 col-form-label">Name</label>
+                        <div class="col-md-4">
+                            <input type="char" class="form-control" name="name4" />
+                        </div>
+                        <label for="email4" class="col-md-2 col-form-label">e-mail</label>
+                        <div class="col-md-4">
+                            <input type="email" class="form-control" name="email4" />
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="name5" class="col-md-2 col-form-label">Name</label>
+                        <div class="col-md-4">
+                            <input type="char" class="form-control" name="name5" />
+                        </div>
+                        <label for="email5" class="col-md-2 col-form-label">e-mail</label>
+                        <div class="col-md-4">
+                            <input type="email" class="form-control" name="email5" />
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="name6" class="col-md-2 col-form-label">Name</label>
+                        <div class="col-md-4">
+                            <input type="char" class="form-control" name="name6" />
+                        </div>
+                        <label for="email6" class="col-md-2 col-form-label">e-mail</label>
+                        <div class="col-md-4">
+                            <input type="email" class="form-control" name="email6" />
+                        </div>
+                    </div>
+                     <div class="form-group row col-xl-8">
+                        <label for="name7" class="col-md-2 col-form-label">Name</label>
+                        <div class="col-md-4">
+                            <input type="char" class="form-control" name="name7" />
+                        </div>
+                        <label for="email7" class="col-md-2 col-form-label">e-mail</label>
+                        <div class="col-md-4">
+                            <input type="email" class="form-control" name="email7" />
+                        </div>
+                    </div>
+                     <div class="form-group row col-xl-8">
+                        <label for="name8" class="col-md-2 col-form-label">Name</label>
+                        <div class="col-md-4">
+                            <input type="char" class="form-control" name="name8" />
+                        </div>
+                        <label for="email8" class="col-md-2 col-form-label">e-mail</label>
+                        <div class="col-md-4">
+                            <input type="email" class="form-control" name="email8" />
+                        </div>
+                    </div>
+                     <div class="form-group row col-xl-8">
+                        <label for="name9" class="col-md-2 col-form-label">Name</label>
+                        <div class="col-md-4">
+                            <input type="char" class="form-control" name="name9" />
+                        </div>
+                        <label for="email9" class="col-md-2 col-form-label">e-mail</label>
+                        <div class="col-md-4">
+                            <input type="email" class="form-control" name="email9" />
+                        </div>
+                    </div>
+                     <div class="form-group row col-xl-8">
+                        <label for="name10" class="col-md-2 col-form-label">Name</label>
+                        <div class="col-md-4">
+                            <input type="char" class="form-control" name="name10" />
+                        </div>
+                        <label for="email10" class="col-md-2 col-form-label">e-mail</label>
+                        <div class="col-md-4">
+                            <input type="email" class="form-control" name="email10" />
+                        </div>
+                    </div>
+                     <div class="form-group row col-xl-8">
+                        <label for="name11" class="col-md-2 col-form-label">Name</label>
+                        <div class="col-md-4">
+                            <input type="char" class="form-control" name="name11" />
+                        </div>
+                        <label for="email11" class="col-md-2 col-form-label">e-mail</label>
+                        <div class="col-md-4">
+                            <input type="email" class="form-control" name="email11" />
+                        </div>
+                    </div>
+                     <div class="form-group row col-xl-8">
+                        <label for="name12" class="col-md-2 col-form-label">Name</label>
+                        <div class="col-md-4">
+                            <input type="char" class="form-control" name="name12" />
+                        </div>
+                        <label for="email12" class="col-md-2 col-form-label">e-mail</label>
+                        <div class="col-md-4">
+                            <input type="email" class="form-control" name="email12" />
+                        </div>
+                    </div>
+                     <div class="form-group row col-xl-8">
+                        <label for="name13" class="col-md-2 col-form-label">Name</label>
+                        <div class="col-md-4">
+                            <input type="char" class="form-control" name="name13" />
+                        </div>
+                        <label for="email13" class="col-md-2 col-form-label">e-mail</label>
+                        <div class="col-md-4">
+                            <input type="email" class="form-control" name="email13" />
+                        </div>
+                    </div>
+                     <div class="form-group row col-xl-8">
+                        <label for="name14" class="col-md-2 col-form-label">Name</label>
+                        <div class="col-md-4">
+                            <input type="char" class="form-control" name="name14" />
+                        </div>
+                        <label for="email14" class="col-md-2 col-form-label">e-mail</label>
+                        <div class="col-md-4">
+                            <input type="email" class="form-control" name="email14" />
+                        </div>
+                    </div>
+                     <div class="form-group row col-xl-8">
+                        <label for="name15" class="col-md-2 col-form-label">Name</label>
+                        <div class="col-md-4">
+                            <input type="char" class="form-control" name="name15" />
+                        </div>
+                        <label for="email15" class="col-md-2 col-form-label">e-mail</label>
+                        <div class="col-md-4">
+                            <input type="email" class="form-control" name="email15" />
+                        </div>
+                    </div>
+                    <t t-foreach="appointment_type.question_ids" t-as="question">
+                        <div class="form-group row col-xl-8" t-if="question.question_type!='text'">
+                            <label t-att-for="question_#{question.id}" class="col-md-4 col-form-label" t-esc="question.name" />
+                            <div class="col-md-8">
+                                <t t-if="question.question_type=='char'">
+                                    <input type="char" class="form-control" t-attf-name="question_#{question.id}" t-att-required="question.question_required or None" t-att-placeholder="question.placeholder" />
+                                </t>
+                                <t t-if="question.question_type=='select'">
+                                    <select t-attf-name="question_#{question.id}" class="form-control" t-att-required="question.question_required or None" t-att-placeholder="question.placeholder">
+                                        <t t-foreach="question.answer_ids or []" t-as="answer">
+                                            <option t-att-value="answer.name">
+                                                <t t-esc="answer.name" />
+                                            </option>
+                                        </t>
+                                    </select>
+                                </t>
+                                <t t-if="question.question_type=='radio'">
+                                    <div class="checkbox" t-foreach="question.answer_ids or []" t-as="answer">
+                                        <label>
+                                            <input type="radio" t-attf-name="question_#{question.id}" t-att-required="question.question_required or None" t-att-value="answer.name" />
+                                            <t t-esc="answer.name" />
+                                        </label>
+                                    </div>
+                                </t>
+                                <t t-if="question.question_type=='checkbox'">
+                                    <div class="checkbox" t-foreach="question.answer_ids or []" t-as="answer">
+                                        <label>
+                                            <input type="checkbox" t-attf-name="question_#{question.id}_answer_#{answer.id}" t-att-value="answer.name" />
+                                            <t t-esc="answer.name" />
+                                        </label>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="form-group row col-xl-8" t-if="question.question_type=='text'">
+                            <label t-att-for="question_#{question.id}" class="col-md-4 col-form-label" t-esc="question.name" />
+                            <div class="col-md-8">
+                                <textarea class="form-control" rows="8" t-att-required="question.question_required or None" t-attf-name="question_#{question.id}" t-att-placeholder="question.placeholder" />
+                            </div>
+                        </div>
+                    </t>
+
+                    <div class="form-group row">
+                        <div class="offset-md-2 col-md-10">
+                            <button type="submit" class="btn btn-primary">
+                                Confirm Appointment
+                                <span class="fa fa-arrow-right" />
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </xpath>
+        </template>
+
+        <template id="index_csj" inherit_id="website_calendar.index" name="Website Appointment: Appointment page CSJ">
+            <xpath expr="//div[1]/div[1]/form[1]" position="replace">
+                <form class="o_website_appoinment_form w-md-50" t-attf-action="/website/calendar/#{ slug(appointment_type) }/appointment" type="post">
+                    <div id="appointment" class="form-group row o_hidden" style="display: none">
+                        <label for="calendarType" class="col-md-3 col-form-label">Appointment</label>
+                        <div class="col-md-9">
+                            <select class="form-control" id="calendarType" name="calendarType" t-att-disabled="len(suggested_appointment_types)==1 and '1' or None">
+                                <t t-foreach="suggested_appointment_types" t-as="cal">
+                                    <option t-att-value="cal.id" t-att-selected="cal.id == appointment_type.id and 'selected'">
+                                        <t t-esc="cal.name" />
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="busqueda" class="col-md-3 col-form-label">Appointment</label>
+                        <div class="col-md-9">
+                            <input type="char" class="form-control search-prueba" name="busqueda" id="busqueda" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="types" class="col-md-3 col-form-label">Type</label>
+                        <div class="col-md-9">
+                            <select name="types" class="form-control" id="types">
+                                <option t-att-value="audiencia" t-att-selected="types">Audience</option>
+                                <option t-att-value="video" t-att-selected="types">Video Conference</option>
+                                <option t-att-value="streaming" t-att-selected="types">Streaming</option>
+                            </select>
+                        </div>
+                    </div>
+                    <t t-call="website_calendar.employee_select" />
+                    <div class="form-group row">
+                        <div class="offset-md-8 col-md-4">
+                            <button type="submit" class="btn btn-primary">
+                                View Availabilities
+                                <span class="fa fa-arrow-right" />
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </xpath>
+        </template>
+
+        <template id="appointment_calendar_csj" inherit_id="website_calendar.appointment_calendar" name="Website Appointment: Appointment Calendars_csj">
+            <xpath expr="//div[1]/div[1]" position="replace">
+                <div t-foreach="slots" t-as="month" class="col-lg-6">
+                    <h3 t-esc="month['month']" />
+                    <table class="table">
+                        <tr class="active">
+                            <th class="text-center">Mon</th>
+                            <th class="text-center">Tue</th>
+                            <th class="text-center">Wed</th>
+                            <th class="text-center">Thu</th>
+                            <th class="text-center">Fri</th>
+                            <th class="text-center">Sat</th>
+                            <th class="text-center">Sun</th>
+                        </tr>
+                        <tr t-foreach="month['weeks']" t-as="weeks" class="o_calendar_days">
+                            <t t-foreach="weeks" t-as="day">
+                                <td t-attf-class="text-center#{day['slots'] and ' o_day dropdown' or ''} #{day['weekend_cls']} #{day['today_cls']}" t-attf-title="#{day['today_cls'] and 'Today' or ''}">
+                                    <t t-if="day['slots']">
+                                        <div class="dropdown-toggle o_slots_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <strong>
+                                                <span t-esc="day['day'].day" />
+                                            </strong>
+                                        </div>
+                                        <div class="dropdown-menu" role="menu">
+                                            <t t-foreach="day['slots']" t-as="slot">
+                                                <a t-if="slot" role="menuitem" class="dropdown-item" t-attf-href="/website/calendar/#{appointment_type.id}/info?employee_id=#{slot['employee_id']}&amp;date_time=#{slot['datetime']}&amp;types=#{types}" t-esc="slot['hours']" />
+                                            </t>
+                                        </div>
+                                    </t>
+                                    <t t-if="not day['slots']">
+                                        <div t-esc="day['day'].day" t-att-class="day['mute_cls']" />
+                                    </t>
+                                </td>
+                            </t>
+                        </tr>
+                        <!--to fix bootstrap md height add empty tr so now each month has 6 weeks row -->
+                        <tr t-if="len(month['weeks']) == 5" class="o_calendar_days" />
+                    </table>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>

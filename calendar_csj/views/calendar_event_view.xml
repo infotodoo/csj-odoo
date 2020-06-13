@@ -1,0 +1,25 @@
+<odoo>
+    <data>
+        <record id="calendar_appointment_type_form_csj" model="ir.ui.view">
+            <field name="name">calendar.appointment.type.form.csj</field>
+            <field name="model">calendar.appointment.type</field>
+            <field name="inherit_id" ref="website_calendar.calendar_appointment_type_view_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='reminder_ids']" position="after">
+                    <field name="judged_id"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="calendar_event_form_csj" model="ir.ui.view">
+            <field name="name">calendar.event.form.csj</field>
+            <field name="model">calendar.event</field>
+            <field name="inherit_id" ref="website_calendar.calendar_event_view_form_inherit_website_calendar" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='appointment_type_id']" position="after">
+                    <field name="appointment_id" readonly="True"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

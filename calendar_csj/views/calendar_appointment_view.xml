@@ -1,0 +1,168 @@
+<odoo>
+    <data>
+        <record id="calendar_appointment_search" model="ir.ui.view">
+            <field name="name">calendar.appointment.search</field>
+            <field name="model">calendar.appointment</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" />
+                    <field name="type" />
+                    <field name="class_id" />
+                </search>
+            </field>
+        </record>
+
+        <record id="calendar_appointment_pivot" model="ir.ui.view">
+            <field name="name">calendar.appointment.pivot</field>
+            <field name="model">calendar.appointment</field>
+            <field name="arch" type="xml">
+                <pivot string="Appointments">
+                    <field name="name" />
+                    <field name="calendar_duration" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="calendar_appointment_tree" model="ir.ui.view">
+            <field name="name">calendar.appointment.tree</field>
+            <field name="model">calendar.appointment</field>
+            <field name="arch" type="xml">
+                <tree string="Appointments">
+                    <field name="name" />
+                    <field name="type" />
+                    <field name="class_id" />
+                    <field name="request_date" />
+                    <field name="city_id" />
+                    <field name="partner_id" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="calendar_appointment_form" model="ir.ui.view">
+            <field name="name">calendar.appointment.form</field>
+            <field name="model">calendar.appointment</field>
+            <field name="arch" type="xml">
+                <form string="Appointment">
+                    <header>
+                        <button string="Confirm" type="object" name="action_confirm" class="oe_highlight" />
+                        <button string="Cancel" type="object" name="action_cancel" />
+                        <field name="state" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}"/>
+		                <!-- <field name="stage_id" widget="statusbar"  class="ml-2" on_change="1" can_create="false" can_write="false" modifiers="{}"/> -->
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Name" />
+                            <h1>
+                                <field name="name" readonly="True" />
+                            </h1>
+                        </div>
+                        <separator string="General" colspan="2" />
+                        <group>
+                            <group>
+                                <field name="type" required="True" />
+                                <field name="class_id" required="True" />
+                                <field name="help_id" />
+                                <field name="request_date" required="True" />
+                            </group>
+                            <group>
+                                <field name="calendar_type" required="True" />
+                                <field name="calendar_datetime" required="True" />
+                                <field name="calendar_date" readonly="True" />
+                                <field name="calendar_time" readonly="True" widget="float_time" />
+                            </group>
+                            <group>
+                                <field name="applicant_id" required="True" />
+                                <field name="declarant_text" />
+                                <field name="indicted_text" />
+                            </group>
+                            <group>
+                                <!-- <field name="types_ids" widget="many2many_tags" /> -->
+                                <!-- <field name="origin_id" required="True" /> -->
+                                <field name="city_id" required="True" />
+                                <field name="partner_id" required="True" />
+                                <field name="room_id" />
+                            </group>
+                            <group>
+                                <!-- <field name="partners_ids" widget="many2many_tags" /> -->
+                                <field name="request_type" required="True" />
+                                <field name="process_number" readonly="True" />
+                                <field name="tag_number" readonly="True" />
+                                <field name="reception_id" required="True" />
+                            </group>
+                            <group>
+                                <field name="record_data" />
+                                <field name="end_date" attrs="{'invisible': [('state','!=','realized')]}" />
+                                <field name="end_hour" attrs="{'invisible': [('state','!=','realized')]}" />
+                                <field name="link_download" attrs="{'invisible': [('state','!=','realized')]}" />
+                                <field name="link_streaming" attrs="{'invisible': [('type','!=','streaming'),('state','!=','realized')]}" />
+                            </group>
+                            <group>
+                                <field name="lifesize_meeting_ext" readonly="True" />
+                                <field name="lifesize_url" readonly="True" />
+                                <field name="lifesize_uuid" readonly="True" />
+                            </group>
+                            <group groups="base.group_no_one">
+                                <field name="event_id" readonly="True" />
+                                <field name="appointment_type_id" readonly="True" />
+                                <field name="lifesize_pin" readonly="True" />
+                                <field name="lifesize_owner" readonly="True" />
+                                <field name="lifesize_modified" readonly="True" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Observations">
+                                <field name="observations" nolabel="1"/>
+                            </page>
+                            <page string="State description">
+                                <field name="state_description" nolabel="1"/>
+                            </page>
+                            <page string="Applicant" attrs="{'invisible': [('applicant_id', '=', False)]}">
+                                <group>
+                                    <group>
+                                        <field name="applicant_email" readonly="False"/>
+                                        <field name="applicant_domain" readonly="True"/>
+                                        <field name="applicant_mobile" readonly="True"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Participants">
+                                <field name="partners_ids">
+                                    <tree string="Contacts" >
+                                        <field name="name" />
+                                        <field name="email" />
+                                        <field name="company_type" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="calendar_appointment_action">
+            <field name="name">Appointments</field>
+            <field name="res_model">calendar.appointment</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="calendar_appointment_action_graph">
+            <field name="name">Appointments</field>
+            <field name="res_model">calendar.appointment</field>
+            <field name="view_mode">pivot</field>
+        </record>
+
+        <menuitem id="appointment_menu" name="Appointments" parent="calendar.mail_menu_calendar" sequence="10" />
+
+        <menuitem id="calendar_appointment_menu" name="Appointments" parent="appointment_menu" action="calendar_appointment_action" sequence="5"/>
+
+        <menuitem id="website_calendar.appointment_type_menu" name="Online Appointments" parent="appointment_menu" />
+
+        <menuitem id="calendar_appointment_menu_graph" name="Appointments" parent="website_calendar.menu_schedule_report" action="calendar_appointment_action_graph" sequence="5"/>
+    </data>
+</odoo>
