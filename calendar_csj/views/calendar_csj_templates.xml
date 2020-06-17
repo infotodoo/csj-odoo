@@ -128,7 +128,27 @@
                         <div class="col-md-8">
                             <!-- <input type="char" class="form-control" name="reception_id" required="0"/> -->
                             <select class="form-control" name="help_id" id="help_id">
-                                <t t-foreach="suggested_help" t-as="res">
+                                <t t-foreach="suggested_help1" t-as="res">
+                                    <option t-att-value="res.id" t-esc="res.name" t-att-selected="res.name" />
+                                </t>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="help_id" class="col-md-4 col-form-label">Participant type</label>
+                        <div class="col-md-8">
+                            <select class="form-control" name="help_id" id="help_id">
+                                <t t-foreach="suggested_help2" t-as="res">
+                                    <option t-att-value="res.id" t-esc="res.name" t-att-selected="res.name" />
+                                </t>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-8">
+                        <label for="help_id" class="col-md-4 col-form-label">Connection type</label>
+                        <div class="col-md-8">
+                            <select class="form-control" name="help_id" id="help_id">
+                                <t t-foreach="suggested_help3" t-as="res">
                                     <option t-att-value="res.id" t-esc="res.name" t-att-selected="res.name" />
                                 </t>
                             </select>
@@ -366,8 +386,8 @@
                         <label for="types" class="col-md-3 col-form-label">Type</label>
                         <div class="col-md-9">
                             <select name="types" class="form-control" id="types">
-                                <option t-att-value="audiencia" t-att-selected="types">Audience</option>
-                                <option t-att-value="video" t-att-selected="types">Video Conference</option>
+                                <option t-att-value="audiencia" t-att-selected="types">Audiencia</option>
+                                <option t-att-value="video" t-att-selected="types">Video Conferencia</option>
                                 <option t-att-value="streaming" t-att-selected="types">Streaming</option>
                             </select>
                         </div>

@@ -105,7 +105,9 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             suggested_class = request.env['calendar.class'].sudo().search([('type','=','audience')])
         else:
             suggested_class = request.env['calendar.class'].sudo().search([('type','=','other')])
-        suggested_help = request.env['calendar.help'].sudo().search([])
+        suggested_help1 = request.env['calendar.help'].sudo().search([('type','=','support')])
+        suggested_help2 = request.env['calendar.help'].sudo().search([('type','=','type_p')])
+        suggested_help3 = request.env['calendar.help'].sudo().search([('type','=','type_c')])
         suggested_rooms = request.env['res.judged.room'].sudo().search_city(city_code)
         suggested_partners = request.env['res.partner'].sudo().search([])
         #suggested_companies = request.env['res.partner'].sudo().search_company_type()
@@ -118,7 +120,9 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             #'suggested_companies': suggested_companies,
             'suggested_reception': suggested_reception,
             'suggested_rooms': suggested_rooms,
-            'suggested_help': suggested_help,
+            'suggested_help1': suggested_help1,
+            'suggested_help2': suggested_help2,
+            'suggested_help3': suggested_help3,
             'types': types,
             'datetime': date_time,
             'datetime_locale': day_name + ' ' + date_formated,
@@ -385,33 +389,33 @@ class OdooWebsiteSearchDestino(http.Controller):
 
     @http.route(['/search/destino'], type='http', auth="public", website=True)
     def search_suggestion(self, **post):
-        # suggestion_list = []
+        suggestion_list = []
         destino = []
         #logger.info('entra destino')
 
         if post:
             for suggestion in post.get('query').split(" "):
                 suggested_partners = request.env['res.partner'].sudo().search([])
-            for partner in suggested_partners:
-                    city = partner.city_id.name if partner.city_id else '404'
-                    name = city + '-' + partner.name
-                    destino.append({
-                        'destino': name,
-                        'id': partner.id,
-                        })
-        #         read_prod = suggested_partners.read(['name', 'id', 'city_id'])
-        #         suggested_city = request.env['res.city'].get(read_prod['city_id'])
-        #         city = suggested_city.name
-        #         line = {
-        #             'name': city + '-' + read_prod['name'],
-        #             'id':read_prod['id'],
-        #             }
-        #         #logger.info(line)
-        #         suggestion_list += line
+            # for partner in suggested_partners:
+            #         city = partner.city_id.name if partner.city_id else '404'
+            #         name = city + '-' + partner.name
+            #         destino.append({
+            #             'destino': name,
+            #             'id': partner.id,
+            #             })
+                read_partners = suggested_partners.read(['name', 'id', 'city_id'])
+                # suggested_city = request.env['res.city'].get(read_partners['city_id'])
+                # city = suggested_city.name
+                line = {
+                    'name': read_partners['name'],
+                    'id':read_partners['id'],
+                    }
+                #logger.info(line)
+                suggestion_list += line
 
-        # for line in suggestion_list:
-        #     destino.append({'destino': line['name'], 'id': line['id']})
-        #logger.info(destino)
+        for line in suggestion_list:
+            destino.append({'destino': line['name'], 'id': line['id']})
+        logger.info(destino)
 
         data = {}
         # print "================="

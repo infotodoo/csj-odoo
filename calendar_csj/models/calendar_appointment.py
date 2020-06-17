@@ -22,7 +22,10 @@ class CalendarHelp(models.Model):
     name = fields.Char('Name', required=True)
     active = fields.Boolean(default=True, help="\
         The active field allows you to hide the class without removing it.")
-
+    type = fields.Selection([
+        ('support', 'Support in site'),
+        ('type_p', 'Participant type'),
+        ('type_c', 'Connection type')], default='support')
 
 class CalendarReception(models.Model):
     _name = 'calendar.reception'
