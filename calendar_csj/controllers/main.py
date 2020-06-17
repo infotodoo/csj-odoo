@@ -81,6 +81,8 @@ class WebsiteCalendarInherit(WebsiteCalendar):
     def calendar_appointment(self, appointment_type=None, employee_id=None, timezone=None, failed=False, types=False, **kwargs):
         #### TYPESSS 4 robot
         request.session['timezone'] = timezone or appointment_type.appointment_tz
+        if not employee_id:
+            employee_id = appointment_type.employee_ids[0]
         Employee = request.env['hr.employee'].sudo().browse(int(employee_id)) if employee_id else None
         Slots = appointment_type.sudo()._get_appointment_slots(request.session['timezone'], Employee)
         return request.render("website_calendar.appointment", {
