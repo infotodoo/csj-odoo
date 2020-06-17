@@ -403,15 +403,15 @@ class OdooWebsiteSearchDestino(http.Controller):
             #             'destino': name,
             #             'id': partner.id,
             #             })
-                read_partners = suggested_partners.read(['name', 'id', 'city_id'])
+                read_partners = suggested_partners.read(['name', 'id'])
                 # suggested_city = request.env['res.city'].get(read_partners['city_id'])
                 # city = suggested_city.name
-                line = {
-                    'name': read_partners['name'],
-                    'id':read_partners['id'],
-                    }
+                # line = {
+                #     'name': read_partners['name'],
+                #     'id':read_partners['id'],
+                #     }
                 #logger.info(line)
-                suggestion_list += line
+                suggestion_list += read_partners
 
         for line in suggestion_list:
             destino.append({'destino': line['name'], 'id': line['id']})
