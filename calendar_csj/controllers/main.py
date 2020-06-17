@@ -301,7 +301,7 @@ class OdooWebsiteSearchCita(http.Controller):
 
         if post:
             partner = request.env.user.partner_id
-            for suggestion in post.get('query').split(" "):
+            for suggestion in post.get('query').split("%"):
                 judged_id = partner.parent_id
                 if partner.appointment_type != 'scheduler':
                     suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search_calendar(judged_id.id)
