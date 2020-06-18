@@ -301,13 +301,17 @@ class OdooWebsiteSearchCita(http.Controller):
 
         if post:
             partner = request.env.user.partner_id
-            for suggestion in post.get('query').split("%"):
+            query = post.get('query').lower().replace('á','a').replace('é','e')
+            query.replace('ó','o').replace('ú','u').replace('í','i')
+            for suggestion in query.split(" "):
                 judged_id = partner.parent_id
                 if partner.appointment_type != 'scheduler':
                     suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search_calendar(judged_id.id)
                 else:
                     suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search([('name', "ilike", suggestion)])
                 for appointment_type in suggested_appointment_types:
+                    if len(cita) > 0 and appointment_type.id in [line.get('id') for line in cita]:
+                        continue
                     city = appointment_type.judged_id.city_id.name if \
                         appointment_type.judged_id and appointment_type.judged_id.city_id else '404'
                     name = city + '-' + appointment_type.name
