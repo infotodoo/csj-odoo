@@ -92,6 +92,9 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'slots': Slots,
             'types': types
         })
+        #t-attf-href="/website/calendar/#{appointment_type.id}/info?employee_id=
+        # #{slot['employee_id']}&amp;
+        # date_time=#{slot['datetime']}&amp;types=#{types}"
 
     @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/info'], type='http', auth="public", website=True)
     def calendar_appointment_form(self, appointment_type, employee_id, date_time, types=False, **kwargs):
@@ -309,48 +312,31 @@ class OdooWebsiteSearchCita(http.Controller):
                 if partner.appointment_type != 'scheduler':
                     suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search_calendar(judged_id.id)
                 else:
-                    suggestion = suggestion.lower()
-                    dic_vowels = {'a':'á','e':'é','i':'í','o':'ó','u':'ú'}
-                    vowels = ['a','e','i','o']
-                    word = list(suggestion)
-                    list_suggestions = [''.join(word)]
-                    for letter in enumerate(suggestion):
-                        if letter[1] in vowels:
-                            word[letter[0]] = dic_vowels[letter[1]]
-                            list_suggestions.append(''.join(word))
-                            word = list(suggestion)
-                    suggested_appointment_types = []
-                    for word in list_suggestions:
-                        suggested_appointment_types += request.env['calendar.appointment.type'].sudo().search([('name'.lower(), "ilike", word)])
+                    suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search([])
+                    # suggestion = suggestion.lower()
+                    # dic_vowels = {'a':'á','e':'é','i':'í','o':'ó','u':'ú'}
+                    # vowels = ['a','e','i','o','u']
+                    # word = list(suggestion)
+                    # list_suggestions = [''.join(word)]
+                    # for letter in enumerate(suggestion):
+                    #     if letter[1] in vowels:
+                    #         word[letter[0]] = dic_vowels[letter[1]]
+                    #         list_suggestions.append(''.join(word))
+                    #         word = list(suggestion)
+                    # suggested_appointment_types = []
+                    # for word in list_suggestions:
+                    #     suggested_appointment_types += request.env['calendar.appointment.type'].sudo().search([('name', "ilike", word)])
                 for appointment_type in suggested_appointment_types:
                     if len(cita) > 0 and appointment_type.id in [line.get('id') for line in cita]:
                         continue
                     city = appointment_type.judged_id.city_id.name if \
                         appointment_type.judged_id and appointment_type.judged_id.city_id else '404'
                     name = city + '-' + appointment_type.name
+                    # name = appointment_type.name
                     cita.append({
                         'cita': name,
                         'id': appointment_type.id,
                         })
-                #logger.info('apoointment')
-                #logger.info('apoointment')
-                #logger.info(suggested_appointment_types)
-                # read_prod = suggested_appointment_types.read(['name', 'id'])
-                # logger.info(read_prod)
-                # judged = request.env['res.partner'].sudo().search([('id', '=', read_prod[])], limit=1)
-                # city = judged.city_id.name
-                # name = city + '-' + read_prod['name']
-                # logger.info(read_prod, judged, city, name)
-                # line = {
-                #     'name': name,
-                #     'id':read_prod[0]['id'],
-                #     }
-                # suggestion_list += read_prod
-
-
-        # for line in suggestion_list:
-        #     cita.append({'cita': line['name'], 'id': line['id']})
-
 
         data = {}
         # print "================="

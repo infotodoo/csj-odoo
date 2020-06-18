@@ -18,7 +18,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
     //var oe_website_sale = this;
 
 	sAnimation.registry.OdooWebsiteSearchCita = sAnimation.Class.extend({
-		selector: ".search-prueba",
+		selector: ".search-query",
 		start: function () {
 		    //console.log("start caleedddddddddddddddddddddddddddddddddd")
 		    var self = this;
@@ -32,7 +32,8 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
 				delay: 500,
 				order: "asc",
 				hint: true,
-				dynamic:true,
+				accent: true,
+				//dynamic: false,
 				display: ["id","cita"],
 				//maxItemPerGroup: 5,
                 template: '<span>' +
@@ -76,7 +77,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
 				delay: 500,
 				order: "asc",
 				hint: true,
-				dynamic:true,
+				//dynamic:true,
 				display: ["id","cita"],
 				//maxItemPerGroup: 5,
                 template: '<span>' +
@@ -119,7 +120,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
 				delay: 500,
 				order: "asc",
 				hint: true,
-				dynamic:true,
+				//dynamic:true,
 				display: ["id","destino"],
 				//maxItemPerGroup: 5,
                 template: '<span>' +
@@ -128,7 +129,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
                 source:{ product:{ url: [{ type : "GET", url : "/search/destino", data : { query : "{{query}}"},},"data.destino"] },},
                 callback: {
                     onResult: function (node, query, result, resultCount, resultCountPerGroup) {
-                        //console.log(node, query, result, resultCount, resultCountPerGroup);
+
                     },
                     onClickBefore: function (node, a, item, event) {
                         //console.log(item.id);
