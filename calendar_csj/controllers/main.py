@@ -301,14 +301,27 @@ class OdooWebsiteSearchCita(http.Controller):
 
         if post:
             partner = request.env.user.partner_id
-            query = post.get('query').lower().replace('á','a').replace('é','e')
-            query.replace('ó','o').replace('ú','u').replace('í','i')
+            query = post.get('query').lower()
+            # query = post.get('query').lower().replace('á','a').replace('é','e')
+            # query.replace('ó','o').replace('ú','u').replace('í','i')
             for suggestion in query.split(" "):
                 judged_id = partner.parent_id
                 if partner.appointment_type != 'scheduler':
                     suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search_calendar(judged_id.id)
                 else:
-                    suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search([('name', "ilike", suggestion)])
+                    suggestion = suggestion.lower()
+                    dic_vowels = {'a':'á','e':'é','i':'í','o':'ó','u':'ú'}
+                    vowels = ['a','e','i','o']
+                    word = list(suggestion)
+                    list_suggestions = [''.join(word)]
+                    for letter in enumerate(suggestion):
+                        if letter[1] in vowels:
+                            word[letter[0]] = dic_vowels[letter[1]]
+                            list_suggestions.append(''.join(word))
+                            word = list(suggestion)
+                    suggested_appointment_types = []
+                    for word in list_suggestions:
+                        suggested_appointment_types += request.env['calendar.appointment.type'].sudo().search([('name'.lower(), "ilike", word)])
                 for appointment_type in suggested_appointment_types:
                     if len(cita) > 0 and appointment_type.id in [line.get('id') for line in cita]:
                         continue

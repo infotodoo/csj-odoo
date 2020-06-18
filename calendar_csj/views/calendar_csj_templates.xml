@@ -379,7 +379,7 @@
                     <div class="form-group row">
                         <label for="busqueda" class="col-md-3 col-form-label">Appointment</label>
                         <div class="col-md-9">
-                            <input type="char" class="form-control search-prueba" name="busqueda" id="busqueda" />
+                            <input type="char" class="search-query form-control search-prueba" name="busqueda" id="busqueda" />
                         </div>
                     </div>
                     <div class="form-group row">
