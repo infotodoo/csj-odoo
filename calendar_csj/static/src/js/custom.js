@@ -33,7 +33,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
 				order: "asc",
 				hint: true,
 				accent: true,
-				dynamic: true,
+				//dynamic: false,
 				display: ["id","cita"],
 				//maxItemPerGroup: 5,
                 template: '<span>' +
