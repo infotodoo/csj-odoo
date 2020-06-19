@@ -77,29 +77,25 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             })
         return result
 
-    @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/appointment'], type='http', auth="public", website=True)
-    def calendar_appointment(self, appointment_type=None, employee_id=None, timezone=None, failed=False, types=False, **kwargs):
-        #### TYPESSS 4 robot
-        request.session['timezone'] = timezone or appointment_type.appointment_tz
-        if not employee_id:
-            employee_id = appointment_type.employee_ids[0] # Employee No. 1
-        Employee = request.env['hr.employee'].sudo().browse(int(employee_id)) if employee_id else None
-        Slots = appointment_type.sudo()._get_appointment_slots(request.session['timezone'], Employee)
-        return request.render("website_calendar.appointment", {
-            'appointment_type': appointment_type,
-            'timezone': request.session['timezone'],
-            'failed': failed,
-            'slots': Slots,
-            'types': types
-        })
-        #t-attf-href="/website/calendar/#{appointment_type.id}/info?employee_id=
-        # #{slot['employee_id']}&amp;
-        # date_time=#{slot['datetime']}&amp;types=#{types}"
+    # @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/appointment'], type='http', auth="public", website=True)
+    # def calendar_appointment(self, appointment_type=None, employee_id=None, timezone=None, failed=False, types=False, **kwargs):
+    #     #### TYPESSS 4 robot
+    #     request.session['timezone'] = timezone or appointment_type.appointment_tz
+    #     if not employee_id:
+    #         employee_id = appointment_type.employee_ids[0] # Employee No. 1
+    #     Employee = request.env['hr.employee'].sudo().browse(int(employee_id)) if employee_id else None
+    #     Slots = appointment_type.sudo()._get_appointment_slots(request.session['timezone'], Employee)
+    #     return request.render("website_calendar.appointment", {
+    #         'appointment_type': appointment_type,
+    #         'timezone': request.session['timezone'],
+    #         'failed': failed,
+    #         'slots': Slots,
+    #         'types': types
+    #     })
 
     @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/info'], type='http', auth="public", website=True)
     #def calendar_appointment_form(self, appointment_type, employee_id, date_time, types=False, **kwargs):
     def calendar_appointment_form(self, appointment_type, date_time, duration, types=False, country_id=False, **kwargs):
-        # partner_data = {}
         # if request.env.user.partner_id != request.env.ref('base.public_partner'):
         #     partner_data = request.env.user.partner_id.read(fields=['name', 'mobile', 'email'])[0]
 
@@ -152,6 +148,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'suggested_help2': suggested_help2,
             'suggested_help3': suggested_help3,
             'types': types,
+            'duration': duration,
             'datetime': date_time,
             'datetime_locale': day_name + ' ' + date_formated,
             'datetime_str': date_time,
@@ -162,7 +159,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
     @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/submit'], type='http', auth="public", website=True, method=["POST"])
     def calendar_appointment_submit(self, appointment_type, datetime_str, employee_id, types, class_id,
                                     reception_id, process_number, request_type, duration,  destination_id,
-                                    room_id, help_id, name, email, phone,
+                                    room_id, help_support, help_type_p, help_type_c, name, email, phone,
                                     declarant_text=False, indicted_text=False, description=False,
                                     country_id=False, **kwargs):
         timezone = request.session['timezone']
@@ -314,7 +311,9 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'process_number' : process_number,
             'request_type' : request_type,
             'room_id': room_id,
-            'help_id': help_id,
+            'help_support': help_support,
+            'help_type_p': help_type_p,
+            'help_type_c': help_type_c,
         })
         event.attendee_ids.write({'state': 'accepted'})
         return request.redirect('/website/calendar/view/' + event.access_token + '?message=new')

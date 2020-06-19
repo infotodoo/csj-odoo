@@ -9,7 +9,7 @@
                 </ul>
             </xpath>
             <xpath expr="//div[1]/div[1]/form[1]" position="replace">
-                <form class="mt32 appointment_submit_form" t-attf-action="/website/calendar/#{ slug(appointment_type) }/submit" method="POST">
+                <form class="mt32 appointment_submit_form" t-attf-action="/website/calendar/#{ slug(appointment_type) }/submit?datetime=#{datetime}&amp;duration=#{duration}" method="POST">
                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
                     <input type="hidden" name="datetime_str" t-att-value="datetime_str" />
                     <input type="hidden" name="employee_id" t-att-value="employee_id" />
@@ -34,7 +34,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group row col-xl-8">
+                    <!-- <div class="form-group row col-xl-8">
                         <label for="duration" class="col-md-4 col-form-label">Duration</label>
                         <div class="col-md-8">
                             <select name="duration" class="form-control" id="duration">
@@ -45,7 +45,7 @@
                                 <option t-att-value="2.5">2:30</option>
                             </select>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="form-group row col-xl-8">
                         <label class="col-md-4 col-form-label">Applicant:</label>
                     </div>
@@ -130,10 +130,10 @@
                         </div>
                     </div>
                     <div class="form-group row col-xl-8">
-                        <label for="help_id" class="col-md-4 col-form-label">Help in place</label>
+                        <label for="help_support" class="col-md-4 col-form-label">Help in place</label>
                         <div class="col-md-8">
                             <!-- <input type="char" class="form-control" name="reception_id" required="0"/> -->
-                            <select class="form-control" name="help_id" id="help_id">
+                            <select class="form-control" name="help_support" id="help_support">
                                 <t t-foreach="suggested_help1" t-as="res">
                                     <option t-att-value="res.id" t-esc="res.name" t-att-selected="res.name" />
                                 </t>
@@ -141,9 +141,9 @@
                         </div>
                     </div>
                     <div class="form-group row col-xl-8">
-                        <label for="help_id" class="col-md-4 col-form-label">Participant type</label>
+                        <label for="help_type_p" class="col-md-4 col-form-label">Participant type</label>
                         <div class="col-md-8">
-                            <select class="form-control" name="help_id" id="help_id">
+                            <select class="form-control" name="help_type_p" id="help_type_p">
                                 <t t-foreach="suggested_help2" t-as="res">
                                     <option t-att-value="res.id" t-esc="res.name" t-att-selected="res.name" />
                                 </t>
@@ -151,9 +151,9 @@
                         </div>
                     </div>
                     <div class="form-group row col-xl-8">
-                        <label for="help_id" class="col-md-4 col-form-label">Connection type</label>
+                        <label for="help_type_c" class="col-md-4 col-form-label">Connection type</label>
                         <div class="col-md-8">
-                            <select class="form-control" name="help_id" id="help_id">
+                            <select class="form-control" name="help_type_c" id="help_type_c">
                                 <t t-foreach="suggested_help3" t-as="res">
                                     <option t-att-value="res.id" t-esc="res.name" t-att-selected="res.name" />
                                 </t>
@@ -393,7 +393,7 @@
                     <div class="form-group row">
                         <label for="busqueda" class="col-md-3 col-form-label">Appointment</label>
                         <div class="col-md-9">
-                            <input type="char" class="search-query form-control" name="busqueda" id="busqueda" />
+                            <input type="char" class="search-query form-control" name="busqueda" id="busqueda" required="1" />
                         </div>
                     </div>
                     <div class="form-group row">
@@ -405,7 +405,8 @@
                                 <input type="text"
                                        class="form-control datetimepicker-input"
                                        data-target="#datetimepickerID"
-                                       name="date_time"/>
+                                       name="date_time"
+                                       required="1" />
                                 <div class="input-group-append"
                                      data-target="#datetimepickerID"
                                      data-toggle="datetimepicker">
@@ -422,7 +423,7 @@
                     <div class="form-group row">
                             <label for="duration" class="col-md-3 col-form-label">Duration</label>
                             <div class="col-md-9">
-                                <select name="duration" class="form-control" id="duration">
+                                <select name="duration" class="form-control" id="duration" required="1" >
                                     <option t-att-value="0.5">00:30</option>
                                     <option t-att-value="1">1:00</option>
                                     <option t-att-value="1.5">1:30</option>
@@ -434,7 +435,7 @@
                     <div class="form-group row">
                         <label for="types" class="col-md-3 col-form-label">Type</label>
                         <div class="col-md-9">
-                            <select name="types" class="form-control" id="types">
+                            <select name="types" class="form-control" id="types" required="1" >
                                 <option t-att-value="audiencia" t-att-selected="types">Audiencia</option>
                                 <option t-att-value="video" t-att-selected="types">Video Conferencia</option>
                                 <option t-att-value="streaming" t-att-selected="types">Streaming</option>

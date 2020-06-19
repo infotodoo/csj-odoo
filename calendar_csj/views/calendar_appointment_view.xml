@@ -62,7 +62,9 @@
                             <group>
                                 <field name="type" required="True" />
                                 <field name="class_id" required="True" />
-                                <field name="help_id" />
+                                <field name="help_support"  domain="[('type','=','support')]" />
+                                <field name="help_type_p" domain="[('type','=','type_p')]" />
+                                <field name="help_type_c" domain="[('type','=','type_c')]" />
                                 <field name="request_date" required="True" />
                             </group>
                             <group>

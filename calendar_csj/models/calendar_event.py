@@ -20,7 +20,9 @@ class CalendarEvent(models.Model):
     indicted_text = fields.Text('Indicted input')
     destination_id = fields.Many2one('res.partner', 'Destination', ondelete='set null')
     class_id = fields.Many2one('calendar.class', 'Calendar class', ondelete='set null')
-    help_id = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null')
+    help_support = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null', domain="[('type','=','support')]")  # Ayuda
+    help_type_p = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null', domain="[('type','=','type_p')]")
+    help_type_c = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null', domain="[('type','=','type_c')]")
     request_type = fields.Selection([('l', 'Free'), ('r', 'Reserved')], 'Request type', default='r')
     process_number = fields.Char('Process number')
     reception_id = fields.Many2one('calendar.reception', 'Reception medium', ondelete='set null')
@@ -66,7 +68,9 @@ class CalendarEvent(models.Model):
             'partners_ids': vals.get('partner_ids'),
             'appointment_type_id': vals.get('appointment_type_id'),
             'class_id' : vals.get('class_id'),
-            'help_id': vals.get('help_id'),
+            'help_support': vals.get('help_support'),
+            'help_type_p': vals.get('help_type_p'),
+            'help_type_c': vals.get('help_type_c'),
             'reception_id' : vals.get('reception_id'),
             'indicted_text' : vals.get('indicted_text'),
             'declarant_text' : vals.get('declarant_text'),

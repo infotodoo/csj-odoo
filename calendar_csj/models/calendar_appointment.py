@@ -78,7 +78,9 @@ class CalendarAppointment(models.Model):
         ('conference','Video conference'),
         ('streaming','Streaming')], 'Request type', default='audience')
     class_id = fields.Many2one('calendar.class', 'Calendar class', ondelete='set null')  # Clase
-    help_id = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null')  # Ayuda
+    help_support = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null', domain="[('type','=','support')]")  # Ayuda
+    help_type_p = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null', domain="[('type','=','type_p')]")
+    help_type_c = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null', domain="[('type','=','type_c')]")
     request_date = fields.Date('Request date', default=fields.Date.today())  # Date
 
     calendar_type = fields.Selection([('unique', 'Unique'), ('multi', 'Multi')], 'Calendar type', default='unique')  # Agenda
