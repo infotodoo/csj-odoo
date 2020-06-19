@@ -375,7 +375,9 @@
                 </ul>
             </xpath>
             <xpath expr="//div[1]/div[1]/form[1]" position="replace">
-                <form class="o_website_appoinment_form w-md-50" t-attf-action="/website/calendar/#{ slug(appointment_type) }/info?date_time=#{date_time}" type="post">
+                <!--<form class="o_website_appoinment_form w-md-50" t-attf-action="/website/calendar/#{ slug(appointment_type) }/info" type="post">-->
+                <!--<form class="o_website_appoinment_form w-md-50" t-attf-action="/website/calendar/#{ slug(appointment_type) }/info?employee_id=#{slot['employee_id']}&amp;date_time=#{slot['datetime']}" type="post">-->
+                <form class="o_website_appoinment_form w-md-50" t-attf-action="/website/calendar/#{ slug(appointment_type) }/info?date_time=#{date_time}&amp;duration=#{duration}" type="post">
                     <div id="appointment" class="form-group row o_hidden" style="display: none">
                         <label for="calendarType" class="col-md-3 col-form-label">Appointment</label>
                         <div class="col-md-9">
@@ -415,10 +417,20 @@
                                     $('#datetimepickerID').datetimepicker({format : 'YYYY-MM-DD HH:mm:ss'});
                                 });
                             </script>
-                            
-
                         </div>
                     </div>
+                    <div class="form-group row">
+                            <label for="duration" class="col-md-3 col-form-label">Duration</label>
+                            <div class="col-md-9">
+                                <select name="duration" class="form-control" id="duration">
+                                    <option t-att-value="0.5">00:30</option>
+                                    <option t-att-value="1">1:00</option>
+                                    <option t-att-value="1.5">1:30</option>
+                                    <option t-att-value="2">2:00</option>
+                                    <option t-att-value="2.5">2:30</option>
+                                </select>
+                            </div>
+                        </div>
                     <div class="form-group row">
                         <label for="types" class="col-md-3 col-form-label">Type</label>
                         <div class="col-md-9">

@@ -19,7 +19,7 @@ from odoo.exceptions import ValidationError
 import json
 from odoo import SUPERUSER_ID
 import logging
-_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 
@@ -98,15 +98,37 @@ class WebsiteCalendarInherit(WebsiteCalendar):
 
     @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/info'], type='http', auth="public", website=True)
     #def calendar_appointment_form(self, appointment_type, employee_id, date_time, types=False, **kwargs):
-    def calendar_appointment_form(self, appointment_type, date_time, types=False, **kwargs):
+    def calendar_appointment_form(self, appointment_type, date_time, duration, types=False, country_id=False, **kwargs):
         # partner_data = {}
         # if request.env.user.partner_id != request.env.ref('base.public_partner'):
         #     partner_data = request.env.user.partner_id.read(fields=['name', 'mobile', 'email'])[0]
+
         day_name = format_datetime(datetime.strptime(date_time, dtf), 'EEE', locale=get_lang(request.env).code)
         date_formated = format_datetime(datetime.strptime(date_time, dtf), locale=get_lang(request.env).code)
         city_code = appointment_type.judged_id.city_id.id
         employee_id = appointment_type.judged_id.id
-        #############################################################################################
+
+        timezone = request.session['timezone']
+        tz_session = pytz.timezone(timezone)
+        date_start = tz_session.localize(fields.Datetime.from_string(date_time)).astimezone(pytz.utc)
+        date_end = date_start + relativedelta(hours=float(duration))
+
+        # check availability of the employee again (in case someone else booked while the client was entering the form)
+        Employee = request.env['hr.employee'].sudo().browse(int(employee_id))
+
+        if Employee.user_id and Employee.user_id.partner_id:
+            if not Employee.user_id.partner_id.calendar_verify_availability(date_start, date_end):
+                return request.render("website_calendar.index", {
+                    'appointment_type': appointment_type,
+                    'suggested_appointment_types': request.env['calendar.appointment.type'].sudo().search([]),
+                    'message': 'cancel',
+                    'types': types,
+                })
+
+       
+        
+
+
         if types[0] == 'A':
             suggested_class = request.env['calendar.class'].sudo().search([('type','=','audience')])
         else:
@@ -350,8 +372,6 @@ class OdooWebsiteSearchCita(http.Controller):
         data['data'] = {'cita': cita}
         # print "================="
 
-        _logger.error("######################################+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        _logger.error(data)
         return json.dumps(data)
 
 class OdooWebsiteSearchSolicitante(http.Controller):
