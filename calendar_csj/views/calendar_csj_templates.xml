@@ -2,6 +2,12 @@
 <odoo>
     <data>
         <template id="appointment_form_csj" inherit_id="website_calendar.appointment_form" name="Website Appointment: Your Data CSJ">
+            <xpath expr="//ul[@class='wizard mt32 float-right']" position="replace">
+                <ul class="wizard mt32 float-right">
+                    <li><a t-attf-href="/website/calendar" class="text-success">Appointment</a><span class="chevron"></span></li>
+                    <li class="text-primary">Confirmation<span class="chevron"></span></li>
+                </ul>
+            </xpath>
             <xpath expr="//div[1]/div[1]/form[1]" position="replace">
                 <form class="mt32 appointment_submit_form" t-attf-action="/website/calendar/#{ slug(appointment_type) }/submit" method="POST">
                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
@@ -362,8 +368,14 @@
         </template>
 
         <template id="index_csj" inherit_id="website_calendar.index" name="Website Appointment: Appointment page CSJ">
+            <xpath expr="//ul[@class='wizard mt32 float-right']" position="replace">
+                <ul class="wizard mt32 float-right">
+                    <li><a t-attf-href="/website/calendar" class="text-success">Appointment</a><span class="chevron"></span></li>
+                    <li class="text-primary">Confirmation<span class="chevron"></span></li>
+                </ul>
+            </xpath>
             <xpath expr="//div[1]/div[1]/form[1]" position="replace">
-                <form class="o_website_appoinment_form w-md-50" t-attf-action="/website/calendar/#{ slug(appointment_type) }/appointment" type="post">
+                <form class="o_website_appoinment_form w-md-50" t-attf-action="/website/calendar/#{ slug(appointment_type) }/info?date_time=#{date_time}" type="post">
                     <div id="appointment" class="form-group row o_hidden" style="display: none">
                         <label for="calendarType" class="col-md-3 col-form-label">Appointment</label>
                         <div class="col-md-9">
@@ -382,12 +394,31 @@
                             <input type="char" class="search-query form-control" name="busqueda" id="busqueda" />
                         </div>
                     </div>
-                    <!-- <div class="form-group row">
+                    <div class="form-group row">
                         <label for="date_time" class="col-md-3 col-form-label">Date</label>
                         <div class="col-md-9">
-                            <input type="date" class="form-control datetimepicker-input" t-att-required="True" name="date_time" id="date_time" />
+                            <div class="input-group datetime"
+                                 id="datetimepickerID"
+                                 data-target-input="nearest">
+                                <input type="text"
+                                       class="form-control datetimepicker-input"
+                                       data-target="#datetimepickerID"
+                                       name="date_time"/>
+                                <div class="input-group-append"
+                                     data-target="#datetimepickerID"
+                                     data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                            <script type="text/javascript">
+                                $(function () {
+                                    $('#datetimepickerID').datetimepicker({format : 'YYYY-MM-DD HH:mm:ss'});
+                                });
+                            </script>
+                            
+
                         </div>
-                    </div> -->
+                    </div>
                     <div class="form-group row">
                         <label for="types" class="col-md-3 col-form-label">Type</label>
                         <div class="col-md-9">

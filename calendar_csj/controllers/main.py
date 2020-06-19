@@ -19,7 +19,7 @@ from odoo.exceptions import ValidationError
 import json
 from odoo import SUPERUSER_ID
 import logging
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 
@@ -97,13 +97,16 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         # date_time=#{slot['datetime']}&amp;types=#{types}"
 
     @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/info'], type='http', auth="public", website=True)
-    def calendar_appointment_form(self, appointment_type, employee_id, date_time, types=False, **kwargs):
+    #def calendar_appointment_form(self, appointment_type, employee_id, date_time, types=False, **kwargs):
+    def calendar_appointment_form(self, appointment_type, date_time, types=False, **kwargs):
         # partner_data = {}
         # if request.env.user.partner_id != request.env.ref('base.public_partner'):
         #     partner_data = request.env.user.partner_id.read(fields=['name', 'mobile', 'email'])[0]
         day_name = format_datetime(datetime.strptime(date_time, dtf), 'EEE', locale=get_lang(request.env).code)
         date_formated = format_datetime(datetime.strptime(date_time, dtf), locale=get_lang(request.env).code)
         city_code = appointment_type.judged_id.city_id.id
+        employee_id = appointment_type.judged_id.id
+        #############################################################################################
         if types[0] == 'A':
             suggested_class = request.env['calendar.class'].sudo().search([('type','=','audience')])
         else:
@@ -312,7 +315,7 @@ class OdooWebsiteSearchCita(http.Controller):
                 if partner.appointment_type != 'scheduler':
                     suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search_calendar(judged_id.id)
                 else:
-                    suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search([])
+                    suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search([('name', "ilike", suggestion)])
                     # suggestion = suggestion.lower()
                     # dic_vowels = {'a':'á','e':'é','i':'í','o':'ó','u':'ú'}
                     # vowels = ['a','e','i','o','u']
@@ -346,6 +349,9 @@ class OdooWebsiteSearchCita(http.Controller):
         # print "================="
         data['data'] = {'cita': cita}
         # print "================="
+
+        _logger.error("######################################+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        _logger.error(data)
         return json.dumps(data)
 
 class OdooWebsiteSearchSolicitante(http.Controller):
