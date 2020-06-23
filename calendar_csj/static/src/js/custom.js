@@ -94,7 +94,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
                       onClickAfter: function (node, a, item, event) {
                         var date_time = $(".o_website_appoinment_form select[name='date_time']").val();
                         var duration = $(".o_website_appoinment_form select[name='duration']").val();
-                        appointment = item['id'];
+                        var appointment = item['id'];
                         var postURL = '/website/calendar/' + appointment + '/info?date_time='+ date_time + '&amp;duration=' + duration;
                         $(".o_website_appointment_form").attr('action', postURL);
                       }
@@ -145,8 +145,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
               onClickAfter: function (node, a, item, event) {
                 var date_time = $(".o_website_appoinment_form select[name='date_time']").val();
                 var duration = $(".o_website_appoinment_form select[name='duration']").val();
-                console.log(item);
-                appointment = item['id'];
+                var appointment = item['id'];
                 //appointment = appointment.toLowerCase();
                 //appointment = appointment.replace(/[^a-zA-Z0-9]+/g,'-')
                 var postURL = '/website/calendar/' + appointment + '/info?date_time='+ date_time + '&amp;duration=' + duration;
