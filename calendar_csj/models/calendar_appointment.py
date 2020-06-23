@@ -47,12 +47,12 @@ class CalendarAppointment(models.Model):
     def _default_type_id(self):
         type_id = self.env.ref('calendar_csj.calendar_appointment_type')
         return type_id or False
-    
+
     # def _default_origin_id(self):
     #     partner_id = self.env.user.partner_id
     #     city_id = partner_id.city_id if partner_id else False
     #     return city_id
-    
+
     def _default_city_id(self):
         partner_id = self.env.user.partner_id
         parent_id = partner_id.parent_id if partner_id else False
@@ -156,7 +156,7 @@ class CalendarAppointment(models.Model):
                                             record.city_id.zipcode,
                                             record.partner_id.entity_id.code,
                                             record.partner_id.specialty_id.code,
-                                            record.partner_id.code, 
+                                            record.partner_id.code,
                                             room_code)
                 if record.record_data:
                     res += '_' + record.record_data
@@ -256,7 +256,7 @@ class CalendarAppointment(models.Model):
             dic = self.env['api.lifesize'].resp2dict(resp)
             dic.update(state='postpone')
         return dic
-    
+
     def unlink_lifesize(self):
         for record in self:
             api = {
@@ -348,7 +348,7 @@ class CalendarAppointmentType(models.Model):
 
     active = fields.Boolean('Active', default=True)
     judged_id = fields.Many2one('res.partner', 'Judged')
-
+    city_id = fields.Many2one('res.city', string='City', related='judged_id.city_id', store=True)
     type = fields.Selection([
         ('audience','Audience'),
         ('conference','Video conference'),
