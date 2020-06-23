@@ -35,9 +35,10 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             if judged_id:
                 suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search_calendar(judged_id.id)
             else:
-                raise ValidationError('El usuario no pertenece a ningún juzgado.')
+                return request.render("website_calendar.setup", {'message':'unassigned_partner'})
             if not suggested_appointment_types:
-                raise ValidationError('Ningún origen asosiado a %s.' % judged_id.name)
+                return request.render("website_calendar.setup", {'message': 'unassigned_origin', 'judged': judged_id.name})
+                #raise ValidationError('Ningún origen asosiado a %s.' % judged_id.name)
             appointment_type = suggested_appointment_types[0]
         else:
             if not appointment_type:
@@ -295,37 +296,28 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         return request.redirect('/website/calendar/view/' + event.access_token + '?message=new')
 
 
-class OdooWebsiteSearchCita(http.Controller):
+class OdooWebsiteSearchAppointment(http.Controller):
 
-    @http.route(['/search/suggestion'], type='http', auth="public", website=True)
-    def search_suggestion(self, **post):
-        # suggestion_list = []
+    @http.route([
+        '/search/suggestion',
+        '/search/suggestion/<int:city_id>'], type='http', auth="public", website=True)
+    def search_suggestion(self, city_id, **post):
         cita = []
-
         if post:
             partner = request.env.user.partner_id
             query = post.get('query').lower()
-            # query = post.get('query').lower().replace('á','a').replace('é','e')
-            # query.replace('ó','o').replace('ú','u').replace('í','i')
             for suggestion in query.split(" "):
                 judged_id = partner.parent_id
                 if partner.appointment_type != 'scheduler':
                     suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search_calendar(judged_id.id)
                 else:
-                    suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search([])
-                    # suggestion = suggestion.lower()
-                    # dic_vowels = {'a':'á','e':'é','i':'í','o':'ó','u':'ú'}
-                    # vowels = ['a','e','i','o','u']
-                    # word = list(suggestion)
-                    # list_suggestions = [''.join(word)]
-                    # for letter in enumerate(suggestion):
-                    #     if letter[1] in vowels:
-                    #         word[letter[0]] = dic_vowels[letter[1]]
-                    #         list_suggestions.append(''.join(word))
-                    #         word = list(suggestion)
-                    # suggested_appointment_types = []
-                    # for word in list_suggestions:
-                    #     suggested_appointment_types += request.env['calendar.appointment.type'].sudo().search([('name', "ilike", word)])
+
+                    if city_id: #city selected
+                        suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search([('city_id','=',city_id),('name','!=',False)])
+                        #suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search([])
+                        #logger.error(suggested_appointment_types)
+                    else:
+                        suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search([])
                 for appointment_type in suggested_appointment_types:
                     if len(cita) > 0 and appointment_type.id in [line.get('id') for line in cita]:
                         continue
@@ -337,28 +329,57 @@ class OdooWebsiteSearchCita(http.Controller):
                         'cita': name,
                         'id': appointment_type.id,
                         })
-
         data = {}
-        # print "================="
         data['status'] = True,
-        # print "================="
         data['error'] = None,
-        # print "================="
         data['data'] = {'cita': cita}
-        # print "================="
+        logger.error("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        logger.error(data)
         return json.dumps(data)
+
+
+
+class OdooWebsiteSearchCity(http.Controller):
+
+    @http.route(['/search/suggestion_city'], type='http', auth="public", website=True)
+    def search_suggestion(self, **post):
+        cities = []
+        if post:
+            query = post.get('query').lower()
+            for suggestion in query.split(" "):
+                suggested_cities = request.env['res.city'].sudo().search([])
+                for city in suggested_cities:
+                    #if len(cities) > 0 and city.id in [line.get('id') for line in cities]:
+                    #    continue
+                    cities.append({
+                        'city': city.name,
+                        'id': city.id,
+                        })
+        data = {}
+        data['status'] = True,
+        data['error'] = None,
+        data['data'] = {'cities': cities}
+        #logger.error("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        #logger.error(data)
+        return json.dumps(data)
+
+
+
+
+
+
+
+
+
+
 
 class OdooWebsiteSearchSolicitante(http.Controller):
 
     @http.route(['/search/suggestion2'], type='http', auth="public", website=True)
     def search_suggestion(self, **post):
-        # suggestion_list = []
         cita = []
-
         if post:
-            #partner = request.env.user.partner_id
             for suggestion in post.get('query').split(" "):
-                #judged_id = partner.parent_id
                 suggested_companies = request.env['res.partner'].sudo().search_company_type()
                 for companie in suggested_companies:
                     city = companie.city_id.name if companie.city_id else '404'
@@ -367,25 +388,10 @@ class OdooWebsiteSearchSolicitante(http.Controller):
                         'cita': name,
                         'id': companie.id,
                         })
-                #logger.info('apoointment')
-                #logger.info('apoointment')
-                #logger.info(suggested_partners)
-        #         read_prod = suggested_companies.read(['name', 'id'])
-        #         suggestion_list = suggestion_list + read_prod
-
-
-        # for line in suggestion_list:
-        #     cita.append({'cita': line['name'], 'id': line['id']})
-
-
         data = {}
-        # print "================="
         data['status'] = True,
-        # print "================="
         data['error'] = None,
-        # print "================="
         data['data'] = {'cita': cita}
-        # print "================="
         return json.dumps(data)
 
 class OdooWebsiteSearchDestino(http.Controller):
@@ -394,38 +400,17 @@ class OdooWebsiteSearchDestino(http.Controller):
     def search_suggestion(self, **post):
         suggestion_list = []
         destino = []
-        #logger.info('entra destino')
-
         if post:
             for suggestion in post.get('query').split(" "):
                 suggested_partners = request.env['res.partner'].sudo().search([])
-            # for partner in suggested_partners:
-            #         city = partner.city_id.name if partner.city_id else '404'
-            #         name = city + '-' + partner.name
-            #         destino.append({
-            #             'destino': name,
-            #             'id': partner.id,
-            #             })
                 read_partners = suggested_partners.read(['name', 'id'])
-                # suggested_city = request.env['res.city'].get(read_partners['city_id'])
-                # city = suggested_city.name
-                # line = {
-                #     'name': read_partners['name'],
-                #     'id':read_partners['id'],
-                #     }
-                #logger.info(line)
                 suggestion_list += read_partners
 
         for line in suggestion_list:
             destino.append({'destino': line['name'], 'id': line['id']})
         logger.info(destino)
-
         data = {}
-        # print "================="
         data['status'] = True,
-        # print "================="
         data['error'] = None,
-        # print "================="
         data['data'] = {'destino': destino}
-        # print "================="
         return json.dumps(data)
