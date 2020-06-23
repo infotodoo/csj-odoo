@@ -2,6 +2,7 @@
 <odoo>
     <data>
         <template id="appointment_form_csj" inherit_id="website_calendar.appointment_form" name="Website Appointment: Your Data CSJ">
+            <xpath expr="//ul[@class='wizard mt32 float-right']//li[2]" position="replace"/>
             <xpath expr="//div[1]/div[1]/form[1]" position="replace">
                 <form class="mt32 appointment_submit_form" t-attf-action="/website/calendar/#{ slug(appointment_type) }/submit" method="POST">
                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
@@ -83,7 +84,6 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="form-group row col-xl-8">
                         <label for="destino" class="col-md-4 col-form-label">Destination</label>
                         <div class="col-md-8">
@@ -363,9 +363,17 @@
 
         <template id="index_csj" inherit_id="website_calendar.index" name="Website Appointment: Appointment page CSJ">
 
+           <xpath expr="//div[1]/div[1]/form[1]" position="before">
+                <div t-if="message=='already_scheduling'" class="alert alert-danger mt16" role="alert">
+                    <p>
+                        <strong>Ya existe un agendamiento para este mismo Juzgado en la misma fecha y hora!</strong>
+                        Seleccione otra fecha u hora para realizar el agendamiento.
+                    </p>
+                </div>
+            </xpath>
             <xpath expr="//ul[@class='wizard mt32 float-right']//li[2]" position="replace"/>
             <xpath expr="//div[1]/div[1]/form[1]" position="replace">
-                <form class="o_website_appoinment_form w-md-70" t-attf-action="/website/calendar/#{ slug(appointment_type) }/appointment" type="post">
+                <form class="o_website_appointment_form w-md-70" t-attf-action="/website/calendar/#{ slug(appointment_type) }/info?date_time=#{date_time}&amp;{duration}" type="post">
                     <div id="appointment" class="form-group row o_hidden" style="display: none">
                         <label for="calendarType" class="col-md-3 col-form-label">Appointment</label>
                         <div class="col-md-9">
@@ -382,7 +390,7 @@
                        .typeahead__cancel-button{padding: 0.5rem 1.5rem;}
                     </style>
                     <div t-attf-class="input-group row">
-                      <label for="busqueda" class="col-md-3 col-form-label">Ciudad</label>
+                      <label for="city_id" class="col-md-3 col-form-label">Ciudad</label>
                       <div class="col-md-9">
                         <input
                             type="text"
@@ -394,13 +402,13 @@
                         <input type="hidden" name="city_id" class="search-query-city-id"/>
                       </div>
                     </div>
-
                     <div t-attf-class="input-group appointment-container row" style="margin-top:4vh;">
-                        <label for="busqueda" class="col-md-3 col-form-label">Juzgado</label>
+                        <label for="search_appointment" class="col-md-3 col-form-label">Juzgado</label>
                         <div class="col-md-9">
                           <input
                               type="text"
                               name="search_appointment"
+                              id="search_appointmentID"
                               class="search-query-appointment form-control oe_search_box"
                               placeholder="Seleccione un Juzgado..."
                               data-limit="10"
@@ -408,7 +416,31 @@
                         </div>
                         <input name="order" type="hidden" class="o_appointment_search_order_by" value=""/>
                     </div>
-
+                    <div class="form-group row" style="margin-top:4vh;">
+                        <label for="date_time" class="col-md-3 col-form-label">Fecha</label>
+                        <div class="col-md-9" style="padding-left:8px;">
+                          <div class="input-group date" id="appointment_csj_div" data-target-input="nearest">
+                              <input type="text" min="2020-01-01" name="date_time" t-att-value="date_formatted" class="form-control date_time" style="width:90%"/>
+                              <div class="input-group-append" data-target="#appointment_csj_div">
+                                  <span class="input-group-text">
+                                      <span class="fa fa-calendar" role="img" aria-label="Calendar"></span>
+                                  </span>
+                              </div>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="duration" class="col-md-3 col-form-label">Duration</label>
+                        <div class="col-md-9" style="padding-left:8px;">
+                            <select name="duration" class="form-control" id="duration" style="width:50%">
+                                <option t-att-value="0.5">00:30</option>
+                                <option t-att-value="1">1:00</option>
+                                <option t-att-value="1.5">1:30</option>
+                                <option t-att-value="2">2:00</option>
+                                <option t-att-value="2.5">2:30</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group row" style="margin-top:4vh;">
                         <label for="types" class="col-md-3 col-form-label">Type</label>
                         <div class="col-md-9" style="padding-left:8px;">

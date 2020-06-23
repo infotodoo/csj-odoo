@@ -1,3 +1,32 @@
+odoo.define('calendar_csj.select_appointment_type_csj', function (require) {
+'use strict';
+
+var publicWidget = require('web.public.widget');
+var time = require('web.time');
+
+publicWidget.registry.websiteAppointmentSelect = publicWidget.Widget.extend({
+    selector: '.o_website_calendar_appointment',
+    events: {
+        'click div.input-group span.fa-calendar': '_onCalendarIconClick',
+    },
+    _onCalendarIconClick: function (ev) {
+      $('.date_time').datetimepicker({
+          format : 'YYYY-MM-DD HH:mm:ss',
+          inline: true,
+          daysOfWeekDisabled: [0, 6],
+          lang:'co',
+          icons: {
+              time: 'fa fa-clock-o',
+              date: 'fa fa-calendar',
+              up: 'fa fa-chevron-up',
+              down: 'fa fa-chevron-down',
+          },
+      });
+    },
+});
+});
+
+
 odoo.define('calendar_csj.calendar_csj', function(require) {
     "use strict";
 
@@ -20,7 +49,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
     start: function () {
         $('.search-query-appointment').typeahead({source: []});
         var self = this;
-        var previousSelectedCityID = $(".o_website_appoinment_form input[name='city_id']").val();
+        var previousSelectedCityID = $(".o_website_appointment_form input[name='city_id']").val();
         this.$target.attr("autocomplete","off");
         this.$target.parent().addClass("typeahead__container");
         this.$target.typeahead({
@@ -41,7 +70,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
               onClickAfter: function (node, a, item, event) {
                 event.preventDefault;
                 $('.search-query-city-id').val(item.id);
-                //var previousSelectedCityID = $(".o_website_appoinment_form input[name='city_id']").val();
+                //var previousSelectedCityID = $(".o_website_appointment_form input[name='city_id']").val();
                 var url = '/search/suggestion';
                 if (item.id){
                   var url = '/search/suggestion/'.concat(item.id);
@@ -61,6 +90,15 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
                                 '<span>{{cita}}</span>' +
                                 '</span>',
                     source:{ appointment:{ url: [{ type : "GET", url : url, data : { query : "{{query}}"},},"data.cita"] },},
+                    callback: {
+                      onClickAfter: function (node, a, item, event) {
+                        var date_time = $(".o_website_appoinment_form select[name='date_time']").val();
+                        var duration = $(".o_website_appoinment_form select[name='duration']").val();
+                        appointment = item['id'];
+                        var postURL = '/website/calendar/' + appointment + '/info?date_time='+ date_time + '&amp;duration=' + duration;
+                        $(".o_website_appointment_form").attr('action', postURL);
+                      }
+                    }
                 });
                 $('.appointment-container .typeahead__result').hide();
                 //$('.appointment-container').addClass('visible');
@@ -81,38 +119,41 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
     },
 		start: function () {
 		    var self = this;
-        var previousSelectedCityID = $(".o_website_appoinment_form input[name='city_id']").val();
+        var previousSelectedCityID = $(".o_website_appointment_form input[name='city_id']").val();
         var url = '/search/suggestion';
         if (previousSelectedCityID){
           var url = '/search/suggestion/'.concat(previousSelectedCityID);
         }
 		    this.$target.attr("autocomplete","off");
-            this.$target.parent().addClass("typeahead__container");
-            this.$target.typeahead({
-            	minLength: 1,
-				      maxItem: 15,
-				      delay: 500,
-				      order: "asc",
-              cache: false,
-              searchOnFocus: true,
-				      hint: true,
-				      accent: true,
-              emptyTemplate: 'No results found "{{query}}"',
-				      display: ["id","cita"],
-              template: '<span>' +
-                          '<span>{{cita}}</span>' +
-                          '</span>',
-              source:{ appointment:{ url: [{ type : "GET", url : url, data : { query : "{{query}}"},},"data.cita"] },},
-              callback: {
-                    onResult: function (node, query, result, resultCount, resultCountPerGroup) {
-                        console.log(node, query, result, resultCount, resultCountPerGroup);
-                    },
-                    onClickBefore: function (node, a, item, event) {
-                        console.log(item.id);
-                        $('#calendarType').val(item.id).change();
-                    }
-                    }
-              });
+        this.$target.parent().addClass("typeahead__container");
+        this.$target.typeahead({
+        	minLength: 1,
+		      maxItem: 15,
+		      delay: 500,
+		      order: "asc",
+          cache: false,
+          searchOnFocus: true,
+		      hint: true,
+		      accent: true,
+          emptyTemplate: 'No results found "{{query}}"',
+		      display: ["id","cita"],
+          template: '<span>' +
+                      '<span>{{cita}}</span>' +
+                      '</span>',
+          source:{ appointment:{ url: [{ type : "GET", url : url, data : { query : "{{query}}"},},"data.cita"] },},
+          callback: {
+              onClickAfter: function (node, a, item, event) {
+                var date_time = $(".o_website_appoinment_form select[name='date_time']").val();
+                var duration = $(".o_website_appoinment_form select[name='duration']").val();
+                console.log(item);
+                appointment = item['id'];
+                //appointment = appointment.toLowerCase();
+                //appointment = appointment.replace(/[^a-zA-Z0-9]+/g,'-')
+                var postURL = '/website/calendar/' + appointment + '/info?date_time='+ date_time + '&amp;duration=' + duration;
+                $(".o_website_appointment_form").attr('action', postURL);
+              }
+            }
+        });
 		},
 		debug: true,
 	});
@@ -183,6 +224,5 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
 		debug: true
 
 	});
-
 
 });;

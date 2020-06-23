@@ -22,7 +22,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-
 class WebsiteCalendarInherit(WebsiteCalendar):
     @http.route([
         '/website/calendar',
@@ -49,11 +48,13 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                             ('country_ids.code', 'in', [country_code])])
                 else:
                     suggested_appointment_types = request.env['calendar.appointment.type'].search([])
+
                 if not suggested_appointment_types:
                     return request.render("website_calendar.setup", {})
                 appointment_type = suggested_appointment_types[0]
             else:
                 suggested_appointment_types = appointment_type
+
         return request.render("website_calendar.index", {
             'appointment_type': appointment_type,
             'suggested_appointment_types': suggested_appointment_types,
@@ -98,13 +99,32 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         # date_time=#{slot['datetime']}&amp;types=#{types}"
 
     @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/info'], type='http', auth="public", website=True)
-    def calendar_appointment_form(self, appointment_type, employee_id, date_time, types=False, **kwargs):
+    #def calendar_appointment_form(self, appointment_type, employee_id, date_time, types=False, **kwargs):
+    def calendar_appointment_form(self, appointment_type, date_time, duration, types=False, **kwargs):
         # partner_data = {}
         # if request.env.user.partner_id != request.env.ref('base.public_partner'):
         #     partner_data = request.env.user.partner_id.read(fields=['name', 'mobile', 'email'])[0]
         day_name = format_datetime(datetime.strptime(date_time, dtf), 'EEE', locale=get_lang(request.env).code)
         date_formated = format_datetime(datetime.strptime(date_time, dtf), locale=get_lang(request.env).code)
         city_code = appointment_type.judged_id.city_id.id
+        employee_id = appointment_type.judged_id.hr_employee_id.id
+
+        employee_obj = request.env['hr.employee'].sudo().browse(int(employee_id))
+
+        timezone = request.session['timezone']
+        tz_session = pytz.timezone(timezone)
+        date_start = tz_session.localize(fields.Datetime.from_string(date_time)).astimezone(pytz.utc)
+        date_end = date_start + relativedelta(hours=float(duration))
+
+        if employee_obj.user_id and employee_obj.user_id.partner_id:
+            if not employee_obj.user_id.partner_id.calendar_verify_availability(date_start,date_end):
+                return request.render("website_calendar.index", {
+                    'appointment_type': appointment_type,
+                    'suggested_appointment_types': request.env['calendar.appointment.type'].sudo().search([]),
+                    'message': 'already_scheduling',
+                    'types': types,
+                })
+
         if types[0] == 'A':
             suggested_class = request.env['calendar.class'].sudo().search([('type','=','audience')])
         else:
@@ -311,11 +331,8 @@ class OdooWebsiteSearchAppointment(http.Controller):
                 if partner.appointment_type != 'scheduler':
                     suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search_calendar(judged_id.id)
                 else:
-
                     if city_id: #city selected
                         suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search([('city_id','=',city_id),('name','!=',False)])
-                        #suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search([])
-                        #logger.error(suggested_appointment_types)
                     else:
                         suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search([])
                 for appointment_type in suggested_appointment_types:
@@ -324,7 +341,6 @@ class OdooWebsiteSearchAppointment(http.Controller):
                     city = appointment_type.judged_id.city_id.name if \
                         appointment_type.judged_id and appointment_type.judged_id.city_id else '404'
                     name = city + '-' + appointment_type.name
-                    # name = appointment_type.name
                     cita.append({
                         'cita': name,
                         'id': appointment_type.id,
@@ -333,8 +349,6 @@ class OdooWebsiteSearchAppointment(http.Controller):
         data['status'] = True,
         data['error'] = None,
         data['data'] = {'cita': cita}
-        logger.error("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        logger.error(data)
         return json.dumps(data)
 
 
@@ -352,25 +366,15 @@ class OdooWebsiteSearchCity(http.Controller):
                     #if len(cities) > 0 and city.id in [line.get('id') for line in cities]:
                     #    continue
                     cities.append({
-                        'city': city.name,
+                        'city': '%s - %s' % (city.name, city.state_id.name),
                         'id': city.id,
                         })
         data = {}
         data['status'] = True,
         data['error'] = None,
         data['data'] = {'cities': cities}
-        #logger.error("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        #logger.error(data)
+
         return json.dumps(data)
-
-
-
-
-
-
-
-
-
 
 
 class OdooWebsiteSearchSolicitante(http.Controller):

@@ -3,6 +3,8 @@
 from odoo import models, fields, api, _
 import datetime
 
+import logging
+logger = logging.getLogger(__name__)
 
 class CalendarClass(models.Model):
     _name = 'calendar.class'
@@ -71,6 +73,7 @@ class CalendarAppointment(models.Model):
     # Realizada, Duplicada, No realizada, Asistida aplazada, Asistida cancelada, Cancelada
 
     name = fields.Char('Name', default=_('New'))
+    sequence = fields.Integer(string='Sequence')
 
     # request_id = fields.Many2one('calendar.request', 'Calendar Request', ondelete='set null') #Solicitud
     type = fields.Selection([
@@ -209,6 +212,7 @@ class CalendarAppointment(models.Model):
         vals['name'] = vals.get('process_number')[0:23] + 's' + \
             self.env['ir.sequence'].next_by_code('calendar.appointment').replace('s','')  or _('None')
         vals['partner_id'] = vals.get('appointment_id')
+        vals['sequence'] = 1
         vals.update(self.create_lifesize(vals))
         res = super(CalendarAppointment, self).create(vals)
         return res
@@ -216,6 +220,7 @@ class CalendarAppointment(models.Model):
     def write(self, vals):
         if vals.get('calendar_datetime'):
             vals.update(self.write_lifesize(vals))
+            vals['sequence'] = int(self.sequence) + 1
             self.write_event(vals)
         return super(CalendarAppointment, self).write(vals)
 
