@@ -104,6 +104,8 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         # partner_data = {}
         # if request.env.user.partner_id != request.env.ref('base.public_partner'):
         #     partner_data = request.env.user.partner_id.read(fields=['name', 'mobile', 'email'])[0]
+
+        request.session['timezone'] = appointment_type.appointment_tz
         day_name = format_datetime(datetime.strptime(date_time, dtf), 'EEE', locale=get_lang(request.env).code)
         date_formated = format_datetime(datetime.strptime(date_time, dtf), locale=get_lang(request.env).code)
         city_code = appointment_type.judged_id.city_id.id
@@ -111,7 +113,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
 
         employee_obj = request.env['hr.employee'].sudo().browse(int(employee_id))
 
-        """
+
         timezone = request.session['timezone']
         tz_session = pytz.timezone(timezone)
         date_start = tz_session.localize(fields.Datetime.from_string(date_time)).astimezone(pytz.utc)
@@ -125,7 +127,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                     'message': 'already_scheduling',
                     'types': types,
                 })
-        """
+        
         if types[0] == 'A':
             suggested_class = request.env['calendar.class'].sudo().search([('type','=','audience')])
         else:
