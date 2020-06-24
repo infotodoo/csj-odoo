@@ -59,6 +59,7 @@ class Meeting(models.Model):
         for meeting in self:
             cal = vobject.iCalendar()
             cal.add('method').value = 'REQUEST'
+            cal.add('calscale').value = 'GREGORIAN'
             event = cal.add('vevent')
             if not meeting.start or not meeting.stop:
                 raise UserError(_("First you have to specify the date of the invitation."))
