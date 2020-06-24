@@ -91,6 +91,7 @@
                                 <field name="process_number" readonly="True" />
                                 <field name="tag_number" readonly="True" />
                                 <field name="reception_id" required="True" />
+                                <field name="sequence" required="True" />
                             </group>
                             <group>
                                 <field name="record_data" />
