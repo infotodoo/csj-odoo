@@ -103,3 +103,11 @@ class Meeting(models.Model):
             result[meeting.id] = cal.serialize().encode('utf-8')
 
         return result
+
+
+    def action_sendmail(self):
+        email = self.env.user.email
+        if email:
+            for meeting in self:
+                meeting.attendee_ids._send_mail_to_attendees('calendar.calendar_template_meeting_invitation', force_send=True)
+        return True

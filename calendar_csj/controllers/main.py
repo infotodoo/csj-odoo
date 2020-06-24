@@ -101,33 +101,31 @@ class WebsiteCalendarInherit(WebsiteCalendar):
     @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/info'], type='http', auth="public", website=True)
     #def calendar_appointment_form(self, appointment_type, employee_id, date_time, types=False, **kwargs):
     def calendar_appointment_form(self, appointment_type, date_time, duration, types=False, **kwargs):
-        # partner_data = {}
-        # if request.env.user.partner_id != request.env.ref('base.public_partner'):
-        #     partner_data = request.env.user.partner_id.read(fields=['name', 'mobile', 'email'])[0]
-
-        request.session['timezone'] = appointment_type.appointment_tz
+        #timezone = self._context.get('tz') or self.env.user.partner_id.tz or 'UTC'
+        #timezone = pytz.timezone(self.event_tz) if self.event_tz else pytz.timezone(self._context.get('tz') or 'UTC')
+        request.session['timezone'] = appointment_type.appointment_tz or 'UTC'
         day_name = format_datetime(datetime.strptime(date_time, dtf), 'EEE', locale=get_lang(request.env).code)
         date_formated = format_datetime(datetime.strptime(date_time, dtf), locale=get_lang(request.env).code)
         city_code = appointment_type.judged_id.city_id.id
         employee_id = appointment_type.judged_id.hr_employee_id.id
-
         employee_obj = request.env['hr.employee'].sudo().browse(int(employee_id))
-
-
         timezone = request.session['timezone']
         tz_session = pytz.timezone(timezone)
         date_start = tz_session.localize(fields.Datetime.from_string(date_time)).astimezone(pytz.utc)
         date_end = date_start + relativedelta(hours=float(duration))
 
-        if employee_obj.user_id and employee_obj.user_id.partner_id:
-            if not employee_obj.user_id.partner_id.calendar_verify_availability(date_start,date_end):
+        # check availability calendar.event with partner of appointment_type
+        if appointment_type and appointment_type.judged_id:
+            if not appointment_type.judged_id.calendar_verify_availability(date_start,date_end):
                 return request.render("website_calendar.index", {
                     'appointment_type': appointment_type,
-                    'suggested_appointment_types': request.env['calendar.appointment.type'].sudo().search([]),
+                    'suggested_appointment_types': request.env['calendar.appointment.type'].sudo().search([('id','=',appointment_type.id)]),
                     'message': 'already_scheduling',
+                    'date_start': date_start,
+                    'date_end': date_end,
                     'types': types,
                 })
-        
+
         if types[0] == 'A':
             suggested_class = request.env['calendar.class'].sudo().search([('type','=','audience')])
         else:
@@ -164,6 +162,8 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                                     room_id, help_id, name, email, phone,
                                     declarant_text=False, indicted_text=False, description=False,
                                     country_id=False, **kwargs):
+
+
         timezone = request.session['timezone']
         tz_session = pytz.timezone(timezone)
         date_start = tz_session.localize(fields.Datetime.from_string(datetime_str)).astimezone(pytz.utc)
@@ -185,10 +185,13 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             return ValidationError('Dominio @%s no permitido.' % email.split('@')[-1] )
 
         # check availability of the employee again (in case someone else booked while the client was entering the form)
+        """
         Employee = request.env['hr.employee'].sudo().browse(int(employee_id))
         if Employee.user_id and Employee.user_id.partner_id:
             if not Employee.user_id.partner_id.calendar_verify_availability(date_start, date_end):
                 return request.redirect('/website/calendar/%s/appointment?failed=employee' % appointment_type.id)
+        """
+
         if types:
             if types[0] == 'A':
                 if len(process_number) != 23:
@@ -227,9 +230,12 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         country_id = int(country_id) if country_id else None
         partner_ids = []
         Partner = request.env['res.partner'].sudo().search([('email', '=like', email)], limit=1)
+
         if Partner:
+            """
             if not Partner.calendar_verify_availability(date_start, date_end):
                 return request.redirect('/website/calendar/%s/appointment?failed=partner' % appointment_type.id)
+            """
             if not Partner.mobile or len(Partner.mobile) <= 5 and len(phone) > 5:
                 Partner.write({'mobile': phone})
             if not Partner.country_id:
@@ -247,8 +253,11 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             if email_n and name_n:
                 partner_n = request.env['res.partner'].sudo().search([('email', '=like', email_n)], limit=1)
                 if partner_n:
+                    """
                     if not partner_n.calendar_verify_availability(date_start, date_end):
                         return request.redirect('/website/calendar/%s/appointment?failed=partner' % appointment_type.id)
+                    """
+                    continue
                 else:
                     partner_n = partner_n.create({
                         'name': name_n,
