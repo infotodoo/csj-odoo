@@ -118,7 +118,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         tz_session = pytz.timezone(timezone)
         date_start = tz_session.localize(fields.Datetime.from_string(date_time)).astimezone(pytz.utc)
         date_end = date_start + relativedelta(hours=float(duration))
-        
+
         # check availability calendar.event with partner of appointment_type
         if appointment_type and appointment_type.judged_id:
             if not appointment_type.judged_id.calendar_verify_availability(date_start,date_end):
@@ -257,13 +257,14 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             email_n = kwargs['email%s'%i] if kwargs['email%s'%i] != '' else False
             if email_n and name_n:
                 partner_n = request.env['res.partner'].sudo().search([('email', '=like', email_n)], limit=1)
+                """
                 if partner_n:
-                    """
+
                     if not partner_n.calendar_verify_availability(date_start, date_end):
                         return request.redirect('/website/calendar/%s/appointment?failed=partner' % appointment_type.id)
-                    """
-                    continue
                 else:
+                """
+                if not partner_n:
                     partner_n = partner_n.create({
                         'name': name_n,
                         'email': email_n,
