@@ -104,8 +104,6 @@ class Meeting(models.Model):
                     valarm.add('DESCRIPTION').value = alarm.name or u'Odoo'
             for attendee in meeting.attendee_ids:
                 attendee_add = event.add('attendee')
-                #attendee_add.value = u'MAILTO:' + (attendee.email or u'')
-                #attendee_add.value = '\u003BCUTYPE=INDIVIDUAL\u003BROLE=REQ-PARTICIPANT\u003BPARTSTAT=NEEDS-ACTION\u003BRSVP=TRUE\u003BCN=:' + (attendee.email or u'') + '\u003BX-NUM-GUESTS=0:mailto:' + (attendee.email or u'')
                 attendee_add.params['CUTYPE'] = ["INDIVIDUAL"]
                 attendee_add.params['ROLE'] = ["REQ-PARTICIPANT"]
                 attendee_add.params['PARTSTAT'] = ["NEEDS-ACTION"]
