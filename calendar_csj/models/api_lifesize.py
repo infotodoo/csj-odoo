@@ -29,9 +29,9 @@ class ApiLifesize(models.TransientModel):
             body = {
                 "displayName": vals.get('displayName'),
                 "description": description,
-                "pin": code(),
+                #"pin": code(),
                 "ownerExtension": vals.get('ownerExtension'),
-                "tempMeeting": "true",
+                "tempMeeting": "false",
                 "hiddenMeeting": vals.get('hiddenMeeting'),
             }
             resp = requests.post(url=url,
@@ -142,7 +142,7 @@ class ApiLifesize(models.TransientModel):
             return res
         if body.get('action') == 'CREATED':
             res = dict(
-                lifesize_pin = body.get('pin'),
+                lifesize_pin = body.get('pin') or False,
                 lifesize_uuid = body.get('uuid'),
                 lifesize_url = 'https://call.lifesizecloud.com/{}'.format(body.get('extension')),
                 lifesize_meeting_ext = body.get('extension'),
