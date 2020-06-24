@@ -104,6 +104,11 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         #timezone = self._context.get('tz') or self.env.user.partner_id.tz or 'UTC'
         #timezone = pytz.timezone(self.event_tz) if self.event_tz else pytz.timezone(self._context.get('tz') or 'UTC')
         request.session['timezone'] = appointment_type.appointment_tz or 'UTC'
+        # partner_data = {}
+        # if request.env.user.partner_id != request.env.ref('base.public_partner'):
+        #     partner_data = request.env.user.partner_id.read(fields=['name', 'mobile', 'email'])[0]
+
+        request.session['timezone'] = appointment_type.appointment_tz
         day_name = format_datetime(datetime.strptime(date_time, dtf), 'EEE', locale=get_lang(request.env).code)
         date_formated = format_datetime(datetime.strptime(date_time, dtf), locale=get_lang(request.env).code)
         city_code = appointment_type.judged_id.city_id.id
@@ -113,7 +118,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         tz_session = pytz.timezone(timezone)
         date_start = tz_session.localize(fields.Datetime.from_string(date_time)).astimezone(pytz.utc)
         date_end = date_start + relativedelta(hours=float(duration))
-
+        
         # check availability calendar.event with partner of appointment_type
         if appointment_type and appointment_type.judged_id:
             if not appointment_type.judged_id.calendar_verify_availability(date_start,date_end):

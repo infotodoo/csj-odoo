@@ -121,7 +121,7 @@ class Meeting(models.Model):
 
         return result
 
-
+      
     def action_sendmail(self):
         email = self.env.user.email
         if email:
