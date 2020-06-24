@@ -58,15 +58,20 @@ class Meeting(models.Model):
 
         for meeting in self:
             cal = vobject.iCalendar()
+            cal.add('method').value = 'REQUEST'
+            
             event = cal.add('vevent')
+
+
 
             if not meeting.start or not meeting.stop:
                 raise UserError(_("First you have to specify the date of the invitation."))
+
+            #event.add('method').value = 'REQUEST'
             event.add('created').value = ics_datetime(fields.Datetime.now())
             event.add('dtstart').value = ics_datetime(meeting.start, meeting.allday)
             event.add('dtend').value = ics_datetime(meeting.stop, meeting.allday)
             event.add('summary').value = meeting.name
-            event.add('method').value = 'REQUEST'
             event.add('class').value = 'PUBLIC'
             event.add('trans').value = 'OPAQUE'
             event.add('location').value = 'COLOMBIA'
