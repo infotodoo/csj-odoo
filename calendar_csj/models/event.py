@@ -99,7 +99,8 @@ class Meeting(models.Model):
                     valarm.add('DESCRIPTION').value = alarm.name or u'Odoo'
             for attendee in meeting.attendee_ids:
                 attendee_add = event.add('attendee')
-                attendee_add.value = u'MAILTO:' + (attendee.email or u'')
+                #attendee_add.value = u'MAILTO:' + (attendee.email or u'')
+                attendee_add.value = u'ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;CN=:' + (attendee.email or u'') + ';X-NUM-GUESTS=0:mailto:' + (attendee.email or u'')
             result[meeting.id] = cal.serialize().encode('utf-8')
 
         return result

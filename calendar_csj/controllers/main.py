@@ -185,8 +185,8 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             return ValidationError('Dominio @%s no permitido.' % email.split('@')[-1] )
 
         # check availability of the employee again (in case someone else booked while the client was entering the form)
-        """
         Employee = request.env['hr.employee'].sudo().browse(int(employee_id))
+        """
         if Employee.user_id and Employee.user_id.partner_id:
             if not Employee.user_id.partner_id.calendar_verify_availability(date_start, date_end):
                 return request.redirect('/website/calendar/%s/appointment?failed=employee' % appointment_type.id)

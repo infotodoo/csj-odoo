@@ -13,7 +13,7 @@ publicWidget.registry.websiteAppointmentSelect = publicWidget.Widget.extend({
       $('.date_time').datetimepicker({
           format : 'YYYY-MM-DD HH:mm:ss',
           inline: true,
-          daysOfWeekDisabled: [0, 6],
+          //daysOfWeekDisabled: [0, 6],
           lang:'co',
           icons: {
               time: 'fa fa-clock-o',
