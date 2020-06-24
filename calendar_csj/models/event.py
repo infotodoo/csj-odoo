@@ -69,6 +69,7 @@ class Meeting(models.Model):
             event.add('method').value = 'REQUEST'
             event.add('class').value = 'PUBLIC'
             event.add('trans').value = 'OPAQUE'
+            event.add('location').value = 'COLOMBIA'
             if self.state == 'cancel':
                 event.add('status').value = 'CANCEL'
             else:
@@ -81,6 +82,10 @@ class Meeting(models.Model):
                 event.add('location').value = meeting.location
             if meeting.rrule:
                 event.add('rrule').value = meeting.rrule
+
+            organizer_add = event.add('organizer')
+            organizer_add.params['CN'] = ["agendamiento.csj@gmail.com"]
+            organizer_add.value = "agendamiento.csj@gmail.com"
 
             if meeting.alarm_ids:
                 for alarm in meeting.alarm_ids:
@@ -100,7 +105,15 @@ class Meeting(models.Model):
             for attendee in meeting.attendee_ids:
                 attendee_add = event.add('attendee')
                 #attendee_add.value = u'MAILTO:' + (attendee.email or u'')
-                attendee_add.value = u'ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;CN=:' + (attendee.email or u'') + ';X-NUM-GUESTS=0:mailto:' + (attendee.email or u'')
+                #attendee_add.value = '\u003BCUTYPE=INDIVIDUAL\u003BROLE=REQ-PARTICIPANT\u003BPARTSTAT=NEEDS-ACTION\u003BRSVP=TRUE\u003BCN=:' + (attendee.email or u'') + '\u003BX-NUM-GUESTS=0:mailto:' + (attendee.email or u'')
+                attendee_add.params['CUTYPE'] = ["INDIVIDUAL"]
+                attendee_add.params['ROLE'] = ["REQ-PARTICIPANT"]
+                attendee_add.params['PARTSTAT'] = ["NEEDS-ACTION"]
+                attendee_add.params['RSVP'] = ["TRUE"]
+                attendee_add.params['CN'] = [attendee.email]
+                attendee_add.params['X-NUM-GUESTS'] = ["0"]
+                attendee_add.value = (attendee.email or u'')
+
             result[meeting.id] = cal.serialize().encode('utf-8')
 
         return result
