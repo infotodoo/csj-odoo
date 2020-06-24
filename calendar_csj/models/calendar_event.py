@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+import pytz
 
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 
+_logger = logging.getLogger(__name__)
 
 class CalendarEvent(models.Model):
     _inherit = 'calendar.event'

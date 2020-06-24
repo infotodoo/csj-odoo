@@ -237,6 +237,7 @@ class CalendarAppointment(models.Model):
             'ownerExtension': self.env.user.extension_lifesize or \
                 self.env.user.company_id.owner_extension,
             'hiddenMeeting': 'false' if vals.get('request_type') == 'l' else 'true'
+            
         }
         if vals.get('observations'):
             api.update(description=vals.get('observations'))
