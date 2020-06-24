@@ -59,11 +59,7 @@ class Meeting(models.Model):
         for meeting in self:
             cal = vobject.iCalendar()
             cal.add('method').value = 'REQUEST'
-            
             event = cal.add('vevent')
-
-
-
             if not meeting.start or not meeting.stop:
                 raise UserError(_("First you have to specify the date of the invitation."))
 
@@ -121,7 +117,7 @@ class Meeting(models.Model):
 
         return result
 
-      
+
     def action_sendmail(self):
         email = self.env.user.email
         if email:
