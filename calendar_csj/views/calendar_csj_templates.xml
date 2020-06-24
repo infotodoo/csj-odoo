@@ -362,11 +362,16 @@
         </template>
 
         <template id="index_csj" inherit_id="website_calendar.index" name="Website Appointment: Appointment page CSJ">
-
            <xpath expr="//div[1]/div[1]/form[1]" position="before">
                 <div t-if="message=='already_scheduling'" class="alert alert-danger mt16" role="alert">
                     <p>
-                        <strong>Ya existe un agendamiento para este mismo Juzgado en la misma fecha y hora!</strong>
+                        <strong>
+                          Ya existe un agendamiento para este Juzgado que se cruza con la fecha y hora seleccionados!
+                        </strong><br/><br/>
+                        <strong>Juzgado: </strong><span t-esc="appointment_type.name"/><br/>
+                        <strong>Fecha Inicial: </strong><span t-esc="date_start"/><br/>
+                        <strong>Fecha Final: </strong><span t-esc="date_end"/><br/>
+                        <strong>Tipo: </strong><span t-esc="types"/><br/><br/>
                         Seleccione otra fecha u hora para realizar el agendamiento.
                     </p>
                 </div>
