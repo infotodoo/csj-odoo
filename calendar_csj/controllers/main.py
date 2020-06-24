@@ -184,7 +184,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                           "deaj.ramajudicial.gov.co",
                           "fiscalia.gov.co",
                           "axede.com.co",
-                          "corteconstitucional.gov.co",
+                          "corteconstitucional.gov.co"
         ]
         if email.split('@')[-1] not in domain_emails:
             return ValidationError('Dominio @%s no permitido.' % email.split('@')[-1] )
