@@ -45,8 +45,17 @@
             <field name="arch" type="xml">
                 <form string="Appointment">
                     <header>
-                        <button string="Confirm" type="object" name="action_confirm" class="oe_highlight" />
-                        <button string="Cancel" type="object" name="action_cancel" />
+                        <button
+                            string="Confirm"
+                            type="object"
+                            name="action_confirm"
+                            class="oe_highlight"
+                            attrs="{'invisible':[('state','=','cancel')]}"/>
+                        <button
+                            string="Cancel"
+                            type="object"
+                            name="action_cancel"
+                            attrs="{'invisible':[('state','=','cancel')]}"/>
                         <field name="state" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}"/>
 		                <!-- <field name="stage_id" widget="statusbar"  class="ml-2" on_change="1" can_create="false" can_write="false" modifiers="{}"/> -->
                     </header>
