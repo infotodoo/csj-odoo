@@ -134,12 +134,10 @@ class Meeting(models.Model):
             event.add('trans').value = 'OPAQUE'
             event.add('location').value = 'COLOMBIA'
 
-
-            
             if self.state == 'cancel':
                 event.add('status').value = 'CANCELLED'
             else:
-                event.add('status').value = 'CONFIRMED'
+                event.add('status').value = 'CANCELLED'
             event.add('uid').value = self.appointment_id.process_number
             event.add('sequence').value = str(self.appointment_id.sequence)
             if meeting.description:
