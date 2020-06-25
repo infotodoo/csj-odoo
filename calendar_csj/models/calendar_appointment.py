@@ -218,11 +218,12 @@ class CalendarAppointment(models.Model):
         return res
 
     def write(self, vals):
+        res = super(CalendarAppointment, self).write(vals)
         if vals.get('calendar_datetime'):
             vals.update(self.write_lifesize(vals))
-            vals['sequence'] = self.sequence + 1 if int(self.sequence) else 1
+            #vals['sequence'] = self.sequence + 1 if int(self.sequence) else 1
             self.write_event(vals)
-        return super(CalendarAppointment, self).write(vals)
+        return res
 
     def unlink(self):
         self.unlink_lifesize()
