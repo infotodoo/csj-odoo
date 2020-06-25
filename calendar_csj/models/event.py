@@ -134,7 +134,8 @@ class Meeting(models.Model):
             event.add('trans').value = 'OPAQUE'
             event.add('location').value = 'COLOMBIA'
 
-             
+
+            
             if self.state == 'cancel':
                 event.add('status').value = 'CANCELLED'
             else:
