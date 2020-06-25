@@ -220,7 +220,7 @@ class CalendarAppointment(models.Model):
     def write(self, vals):
         if vals.get('calendar_datetime'):
             vals.update(self.write_lifesize(vals))
-            vals['sequence'] = int(self.sequence) + 1
+            vals['sequence'] = self.sequence + 1 if int(self.sequence) else 1
             self.write_event(vals)
         return super(CalendarAppointment, self).write(vals)
 
