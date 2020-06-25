@@ -116,7 +116,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
     //xmlDependencies: ['/calendar_csj/static/src/xml/calendar_csj_utils.xml'],
     autocompleteMinWidth: 300,
     init: function () {
-        console.log('pasando por aca mijo');
+      
     },
 		start: function () {
 		    var self = this;
