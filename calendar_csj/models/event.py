@@ -137,7 +137,7 @@ class Meeting(models.Model):
             if self.state == 'cancel':
                 event.add('status').value = 'CANCELLED'
             else:
-                event.add('status').value = 'CANCELLED'
+                event.add('status').value = 'CONFIRMED'
             event.add('uid').value = self.appointment_id.process_number
             event.add('sequence').value = str(self.appointment_id.sequence)
             if meeting.description:
