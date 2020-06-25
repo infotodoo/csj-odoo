@@ -218,12 +218,11 @@ class CalendarAppointment(models.Model):
         return res
 
     def write(self, vals):
-        res = super(CalendarAppointment, self).write(vals)
         if vals.get('calendar_datetime'):
             vals.update(self.write_lifesize(vals))
-            #vals['sequence'] = self.sequence + 1 if int(self.sequence) else 1
+            vals['sequence'] = self.sequence + 1 if int(self.sequence) else 1
             self.write_event(vals)
-        return res
+        return super(CalendarAppointment, self).write(vals)
 
     def unlink(self):
         self.unlink_lifesize()
@@ -342,7 +341,9 @@ class CalendarAppointment(models.Model):
     def action_cancel(self):
         dic = {'state': 'cancel'}
         self.event_id.write(dic)
-        self.write(dic)
+        self.state = 'cancel'
+        self.write_lifesize(dic)
+        #self.write(dic)
         self.unlink_lifesize()
 
     def action_postpone(self):

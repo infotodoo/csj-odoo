@@ -199,8 +199,6 @@ class Attendee(models.Model):
         calendar_view = self.env.ref('calendar.view_calendar_event_calendar')
         invitation_template = self.env.ref(template_xmlid)
 
-        _logger.error("#####################################################+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        _logger.error(self.mapped('event_id'))
         # get ics file for all meetings
         ics_files = force_event_id._get_ics_file() if force_event_id else self.mapped('event_id')._get_ics_file()
 
