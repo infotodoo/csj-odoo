@@ -202,11 +202,6 @@ class Attendee(models.Model):
         invitation_template = self.env.ref(template_xmlid)
 
 
-        if template_xmlid == 'calendar_csj.calendar_csj_template_meeting_cancel':
-            ics_files = force_event_id._get_ics_file('cancel') if force_event_id else self.mapped('event_id')._get_ics_file('cancel')
-        else:
-            ics_files = force_event_id._get_ics_file() if force_event_id else self.mapped('event_id')._get_ics_file()
-
         # get ics file for all meetings
         ics_files = force_event_id._get_ics_file() if force_event_id else self.mapped('event_id')._get_ics_file()
 
