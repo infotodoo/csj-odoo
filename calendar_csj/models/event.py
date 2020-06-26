@@ -98,7 +98,7 @@ class Meeting(models.Model):
     _inherit = 'calendar.event'
 
 
-    def _get_ics_file(self,state=None):
+    def _get_ics_file(self):
         """ Returns iCalendar file for the event invitation.
             :returns a dict of .ics file content for each meeting
         """
@@ -134,7 +134,7 @@ class Meeting(models.Model):
             event.add('trans').value = 'OPAQUE'
             event.add('location').value = 'COLOMBIA'
 
-            if state == 'cancel':
+            if self.state == 'cancel':
                 event.add('status').value = 'CANCELLED'
             else:
                 event.add('status').value = 'CONFIRMED'
@@ -199,12 +199,6 @@ class Attendee(models.Model):
 
         calendar_view = self.env.ref('calendar.view_calendar_event_calendar')
         invitation_template = self.env.ref(template_xmlid)
-
-
-        if template_xmlid == 'calendar_csj.calendar_csj_template_meeting_cancel':
-            ics_files = force_event_id._get_ics_file('cancel') if force_event_id else self.mapped('event_id')._get_ics_file('cancel')
-        else:
-            ics_files = force_event_id._get_ics_file() if force_event_id else self.mapped('event_id')._get_ics_file()
 
         # get ics file for all meetings
         ics_files = force_event_id._get_ics_file() if force_event_id else self.mapped('event_id')._get_ics_file()

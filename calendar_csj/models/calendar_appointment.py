@@ -341,6 +341,7 @@ class CalendarAppointment(models.Model):
     def action_cancel(self):
         dic = {'state': 'cancel'}
         self.event_id.write(dic)
+        self.event_id.cancel_calendar_event()
         self.state = 'cancel'
         self.write_lifesize(dic)
         #self.write(dic)

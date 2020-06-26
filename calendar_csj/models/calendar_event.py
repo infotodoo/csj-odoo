@@ -35,7 +35,7 @@ class CalendarEvent(models.Model):
         return res
 
     def write(self, vals):
-        self.cancel_calendar_event(vals)
+        #self.cancel_calendar_event(vals)
         # self.write_appointment(vals)
         # vals.pop('cw_bool', None)
         return super(CalendarEvent, self).write(vals)
@@ -91,9 +91,9 @@ class CalendarEvent(models.Model):
                     record.appointment_id.write(dic)
             record.appointment_id.write(dic)
 
-    def cancel_calendar_event(self, vals):
-        if vals.get('state') and vals.get('state') == 'cancel':
-            for record in self:
-                attendee_to_email = record.attendee_ids
-                if attendee_to_email:
-                    attendee_to_email._send_mail_to_attendees('calendar_csj.calendar_csj_template_meeting_cancel')
+    def cancel_calendar_event(self):
+        #if vals.get('state') and vals.get('state') == 'cancel':
+        for record in self:
+            attendee_to_email = record.attendee_ids
+            if attendee_to_email:
+                attendee_to_email._send_mail_to_attendees('calendar_csj.calendar_csj_template_meeting_cancel')
