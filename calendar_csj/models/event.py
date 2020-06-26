@@ -188,7 +188,7 @@ class Meeting(models.Model):
 class Attendee(models.Model):
     _inherit = 'calendar.attendee'
 
-    def _send_mail_to_attendees(self, template_xmlid, force_send=False, force_event_id=None):
+    def _send_mail_to_attendees(self, template_xmlid, force_send=True, force_event_id=None):
         """ Send mail for event invitation to event attendees.
             :param template_xmlid: xml id of the email template to use to send the invitation
             :param force_send: if set to True, the mail(s) will be sent immediately (instead of the next queue processing)
@@ -200,6 +200,7 @@ class Attendee(models.Model):
 
         calendar_view = self.env.ref('calendar.view_calendar_event_calendar')
         invitation_template = self.env.ref(template_xmlid)
+
 
         # get ics file for all meetings
         ics_files = force_event_id._get_ics_file() if force_event_id else self.mapped('event_id')._get_ics_file()
