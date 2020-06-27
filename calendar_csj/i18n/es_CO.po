@@ -1016,7 +1016,7 @@ msgstr "Fecha de solicitud"
 #: model:ir.model.fields,field_description:calendar_csj.field_calendar_event__type
 #: model_terms:ir.ui.view,arch_db:calendar_csj.appointment_form_csj
 msgid "Request type"
-msgstr "Tipo de solicitud"
+msgstr "Tipo de Audiencia"
 
 #. module: calendar_csj
 #: model:ir.model,name:calendar_csj.model_res_entity

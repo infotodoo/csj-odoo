@@ -395,7 +395,7 @@
                        .typeahead__cancel-button{padding: 0.5rem 1.5rem;}
                     </style>
                     <div t-attf-class="input-group row">
-                      <label for="city_id" class="col-md-3 col-form-label">Ciudad</label>
+                      <label for="city_id" class="col-md-3 col-form-label">Ciudad Origen</label>
                       <div class="col-md-9">
                         <input
                             type="text"
@@ -408,7 +408,7 @@
                       </div>
                     </div>
                     <div t-attf-class="input-group appointment-container row" style="margin-top:4vh;">
-                        <label for="search_appointment" class="col-md-3 col-form-label">Juzgado</label>
+                        <label for="search_appointment" class="col-md-3 col-form-label">Despacho Solicitante</label>
                         <div class="col-md-9">
                           <input
                               type="text"
@@ -422,7 +422,7 @@
                         <input name="order" type="hidden" class="o_appointment_search_order_by" value=""/>
                     </div>
                     <div class="form-group row" style="margin-top:4vh;">
-                        <label for="date_time" class="col-md-3 col-form-label">Fecha</label>
+                        <label for="date_time" class="col-md-3 col-form-label">Fecha y Hora de Realización</label>
                         <div class="col-md-9" style="padding-left:8px;">
                           <div class="input-group date" id="appointment_csj_div" data-target-input="nearest">
                               <input type="text" min="2020-01-01" name="date_time" t-att-value="date_formatted" class="form-control date_time" style="width:90%"/>
@@ -435,7 +435,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="duration" class="col-md-3 col-form-label">Duration</label>
+                        <label for="duration" class="col-md-3 col-form-label">Duración</label>
                         <div class="col-md-9" style="padding-left:8px;">
                             <select name="duration" class="form-control" id="duration" style="width:50%">
                                 <option t-att-value="0.5">00:30</option>
@@ -460,7 +460,7 @@
                     <div class="form-group row">
                         <div class="offset-md-6 col-md-6">
                             <button type="submit" class="btn btn-primary">
-                                View Availabilities
+                                Ver Disponibilidad
                                 <span class="fa fa-arrow-right" />
                             </button>
                         </div>

@@ -69,15 +69,15 @@
                         <separator string="General" colspan="2" />
                         <group>
                             <group>
-                                <field name="type" required="True" />
-                                <field name="class_id" required="True" />
+                                <field name="type" required="True" string="Tipo de Solicitud"/>
+                                <field name="class_id" required="True" string="Clase de Solicitud" />
                                 <field name="help_id" />
                                 <field name="request_date" required="True" />
                             </group>
                             <group>
-                                <field name="calendar_type" required="True" />
-                                <field name="calendar_datetime" required="True" />
-                                <field name="calendar_date" readonly="True" />
+                                <field name="calendar_type" required="True" invisible="1"/>
+                                <field name="calendar_datetime" required="True" string="Fecha y Hora de Realización"/>
+                                <field name="calendar_date" readonly="True" string="Fecha de Realización"/>
                                 <field name="calendar_time" readonly="True" widget="float_time" />
                             </group>
                             <group>
@@ -88,8 +88,8 @@
                             <group>
                                 <!-- <field name="types_ids" widget="many2many_tags" /> -->
                                 <!-- <field name="origin_id" required="True" /> -->
-                                <field name="city_id" required="True" />
-                                <field name="partner_id" required="True" />
+                                <field name="city_id" required="True" string="Ciudad Origen"/>
+                                <field name="partner_id" required="True" string="Despacho Solicitante"/>
                                 <field name="room_id" />
                             </group>
                             <group>
@@ -98,7 +98,7 @@
                                 <field name="process_number" readonly="True" />
                                 <field name="tag_number" readonly="True" />
                                 <field name="reception_id" required="True" />
-                                <field name="sequence" required="True" />
+                                <field name="sequence" required="False" invisible="1" />
                             </group>
                             <group>
                                 <field name="record_data" />
@@ -108,7 +108,7 @@
                                 <field name="link_streaming" attrs="{'invisible': [('type','!=','streaming'),('state','!=','realized')]}" />
                             </group>
                             <group>
-                                <field name="lifesize_meeting_ext" readonly="True" />
+                                <field name="lifesize_meeting_ext" readonly="True" string="Ext reunión Lifesize"/>
                                 <field name="lifesize_url" readonly="True" />
                             </group>
                             <group groups="base.group_no_one">
