@@ -221,6 +221,8 @@ class CalendarAppointment(models.Model):
         if vals.get('calendar_datetime'):
             vals.update(self.write_lifesize(vals))
             vals['sequence'] = self.sequence + 1 if int(self.sequence) else 1
+            logger.error("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+            logger.error(vals['sequence'])
             self.write_event(vals)
         return super(CalendarAppointment, self).write(vals)
 
