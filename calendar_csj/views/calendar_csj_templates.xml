@@ -2,6 +2,34 @@
 <odoo>
     <data>
         <template id="appointment_form_csj" inherit_id="website_calendar.appointment_form" name="Website Appointment: Your Data CSJ">
+          <xpath expr="//div[1]/div[1]/form[1]" position="before">
+               <div t-if="message=='process_longer_failed'" class="alert alert-danger mt16" role="alert">
+                   <p>
+                       <strong>
+                         Longitud del Número de proceso no permitida!
+                       </strong><br/><br/>
+                       La longitud del proceso debe contener 23 caracteres.
+                   </p>
+               </div>
+               <div t-if="message=='process_email_failed'" class="alert alert-danger mt16" role="alert">
+                   <p>
+                       <strong>
+                         Dirección de Correo Invalida
+                       </strong><br/><br/>
+                       Por favor tenga en cuenta que los dominios autorizados son:
+                       <ul>
+                         <li>cendoj.ramajudicial.gov.co</li>
+                         <li>cortesuprema.ramajudicial.gov.co</li>
+                         <li>consejoestado.ramajudicial.gov.co</li>
+                         <li>consejosuperior.ramajudicial.gov.co</li>
+                         <li>deaj.ramajudicial.gov.co</li>
+                         <li>fiscalia.gov.co</li>
+                         <li>axede.com.co</li>
+                         <li>corteconstitucional.gov.co</li>
+                      </ul>
+                   </p>
+               </div>
+           </xpath>
             <xpath expr="//ul[@class='wizard mt32 float-right']//li[2]" position="replace"/>
             <xpath expr="//div[1]/div[1]/form[1]" position="replace">
                 <form class="mt32 appointment_submit_form" t-attf-action="/website/calendar/#{ slug(appointment_type) }/submit" method="POST">
@@ -9,6 +37,8 @@
                     <input type="hidden" name="datetime_str" t-att-value="datetime_str" />
                     <input type="hidden" name="employee_id" t-att-value="employee_id" />
                     <input type="hidden" name="types" t-att-value="types" />
+                    <input type="hidden" name="guestcont" t-att-value="1"/>
+                    <input type="hidden" name="duration" t-att-value="duration" readonly="1"/>
                     <div class="form-group row col-xl-8">
                         <label for="room_id" class="col-md-4 col-form-label">Request room</label>
                         <div class="col-md-8">
@@ -29,7 +59,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group row col-xl-8">
+                    <!--<div class="form-group row col-xl-8">
                         <label for="duration" class="col-md-4 col-form-label">Duration</label>
                         <div class="col-md-8">
                             <select name="duration" class="form-control" id="duration">
@@ -40,9 +70,15 @@
                                 <option t-att-value="2.5">2:30</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="form-group row col-xl-8">
-                        <label class="col-md-4 col-form-label">Applicant:</label>
+                    </div>-->
+                    <!--<div class="form-group row col-xl-8">
+                        <label for="duration" class="col-md-4 col-form-label">Duration</label>
+                        <div class="col-md-8">
+                            <input type="char" name="duration" t-att-value="duration" readonly="1"/>
+                        </div>
+                    </div>-->
+                    <div class="form-group row col-xl-12">
+                        <label class="col-md-12 col-form-label" style="width:100%;background-color:#ccc;">Applicant:</label>
                     </div>
                     <div class="form-group row col-xl-8">
                         <label for="name" class="col-md-4 col-form-label">Name</label>
@@ -154,20 +190,35 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group row col-xl-8">
-                        <label class="col-md-4 col-form-label">Guests:</label>
+                    <div class="form-group row col-xl-12">
+                        <label class="col-md-12 col-form-label" style="width:100%;background-color:#ccc;">Guests:</label>
                     </div>
-                    <div class="form-group row col-xl-8">
-                        <label for="name1" class="col-md-2 col-form-label">Name</label>
-                        <div class="col-md-4">
-                            <input type="char" class="form-control" name="name1" />
+                    <div class="form-group row col-xl-12">
+
+                      <div class="row guest_add_form" style="width:100%">
+                        <div class="col-md-5">
+                            <label for="name1" class="col-md-2 col-form-label">Name</label>
+                            <input type="char" class="form-control" name="nameguest0" id="nameguest" />
                         </div>
-                        <label for="email1" class="col-md-2 col-form-label">e-mail</label>
-                        <div class="col-md-4">
-                            <input type="email" class="form-control" name="email1" />
+                        <div class="col-md-5">
+                            <label for="email1" class="col-md-2 col-form-label">e-mail</label>
+                            <input type="email" class="form-control" name="emailguest0" id="emailguest" />
                         </div>
+                        <div class="col-md-2" style="padding-top:4vh;">
+                            <button class="btn btn-success fa fa-plus btn-guest_add" type="button"></button>
+                        </div>
+                      </div><br/>
+                      <div id="guest_fields" style="width:100%;padding-top:10px;">
+                     </div>
+                     <script type="text/javascript" >
+                       function remove_guest_fields(rid) {
+                         $('.guest_remove_form'+rid).remove();
+                       }
+                     </script>
                     </div>
-                    <div class="form-group row col-xl-8">
+
+
+                    <!--<div class="form-group row col-xl-8">
                         <label for="name2" class="col-md-2 col-form-label">Name</label>
                         <div class="col-md-4">
                             <input type="char" class="form-control" name="name2" />
@@ -306,7 +357,7 @@
                         <div class="col-md-4">
                             <input type="email" class="form-control" name="email15" />
                         </div>
-                    </div>
+                    </div>-->
                     <t t-foreach="appointment_type.question_ids" t-as="question">
                         <div class="form-group row col-xl-8" t-if="question.question_type!='text'">
                             <label t-att-for="question_#{question.id}" class="col-md-4 col-form-label" t-esc="question.name" />
@@ -422,10 +473,10 @@
                         <input name="order" type="hidden" class="o_appointment_search_order_by" value=""/>
                     </div>
                     <div class="form-group row" style="margin-top:4vh;">
-                        <label for="date_time" class="col-md-3 col-form-label">Fecha y Hora de Realización</label>
+                        <label for="date_time" class="col-md-3 col-form-label">Fecha y Hora de Rea</label>
                         <div class="col-md-9" style="padding-left:8px;">
-                          <div class="input-group date" id="appointment_csj_div" data-target-input="nearest">
-                              <input type="text" min="2020-01-01" name="date_time" t-att-value="date_formatted" class="form-control date_time" style="width:90%"/>
+                          <div class="input-group date" id="appointment_csj_div" data-target-input="nearest" style="width:70%">
+                              <input type="text" min="2020-01-01" name="date_time" t-att-value="date_formatted" class="form-control date_time"/>
                               <div class="input-group-append" data-target="#appointment_csj_div">
                                   <span class="input-group-text">
                                       <span class="fa fa-calendar" role="img" aria-label="Calendar"></span>
@@ -435,7 +486,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="duration" class="col-md-3 col-form-label">Duración</label>
+                        <label for="duration" class="col-md-3 col-form-label">Duration</label>
                         <div class="col-md-9" style="padding-left:8px;">
                             <select name="duration" class="form-control" id="duration" style="width:50%">
                                 <option t-att-value="0.5">00:30</option>
@@ -460,7 +511,7 @@
                     <div class="form-group row">
                         <div class="offset-md-6 col-md-6">
                             <button type="submit" class="btn btn-primary">
-                                Ver Disponibilidad
+                                View Availabilities
                                 <span class="fa fa-arrow-right" />
                             </button>
                         </div>

@@ -77,7 +77,7 @@
                             <group>
                                 <field name="calendar_type" required="True" invisible="1"/>
                                 <field name="calendar_datetime" required="True" string="Fecha y Hora de Realización"/>
-                                <field name="calendar_date" readonly="True" string="Fecha de Realización"/>
+                                <field name="calendar_date" readonly="True" string="Fecha y Hora de Realización"/>
                                 <field name="calendar_time" readonly="True" widget="float_time" />
                             </group>
                             <group>
