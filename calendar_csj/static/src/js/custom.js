@@ -1,3 +1,36 @@
+odoo.define('calendar_csj.select_appointment_guest_csj', function (require) {
+'use strict';
+
+var publicWidget = require('web.public.widget');
+var time = require('web.time');
+var guest = 0;
+
+publicWidget.registry.websiteGuestSelect = publicWidget.Widget.extend({
+    selector: '.guest_add_form',
+    events: {
+        'click .btn-guest_add': '_onGuestAddIconClick',
+    },
+    _onGuestAddIconClick: function (ev) {
+      console.log("llegando");
+      guest++;
+      var objTo = document.getElementById('guest_fields')
+      var divguestlist = document.createElement("div");
+       divguestlist.setAttribute("class", "form-group removeclass"+guest);
+       var rdiv = 'guest_remove_form'+guest;
+       var guestSelectedName = $(".appointment_submit_form input[id='nameguest']").val();
+       var guestSelectedEmail = $(".appointment_submit_form input[id='emailguest']").val();
+       $(".appointment_submit_form input[id='nameguest']").val('');
+       $(".appointment_submit_form input[id='emailguest']").val('');
+       divguestlist.innerHTML = '<div class="row guest_remove_form' + guest + '" style="width:100%"><div class="col-md-5"><input type="char" class="form-control" name="nameguest' + guest + '" value="' + guestSelectedName + '"/></div><div class="col-md-5"><input type="email" class="form-control" name="emailguest' + guest + '" value="' + guestSelectedEmail + '"/></div><div class="col-md-2"><button class="btn btn-danger fa fa-remove btn-guest_remove" onclick="remove_guest_fields('+ guest +');" type="button"></button></div></div><div class="clear"></div>';
+       objTo.appendChild(divguestlist)
+       var guestSelectedCont = $(".appointment_submit_form input[name='guestcont']").val();
+       $(".appointment_submit_form input[name='guestcont']").val(parseInt(guestSelectedCont)+1);
+       $("#nameguest").focus(); 
+    },
+});
+});
+
+
 odoo.define('calendar_csj.select_appointment_type_csj', function (require) {
 'use strict';
 
@@ -11,15 +44,34 @@ publicWidget.registry.websiteAppointmentSelect = publicWidget.Widget.extend({
     },
     _onCalendarIconClick: function (ev) {
       $('.date_time').datetimepicker({
-          format : 'YYYY-MM-DD HH:mm:ss',
+          format : 'YYYY-MM-DD HH:mm',
+          formatTime:'H:i',
+          step: 60,
+          viewMode: 'months',
+          startDate:'+2020/06/28',
           inline: true,
+          dayViewHeaderFormat: 'YYYY-MM',
+          sideBySide: true,
           //daysOfWeekDisabled: [0, 6],
-          lang:'co',
+          lang:'es',
           icons: {
               time: 'fa fa-clock-o',
               date: 'fa fa-calendar',
               up: 'fa fa-chevron-up',
               down: 'fa fa-chevron-down',
+          },
+          i18n:{
+            es:{
+             months:[
+              'Enero','Febrero','Marzo','Abril',
+              'Mayo','Junio','Julio','Agosto',
+              'Septiembre','Octubre','Noviembre','Diciembre',
+             ],
+             dayOfWeek:[
+              "Lun", "Mar", "Mie", "Jue",
+              "Vie", "Sáb", "Dom",
+             ]
+            }
           },
       });
     },
@@ -43,9 +95,6 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
   sAnimation.registry.OdooWebsiteSearchCity = sAnimation.Class.extend({
     selector: ".search-query-city",
     autocompleteMinWidth: 300,
-    init: function () {
-      $('.search-query-appointment').typeahead({source: []});
-    },
     start: function () {
         $('.search-query-appointment').typeahead({source: []});
         var self = this;
@@ -61,7 +110,8 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
           autoFocus:true,
           hint: true,
           accent: true,
-          display: ["id","city"],
+          //display: ["id","city"],
+          display: ["city"],
           template: '<span>' +
                       '<span>{{city}}</span>' +
                       '</span>',
@@ -115,9 +165,6 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
 		selector: ".search-query-appointment",
     //xmlDependencies: ['/calendar_csj/static/src/xml/calendar_csj_utils.xml'],
     autocompleteMinWidth: 300,
-    init: function () {
-      
-    },
 		start: function () {
 		    var self = this;
         var previousSelectedCityID = $(".o_website_appointment_form input[name='city_id']").val();
@@ -137,7 +184,8 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
 		      hint: true,
 		      accent: true,
           emptyTemplate: 'No results found "{{query}}"',
-		      display: ["id","cita"],
+		      //display: ["id","cita"],
+          display: ["cita"],
           template: '<span>' +
                       '<span>{{cita}}</span>' +
                       '</span>',
@@ -148,8 +196,6 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
                 console.log(date_time);
                 var duration = $(".o_website_appoinment_form select[name='duration']").val();
                 var appointment = item['id'];
-                //appointment = appointment.toLowerCase();
-                //appointment = appointment.replace(/[^a-zA-Z0-9]+/g,'-')
                 var postURL = '/website/calendar/' + appointment + '/info?date_time='+ date_time + '&amp;duration=' + duration;
                 $(".o_website_appointment_form").attr('action', postURL);
               }
@@ -202,8 +248,9 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
 				delay: 500,
 				order: "asc",
 				hint: true,
-				display: ["id","destino"],
+				display: ["destino"],
                 template: '<span>' +
+                          '<span>{{code}}</span>' +
                           '<span>{{destino}}</span>' +
                           '</span>',
                 source:{ city:{ url: [{ type : "GET", url : "/search/destino", data : { query : "{{query}}"},},"data.destino"] },},
