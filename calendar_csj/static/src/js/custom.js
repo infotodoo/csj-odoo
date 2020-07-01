@@ -23,7 +23,7 @@ publicWidget.registry.websiteGuestSelect = publicWidget.Widget.extend({
        divguestlist.innerHTML = '<div class="row guest_remove_form' + guest + '" style="width:100%"><div class="col-md-5"><input type="char" class="form-control" name="nameguest' + guest + '" value="' + guestSelectedName + '"/></div><div class="col-md-5"><input type="email" class="form-control" name="emailguest' + guest + '" value="' + guestSelectedEmail + '"/></div><div class="col-md-2"><button class="btn btn-danger fa fa-remove btn-guest_remove" onclick="remove_guest_fields('+ guest +');" type="button"></button></div></div><div class="clear"></div>';
        objTo.appendChild(divguestlist)
        var guestSelectedCont = $(".appointment_submit_form input[name='guestcont']").val();
-       $(".appointment_submit_form input[name='destinationont']").val(parseInt(guestSelectedCont)+1);
+       $(".appointment_submit_form input[name='guestcont']").val(parseInt(guestSelectedCont)+1);
        $("#nameguest").focus();
     },
 });
@@ -36,10 +36,74 @@ odoo.define('calendar_csj.select_appointment_type_csj', function (require) {
 var publicWidget = require('web.public.widget');
 var time = require('web.time');
 
+$(".o_website_appointment_form").submit(function(){
+  var core = require('web.core');
+  var rpc = require('web.rpc');
+  var Dialog = require('web.Dialog');
+  var date_time = $(".o_website_appointment_form input[name='date_time']").val();
+  var search_city = $(".o_website_appointment_form input[name='search_city']").val();
+  var search_appointment = $(".o_website_appointment_form input[name='search_appointment']").val();
+
+  if (search_city === '' || search_city === null || search_city === 'undefined'){
+    Dialog.alert(this, 'Por favor selecione una ciudad!');
+    return false;
+  };
+  if (search_appointment === '' || search_appointment === null || search_appointment === 'undefined'){
+    Dialog.alert(this, 'Por favor seleccione un Juzgado!');
+    return false;
+  };
+  if (date_time === '' || date_time === null || date_time === 'undefined'){
+    Dialog.alert(this, 'Por favor registre una fecha correcta!');
+    return false;
+  };
+});
+
+$(".appointment_submit_form").submit(function(){
+  var core = require('web.core');
+  var rpc = require('web.rpc');
+  var Dialog = require('web.Dialog');
+  var phone = $(".appointment_submit_form input[name='phone']").val();
+  var email = $(".appointment_submit_form input[name='email']").val();
+  var types = $(".appointment_submit_form input[name='types']").val();
+  var process_number = $(".appointment_submit_form input[name='process_number']").val();
+  var destinationcont = $(".appointment_submit_form input[name='destinationcont']").val();
+  var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  var res = email.split("@");
+
+  if (phone === '' || phone === null || phone === 'undefined'){
+    Dialog.alert(this, 'Por favor registre un número de teléfono!');
+    return false;
+  };
+  if (!phone.match(/^-{0,1}\d+$/)){
+    Dialog.alert(this, 'Por favor registre un número de teléfono sin caracteres, solo numerico!');
+    return false;
+  };
+  if (phone.length != 10){
+    Dialog.alert(this, 'Por favor registre un número de 10 caracteres!');
+    return false;
+  };
+  if (res[1] != 'cendoj.ramajudicial.gov.co' && res[1] != 'cortesuprema.ramajudicial.gov.co' && res[1] != 'consejoestado.ramajudicial.gov.co' && res[1] != 'consejosuperior.ramajudicial.gov.co' && res[1] != 'deaj.ramajudicial.gov.co' && res[1] != 'fiscalia.gov.co' && res[1] != 'axede.com.co' && res[1] != 'corteconstitucional.gov.co'){
+    Dialog.alert(this, "Por favor registre un correo valido. Estos son los dominios autorizados:\ncendoj.ramajudicial.gov.co\ncortesuprema.ramajudicial.gov.co\nconsejoestado.ramajudicial.gov.co\nconsejosuperior.ramajudicial.gov.co\ndeaj.ramajudicial.gov.co\nfiscalia.gov.co\naxede.com.co\ncorteconstitucional.gov.co");
+    return false;
+  };
+  if (destinationcont < 2){
+    Dialog.alert(this, 'Por favor seleccione al menos un Destino!');
+    return false;
+  };
+  if (types == 'Audiencia' && process_number.length != 23){
+    Dialog.alert(this, 'El tipo de Agendamiento es "Audiencia", por favor registre un número valido, debe tener 23 caracteres!');
+    return false;
+  };
+});
+
 publicWidget.registry.websiteAppointmentSelect = publicWidget.Widget.extend({
     selector: '.o_website_calendar_appointment',
     events: {
         'click div.input-group span.fa-calendar': '_onCalendarIconClick',
+        'click buttom.submit': '_onFormSubmitButtomClick',
+    },
+    _onFormSubmitButtomClick: function (ev) {
+      console.log('llegando al submit');
     },
     _onCalendarIconClick: function (ev) {
       $('.date_time').datetimepicker({
