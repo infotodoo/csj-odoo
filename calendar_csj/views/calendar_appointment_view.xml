@@ -145,6 +145,15 @@
                                     </tree>
                                 </field>
                             </page>
+                            <page string="Destinations">
+                                <field name="destination_ids">
+                                    <tree string="Contacts" >
+                                        <field name="name" />
+                                        <field name="email" />
+                                        <field name="company_type" />
+                                    </tree>
+                                </field>
+                            </page>
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">

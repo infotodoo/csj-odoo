@@ -108,6 +108,7 @@ class CalendarAppointment(models.Model):
     room_id = fields.Many2one('res.judged.room', 'Room', domain="[('partner_id','=',partner_id)]", ondelete='set null')
 
     partners_ids = fields.Many2many('res.partner', 'appointment_partner_rel', 'appointment_id', 'partner_id', 'Partners')
+    destination_ids = fields.Many2many('res.partner', 'appointment_destination_partner_rel', 'appointment_id', 'partner_id', 'Destinations')
     request_type = fields.Selection([('l', 'Free'), ('r', 'Reserved')], 'Request type', default='r')
     process_number = fields.Char('Process number')
     tag_number = fields.Char('Tag number', compute='_compute_tag_number')
@@ -221,8 +222,6 @@ class CalendarAppointment(models.Model):
         if vals.get('calendar_datetime'):
             vals.update(self.write_lifesize(vals))
             vals['sequence'] = self.sequence + 1 if int(self.sequence) else 1
-            logger.error("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-            logger.error(vals['sequence'])
             self.write_event(vals)
         return super(CalendarAppointment, self).write(vals)
 
