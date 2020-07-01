@@ -24,6 +24,7 @@ class CalendarEvent(models.Model):
     request_type = fields.Selection([('l', 'Free'), ('r', 'Reserved')], 'Request type', default='r')
     process_number = fields.Char('Process number')
     reception_id = fields.Many2one('calendar.reception', 'Reception medium', ondelete='set null')
+    destination_ids = fields.Many2many('res.partner', 'calendar_event_res_partner_destination_rel', string='Destinations', states={'done': [('readonly', True)]})
 
     @api.model
     def create(self, vals):
@@ -64,6 +65,7 @@ class CalendarEvent(models.Model):
             'calendar_duration': vals.get('duration'),
             'observations': vals.get('description'),
             'partners_ids': vals.get('partner_ids'),
+            'destination_ids': vals.get('destination_ids'),
             'appointment_type_id': vals.get('appointment_type_id'),
             'class_id' : vals.get('class_id'),
             'help_id': vals.get('help_id'),

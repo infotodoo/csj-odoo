@@ -167,7 +167,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
     @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/submit'], type='http', auth="public", website=True, method=["POST"])
     def calendar_appointment_submit(self, appointment_type, datetime_str, employee_id, types, class_id,
                                     reception_id, process_number, request_type, duration,
-                                    room_id, help_id, name, email, phone, guestcont,
+                                    room_id, help_id, name, email, phone, guestcont, destinationcont,
                                     declarant_text=False, indicted_text=False, description=False,
                                     country_id=False, **kwargs):
 
@@ -307,6 +307,14 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                 partner_ids.append(partner_n.id)
             else:
                 pass
+
+        destination_ids = []
+        for i in range(1,int(destinationcont)):
+            destination_name = kwargs['destino%s'%i] if kwargs['destino%s'%i] != '' else False
+            destination_id = destination_name.split(" - ")
+            destination_obj = request.env['res.partner'].sudo().search([('id', '=', destination_id[0])])
+            destination_ids.append(destination_obj.id)
+
         class_id = int(class_id)
         reception_id = int(reception_id)
         applicant_id = appointment_type.judged_id.id if appointment_type.judged_id else False
@@ -351,6 +359,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'location': appointment_type.location,
             'types': types,
             'partner_ids': partner_ids,
+            'destination_ids': destination_ids,
             'categ_ids': [(4, categ_id.id, False)],
             'appointment_type_id': appointment_type.id,
             'user_id': Employee.user_id.id,
@@ -460,7 +469,9 @@ class OdooWebsiteSearchDestino(http.Controller):
         if post:
             for suggestion in post.get('query').split(" "):
                 #suggested_partners = request.env['res.partner'].sudo().search([])
-                suggested_partners = request.env['res.entity'].sudo().search([])
+                #suggested_partners = request.env['res.entity'].sudo().search([('company_type','=','company')])
+                #suggested_partners = request.env['res.entity'].sudo().search([('company_type','=','company')])
+                suggested_partners = request.env['res.partner'].sudo().search([('company_type','=','person')])
                 read_partners = suggested_partners.read(['name', 'id', 'code'])
                 suggestion_list += read_partners
 

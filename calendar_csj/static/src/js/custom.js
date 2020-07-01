@@ -11,7 +11,6 @@ publicWidget.registry.websiteGuestSelect = publicWidget.Widget.extend({
         'click .btn-guest_add': '_onGuestAddIconClick',
     },
     _onGuestAddIconClick: function (ev) {
-      console.log("llegando");
       guest++;
       var objTo = document.getElementById('guest_fields')
       var divguestlist = document.createElement("div");
@@ -24,8 +23,8 @@ publicWidget.registry.websiteGuestSelect = publicWidget.Widget.extend({
        divguestlist.innerHTML = '<div class="row guest_remove_form' + guest + '" style="width:100%"><div class="col-md-5"><input type="char" class="form-control" name="nameguest' + guest + '" value="' + guestSelectedName + '"/></div><div class="col-md-5"><input type="email" class="form-control" name="emailguest' + guest + '" value="' + guestSelectedEmail + '"/></div><div class="col-md-2"><button class="btn btn-danger fa fa-remove btn-guest_remove" onclick="remove_guest_fields('+ guest +');" type="button"></button></div></div><div class="clear"></div>';
        objTo.appendChild(divguestlist)
        var guestSelectedCont = $(".appointment_submit_form input[name='guestcont']").val();
-       $(".appointment_submit_form input[name='guestcont']").val(parseInt(guestSelectedCont)+1);
-       $("#nameguest").focus(); 
+       $(".appointment_submit_form input[name='destinationont']").val(parseInt(guestSelectedCont)+1);
+       $("#nameguest").focus();
     },
 });
 });
@@ -92,6 +91,8 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
   var _t = core._t;
   var ajax = require('web.ajax');
 
+  var dest = 0
+
   sAnimation.registry.OdooWebsiteSearchCity = sAnimation.Class.extend({
     selector: ".search-query-city",
     autocompleteMinWidth: 300,
@@ -143,7 +144,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
                     callback: {
                       onClickAfter: function (node, a, item, event) {
                         var date_time = $(".o_website_appoinment_form select[name='date_time']").val();
-                        console.log(date_time);
+                        //console.log(date_time);
                         var duration = $(".o_website_appoinment_form select[name='duration']").val();
                         var appointment = item['id'];
                         var postURL = '/website/calendar/' + appointment + '/info?date_time='+ date_time + '&amp;duration=' + duration;
@@ -193,7 +194,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
           callback: {
               onClickAfter: function (node, a, item, event) {
                 var date_time = $(".o_website_appoinment_form select[name='date_time']").val();
-                console.log(date_time);
+                //console.log(date_time);
                 var duration = $(".o_website_appoinment_form select[name='duration']").val();
                 var appointment = item['id'];
                 var postURL = '/website/calendar/' + appointment + '/info?date_time='+ date_time + '&amp;duration=' + duration;
@@ -241,33 +242,55 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
 		start: function () {
 		    var self = this;
 		    this.$target.attr("autocomplete","off");
-            this.$target.parent().addClass("typeahead__container");
-            this.$target.typeahead({
-            	minLength: 1,
+        this.$target.parent().addClass("typeahead__container");
+        this.$target.typeahead({
+        minLength: 1,
 				maxItem: 15,
 				delay: 500,
-				order: "asc",
-				hint: true,
-				display: ["destino"],
-                template: '<span>' +
-                          '<span>{{code}}</span>' +
-                          '<span>{{destino}}</span>' +
-                          '</span>',
-                source:{ city:{ url: [{ type : "GET", url : "/search/destino", data : { query : "{{query}}"},},"data.destino"] },},
-                callback: {
-                    onResult: function (node, query, result, resultCount, resultCountPerGroup) {
-                      console.log("luego de seleccionado")
-                    },
-                    onClickBefore: function (node, a, item, event) {
-                        console.log(item.id);
+        cache: false,
+        searchOnFocus: true,
+        hint: true,
+        accent: true,
+        maxItemPerGroup: 6,
 
-                            $('#destination_id').val(item.id).change();
-                    },
-                    onClickAfter: function (node, a, item, event) {
-                      console.log("luego de seleccionado")
-                    }
-                  }
-              });
+
+        emptyTemplate: 'Sin resultados para <strong> {{query}} </strong>',
+        //groupOrder: ["code", "name"],
+        correlativeTemplate: true,
+
+        updater: function(item) {
+            $setDestino.append(item, ' ');
+            return '';
+        },
+				display: ["destino"],
+        template: '<span>' +
+                  '<span>{{id}}</span> - ' +
+                  '<span>{{destino}}</span>' +
+                  '</span>',
+        source:{ city:{ url: [{ type : "GET", url : "/search/destino", data : { query : "{{query}}"},},"data.destino"] },},
+        callback: {
+            onResult: function (node, query, result, resultCount, resultCountPerGroup) {
+            },
+            onClickBefore: function (node, a, item, event) {
+                $('#destination_id').val(item.id).change();
+            },
+            onClickAfter: function (node, a, item, event) {
+               dest++;
+               var objTo = document.getElementById('destination_fields')
+               var divdestinationlist = document.createElement("div");
+               divdestinationlist.setAttribute("class", "form-group removeclassdestination"+dest);
+               var rdiv = 'destination_remove_form'+dest;
+               var destinationSelectedName = $(".appointment_submit_form input[id='destino']").val();
+               divdestinationlist.innerHTML = '<div class="col-md-12 row destination_remove_form' + dest + '"><div class="col-md-11"><input type="char" class="form-control" name="destino' + dest + '" required="1" value="' + destinationSelectedName + '"/></div><div class="col-md-1"><button class="btn btn-danger fa fa-remove btn-guest_remove" onclick="remove_destination_fields('+ dest +');" type="button"></button></div></div>';
+               objTo.appendChild(divdestinationlist)
+               $(".linediv").show();
+               var destinationSelectedCont = $(".appointment_submit_form input[name='destinationcont']").val();
+               $(".appointment_submit_form input[name='destinationcont']").val(parseInt(destinationSelectedCont)+1);
+               $(".appointment_submit_form input[id='destino']").val('');
+               $("#destino").focus();
+            }
+          }
+      });
 		},
 		debug: true
 

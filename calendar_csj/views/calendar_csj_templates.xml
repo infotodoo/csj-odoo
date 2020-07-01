@@ -38,6 +38,7 @@
                     <input type="hidden" name="employee_id" t-att-value="employee_id" />
                     <input type="hidden" name="types" t-att-value="types" />
                     <input type="hidden" name="guestcont" t-att-value="1"/>
+                    <input type="hidden" name="destinationcont" t-att-value="1"/>
                     <input type="hidden" name="duration" t-att-value="duration" readonly="1"/>
                     <div class="form-group row col-xl-8">
                         <label for="room_id" class="col-md-4 col-form-label">Request room</label>
@@ -110,7 +111,7 @@
                             <input type="char" class="form-control" name="indicted_text" />
                         </div>
                     </div>
-                    <div class="form-group row col-xl-8" style="display: none">
+                    <!--<div class="form-group row col-xl-8" style="display: none">
                         <label for="destination_id" class="col-md-4 col-form-label">Destination</label>
                         <div class="col-md-8">
                             <select class="form-control" id="destination_id" name="destination_id">
@@ -119,13 +120,35 @@
                                 </t>
                             </select>
                         </div>
-                    </div>
-                    <div class="form-group row col-xl-8">
+                    </div>-->
+                    <div class="form-group row col-md-8">
                         <label for="destino" class="col-md-4 col-form-label">Destination</label>
                         <div class="col-md-8">
-                            <input type="char" class="form-control search-destino" name="destino" id="destino" required="1" />
+                            <input type="char" class="form-control search-destino" name="destino" id="destino" autocomplete="on"/>
                         </div>
+                        <br/>
+                        <script type="text/javascript" >
+                          function remove_destination_fields(rid) {
+                            $('.destination_remove_form'+rid).remove();
+                          }
+                        </script>
                     </div>
+                    <div class="form-group row col-md-8 linediv" invisible="1">
+                      <div class="col-md-4"/>
+                      <div class="col-md-8" style="background-color:#ccc; padding-top:2px;">
+                      </div>
+                    </div>
+                    <div class="form-group row col-md-8">
+                      <div class="col-md-4"/>
+                      <div id="destination_fields" class="col-md-8" style="width:100%;padding-top:10px;">
+                      </div>
+                    </div>
+                    <div class="form-group row col-md-8 linediv" invisible="1">
+                      <div class="col-md-4"/>
+                      <div class="col-md-8" style="background-color:#ccc; padding-top:2px;">
+                      </div>
+                    </div>
+
                     <div class="form-group row col-xl-8">
                         <label for="request_type" class="col-md-4 col-form-label">Request type</label>
                         <div class="col-md-8">
@@ -197,11 +220,11 @@
 
                       <div class="row guest_add_form" style="width:100%">
                         <div class="col-md-5">
-                            <label for="name1" class="col-md-2 col-form-label">Name</label>
+                            <label for="nameguest0" class="col-md-2 col-form-label">Name</label>
                             <input type="char" class="form-control" name="nameguest0" id="nameguest" />
                         </div>
                         <div class="col-md-5">
-                            <label for="email1" class="col-md-2 col-form-label">e-mail</label>
+                            <label for="emailguest0" class="col-md-2 col-form-label">e-mail</label>
                             <input type="email" class="form-control" name="emailguest0" id="emailguest" />
                         </div>
                         <div class="col-md-2" style="padding-top:4vh;">
@@ -473,7 +496,7 @@
                         <input name="order" type="hidden" class="o_appointment_search_order_by" value=""/>
                     </div>
                     <div class="form-group row" style="margin-top:4vh;">
-                        <label for="date_time" class="col-md-3 col-form-label">Fecha y Hora de Rea</label>
+                        <label for="date_time" class="col-md-3 col-form-label">Fecha y Hora de Realización</label>
                         <div class="col-md-9" style="padding-left:8px;">
                           <div class="input-group date" id="appointment_csj_div" data-target-input="nearest" style="width:70%">
                               <input type="text" min="2020-01-01" name="date_time" t-att-value="date_formatted" class="form-control date_time"/>
