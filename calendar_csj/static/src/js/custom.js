@@ -44,6 +44,10 @@ $(".o_website_appointment_form").submit(function(){
   var search_city = $(".o_website_appointment_form input[name='search_city']").val();
   var search_appointment = $(".o_website_appointment_form input[name='search_appointment']").val();
 
+  console.log(date_time);
+  console.log(search_city);
+  console.log(search_appointment);
+
   if (search_city === '' || search_city === null || search_city === 'undefined'){
     Dialog.alert(this, 'Por favor selecione una ciudad!');
     return false;
