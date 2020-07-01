@@ -130,6 +130,8 @@
                         <script type="text/javascript" >
                           function remove_destination_fields(rid) {
                             $('.destination_remove_form'+rid).remove();
+                            var destinationSelectedCont = $(".appointment_submit_form input[name='destinationcont']").val();
+                            $(".appointment_submit_form input[name='destinationcont']").val(parseInt(destinationSelectedCont)-1);
                           }
                         </script>
                     </div>
@@ -236,6 +238,8 @@
                      <script type="text/javascript" >
                        function remove_guest_fields(rid) {
                          $('.guest_remove_form'+rid).remove();
+                         var guestSelectedCont = $(".appointment_submit_form input[name='guestcont']").val();
+                         $(".appointment_submit_form input[name='guestcont']").val(parseInt(guestSelectedCont)-1);
                        }
                      </script>
                     </div>
