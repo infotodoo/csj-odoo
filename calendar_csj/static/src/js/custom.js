@@ -45,41 +45,15 @@ publicWidget.registry.websiteGuestSelect = publicWidget.Widget.extend({
 });
 
 
-odoo.define('calendar_csj.select_appointment_source_csj', function (require) {
-'use strict';
-
-  var publicWidget = require('web.public.widget');
-  var time = require('web.time');
-  $('.legal_document').hide();
-
-  publicWidget.registry.websiteAppointmentSourceSelect = publicWidget.Widget.extend({
-      selector: '.appointment_submit_form',
-      events: {
-          'change #appointment_source': '_onAppointmentSourceOnChange',
-      },
-      _onAppointmentSourceOnChange: function (ev) {
-        var source_select = $(".appointment_source select option:selected").val();
-        if (source_select === 'Oficio') {
-          $('.legal_document').attr("require","True");
-          $('.legal_document').show();
-        } else {
-          $('.legal_document').attr("require","False");
-          $('.legal_document').hide();
-        };
-      },
-  });
-});
-
-
 odoo.define('calendar_csj.select_appointment_type_csj', function (require) {
 'use strict';
 
 var publicWidget = require('web.public.widget');
 var time = require('web.time');
-
+var rpc = require('web.rpc');
 //$('#request_date').datetimepicker({inline: true,format: 'YYYY-MM-DD',sideBySide: true,});
 
-
+  
 $(".o_website_appointment_form").submit(function(){
   var core = require('web.core');
   var rpc = require('web.rpc');
@@ -87,6 +61,16 @@ $(".o_website_appointment_form").submit(function(){
   var date_time = $(".o_website_appointment_form input[name='date_time']").val();
   var search_city = $(".o_website_appointment_form input[name='search_city']").val();
   var search_appointment = $(".o_website_appointment_form input[name='search_appointment']").val();
+
+  //rpc.query({
+  //  model: 'calendar.event',
+  //  method: 'fetch_calendar_verify_availability',
+  //  args: [this, date_time, search_appointment],
+  //}).then(function (data)
+  //{
+  //  alert(data);
+  //  return true;
+  //});;
 
   if (search_city === '' || search_city === null || search_city === 'undefined'){
     Dialog.alert(this, 'Por favor selecione una ciudad!');
@@ -100,7 +84,12 @@ $(".o_website_appointment_form").submit(function(){
     Dialog.alert(this, 'Por favor registre una fecha correcta!');
     return false;
   };
-});
+
+  //Dialog.alert(this, 'Deteniendo proceso!');
+  //return false;
+
+});;
+
 
 
 

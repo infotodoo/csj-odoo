@@ -104,9 +104,6 @@ class CalendarAppointment(models.Model):
     applicant_domain = fields.Char('Applicant domain', compute='_compute_applicant_domain')
     applicant_mobile = fields.Char('Applicant mobile', compute='_compute_applicant_id', inverse='_inverse_applicant_id')
 
-    appointment_source = fields.Char('Appointment Source')
-    legal_document = fields.Char('Legal Document')
-
     # origin_id = fields.Many2one('res.city', 'Origin city', ondelete='set null', default=_default_origin_id)
     city_id = fields.Many2one('res.city', 'City', ondelete='set null', related='partner_id.city_id')
     partner_id = fields.Many2one('res.partner', 'Judged', domain="[('city_id','=',city_id)]", ondelete='set null',
@@ -120,6 +117,7 @@ class CalendarAppointment(models.Model):
     tag_number = fields.Char('Tag number', compute='_compute_tag_number')
     record_data = fields.Char('Record data', compute='_compute_record_data')
     reception_id = fields.Many2one('calendar.reception', 'Reception medium', ondelete='set null')
+    reception_detail = fields.Char('Reception Detail')
 
     observations = fields.Text('Observations')
     state_description = fields.Text('State description')

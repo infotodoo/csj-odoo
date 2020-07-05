@@ -467,7 +467,7 @@
           <xpath expr="//div//div//div//div[5]" position="after">
             <div t-if="event.appointment_code" class="row">
               <div class="col-md-2 text-right">
-                  <label>Audiencia ID:</label>
+                  <label>Agendamiento ID:</label>
               </div>
               <div class="col-md-10">
                   <div t-field="event.appointment_code"/>

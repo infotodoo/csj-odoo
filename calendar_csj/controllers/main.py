@@ -366,6 +366,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'user_id': Employee.user_id.id,
             'class_id' : class_id,
             'reception_id' : reception_id,
+            'reception_detail' : reception_detail,
             'indicted_text' : indicted_text,
             'declarant_text' : declarant_text,
             'applicant_id' : Partner.id,

@@ -83,8 +83,8 @@
                                 <field name="calendar_datetime" required="True" string="Fecha y Hora de Realización"/>
                                 <!--<field name="calendar_date" readonly="True" string="Fecha y Hora de Realización"/>-->
                                 <field name="calendar_time" readonly="True" widget="float_time" />
-                                <field name="appointment_source" readonly="True" string="Detalle Medio de Recepción"/>
-                                <field name="legal_document" readonly="True" string="Oficio" attrs="{'invisible': [('appointment_source','!=','oficio')]}"/>
+                                <field name="reception_id" readonly="True" string="Medio de Recepción"/>
+                                <field name="reception_detail" readonly="True" string="Detalle Medio de Recepción"/>
                             </group>
                             <group>
                                 <field name="applicant_id" required="True" />
