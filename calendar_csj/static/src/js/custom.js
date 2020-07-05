@@ -1,3 +1,18 @@
+function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if ( (charCode > 31 && charCode < 48) || charCode > 57) {
+        return false;
+    }
+    return true;
+}
+
+$( function() {
+  $( "#request_date" ).datepicker({
+    format : 'YYYY-MM-DD',lang:'es',
+  });
+});
+
 odoo.define('calendar_csj.select_appointment_guest_csj', function (require) {
 'use strict';
 
@@ -33,26 +48,26 @@ publicWidget.registry.websiteGuestSelect = publicWidget.Widget.extend({
 odoo.define('calendar_csj.select_appointment_source_csj', function (require) {
 'use strict';
 
-var publicWidget = require('web.public.widget');
-var time = require('web.time');
-$('.legal_document').hide();
+  var publicWidget = require('web.public.widget');
+  var time = require('web.time');
+  $('.legal_document').hide();
 
-publicWidget.registry.websiteAppointmentSourceSelect = publicWidget.Widget.extend({
-    selector: '.appointment_submit_form',
-    events: {
-        'change #appointment_source': '_onAppointmentSourceOnChange',
-    },
-    _onAppointmentSourceOnChange: function (ev) {
-      var source_select = $(".appointment_source select option:selected").val();
-      if (source_select === 'Oficio') {
-        $('.legal_document').attr("require","True");
-        $('.legal_document').show();
-      } else {
-        $('.legal_document').attr("require","False");
-        $('.legal_document').hide();
-      };
-    },
-});
+  publicWidget.registry.websiteAppointmentSourceSelect = publicWidget.Widget.extend({
+      selector: '.appointment_submit_form',
+      events: {
+          'change #appointment_source': '_onAppointmentSourceOnChange',
+      },
+      _onAppointmentSourceOnChange: function (ev) {
+        var source_select = $(".appointment_source select option:selected").val();
+        if (source_select === 'Oficio') {
+          $('.legal_document').attr("require","True");
+          $('.legal_document').show();
+        } else {
+          $('.legal_document').attr("require","False");
+          $('.legal_document').hide();
+        };
+      },
+  });
 });
 
 
@@ -64,7 +79,7 @@ var time = require('web.time');
 
 //$('#request_date').datetimepicker({inline: true,format: 'YYYY-MM-DD',sideBySide: true,});
 
-  
+
 $(".o_website_appointment_form").submit(function(){
   var core = require('web.core');
   var rpc = require('web.rpc');
@@ -87,6 +102,8 @@ $(".o_website_appointment_form").submit(function(){
   };
 });
 
+
+
 $(".appointment_submit_form").submit(function(){
   var core = require('web.core');
   var rpc = require('web.rpc');
@@ -94,21 +111,31 @@ $(".appointment_submit_form").submit(function(){
   var phone = $(".appointment_submit_form input[name='phone']").val();
   var email = $(".appointment_submit_form input[name='email']").val();
   var types = $(".appointment_submit_form input[name='types']").val();
+  var request_date = $(".appointment_submit_form input[name='request_date']").val();
   var process_number = $(".appointment_submit_form input[name='process_number']").val();
   var destinationcont = $(".appointment_submit_form input[name='destinationcont']").val();
   var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   var res = email.split("@");
+
+  if (request_date === '' || request_date === null || request_date === 'undefined'){
+    Dialog.alert(this, 'Por favor registre la fecha de solicitud!');
+    return false;
+  };
 
   if (phone === '' || phone === null || phone === 'undefined'){
     Dialog.alert(this, 'Por favor registre un número de teléfono!');
     return false;
   };
   if (!phone.match(/^-{0,1}\d+$/)){
-    Dialog.alert(this, 'Por favor registre un número de teléfono sin caracteres, solo numerico!');
+    Dialog.alert(this, 'Por favor registre un número de teléfono sin caracteres, solo numérico!');
     return false;
   };
-  if (phone.length != 10){
-    Dialog.alert(this, 'Por favor registre un número de 10 caracteres!');
+  if (types == 'Audiencia' && process_number.length != 23){
+    Dialog.alert(this, 'El tipo de Agendamiento es "Audiencia", por favor registre un número valido, debe tener 23 caracteres!');
+    return false;
+  };
+  if (phone.length > 10 || phone.length < 7){
+    Dialog.alert(this, 'Por favor registre un número telefónico valido entre 7 y 10 digitos!');
     return false;
   };
   if (res[1] != 'cendoj.ramajudicial.gov.co' && res[1] != 'cortesuprema.ramajudicial.gov.co' && res[1] != 'consejoestado.ramajudicial.gov.co' && res[1] != 'consejosuperior.ramajudicial.gov.co' && res[1] != 'deaj.ramajudicial.gov.co' && res[1] != 'fiscalia.gov.co' && res[1] != 'axede.com.co' && res[1] != 'corteconstitucional.gov.co'){

@@ -62,31 +62,7 @@
                                 </select>
                             </div>
                       </div>
-                      <div class="form-group row col-xl-6 col-md-6">
-                            <label for="request_date" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">Fecha de Solicitud</label>
-                            <div class="col-md-12 row">
-                                  <input type="date" min="2020-01-01" name="request_date" id="request_date" t-att-value="date_formatted" class="form-control request_date"/>
-                            </div>
-                      </div>
-                      <div class="form-group row col-xl-6 col-md-6 appointment_source">
-                            <label for="appointment_source" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">Detalle Medio de Recepción</label>
-                            <div class="col-md-12 row">
-                                <select name="appointment_source" id="appointment_source" class="form-control">
-                                    <option t-att-value="email">Correo</option>
-                                    <option t-att-value="whatsapp">Whatsapp</option>
-                                    <option t-att-value="phone">Llamada telefónica</option>
-                                    <option t-att-value="document">Oficio</option>
-                                </select>
-                                <div class="legal_document">
-                                  <label for="name" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">Número de Oficio</label>
-                                  <div class="col-md-12 row">
-                                      <input type="char" class="form-control text-uppercase" name="legal_document" required="0" />
-                                  </div>
-                                </div>
-                            </div>
-                      </div>
                     </div>
-
                     <div class="form-group row col-xl-12 col-md-12">
                         <div class="form-group row col-xl-12">
                             <label class="col-md-12 col-form-label" style="width:100%;background-color:#00a09d; color:#FFF;">
@@ -101,34 +77,39 @@
                         <div class="form-group row col-xl-6 col-md-6">
                           <label for="phone" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Phone</label>
                           <div class="col-md-12 row">
-                              <input type="char" class="form-control text-uppercase" name="phone" required="1" />
+                              <input type="char" class="form-control" name="phone" required="1" min="0" onkeypress="return isNumber(event)" onpaste="return false;"/>
                           </div>
                         </div>
-
                         <div class="form-group row col-xl-6 col-md-6">
-                          <label for="indicted_text" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">Processed</label>
-                          <div class="col-md-12 row">
-                              <input type="char" class="form-control text-uppercase" name="indicted_text" />
-                          </div>
+                              <label for="request_date" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">Fecha de Solicitud</label>
+                              <div class="col-md-12 row">
+                                    <input type="text" data-date-format="YYYY-mm-dd" name="request_date" id="request_date" require="True" class="form-control request_date"/>
+                              </div>
                         </div>
-
                         <div class="form-group row col-xl-6 col-md-6">
                           <label for="email" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">e-mail</label>
                           <div class="col-md-12 row">
                               <input type="email" class="form-control text-uppercase" name="email" required="1" />
                           </div>
                         </div>
-
-
-
+                    </div>
+                    <div class="form-group row col-xl-12 col-md-12">
+                      <div class="form-group row col-xl-12">
+                          <label class="col-md-12 col-form-label" style="width:100%;background-color:#00a09d; color:#FFF;">
+                            <span class="fa fa-hand-o-right" style="padding-right:3px;">Applicant:</span></label>
+                      </div>
+                        <div class="form-group row col-xl-6 col-md-6">
+                          <label for="indicted_text" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">Processed</label>
+                          <div class="col-md-12 row">
+                              <input type="char" class="form-control text-uppercase" name="indicted_text" />
+                          </div>
+                        </div>
                       <div class="form-group row col-xl-6 col-md-6">
                               <label for="declarant_text" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">Declarant</label>
                               <div class="col-md-12 row">
                                   <input type="char" class="form-control text-uppercase" name="declarant_text" />
                               </div>
                       </div>
-
-
                       <div class="form-group row col-xl-6 col-md-6">
                         <label for="request_type" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">Request type</label>
                         <div class="col-md-12 row">
@@ -142,7 +123,7 @@
                       <div class="form-group row col-xl-6 col-md-6">
                           <label for="process_number" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">Process number</label>
                           <div class="col-md-12 row">
-                              <input type="char" class="form-control text-uppercase" name="process_number" required="1" />
+                              <input type="char" class="form-control text-uppercase" name="process_number" required="1" onkeypress="return isNumber(event)" onpaste="return false;"/>
                           </div>
                       </div>
                       <div class="form-group row col-xl-6 col-md-6">
@@ -156,7 +137,13 @@
                               </select>
                           </div>
                       </div>
+                      <div class="form-group row col-xl-6 col-md-6">
 
+                            <label for="name" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">Reception detail</label>
+                            <div class="col-md-12 row eception_detail">
+                                <input type="char" class="form-control text-uppercase" name="reception_detail" id="reception_detail" required="0" />
+                            </div>
+                      </div>
                       <div class="form-group row col-xl-6 col-md-6">
                           <label for="help_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">Help in place</label>
                           <div class="col-md-12 row">
@@ -188,8 +175,6 @@
                               </select>
                           </div>
                       </div>
-
-
                       <div class="form-group row col-xl-12 col-md-12">
                           <label for="description" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">Observations</label>
                           <div class="col-md-12 row">
@@ -197,12 +182,10 @@
                               <!-- t-att-placeholder="question.placeholder"-->
                           </div>
                       </div>
-
                       <div class="form-group row col-xl-12">
                           <label class="col-md-12 col-form-label" style="width:100%;background-color:#00a09d; color:#FFF;">
                           <span class="fa fa-hand-o-right" style="padding-right:3px;">Destination:</span></label>
                       </div>
-
                       <div class="form-group row col-xl-12 col-md-12">
                         <!--<label for="destino" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">Destination</label>-->
                         <div class="col-md-12 row">
@@ -216,15 +199,12 @@
                             $(".appointment_submit_form input[name='destinationcont']").val(parseInt(destinationSelectedCont)-1);
                           }
                         </script>
-
                         <div class="form-group row col-md-8">
                           <div class="col-md-4"/>
                           <div id="destination_fields" class="col-md-8" style="width:100%;padding-top:10px;">
                           </div>
                         </div>
-
                       </div>
-
 
                       <div class="form-group row col-xl-12">
                           <label class="col-md-12 col-form-label" style="width:100%;background-color:#00a09d; color:#FFF;">
@@ -298,9 +278,8 @@
                             </div>
                         </div>
                     </t>
-
                     <div class="form-group row">
-                        <div class="offset-md-2 col-md-10">
+                        <div class="offset-md-12 col-md-12">
                             <button type="submit" class="btn btn-primary">
                                 Confirm Appointment
                                 <span class="fa fa-arrow-right" />
