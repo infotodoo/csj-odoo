@@ -165,8 +165,8 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         })
 
     @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/submit'], type='http', auth="public", website=True, method=["POST"])
-    def calendar_appointment_submit(self, appointment_type, datetime_str, employee_id, types, class_id, appointment_source,
-                                    reception_id, process_number, request_type, duration, request_date, legal_document,
+    def calendar_appointment_submit(self, appointment_type, datetime_str, employee_id, types, class_id, reception_detail,
+                                    reception_id, process_number, request_type, duration, request_date,
                                     room_id, help_id, name, email, phone, guestcont, destinationcont,
                                     declarant_text=False, indicted_text=False, description=False,
                                     country_id=False, **kwargs):
@@ -176,6 +176,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         tz_session = pytz.timezone(timezone)
         date_start = tz_session.localize(fields.Datetime.from_string(datetime_str)).astimezone(pytz.utc)
         # date_end = date_start + relativedelta(hours=float(duration))#appointment_type.appointment_duration)
+        request_date = datetime.strptime(request_date, '%m/%d/%Y').date()
         duration = float(duration)
         if len(phone) > 10:
             return ValidationError('Número de telefono %s no permitido.' % phone )
@@ -372,8 +373,6 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'process_number' : process_number,
             'request_type' : request_type,
             'request_date' : request_date,
-            'appointment_source' : appointment_source,
-            'legal_document' : legal_document,
             'room_id': room_id,
             'help_id': help_id,
         })
@@ -471,7 +470,7 @@ class OdooWebsiteSearchDestino(http.Controller):
         destino = []
         if post:
             for suggestion in post.get('query').split(" "):
-                suggested_partners = request.env['res.partner'].sudo().search([('company_type','=','company')])
+                suggested_partners = request.env['res.partner'].sudo().search([('company_type','=','person')])
                 read_partners = suggested_partners.read(['name', 'id', 'code'])
                 suggestion_list += read_partners
 
