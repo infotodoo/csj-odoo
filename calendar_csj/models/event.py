@@ -140,7 +140,7 @@ class Meeting(models.Model):
             else:
                 event.add('status').value = 'CONFIRMED'
             event.add('uid').value = self.appointment_id.process_number
-            event.add('sequence').value = str(self.appointment_id.sequence)
+            event.add('sequence').value = str(self.appointment_id.sequence_icsfile_ctl)
             if meeting.description:
                 event.add('description').value = meeting.description
             if meeting.location:

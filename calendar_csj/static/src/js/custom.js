@@ -30,11 +30,40 @@ publicWidget.registry.websiteGuestSelect = publicWidget.Widget.extend({
 });
 
 
+odoo.define('calendar_csj.select_appointment_source_csj', function (require) {
+'use strict';
+
+var publicWidget = require('web.public.widget');
+var time = require('web.time');
+$('.legal_document').hide();
+
+publicWidget.registry.websiteAppointmentSourceSelect = publicWidget.Widget.extend({
+    selector: '.appointment_submit_form',
+    events: {
+        'change #appointment_source': '_onAppointmentSourceOnChange',
+    },
+    _onAppointmentSourceOnChange: function (ev) {
+      var source_select = $(".appointment_source select option:selected").val();
+      if (source_select === 'Oficio') {
+        $('.legal_document').attr("require","True");
+        $('.legal_document').show();
+      } else {
+        $('.legal_document').attr("require","False");
+        $('.legal_document').hide();
+      };
+    },
+});
+});
+
+
 odoo.define('calendar_csj.select_appointment_type_csj', function (require) {
 'use strict';
 
 var publicWidget = require('web.public.widget');
 var time = require('web.time');
+
+//$('#request_date').datetimepicker({inline: true,format: 'YYYY-MM-DD',sideBySide: true,});
+
 
 $(".o_website_appointment_form").submit(function(){
   var core = require('web.core');
@@ -43,10 +72,6 @@ $(".o_website_appointment_form").submit(function(){
   var date_time = $(".o_website_appointment_form input[name='date_time']").val();
   var search_city = $(".o_website_appointment_form input[name='search_city']").val();
   var search_appointment = $(".o_website_appointment_form input[name='search_appointment']").val();
-
-  console.log(date_time);
-  console.log(search_city);
-  console.log(search_appointment);
 
   if (search_city === '' || search_city === null || search_city === 'undefined'){
     Dialog.alert(this, 'Por favor selecione una ciudad!');
@@ -104,11 +129,12 @@ publicWidget.registry.websiteAppointmentSelect = publicWidget.Widget.extend({
     selector: '.o_website_calendar_appointment',
     events: {
         'click div.input-group span.fa-calendar': '_onCalendarIconClick',
-        'click buttom.submit': '_onFormSubmitButtomClick',
+        //'click buttom.submit': '_onFormSubmitButtomClick',
     },
-    _onFormSubmitButtomClick: function (ev) {
-      console.log('llegando al submit');
-    },
+    //_onFormSubmitButtomClick: function (ev) {
+    //  console.log('llegando al submit');
+    //},
+
     _onCalendarIconClick: function (ev) {
       $('.date_time').datetimepicker({
           format : 'YYYY-MM-DD HH:mm',
@@ -142,9 +168,12 @@ publicWidget.registry.websiteAppointmentSelect = publicWidget.Widget.extend({
           },
       });
     },
-});
+
 });
 
+
+
+});
 
 odoo.define('calendar_csj.calendar_csj', function(require) {
     "use strict";

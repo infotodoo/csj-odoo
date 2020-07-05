@@ -41,6 +41,7 @@ class CalendarAppointment(models.Model):
     _name = 'calendar.appointment'
     _inherit = ["mail.thread"]
     _description = 'Online Appointment'
+    _order = 'appointment_date desc'
 
     def _default_country_id(self):
         country_id = self.env.ref('base.co')
@@ -73,7 +74,8 @@ class CalendarAppointment(models.Model):
     # Realizada, Duplicada, No realizada, Asistida aplazada, Asistida cancelada, Cancelada
 
     name = fields.Char('Name', default=_('New'))
-    sequence = fields.Integer(string='Sequence')
+    sequence_icsfile_ctl = fields.Integer(string='Sequence ICS File')
+    appointment_code = fields.Char(string="Document Code", readonly=True, required=False, copy=False)
 
     # request_id = fields.Many2one('calendar.request', 'Calendar Request', ondelete='set null') #Solicitud
     type = fields.Selection([
@@ -82,7 +84,8 @@ class CalendarAppointment(models.Model):
         ('streaming','Streaming')], 'Request type', default='audience')
     class_id = fields.Many2one('calendar.class', 'Calendar class', ondelete='set null')  # Clase
     help_id = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null')  # Ayuda
-    request_date = fields.Date('Request date', default=fields.Date.today())  # Date
+    request_date = fields.Date('Request date')  # Date
+    appointment_date = fields.Date('Request date', default=fields.Date.today())  # Date
 
     calendar_type = fields.Selection([('unique', 'Unique'), ('multi', 'Multi')], 'Calendar type', default='unique')  # Agenda
     calendar_datetime = fields.Datetime('Calendar datetime', tracking=True)  # Fechatag_number
@@ -100,6 +103,9 @@ class CalendarAppointment(models.Model):
     applicant_email = fields.Char('Applicant email', compute='_compute_applicant_id', inverse='_inverse_applicant_id')
     applicant_domain = fields.Char('Applicant domain', compute='_compute_applicant_domain')
     applicant_mobile = fields.Char('Applicant mobile', compute='_compute_applicant_id', inverse='_inverse_applicant_id')
+
+    appointment_source = fields.Char('Appointment Source')
+    legal_document = fields.Char('Legal Document')
 
     # origin_id = fields.Many2one('res.city', 'Origin city', ondelete='set null', default=_default_origin_id)
     city_id = fields.Many2one('res.city', 'City', ondelete='set null', related='partner_id.city_id')
@@ -213,7 +219,8 @@ class CalendarAppointment(models.Model):
         vals['name'] = vals.get('process_number')[0:23] + 's' + \
             self.env['ir.sequence'].next_by_code('calendar.appointment').replace('s','')  or _('None')
         vals['partner_id'] = vals.get('appointment_id')
-        vals['sequence'] = 1
+        vals['sequence_icsfile_ctl'] = 1
+        vals['appointment_code'] = self.env['ir.sequence'].next_by_code('calendar.appointment.document.number')
         vals.update(self.create_lifesize(vals))
         res = super(CalendarAppointment, self).create(vals)
         return res
@@ -300,6 +307,7 @@ class CalendarAppointment(models.Model):
                 'duration': 1.0,
                 'description': _('Date: %s \n Time: %s' % (start_date, start_time)),
                 'alarm_ids': alarm_ids,
+                'appointment_code': self.appointment_code,
                 'location': location,
                 'partner_ids': vals.get('partners_ids'),
                 'categ_ids': categ_ids,
