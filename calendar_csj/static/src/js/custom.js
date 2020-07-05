@@ -53,6 +53,7 @@ var time = require('web.time');
 var rpc = require('web.rpc');
 //$('#request_date').datetimepicker({inline: true,format: 'YYYY-MM-DD',sideBySide: true,});
 
+  
 $(".o_website_appointment_form").submit(function(){
   var core = require('web.core');
   var rpc = require('web.rpc');
@@ -88,6 +89,8 @@ $(".o_website_appointment_form").submit(function(){
   //return false;
 
 });;
+
+
 
 
 $(".appointment_submit_form").submit(function(){

@@ -471,7 +471,7 @@ class OdooWebsiteSearchDestino(http.Controller):
         destino = []
         if post:
             for suggestion in post.get('query').split(" "):
-                suggested_partners = request.env['res.partner'].sudo().search([('company_type','=','company')])
+                suggested_partners = request.env['res.partner'].sudo().search([('company_type','=','person')])
                 read_partners = suggested_partners.read(['name', 'id', 'code'])
                 suggestion_list += read_partners
 
