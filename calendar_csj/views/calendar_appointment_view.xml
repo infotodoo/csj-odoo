@@ -28,12 +28,15 @@
             <field name="model">calendar.appointment</field>
             <field name="arch" type="xml">
                 <tree string="Appointments">
-                    <field name="name" />
+                    <field name="appointment_code" string="ID Agendamiento"/>
                     <field name="type" />
                     <field name="class_id" />
-                    <field name="request_date" />
+                    <field name="request_date" string="Fecha de Solicitud"/>
+                    <field name="appointment_date" string="Fecha de Agendamiento"/>
+                    <!--<field name="calendar_date" />-->
                     <field name="city_id" />
                     <field name="partner_id" />
+                    <field name="process_number" />
                     <field name="state" />
                 </tree>
             </field>
@@ -61,24 +64,27 @@
                     </header>
                     <sheet>
                         <div class="oe_title">
-                            <label for="name" class="oe_edit_only" string="Name" />
+                            <label for="appointment_code" class="" string="Agendamiento ID" />
                             <h1>
-                                <field name="name" readonly="True" />
+                                <field name="appointment_code" readonly="True" />
                             </h1>
                         </div>
-                        <separator string="General" colspan="2" />
+                        <separator string="Detalles del Agendamiento " colspan="2" />
                         <group>
                             <group>
                                 <field name="type" required="True" string="Tipo de Solicitud"/>
                                 <field name="class_id" required="True" string="Clase de Solicitud" />
                                 <field name="help_id" />
+                                <field name="appointment_date" required="True" string="Fecha de Agendamiento"/>
                                 <field name="request_date" required="True" />
                             </group>
                             <group>
                                 <field name="calendar_type" required="True" invisible="1"/>
                                 <field name="calendar_datetime" required="True" string="Fecha y Hora de Realización"/>
-                                <field name="calendar_date" readonly="True" string="Fecha y Hora de Realización"/>
+                                <!--<field name="calendar_date" readonly="True" string="Fecha y Hora de Realización"/>-->
                                 <field name="calendar_time" readonly="True" widget="float_time" />
+                                <field name="appointment_source" readonly="True" string="Detalle Medio de Recepción"/>
+                                <field name="legal_document" readonly="True" string="Oficio" attrs="{'invisible': [('appointment_source','!=','oficio')]}"/>
                             </group>
                             <group>
                                 <field name="applicant_id" required="True" />
@@ -98,7 +104,7 @@
                                 <field name="process_number" readonly="True" />
                                 <field name="tag_number" readonly="True" />
                                 <field name="reception_id" required="True" />
-                                <field name="sequence" required="False" invisible="1" />
+                                <field name="sequence_icsfile_ctl" required="False" invisible="1" />
                             </group>
                             <group>
                                 <field name="record_data" />
@@ -110,6 +116,7 @@
                             <group>
                                 <field name="lifesize_meeting_ext" readonly="True" string="Ext reunión Lifesize"/>
                                 <field name="lifesize_url" readonly="True" />
+                                <field name="name" readonly="True" string="API Lifesize "/>
                             </group>
                             <group groups="base.group_no_one">
                                 <field name="event_id" readonly="True" />

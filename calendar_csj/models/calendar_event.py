@@ -22,7 +22,11 @@ class CalendarEvent(models.Model):
     class_id = fields.Many2one('calendar.class', 'Calendar class', ondelete='set null')
     help_id = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null')
     request_type = fields.Selection([('l', 'Free'), ('r', 'Reserved')], 'Request type', default='r')
+    request_date = fields.Char('Request Date')
     process_number = fields.Char('Process number')
+    appointment_source = fields.Char('Appointment Source')
+    legal_document = fields.Char('Legal Document')
+    appointment_code = fields.Char('Appointment Code', related='appointment_id.appointment_code', store=True)
     reception_id = fields.Many2one('calendar.reception', 'Reception medium', ondelete='set null')
     destination_ids = fields.Many2many('res.partner', 'calendar_event_res_partner_destination_rel', string='Destinations', states={'done': [('readonly', True)]})
 
@@ -77,6 +81,9 @@ class CalendarEvent(models.Model):
             'room_id': vals.get('room_id'),
             'type': types,
             'request_type' : vals.get('request_type'),
+            'request_date' : vals.get('request_date'),
+            'appointment_source' : vals.get('appointment_source'),
+            'legal_document' : vals.get('legal_document'),
         })
         dic.update(appointment_id=appointment.id)
         return dic

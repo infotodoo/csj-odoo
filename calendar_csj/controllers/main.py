@@ -165,8 +165,8 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         })
 
     @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/submit'], type='http', auth="public", website=True, method=["POST"])
-    def calendar_appointment_submit(self, appointment_type, datetime_str, employee_id, types, class_id,
-                                    reception_id, process_number, request_type, duration,
+    def calendar_appointment_submit(self, appointment_type, datetime_str, employee_id, types, class_id, appointment_source,
+                                    reception_id, process_number, request_type, duration, request_date, legal_document,
                                     room_id, help_id, name, email, phone, guestcont, destinationcont,
                                     declarant_text=False, indicted_text=False, description=False,
                                     country_id=False, **kwargs):
@@ -371,6 +371,9 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'destination_id' : destination_id,
             'process_number' : process_number,
             'request_type' : request_type,
+            'request_date' : request_date,
+            'appointment_source' : appointment_source,
+            'legal_document' : legal_document,
             'room_id': room_id,
             'help_id': help_id,
         })
@@ -468,7 +471,7 @@ class OdooWebsiteSearchDestino(http.Controller):
         destino = []
         if post:
             for suggestion in post.get('query').split(" "):
-                suggested_partners = request.env['res.partner'].sudo().search([('company_type','=','company')])
+                suggested_partners = request.env['res.partner'].sudo().search([('company_type','=','person')])
                 read_partners = suggested_partners.read(['name', 'id', 'code'])
                 suggestion_list += read_partners
 
