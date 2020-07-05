@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import logging
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
+
+_logger = logging.getLogger(__name__)
 
 class CalendarEvent(models.Model):
     _inherit = 'calendar.event'
@@ -24,11 +27,15 @@ class CalendarEvent(models.Model):
     request_type = fields.Selection([('l', 'Free'), ('r', 'Reserved')], 'Request type', default='r')
     request_date = fields.Char('Request Date')
     process_number = fields.Char('Process number')
-    appointment_source = fields.Char('Appointment Source')
-    legal_document = fields.Char('Legal Document')
     appointment_code = fields.Char('Appointment Code', related='appointment_id.appointment_code', store=True)
     reception_id = fields.Many2one('calendar.reception', 'Reception medium', ondelete='set null')
+    reception_detail = fields.Char('Reception Detail')
     destination_ids = fields.Many2many('res.partner', 'calendar_event_res_partner_destination_rel', string='Destinations', states={'done': [('readonly', True)]})
+
+
+    def fetch_calendar_verify_availability(self, date_time, search_appointment):
+        date_time = date_time
+        return date_time
 
     @api.model
     def create(self, vals):
@@ -82,8 +89,7 @@ class CalendarEvent(models.Model):
             'type': types,
             'request_type' : vals.get('request_type'),
             'request_date' : vals.get('request_date'),
-            'appointment_source' : vals.get('appointment_source'),
-            'legal_document' : vals.get('legal_document'),
+            'reception_detail' : vals.get('reception_detail'),
         })
         dic.update(appointment_id=appointment.id)
         return dic

@@ -366,6 +366,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'user_id': Employee.user_id.id,
             'class_id' : class_id,
             'reception_id' : reception_id,
+            'reception_detail' : reception_detail,
             'indicted_text' : indicted_text,
             'declarant_text' : declarant_text,
             'applicant_id' : Partner.id,
@@ -470,7 +471,7 @@ class OdooWebsiteSearchDestino(http.Controller):
         destino = []
         if post:
             for suggestion in post.get('query').split(" "):
-                suggested_partners = request.env['res.partner'].sudo().search([('company_type','=','person')])
+                suggested_partners = request.env['res.partner'].sudo().search([('company_type','=','company')])
                 read_partners = suggested_partners.read(['name', 'id', 'code'])
                 suggestion_list += read_partners
 
