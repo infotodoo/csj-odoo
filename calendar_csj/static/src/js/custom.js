@@ -64,7 +64,7 @@ var time = require('web.time');
 
 //$('#request_date').datetimepicker({inline: true,format: 'YYYY-MM-DD',sideBySide: true,});
 
-
+  
 $(".o_website_appointment_form").submit(function(){
   var core = require('web.core');
   var rpc = require('web.rpc');
