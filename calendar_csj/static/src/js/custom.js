@@ -142,11 +142,7 @@ publicWidget.registry.websiteAppointmentSelect = publicWidget.Widget.extend({
     selector: '.o_website_calendar_appointment',
     events: {
         'click div.input-group span.fa-calendar': '_onCalendarIconClick',
-        //'click buttom.submit': '_onFormSubmitButtomClick',
     },
-    //_onFormSubmitButtomClick: function (ev) {
-    //  console.log('llegando al submit');
-    //},
 
     _onCalendarIconClick: function (ev) {
       $('.date_time').datetimepicker({
@@ -206,7 +202,15 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
   sAnimation.registry.OdooWebsiteSearchCity = sAnimation.Class.extend({
     selector: ".search-query-city",
     autocompleteMinWidth: 300,
+    init: function () {
+      console.log('init: search_city');
+    },
     start: function () {
+        console.log('start: search_city');
+
+        //consulto cual es la ciudad del usuario logeado
+        var partner_id = $(".appointment_submit_form input[name='partner_id']").val();
+
         $('.search-query-appointment').typeahead({source: []});
         var self = this;
         var previousSelectedCityID = $(".o_website_appointment_form input[name='city_id']").val();
@@ -221,6 +225,8 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
           autoFocus:true,
           hint: true,
           accent: true,
+          mustSelectItem: true,
+          item: 5334,
           //display: ["id","city"],
           display: ["city"],
           template: '<span>' +
