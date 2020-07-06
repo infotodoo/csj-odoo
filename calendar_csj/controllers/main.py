@@ -29,6 +29,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
     ], type='http', auth="public", website=True)
     def calendar_appointment_choice(self, appointment_type=None, employee_id=None, message=None, types=None, **kwargs):
         partner = request.env.user.partner_id
+        judged_id = None
         if partner.appointment_type != 'scheduler':
             judged_id = partner.parent_id
             if judged_id:
@@ -60,6 +61,9 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'suggested_appointment_types': suggested_appointment_types,
             'message': message,
             'types': types,
+            'partner_id': partner.id if partner.appointment_type != 'scheduler' else 1,
+            'city_name': partner.city,
+            'judged_name': judged_id.name if judged_id else '',
         })
 
     @http.route(['/website/calendar/get_appointment_info'], type='json', auth="public", methods=['POST'], website=True)
