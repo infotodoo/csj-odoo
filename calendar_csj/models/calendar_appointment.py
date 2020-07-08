@@ -154,7 +154,7 @@ class CalendarAppointment(models.Model):
     def _get_destination_ids_label(self):
         label = ''
         cont=0
-        for partner in self.partners_ids:
+        for partner in self.destination_ids:
             label += '\n' if cont else ''
             label += str(partner.email)
             cont+=1

@@ -44,6 +44,11 @@
                     <field name="class_id"/>
                     <field name="request_date" string="Fecha de Solicitud"/>
                     <field name="appointment_date" string="Fecha de Agendamiento"/>-->
+                    <field name="appointment_code" string="ID Agendamiento"/>
+                    <field name="type"/>
+                    <field name="class_id"/>
+                    <field name="request_date" string="Fecha de Solicitud"/>
+                    <field name="appointment_date" string="Fecha de Agendamiento"/>
                     <field name="city_id"/>
                     <field name="partner_id"/>
                     <field name="process_number"/>
