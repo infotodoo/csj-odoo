@@ -9,7 +9,7 @@ function isNumber(evt) {
 
 $( function() {
   $( "#request_date" ).datepicker({
-    format : 'YYYY-MM-DD',lang:'es',
+    dateFormat : 'yy-mm-dd'
   });
 });
 

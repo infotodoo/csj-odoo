@@ -161,7 +161,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'suggested_help3': suggested_help3,
             'types': types,
             'datetime': date_time,
-            'datetime_locale': day_name + ' ' + date_formated,
+            'datetime_locale': day_name + ' ' + date_time,
             'datetime_str': date_time,
             'employee_id': employee_id,
             'duration': duration,
@@ -180,7 +180,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         tz_session = pytz.timezone(timezone)
         date_start = tz_session.localize(fields.Datetime.from_string(datetime_str)).astimezone(pytz.utc)
         # date_end = date_start + relativedelta(hours=float(duration))#appointment_type.appointment_duration)
-        request_date = datetime.strptime(request_date, '%m/%d/%Y').date()
+        request_date = datetime.strptime(request_date, '%Y-%m-%d').date()
         duration = float(duration)
         if len(phone) > 10:
             return ValidationError('Número de telefono %s no permitido.' % phone )
