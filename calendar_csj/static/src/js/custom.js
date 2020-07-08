@@ -146,7 +146,7 @@ publicWidget.registry.websiteAppointmentSelect = publicWidget.Widget.extend({
 
     _onCalendarIconClick: function (ev) {
       $('.date_time').datetimepicker({
-          format : 'DD-MM-YYYY HH:mm',
+          format : 'YYYY-MM-DD HH:mm',
           formatTime:'H:i',
           step: 60,
           viewMode: 'months',
