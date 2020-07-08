@@ -58,10 +58,8 @@
                     <field name="reception_id"/>
                     <field name="reception_detail"/>
                     <field name="observations"/>
-                    <field name="applicant_id"/>
+                    <field name="applicant_id_label" string="Solicitante"/>
                     <field name="room_id"/>
-                    <field name="partner_ids_label" string="Invitados"/>
-                    <field name="destination_ids_label" string="Destinos"/>
                     <field name="class_id"/>
                     <field name="declarant_text"/>
                     <field name="indicted_text"/>
@@ -69,6 +67,10 @@
                     <field name="end_hour"/>
                     <field name="state_description"/>
                     <field name="tag_number"/>
+                    <field name="create_uid" string="Creador por"/>
+                    <field name="write_uid"  string="Modificado por"/>
+                    <field name="partner_ids_label" string="Invitados"/>
+                    <field name="destination_ids_label" string="Destinos"/>
 
                 </tree>
             </field>

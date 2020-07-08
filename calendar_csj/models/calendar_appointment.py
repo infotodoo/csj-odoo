@@ -98,6 +98,7 @@ class CalendarAppointment(models.Model):
     declarant_text = fields.Text('Declarant input')
     indicted_id = fields.Many2one('res.partner', 'Indicted', ondelete='set null')  # Procesado
     indicted_text = fields.Text('Indicted input')
+    applicant_id_label = fields.Char('Applicant Label', compute='_get_applicant_id_label', store=True)
 
     # Solicitante
     applicant_email = fields.Char('Applicant email', compute='_compute_applicant_id', inverse='_inverse_applicant_id')
@@ -145,8 +146,12 @@ class CalendarAppointment(models.Model):
         label = ''
         cont=0
         for partner in self.partners_ids:
-            label += '\n' if cont else ''
-            label += str(partner.email)
+            label += '\n\n' if cont else ''
+            label += str(partner.name)
+            if partner.email:
+                label += ' - ' + str(partner.email)
+            if partner.phone:
+                label += ' - tel:' + str(partner.phone)
             cont+=1
         self.partner_ids_label = label
 
@@ -155,10 +160,24 @@ class CalendarAppointment(models.Model):
         label = ''
         cont=0
         for partner in self.destination_ids:
-            label += '\n' if cont else ''
-            label += str(partner.email)
+            label += '\n\n' if cont else ''
+            label += str(partner.name)
+            if partner.email:
+                label += ' - ' + str(partner.email)
+            if partner.phone:
+                label += ' - tel:' + str(partner.phone)
             cont+=1
         self.destination_ids_label = label
+
+    @api.depends('applicant_id')
+    def _get_applicant_id_label(self):
+        for record in self:
+            record.applicant_id_label = '%s - %s - %s' % (
+                record.applicant_id.name ,
+                record.applicant_id.email if record.applicant_id.email else '',
+                record.applicant_id.phone if record.applicant_id.phone else '',
+            )
+
 
     @api.depends('calendar_datetime')
     def _compute_record_data(self):
