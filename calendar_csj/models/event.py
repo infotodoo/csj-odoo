@@ -149,10 +149,10 @@ class Meeting(models.Model):
                 event.add('rrule').value = meeting.rrule
 
             organizer_add = event.add('organizer')
-            organizer_add.params['CN'] = ["agendamiento.csj@gmail.com"]
+            organizer_add.params['CN'] = ["agendamiento@csj.life"]
             organizer_add.params['ROLE'] = ["CHAIR"]
             organizer_add.params['RSVP'] = ["TRUE"]
-            organizer_add.value = "agendamiento.csj@gmail.com"
+            organizer_add.value = "agendamiento@csj.life"
 
             if meeting.alarm_ids:
                 for alarm in meeting.alarm_ids:
