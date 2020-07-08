@@ -28,16 +28,43 @@
             <field name="model">calendar.appointment</field>
             <field name="arch" type="xml">
                 <tree string="Appointments">
-                    <field name="appointment_code" string="ID Agendamiento"/>
+                    <!--<field name="appointment_code" string="ID Agendamiento"/>
                     <field name="type" />
                     <field name="class_id" />
                     <field name="request_date" string="Fecha de Solicitud"/>
                     <field name="appointment_date" string="Fecha de Agendamiento"/>
-                    <!--<field name="calendar_date" />-->
                     <field name="city_id" />
                     <field name="partner_id" />
                     <field name="process_number" />
+                    <field name="partner_ids_label" string="Invitados"/>
+                    <field name="destination_ids_label" string="Invitados"/>
                     <field name="state" />
+                    <field name="appointment_code" string="ID Agendamiento"/>
+                    <field name="type"/>
+                    <field name="class_id"/>
+                    <field name="request_date" string="Fecha de Solicitud"/>
+                    <field name="appointment_date" string="Fecha de Agendamiento"/>-->
+                    <field name="city_id"/>
+                    <field name="partner_id"/>
+                    <field name="process_number"/>
+                    <field name="state"/>
+                    <field name="lifesize_meeting_ext"/>
+                    <field name="calendar_datetime"/>
+                    <field name="reception_id"/>
+                    <field name="reception_detail"/>
+                    <field name="observations"/>
+                    <field name="applicant_id"/>
+                    <field name="room_id"/>
+                    <field name="partner_ids_label" string="Invitados"/>
+                    <field name="destination_ids_label" string="Destinos"/>
+                    <field name="class_id"/>
+                    <field name="declarant_text"/>
+                    <field name="indicted_text"/>
+                    <field name="end_date"/>
+                    <field name="end_hour"/>
+                    <field name="state_description"/>
+                    <field name="tag_number"/>
+
                 </tree>
             </field>
         </record>

@@ -111,8 +111,9 @@ class CalendarAppointment(models.Model):
     room_id = fields.Many2one('res.judged.room', 'Room', domain="[('partner_id','=',partner_id)]", ondelete='set null')
 
     partners_ids = fields.Many2many('res.partner', 'appointment_partner_rel', 'appointment_id', 'partner_id', 'Partners')
-    partner_ids_label = fields.Char('Partners Label', compute='_get_partner_ids_label', store=False)
+    partner_ids_label = fields.Char('Partners Label', compute='_get_partner_ids_label', store=True)
     destination_ids = fields.Many2many('res.partner', 'appointment_destination_partner_rel', 'appointment_id', 'partner_id', 'Destinations')
+    destination_ids_label = fields.Char('Detinations Label', compute='_get_destination_ids_label', store=True)
     request_type = fields.Selection([('l', 'Free'), ('r', 'Reserved')], 'Request type', default='r')
     process_number = fields.Char('Process number')
     tag_number = fields.Char('Tag number', compute='_compute_tag_number')
@@ -138,6 +139,26 @@ class CalendarAppointment(models.Model):
     lifesize_modified = fields.Boolean('Modified')
 
     cw_bool = fields.Boolean('Create/Write', default=False, required=True)
+
+    @api.depends('partners_ids')
+    def _get_partner_ids_label(self):
+        label = ''
+        cont=0
+        for partner in self.partners_ids:
+            label += '\n' if cont else ''
+            label += str(partner.email)
+            cont+=1
+        self.partner_ids_label = label
+
+    @api.depends('destination_ids')
+    def _get_destination_ids_label(self):
+        label = ''
+        cont=0
+        for partner in self.partners_ids:
+            label += '\n' if cont else ''
+            label += str(partner.email)
+            cont+=1
+        self.destination_ids_label = label
 
     @api.depends('calendar_datetime')
     def _compute_record_data(self):
