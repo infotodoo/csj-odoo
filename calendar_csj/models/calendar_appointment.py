@@ -111,6 +111,7 @@ class CalendarAppointment(models.Model):
     room_id = fields.Many2one('res.judged.room', 'Room', domain="[('partner_id','=',partner_id)]", ondelete='set null')
 
     partners_ids = fields.Many2many('res.partner', 'appointment_partner_rel', 'appointment_id', 'partner_id', 'Partners')
+    partner_ids_label = fields.Char('Partners Label', compute='_get_partner_ids_label', store=False)
     destination_ids = fields.Many2many('res.partner', 'appointment_destination_partner_rel', 'appointment_id', 'partner_id', 'Destinations')
     request_type = fields.Selection([('l', 'Free'), ('r', 'Reserved')], 'Request type', default='r')
     process_number = fields.Char('Process number')
