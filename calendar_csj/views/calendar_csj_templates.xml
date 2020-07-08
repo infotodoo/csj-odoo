@@ -30,6 +30,12 @@
                    </p>
                </div>
            </xpath>
+           <xpath expr="//div//div//p[1]" position="replace">
+             <p>
+                 Agendamiento de <span t-field="appointment_type.name"/> para el <strong t-esc="datetime_locale"/>
+             </p>
+           </xpath>
+
             <xpath expr="//ul[@class='wizard mt32 float-right']//li[2]" position="replace"/>
             <xpath expr="//div[1]/div[1]/form[1]" position="replace">
                 <form class="mt32 appointment_submit_form" t-attf-action="/website/calendar/#{ slug(appointment_type) }/submit" method="POST">
