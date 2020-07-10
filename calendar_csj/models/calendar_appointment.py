@@ -41,7 +41,7 @@ class CalendarAppointment(models.Model):
     _name = 'calendar.appointment'
     _inherit = ["mail.thread"]
     _description = 'Online Appointment'
-    _order = 'appointment_date desc'
+    _order = 'appointment_code desc'
 
     def _default_country_id(self):
         country_id = self.env.ref('base.co')
@@ -84,6 +84,8 @@ class CalendarAppointment(models.Model):
         ('streaming','Streaming')], 'Request type', default='audience')
     class_id = fields.Many2one('calendar.class', 'Calendar class', ondelete='set null')  # Clase
     help_id = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null')  # Ayuda
+    partaker_type = fields.Many2one('calendar.help', 'Portaker Type', ondelete='set null')  # Ayuda
+    connection_type = fields.Many2one('calendar.help', 'Connection Type', ondelete='set null')  # Ayuda
     request_date = fields.Date('Request date')  # Date
     appointment_date = fields.Date('Request date', default=fields.Date.today())  # Date
 

@@ -45,32 +45,40 @@
                     <field name="request_date" string="Fecha de Solicitud"/>
                     <field name="appointment_date" string="Fecha de Agendamiento"/>-->
                     <field name="appointment_code" string="ID Agendamiento"/>
+                    <field name="help_id"/>
+                    <field name="partaker_type" string="Tipo de Participante"/>
+                    <field name="connection_type" string="Tipo de Conexión"/>
                     <field name="type"/>
-                    <field name="class_id"/>
-                    <field name="request_date" string="Fecha de Solicitud"/>
-                    <field name="appointment_date" string="Fecha de Agendamiento"/>
-                    <field name="city_id"/>
+                    <field name="calendar_date"/>
+                    <field name="calendar_time"  widget="float_time"/>
                     <field name="partner_id"/>
-                    <field name="process_number"/>
-                    <field name="state"/>
-                    <field name="lifesize_meeting_ext"/>
-                    <field name="calendar_datetime"/>
+                    <field name="city_id"/>
+                    <field name="destination_ids_label" string="DESTINO"/>
                     <field name="reception_id"/>
                     <field name="reception_detail"/>
                     <field name="observations"/>
-                    <field name="applicant_id_label" string="Solicitante"/>
+                    <field name="request_date" string="FECHA DE SOLICITUD"/>
+                    <field name="applicant_id"/>
+                    <field name="state"/>
+                    <field name="applicant_email"/>
+                    <field name="process_number"/>
                     <field name="room_id"/>
+                    <field name="partner_ids_label" string="CORREOS PARTICIPANTES"/>
+                    <field name="applicant_mobile"/>
                     <field name="class_id"/>
+                    <field name="request_type"/>
                     <field name="declarant_text"/>
                     <field name="indicted_text"/>
+                    <field name="appointment_date" string="FECHA DE AGENDAMIENTO"/>
+                    <field name="write_uid" string="USUARIO CIERRE"/>
                     <field name="end_date"/>
                     <field name="end_hour"/>
                     <field name="state_description"/>
                     <field name="tag_number"/>
-                    <field name="create_uid" string="Creador por"/>
-                    <field name="write_uid"  string="Modificado por"/>
-                    <field name="partner_ids_label" string="Invitados"/>
-                    <field name="destination_ids_label" string="Destinos"/>
+                    <field name="link_download"/>
+                    <field name="create_uid" string="CREADO POR"/>
+                    <field name="name"/>
+                    <field name="lifesize_url"/>
 
                 </tree>
             </field>
@@ -109,6 +117,8 @@
                                 <field name="type" required="True" string="Tipo de Solicitud"/>
                                 <field name="class_id" required="True" string="Clase de Solicitud" />
                                 <field name="help_id" />
+                                <field name="partaker_type" string="Tipo de Participante"/>
+                                <field name="connection_type"  string="Tipo de Conexión"/>
                                 <field name="appointment_date" required="True" string="Fecha de Agendamiento"/>
                                 <field name="request_date" required="True" />
                             </group>

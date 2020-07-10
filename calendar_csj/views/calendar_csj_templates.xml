@@ -164,7 +164,7 @@
                       <div class="form-group row col-xl-6 col-md-6">
                           <label for="help_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">TIPO DE PARTICIPANTE</label>
                           <div class="col-md-12 row">
-                              <select class="form-control" name="help_id" id="help_id">
+                              <select class="form-control" name="partaker_type" id="partaker_type">
                                   <t t-foreach="suggested_help2" t-as="res">
                                       <option t-att-value="res.id" t-esc="res.name" t-att-selected="res.name" />
                                   </t>
@@ -174,7 +174,7 @@
                       <div class="form-group row col-xl-6 col-md-6">
                           <label for="help_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">TIPO DE CONEXIÓN</label>
                           <div class="col-md-12 row">
-                              <select class="form-control" name="help_id" id="help_id">
+                              <select class="form-control" name="connection_type" id="connection_type">
                                   <t t-foreach="suggested_help3" t-as="res">
                                       <option t-att-value="res.id" t-esc="res.name" t-att-selected="res.name" />
                                   </t>
@@ -195,7 +195,7 @@
                       <div class="form-group row col-xl-12 col-md-12">
                         <!--<label for="destino" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">Destination</label>-->
                         <div class="col-md-12 row">
-                            <input type="char" class="form-control search-destino" name="destino" id="destino" autocomplete="on"/>
+                            <input type="char" class="form-control search-destino text-uppercase" name="destino" id="destino" autocomplete="on"/>
                         </div>
                         <br/>
                         <script type="text/javascript" >
@@ -221,11 +221,11 @@
                         <div class="row guest_add_form" style="width:100%">
                           <div class="col-md-5">
                               <label for="nameguest0" class="col-md-5 col-form-label" style="color: rgba(0, 0, 0, 0.5);">NOMBRE</label>
-                              <input type="char" class="form-control" name="nameguest0" id="nameguest" />
+                              <input type="char" class="form-control text-uppercase" name="nameguest0" id="nameguest" />
                           </div>
                           <div class="col-md-5">
                               <label for="emailguest0" class="col-md-5 col-form-label" style="color: rgba(0, 0, 0, 0.5);">CORREO</label>
-                              <input type="email" class="form-control" name="emailguest0" id="emailguest" />
+                              <input type="email" class="form-control text-uppercase" name="emailguest0" id="emailguest" />
                           </div>
                           <div class="col-md-2" style="padding-top:4vh;">
                               <button class="btn btn-success fa fa-plus btn-guest_add" type="button"></button>

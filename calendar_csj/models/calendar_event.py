@@ -24,6 +24,8 @@ class CalendarEvent(models.Model):
     destination_id = fields.Many2one('res.partner', 'Destination', ondelete='set null')
     class_id = fields.Many2one('calendar.class', 'Calendar class', ondelete='set null')
     help_id = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null')
+    partaker_type = fields.Many2one('calendar.help', 'Portaker Type', ondelete='set null')
+    connection_type = fields.Many2one('calendar.help', 'Connection Type', ondelete='set null')
     request_type = fields.Selection([('l', 'Free'), ('r', 'Reserved')], 'Request type', default='r')
     request_date = fields.Char('Request Date')
     process_number = fields.Char('Process number')
@@ -90,6 +92,8 @@ class CalendarEvent(models.Model):
             'request_type' : vals.get('request_type'),
             'request_date' : vals.get('request_date'),
             'reception_detail' : vals.get('reception_detail'),
+            'partaker_type': vals.get('partaker_type'),
+            'connection_type': vals.get('connection_type'),
         })
         dic.update(appointment_id=appointment.id)
         return dic
@@ -112,3 +116,69 @@ class CalendarEvent(models.Model):
             attendee_to_email = record.attendee_ids
             if attendee_to_email:
                 attendee_to_email._send_mail_to_attendees('calendar_csj.calendar_csj_template_meeting_cancel')
+
+    def create_attendees(self):
+        current_user = self.env.user
+        result = {}
+        for meeting in self:
+            alreay_meeting_partners = meeting.attendee_ids.mapped('partner_id')
+            meeting_attendees = self.env['calendar.attendee']
+            meeting_partners = self.env['res.partner']
+            for partner in meeting.partner_ids.filtered(lambda partner: partner not in alreay_meeting_partners):
+                values = {
+                    'partner_id': partner.id,
+                    'email': partner.email,
+                    'event_id': meeting.id,
+                }
+
+                if self._context.get('google_internal_event_id', False):
+                    values['google_internal_event_id'] = self._context.get('google_internal_event_id')
+
+                # current user don't have to accept his own meeting
+                if partner == self.env.user.partner_id:
+                    values['state'] = 'accepted'
+
+                attendee = self.env['calendar.attendee'].create(values)
+
+                meeting_attendees |= attendee
+                meeting_partners |= partner
+
+            for partner in meeting.destination_ids.filtered(lambda partner: partner not in alreay_meeting_partners):
+                values = {
+                    'partner_id': partner.id,
+                    'email': partner.email,
+                    'event_id': meeting.id,
+                }
+                attendee = self.env['calendar.attendee'].create(values)
+
+                meeting_attendees |= attendee
+                meeting_partners |= partner
+
+            if meeting_attendees and not self._context.get('detaching'):
+                to_notify = meeting_attendees.filtered(lambda a: a.email != current_user.email)
+                to_notify._send_mail_to_attendees('calendar.calendar_template_meeting_invitation')
+
+            if meeting_attendees:
+                meeting.write({'attendee_ids': [(4, meeting_attendee.id) for meeting_attendee in meeting_attendees]})
+
+            if meeting_partners:
+                meeting.message_subscribe(partner_ids=meeting_partners.ids)
+
+            # We remove old attendees who are not in partner_ids now.
+            all_partners = meeting.partner_ids
+            all_partner_attendees = meeting.attendee_ids.mapped('partner_id')
+            old_attendees = meeting.attendee_ids
+            partners_to_remove = all_partner_attendees + meeting_partners - all_partners
+
+            attendees_to_remove = self.env["calendar.attendee"]
+            if partners_to_remove:
+                attendees_to_remove = self.env["calendar.attendee"].search([('partner_id', 'in', partners_to_remove.ids), ('event_id', '=', meeting.id)])
+                attendees_to_remove.unlink()
+
+            result[meeting.id] = {
+                'new_attendees': meeting_attendees,
+                'old_attendees': old_attendees,
+                'removed_attendees': attendees_to_remove,
+                'removed_partners': partners_to_remove
+            }
+        return result
