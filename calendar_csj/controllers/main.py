@@ -19,7 +19,7 @@ from odoo.exceptions import ValidationError
 import json
 from odoo import SUPERUSER_ID
 import logging
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 class WebsiteCalendarInherit(WebsiteCalendar):
@@ -170,8 +170,8 @@ class WebsiteCalendarInherit(WebsiteCalendar):
 
     @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/submit'], type='http', auth="public", website=True, method=["POST"])
     def calendar_appointment_submit(self, appointment_type, datetime_str, employee_id, types, class_id, reception_detail,
-                                    reception_id, process_number, request_type, duration, request_date,
-                                    room_id, help_id, name, email, phone, guestcont, destinationcont,
+                                    reception_id, process_number, request_type, duration, request_date, connection_type,
+                                    room_id, help_id, name, email, phone, guestcont, destinationcont, partaker_type,
                                     declarant_text=False, indicted_text=False, description=False,
                                     country_id=False, **kwargs):
 
@@ -320,6 +320,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             destination_obj = request.env['res.partner'].sudo().search([('id', '=', destination_id[0])])
             destination_ids.append(destination_obj.id)
 
+
         class_id = int(class_id)
         reception_id = int(reception_id)
         applicant_id = appointment_type.judged_id.id if appointment_type.judged_id else False
@@ -380,6 +381,8 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'request_date' : request_date,
             'room_id': room_id,
             'help_id': help_id,
+            'partaker_type': partaker_type,
+            'connection_type': connection_type,
         })
         event.attendee_ids.write({'state': 'accepted'})
         return request.redirect('/website/calendar/view/' + event.access_token + '?message=new')

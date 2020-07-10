@@ -9,7 +9,8 @@ function isNumber(evt) {
 
 $( function() {
   $( "#request_date" ).datepicker({
-    dateFormat : 'yy-mm-dd'
+    dateFormat : 'yy-mm-dd',
+    maxDate: new Date(),
   });
 });
 
@@ -35,7 +36,7 @@ publicWidget.registry.websiteGuestSelect = publicWidget.Widget.extend({
        var guestSelectedEmail = $(".appointment_submit_form input[id='emailguest']").val();
        $(".appointment_submit_form input[id='nameguest']").val('');
        $(".appointment_submit_form input[id='emailguest']").val('');
-       divguestlist.innerHTML = '<div class="row guest_remove_form' + guest + '" style="width:100%"><div class="col-md-5"><input type="char" class="form-control" name="nameguest' + guest + '" value="' + guestSelectedName + '"/></div><div class="col-md-5"><input type="email" class="form-control" name="emailguest' + guest + '" value="' + guestSelectedEmail + '"/></div><div class="col-md-2"><button class="btn btn-danger fa fa-remove btn-guest_remove" onclick="remove_guest_fields('+ guest +');" type="button"></button></div></div><div class="clear"></div>';
+       divguestlist.innerHTML = '<div class="row guest_remove_form' + guest + '" style="width:100%"><div class="col-md-5"><input type="char" class="form-control  text-uppercase" name="nameguest' + guest + '" value="' + guestSelectedName + '"/></div><div class="col-md-5"><input type="email" class="form-control" name="emailguest' + guest + '" value="' + guestSelectedEmail + '"/></div><div class="col-md-2"><button class="btn btn-danger fa fa-remove btn-guest_remove" onclick="remove_guest_fields('+ guest +');" type="button"></button></div></div><div class="clear"></div>';
        objTo.appendChild(divguestlist)
        var guestSelectedCont = $(".appointment_submit_form input[name='guestcont']").val();
        $(".appointment_submit_form input[name='guestcont']").val(parseInt(guestSelectedCont)+1);
@@ -397,7 +398,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
                divdestinationlist.setAttribute("class", "form-group removeclassdestination"+dest);
                var rdiv = 'destination_remove_form'+dest;
                var destinationSelectedName = $(".appointment_submit_form input[id='destino']").val();
-               divdestinationlist.innerHTML = '<div class="col-md-12 row destination_remove_form' + dest + '"><div class="col-md-11"><input type="char" class="form-control" name="destino' + dest + '" required="1" value="' + destinationSelectedName + '"/></div><div class="col-md-1"><button class="btn btn-danger fa fa-remove btn-guest_remove" onclick="remove_destination_fields('+ dest +');" type="button"></button></div></div>';
+               divdestinationlist.innerHTML = '<div class="col-md-12 row destination_remove_form' + dest + '"><div class="col-md-11"><input type="char" class="form-control  text-uppercase" name="destino' + dest + '" required="1" value="' + destinationSelectedName + '"/></div><div class="col-md-1"><button class="btn btn-danger fa fa-remove btn-guest_remove" onclick="remove_destination_fields('+ dest +');" type="button"></button></div></div>';
                objTo.appendChild(divdestinationlist)
                $(".linediv").show();
                var destinationSelectedCont = $(".appointment_submit_form input[name='destinationcont']").val();
