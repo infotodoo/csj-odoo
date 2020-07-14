@@ -283,8 +283,8 @@ class CalendarAppointment(models.Model):
             'displayName': vals.get('name'),
             'ownerExtension': self.env.user.extension_lifesize or \
                 self.env.user.company_id.owner_extension,
-            'hiddenMeeting': 'false' if vals.get('request_type') == 'l' else 'true'
-            
+            'hiddenMeeting': 'true',
+            # 'hiddenMeeting': 'false' if vals.get('request_type') == 'l' else 'true',
         }
         appointment_type = self.env.user.partner_id.appointment_type
         judged_extension_lifesize = False
