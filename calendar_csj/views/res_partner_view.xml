@@ -26,6 +26,7 @@
                                 <field name="mame" attrs="{'required': [('company_type', '=', 'judged')]}" />
                                 <field name="entity_id" readonly="True"/>
                                 <field name="specialty_id" attrs="{'required': [('company_type', '=', 'judged')]}" />
+                                <field name="extension_lifesize" attrs="{'required': [('company_type', '=', 'judged')]}" />
                             </group>
                             <group string="Rooms">
                                 <field name="rooms_id">
