@@ -74,6 +74,7 @@ class CalendarAppointment(models.Model):
     # Realizada, Duplicada, No realizada, Asistida aplazada, Asistida cancelada, Cancelada
 
     name = fields.Char('Name', default=_('New'))
+    active = fields.Boolean('Active', default=True)
     sequence_icsfile_ctl = fields.Integer(string='Sequence ICS File')
     appointment_code = fields.Char(string="Document Code", readonly=True, required=False, copy=False)
 
