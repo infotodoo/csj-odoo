@@ -211,6 +211,7 @@ class ResPartner(models.Model):
         ('private', '.')], default='contact')
     code = fields.Char('Code', size=3)
     mame = fields.Char('Name')
+    extension_lifesize = fields.Char('Extension Lifesize')
     entity_id = fields.Many2one('res.entity', 'Entity', related='specialty_id.entity_id')
     specialty_id = fields.Many2one('res.specialty', 'Specialty')
     rooms_id = fields.One2many('res.judged.room', 'judged_id', 'Rooms')

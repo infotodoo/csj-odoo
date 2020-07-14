@@ -286,6 +286,25 @@ class CalendarAppointment(models.Model):
             'hiddenMeeting': 'false' if vals.get('request_type') == 'l' else 'true'
             
         }
+        appointment_type = self.env.user.partner_id.appointment_type
+        judged_extension_lifesize = False
+        if vals.get('partner_id'):
+            partner = self.env['res.partner'].search(['id', '=', vals.get('partner_id')])[0]
+            if partner.extension_lifesize:
+                judged_extension_lifesize = partner.extension_lifesize
+        if appointment_type and appointment_type == 'scheduler':
+            api.update({
+                'ownerExtension': self.env.user.extension_lifesize or \
+                    self.env.user.company_id.owner_extension,
+                'moderatorExtension': judged_extension_lifesize or \
+                    self.env.user.company_id.owner_extension,
+            })
+        else:
+            api.update({
+                'ownerExtension': self.env.user.company_id.owner_extension,
+                'moderatorExtension':self.env.user.extension_lifesize or \
+                self.env.user.company_id.owner_extension,
+            })
         if vals.get('observations'):
             api.update(description=vals.get('observations'))
         if self.env.user.company_id.lecturer_extension:

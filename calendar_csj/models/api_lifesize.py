@@ -34,6 +34,9 @@ class ApiLifesize(models.TransientModel):
                 "tempMeeting": "false",
                 "hiddenMeeting": vals.get('hiddenMeeting'),
             }
+            if vals.get('moderatorExtension'):
+                body.update({'moderatorExtension': vals.get('moderatorExtension'):
+                })
             resp = requests.post(url=url,
                                  data=json.dumps(body),
                                  headers={"key": token_company,
