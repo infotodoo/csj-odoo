@@ -28,13 +28,58 @@
             <field name="model">calendar.appointment</field>
             <field name="arch" type="xml">
                 <tree string="Appointments">
-                    <field name="name" />
+                    <!--<field name="appointment_code" string="ID Agendamiento"/>
                     <field name="type" />
                     <field name="class_id" />
-                    <field name="request_date" />
+                    <field name="request_date" string="Fecha de Solicitud"/>
+                    <field name="appointment_date" string="Fecha de Agendamiento"/>
                     <field name="city_id" />
                     <field name="partner_id" />
+                    <field name="process_number" />
+                    <field name="partner_ids_label" string="Invitados"/>
+                    <field name="destination_ids_label" string="Invitados"/>
                     <field name="state" />
+                    <field name="appointment_code" string="ID Agendamiento"/>
+                    <field name="type"/>
+                    <field name="class_id"/>
+                    <field name="request_date" string="Fecha de Solicitud"/>
+                    <field name="appointment_date" string="Fecha de Agendamiento"/>-->
+                    <field name="appointment_code" string="ID Agendamiento"/>
+                    <field name="help_id"/>
+                    <field name="partaker_type" string="Tipo de Participante"/>
+                    <field name="connection_type" string="Tipo de Conexión"/>
+                    <field name="type"/>
+                    <field name="calendar_date"/>
+                    <field name="calendar_time"  widget="float_time"/>
+                    <field name="partner_id"/>
+                    <field name="city_id"/>
+                    <field name="destination_ids_label" string="DESTINO"/>
+                    <field name="reception_id"/>
+                    <field name="reception_detail"/>
+                    <field name="observations"/>
+                    <field name="request_date" string="FECHA DE SOLICITUD"/>
+                    <field name="applicant_id"/>
+                    <field name="state"/>
+                    <field name="applicant_email"/>
+                    <field name="process_number"/>
+                    <field name="room_id"/>
+                    <field name="partner_ids_label" string="CORREOS PARTICIPANTES"/>
+                    <field name="applicant_mobile"/>
+                    <field name="class_id"/>
+                    <field name="request_type"/>
+                    <field name="declarant_text"/>
+                    <field name="indicted_text"/>
+                    <field name="appointment_date" string="FECHA DE AGENDAMIENTO"/>
+                    <field name="write_uid" string="USUARIO CIERRE"/>
+                    <field name="end_date"/>
+                    <field name="end_hour"/>
+                    <field name="state_description"/>
+                    <field name="tag_number"/>
+                    <field name="link_download"/>
+                    <field name="create_uid" string="CREADO POR"/>
+                    <field name="name"/>
+                    <field name="lifesize_url"/>
+
                 </tree>
             </field>
         </record>
@@ -45,33 +90,45 @@
             <field name="arch" type="xml">
                 <form string="Appointment">
                     <header>
-                        <button string="Confirm" type="object" name="action_confirm" class="oe_highlight" />
-                        <button string="Cancel" type="object" name="action_cancel" />
+                        <button
+                            string="Confirm"
+                            type="object"
+                            name="action_confirm"
+                            class="oe_highlight"
+                            attrs="{'invisible':[('state','=','cancel')]}"/>
+                        <button
+                            string="Cancel"
+                            type="object"
+                            name="action_cancel"
+                            attrs="{'invisible':[('state','=','cancel')]}"/>
                         <field name="state" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}"/>
 		                <!-- <field name="stage_id" widget="statusbar"  class="ml-2" on_change="1" can_create="false" can_write="false" modifiers="{}"/> -->
                     </header>
                     <sheet>
                         <div class="oe_title">
-                            <label for="name" class="oe_edit_only" string="Name" />
+                            <label for="appointment_code" class="" string="Agendamiento ID" />
                             <h1>
-                                <field name="name" readonly="True" />
+                                <field name="appointment_code" readonly="True" />
                             </h1>
                         </div>
-                        <separator string="General" colspan="2" />
+                        <separator string="Detalles del Agendamiento " colspan="2" />
                         <group>
                             <group>
-                                <field name="type" required="True" />
-                                <field name="class_id" required="True" />
-                                <field name="help_support"  domain="[('type','=','support')]" />
-                                <field name="help_type_p" domain="[('type','=','type_p')]" />
-                                <field name="help_type_c" domain="[('type','=','type_c')]" />
+                                <field name="type" required="True" string="Tipo de Solicitud"/>
+                                <field name="class_id" required="True" string="Clase de Solicitud" />
+                                <field name="help_id" />
+                                <field name="partaker_type" string="Tipo de Participante"/>
+                                <field name="connection_type"  string="Tipo de Conexión"/>
+                                <field name="appointment_date" required="True" string="Fecha de Agendamiento"/>
                                 <field name="request_date" required="True" />
                             </group>
                             <group>
-                                <field name="calendar_type" required="True" />
-                                <field name="calendar_datetime" required="True" />
-                                <field name="calendar_date" readonly="True" />
+                                <field name="calendar_type" required="True" invisible="1"/>
+                                <field name="calendar_datetime" required="True" string="Fecha y Hora de Realización"/>
+                                <!--<field name="calendar_date" readonly="True" string="Fecha y Hora de Realización"/>-->
                                 <field name="calendar_time" readonly="True" widget="float_time" />
+                                <field name="reception_id" readonly="True" string="Medio de Recepción"/>
+                                <field name="reception_detail" readonly="True" string="Detalle Medio de Recepción"/>
                             </group>
                             <group>
                                 <field name="applicant_id" required="True" />
@@ -81,8 +138,8 @@
                             <group>
                                 <!-- <field name="types_ids" widget="many2many_tags" /> -->
                                 <!-- <field name="origin_id" required="True" /> -->
-                                <field name="city_id" required="True" />
-                                <field name="partner_id" required="True" />
+                                <field name="city_id" required="True" string="Ciudad Origen"/>
+                                <field name="partner_id" required="True" string="Despacho Solicitante"/>
                                 <field name="room_id" />
                             </group>
                             <group>
@@ -91,7 +148,7 @@
                                 <field name="process_number" readonly="True" />
                                 <field name="tag_number" readonly="True" />
                                 <field name="reception_id" required="True" />
-                                <field name="sequence" required="True" />
+                                <field name="sequence_icsfile_ctl" required="False" invisible="1" />
                             </group>
                             <group>
                                 <field name="record_data" />
@@ -101,8 +158,9 @@
                                 <field name="link_streaming" attrs="{'invisible': [('type','!=','streaming'),('state','!=','realized')]}" />
                             </group>
                             <group>
-                                <field name="lifesize_meeting_ext" readonly="True" />
+                                <field name="lifesize_meeting_ext" readonly="True" string="Ext reunión Lifesize"/>
                                 <field name="lifesize_url" readonly="True" />
+                                <field name="name" readonly="True" string="API Lifesize "/>
                             </group>
                             <group groups="base.group_no_one">
                                 <field name="event_id" readonly="True" />
@@ -131,6 +189,15 @@
                             </page>
                             <page string="Participants">
                                 <field name="partners_ids">
+                                    <tree string="Contacts" >
+                                        <field name="name" />
+                                        <field name="email" />
+                                        <field name="company_type" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Destinations">
+                                <field name="destination_ids">
                                     <tree string="Contacts" >
                                         <field name="name" />
                                         <field name="email" />

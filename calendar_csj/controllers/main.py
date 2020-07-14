@@ -19,7 +19,7 @@ from odoo.exceptions import ValidationError
 import json
 from odoo import SUPERUSER_ID
 import logging
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 class WebsiteCalendarInherit(WebsiteCalendar):
@@ -29,6 +29,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
     ], type='http', auth="public", website=True)
     def calendar_appointment_choice(self, appointment_type=None, employee_id=None, message=None, types=None, **kwargs):
         partner = request.env.user.partner_id
+        judged_id = None
         if partner.appointment_type != 'scheduler':
             judged_id = partner.parent_id
             if judged_id:
@@ -60,6 +61,9 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'suggested_appointment_types': suggested_appointment_types,
             'message': message,
             'types': types,
+            'partner_id': partner.id if partner.appointment_type != 'scheduler' else 1,
+            'city_name': partner.city,
+            'judged_name': judged_id.name if judged_id else '',
         })
 
     @http.route(['/website/calendar/get_appointment_info'], type='json', auth="public", methods=['POST'], website=True)
@@ -98,33 +102,38 @@ class WebsiteCalendarInherit(WebsiteCalendar):
     @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/info'], type='http', auth="public", website=True)
     #def calendar_appointment_form(self, appointment_type, employee_id, date_time, types=False, **kwargs):
     def calendar_appointment_form(self, appointment_type, date_time, duration, types=False, **kwargs):
+        #timezone = self._context.get('tz') or self.env.user.partner_id.tz or 'UTC'
+        #timezone = pytz.timezone(self.event_tz) if self.event_tz else pytz.timezone(self._context.get('tz') or 'UTC')
+        request.session['timezone'] = appointment_type.appointment_tz or 'UTC'
         # partner_data = {}
         # if request.env.user.partner_id != request.env.ref('base.public_partner'):
         #     partner_data = request.env.user.partner_id.read(fields=['name', 'mobile', 'email'])[0]
 
         request.session['timezone'] = appointment_type.appointment_tz
-        day_name = format_datetime(datetime.strptime(date_time, dtf), 'EEE', locale=get_lang(request.env).code)
-        date_formated = format_datetime(datetime.strptime(date_time, dtf), locale=get_lang(request.env).code)
+        #day_name = format_datetime(datetime.strptime(date_time, dtf), 'EEE', locale=get_lang(request.env).code)
+        day_name = format_datetime(datetime.strptime(date_time, "%Y-%m-%d %H:%M"), 'EEE', locale=get_lang(request.env).code)
+        #date_formated = format_datetime(datetime.strptime(date_time, dtf), locale=get_lang(request.env).code)
+        date_formated = format_datetime(datetime.strptime(date_time, "%Y-%m-%d %H:%M"), locale=get_lang(request.env).code)
         city_code = appointment_type.judged_id.city_id.id
         employee_id = appointment_type.judged_id.hr_employee_id.id
-
         employee_obj = request.env['hr.employee'].sudo().browse(int(employee_id))
-
-
         timezone = request.session['timezone']
         tz_session = pytz.timezone(timezone)
         date_start = tz_session.localize(fields.Datetime.from_string(date_time)).astimezone(pytz.utc)
         date_end = date_start + relativedelta(hours=float(duration))
 
-        if employee_obj.user_id and employee_obj.user_id.partner_id:
-            if not employee_obj.user_id.partner_id.calendar_verify_availability(date_start,date_end):
+        # check availability calendar.event with partner of appointment_type
+        if appointment_type and appointment_type.judged_id:
+            if not appointment_type.judged_id.calendar_verify_availability(date_start,date_end):
                 return request.render("website_calendar.index", {
                     'appointment_type': appointment_type,
-                    'suggested_appointment_types': request.env['calendar.appointment.type'].sudo().search([]),
+                    'suggested_appointment_types': request.env['calendar.appointment.type'].sudo().search([('id','=',appointment_type.id)]),
                     'message': 'already_scheduling',
+                    'date_start': date_start,
+                    'date_end': date_end,
                     'types': types,
                 })
-        
+
         if types[0] == 'A':
             suggested_class = request.env['calendar.class'].sudo().search([('type','=','audience')])
         else:
@@ -150,22 +159,26 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'types': types,
             'duration': duration,
             'datetime': date_time,
-            'datetime_locale': day_name + ' ' + date_formated,
+            'datetime_locale': day_name + ' ' + date_time,
             'datetime_str': date_time,
             'employee_id': employee_id,
+            'duration': duration,
             'countries': request.env['res.country'].search([]),
         })
 
     @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/submit'], type='http', auth="public", website=True, method=["POST"])
-    def calendar_appointment_submit(self, appointment_type, datetime_str, employee_id, types, class_id,
-                                    reception_id, process_number, request_type, duration,  destination_id,
-                                    room_id, help_support, help_type_p, help_type_c, name, email, phone,
+    def calendar_appointment_submit(self, appointment_type, datetime_str, employee_id, types, class_id, reception_detail,
+                                    reception_id, process_number, request_type, duration, request_date, connection_type,
+                                    room_id, help_id, name, email, phone, guestcont, destinationcont, partaker_type,
                                     declarant_text=False, indicted_text=False, description=False,
                                     country_id=False, **kwargs):
+
+
         timezone = request.session['timezone']
         tz_session = pytz.timezone(timezone)
         date_start = tz_session.localize(fields.Datetime.from_string(datetime_str)).astimezone(pytz.utc)
         # date_end = date_start + relativedelta(hours=float(duration))#appointment_type.appointment_duration)
+        request_date = datetime.strptime(request_date, '%Y-%m-%d').date()
         duration = float(duration)
         if len(phone) > 10:
             return ValidationError('Número de telefono %s no permitido.' % phone )
@@ -180,13 +193,23 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                           "corteconstitucional.gov.co",
         ]
         if email.split('@')[-1] not in domain_emails:
-            return ValidationError('Dominio @%s no permitido.' % email.split('@')[-1] )
+            return request.render("website_calendar.appointment_form", {
+                'appointment_type': appointment_type,
+                'message': 'process_email_failed',
+                'date_start': date_start,
+                'duration': duration,
+                'types': types,
+            })
+            #return ValidationError('Dominio @%s no permitido.' % email.split('@')[-1] )
 
         # check availability of the employee again (in case someone else booked while the client was entering the form)
         Employee = request.env['hr.employee'].sudo().browse(int(employee_id))
+        """
         if Employee.user_id and Employee.user_id.partner_id:
             if not Employee.user_id.partner_id.calendar_verify_availability(date_start, date_end):
                 return request.redirect('/website/calendar/%s/appointment?failed=employee' % appointment_type.id)
+        """
+
         if types:
             if types[0] == 'A':
                 if len(process_number) != 23:
@@ -198,7 +221,14 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                     #             'message': _('Longitud del Número de proceso no permitida.'),
                     #             'sticky': False,
                     #             }}
-                    raise ValidationError('Longitud del Número de proceso no permitida.')
+                    return request.render("website_calendar.appointment_form", {
+                        'appointment_type': appointment_type,
+                        'message': 'process_longer_failed',
+                        'date_start': date_start,
+                        'duration': duration,
+                        'types': types,
+                    })
+                    #raise ValidationError('Longitud del Número de proceso no permitida.')
                 city = request.env['res.entity'].sudo().search_city(process_number[0:5])
                 entity = request.env['res.entity'].sudo().search_entity(process_number[5:7])
                 speciality = request.env['res.entity'].sudo().search_speciality(process_number[7:9])
@@ -207,6 +237,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                 year = datetime.now()
                 year_limit = int(year.strftime("%Y")) + 1
                 # logger.info("\ncity:{}{}\nentity:{}{}\nspeciality:{}{}\njudged:{}{}\nyear:{}\n".format(
+                """
                 logger.info("\ncity:{}{}\nentity:{}{}\nspeciality:{}{}\nyear:{}\n".format(
                     process_number[0:5], city,
                     process_number[5:7], entity,
@@ -214,20 +245,38 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                     # process_number[9:12], judged,
                     int(rad_year) in range(year_limit))
                 )
+                """
                 # if city and entity and speciality and judged:
                 if city and entity and speciality:
                     if not int(rad_year) in range(1900,year_limit):
-                        raise ValidationError('Número de proceso ERRONEO.')
+                        return request.render("website_calendar.appointment_form", {
+                            'appointment_type': appointment_type,
+                            'message': 'process_longer_failed',
+                            'date_start': date_start,
+                            'duration': duration,
+                            'types': types,
+                        })
+                        #raise ValidationError('Número de proceso ERRONEO.')
                 else:
-                    raise ValidationError('Número de proceso ERRONEO.')
+                    return request.render("website_calendar.appointment_form", {
+                        'appointment_type': appointment_type,
+                        'message': 'process_longer_failed',
+                        'date_start': date_start,
+                        'duration': duration,
+                        'types': types,
+                    })
+                    #raise ValidationError('Número de proceso ERRONEO.')
         else:
             raise ValidationError('Tipo de agendamiento de la cita no encontrado.')
         country_id = int(country_id) if country_id else None
         partner_ids = []
         Partner = request.env['res.partner'].sudo().search([('email', '=like', email)], limit=1)
+
         if Partner:
+            """
             if not Partner.calendar_verify_availability(date_start, date_end):
                 return request.redirect('/website/calendar/%s/appointment?failed=partner' % appointment_type.id)
+            """
             if not Partner.mobile or len(Partner.mobile) <= 5 and len(phone) > 5:
                 Partner.write({'mobile': phone})
             if not Partner.country_id:
@@ -239,15 +288,20 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                 'mobile': phone,
                 'company_type': 'guest',
             })
-        for i in range(1,16):
-            name_n = kwargs['name%s'%i] if kwargs['name%s'%i] != '' else False
-            email_n = kwargs['email%s'%i] if kwargs['email%s'%i] != '' else False
+
+        for i in range(1,int(guestcont)):
+            name_n = kwargs['nameguest%s'%i] if kwargs['nameguest%s'%i] != '' else False
+            email_n = kwargs['emailguest%s'%i] if kwargs['emailguest%s'%i] != '' else False
             if email_n and name_n:
                 partner_n = request.env['res.partner'].sudo().search([('email', '=like', email_n)], limit=1)
+                """
                 if partner_n:
+
                     if not partner_n.calendar_verify_availability(date_start, date_end):
                         return request.redirect('/website/calendar/%s/appointment?failed=partner' % appointment_type.id)
                 else:
+                """
+                if not partner_n:
                     partner_n = partner_n.create({
                         'name': name_n,
                         'email': email_n,
@@ -256,10 +310,20 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                 partner_ids.append(partner_n.id)
             else:
                 pass
+
+        destination_ids = []
+        for i in range(1,int(destinationcont)):
+            destination_name = kwargs['destino%s'%i] if kwargs['destino%s'%i] != '' else False
+            destination_id = destination_name.split(" - ")
+            destination_obj = request.env['res.partner'].sudo().search([('id', '=', destination_id[0])])
+            destination_ids.append(destination_obj.id)
+
+
         class_id = int(class_id)
         reception_id = int(reception_id)
         applicant_id = appointment_type.judged_id.id if appointment_type.judged_id else False
-        destination_id = int(destination_id)
+        #destination_id = int(destination_id)
+        destination_id = None
         partner_ids.append(Partner.id)
         request_type = 'r' if request_type[0] == 'R' else 'l'
         if destination_id:
@@ -299,21 +363,24 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'location': appointment_type.location,
             'types': types,
             'partner_ids': partner_ids,
+            'destination_ids': destination_ids,
             'categ_ids': [(4, categ_id.id, False)],
             'appointment_type_id': appointment_type.id,
             'user_id': Employee.user_id.id,
             'class_id' : class_id,
             'reception_id' : reception_id,
+            'reception_detail' : reception_detail,
             'indicted_text' : indicted_text,
             'declarant_text' : declarant_text,
             'applicant_id' : Partner.id,
             'destination_id' : destination_id,
             'process_number' : process_number,
             'request_type' : request_type,
+            'request_date' : request_date,
             'room_id': room_id,
-            'help_support': help_support,
-            'help_type_p': help_type_p,
-            'help_type_c': help_type_c,
+            'help_id': help_id,
+            'partaker_type': partaker_type,
+            'connection_type': connection_type,
         })
         event.attendee_ids.write({'state': 'accepted'})
         return request.redirect('/website/calendar/view/' + event.access_token + '?message=new')
@@ -409,13 +476,13 @@ class OdooWebsiteSearchDestino(http.Controller):
         destino = []
         if post:
             for suggestion in post.get('query').split(" "):
-                suggested_partners = request.env['res.partner'].sudo().search([])
-                read_partners = suggested_partners.read(['name', 'id'])
+                suggested_partners = request.env['res.partner'].sudo().search([('company_type','=','company')])
+                read_partners = suggested_partners.read(['name', 'id', 'code'])
                 suggestion_list += read_partners
 
         for line in suggestion_list:
             destino.append({'destino': line['name'], 'id': line['id']})
-        logger.info(destino)
+        #logger.info(destino)
         data = {}
         data['status'] = True,
         data['error'] = None,

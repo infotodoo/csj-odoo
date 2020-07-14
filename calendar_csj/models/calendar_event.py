@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 import pytz
 
+import logging
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
+
+_logger = logging.getLogger(__name__)
 
 _logger = logging.getLogger(__name__)
 
@@ -22,12 +25,21 @@ class CalendarEvent(models.Model):
     indicted_text = fields.Text('Indicted input')
     destination_id = fields.Many2one('res.partner', 'Destination', ondelete='set null')
     class_id = fields.Many2one('calendar.class', 'Calendar class', ondelete='set null')
-    help_support = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null', domain="[('type','=','support')]")  # Ayuda
-    help_type_p = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null', domain="[('type','=','type_p')]")
-    help_type_c = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null', domain="[('type','=','type_c')]")
+    help_id = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null')
+    partaker_type = fields.Many2one('calendar.help', 'Portaker Type', ondelete='set null')
+    connection_type = fields.Many2one('calendar.help', 'Connection Type', ondelete='set null')
     request_type = fields.Selection([('l', 'Free'), ('r', 'Reserved')], 'Request type', default='r')
+    request_date = fields.Char('Request Date')
     process_number = fields.Char('Process number')
+    appointment_code = fields.Char('Appointment Code', related='appointment_id.appointment_code', store=True)
     reception_id = fields.Many2one('calendar.reception', 'Reception medium', ondelete='set null')
+    reception_detail = fields.Char('Reception Detail')
+    destination_ids = fields.Many2many('res.partner', 'calendar_event_res_partner_destination_rel', string='Destinations', states={'done': [('readonly', True)]})
+
+
+    def fetch_calendar_verify_availability(self, date_time, search_appointment):
+        date_time = date_time
+        return date_time
 
     @api.model
     def create(self, vals):
@@ -39,7 +51,7 @@ class CalendarEvent(models.Model):
         return res
 
     def write(self, vals):
-        self.cancel_calendar_event(vals)
+        #self.cancel_calendar_event(vals)
         # self.write_appointment(vals)
         # vals.pop('cw_bool', None)
         return super(CalendarEvent, self).write(vals)
@@ -68,6 +80,7 @@ class CalendarEvent(models.Model):
             'calendar_duration': vals.get('duration'),
             'observations': vals.get('description'),
             'partners_ids': vals.get('partner_ids'),
+            'destination_ids': vals.get('destination_ids'),
             'appointment_type_id': vals.get('appointment_type_id'),
             'class_id' : vals.get('class_id'),
             'help_support': vals.get('help_support'),
@@ -81,6 +94,10 @@ class CalendarEvent(models.Model):
             'room_id': vals.get('room_id'),
             'type': types,
             'request_type' : vals.get('request_type'),
+            'request_date' : vals.get('request_date'),
+            'reception_detail' : vals.get('reception_detail'),
+            'partaker_type': vals.get('partaker_type'),
+            'connection_type': vals.get('connection_type'),
         })
         dic.update(appointment_id=appointment.id)
         return dic
@@ -97,69 +114,75 @@ class CalendarEvent(models.Model):
                     record.appointment_id.write(dic)
             record.appointment_id.write(dic)
 
-    def cancel_calendar_event(self, vals):
-        if vals.get('state') and vals.get('state') == 'cancel':
-            for record in self:
-                attendee_to_email = record.attendee_ids
-                if attendee_to_email:
-                    attendee_to_email._send_mail_to_attendees('calendar_csj.calendar_csj_template_meeting_cancel')
+    def cancel_calendar_event(self):
+        #if vals.get('state') and vals.get('state') == 'cancel':
+        for record in self:
+            attendee_to_email = record.attendee_ids
+            if attendee_to_email:
+                attendee_to_email._send_mail_to_attendees('calendar_csj.calendar_csj_template_meeting_cancel')
 
-    # def _get_ics_file(self):
-    #     """ Returns iCalendar file for the event invitation.
-    #         :returns a dict of .ics file content for each meeting
-    #     """
-    #     result = {}
+    def create_attendees(self):
+        current_user = self.env.user
+        result = {}
+        for meeting in self:
+            alreay_meeting_partners = meeting.attendee_ids.mapped('partner_id')
+            meeting_attendees = self.env['calendar.attendee']
+            meeting_partners = self.env['res.partner']
+            for partner in meeting.partner_ids.filtered(lambda partner: partner not in alreay_meeting_partners):
+                values = {
+                    'partner_id': partner.id,
+                    'email': partner.email,
+                    'event_id': meeting.id,
+                }
 
-    #     def ics_datetime(idate, allday=False):
-    #         if idate:
-    #             if allday:
-    #                 return idate
-    #             else:
-    #                 return idate.replace(tzinfo=pytz.timezone('UTC'))
-    #         return False
+                if self._context.get('google_internal_event_id', False):
+                    values['google_internal_event_id'] = self._context.get('google_internal_event_id')
 
-    #     try:
-    #         # FIXME: why isn't this in CalDAV?
-    #         import vobject
-    #     except ImportError:
-    #         _logger.warning("The `vobject` Python module is not installed, so iCal file generation is unavailable. Please install the `vobject` Python module")
-    #         return result
+                # current user don't have to accept his own meeting
+                if partner == self.env.user.partner_id:
+                    values['state'] = 'accepted'
 
-    #     for meeting in self:
-    #         cal = vobject.iCalendar()
-    #         event = cal.add('vevent')
+                attendee = self.env['calendar.attendee'].create(values)
 
-    #         if not meeting.start or not meeting.stop:
-    #             raise UserError(_("First you have to specify the date of the invitation."))
-    #         event.add('created').value = ics_datetime(fields.Datetime.now())
-    #         event.add('dtstart').value = ics_datetime(meeting.start, meeting.allday)
-    #         event.add('dtend').value = ics_datetime(meeting.stop, meeting.allday)
-    #         event.add('summary').value = meeting.name
-    #         if meeting.description:
-    #             event.add('description').value = meeting.description
-    #         if meeting.location:
-    #             event.add('location').value = meeting.location
-    #         if meeting.rrule:
-    #             event.add('rrule').value = meeting.rrule
+                meeting_attendees |= attendee
+                meeting_partners |= partner
 
-    #         if meeting.alarm_ids:
-    #             for alarm in meeting.alarm_ids:
-    #                 valarm = event.add('valarm')
-    #                 interval = alarm.interval
-    #                 duration = alarm.duration
-    #                 trigger = valarm.add('TRIGGER')
-    #                 trigger.params['related'] = ["START"]
-    #                 if interval == 'days':
-    #                     delta = timedelta(days=duration)
-    #                 elif interval == 'hours':
-    #                     delta = timedelta(hours=duration)
-    #                 elif interval == 'minutes':
-    #                     delta = timedelta(minutes=duration)
-    #                 trigger.value = delta
-    #                 valarm.add('DESCRIPTION').value = alarm.name or u'Odoo'
-    #         for attendee in meeting.attendee_ids:
-    #             attendee_add = event.add('attendee')
-    #             attendee_add.value = u'MAILTO:' + (attendee.email or u'')
-    #         result[meeting.id] = cal.serialize().encode('utf-8')
+            for partner in meeting.destination_ids.filtered(lambda partner: partner not in alreay_meeting_partners):
+                values = {
+                    'partner_id': partner.id,
+                    'email': partner.email,
+                    'event_id': meeting.id,
+                }
+                attendee = self.env['calendar.attendee'].create(values)
 
-    #     return result
+                meeting_attendees |= attendee
+                meeting_partners |= partner
+
+            if meeting_attendees and not self._context.get('detaching'):
+                to_notify = meeting_attendees.filtered(lambda a: a.email != current_user.email)
+                to_notify._send_mail_to_attendees('calendar.calendar_template_meeting_invitation')
+
+            if meeting_attendees:
+                meeting.write({'attendee_ids': [(4, meeting_attendee.id) for meeting_attendee in meeting_attendees]})
+
+            if meeting_partners:
+                meeting.message_subscribe(partner_ids=meeting_partners.ids)
+
+            # We remove old attendees who are not in partner_ids now.
+            all_partners = meeting.partner_ids
+            all_partner_attendees = meeting.attendee_ids.mapped('partner_id')
+            old_attendees = meeting.attendee_ids
+            partners_to_remove = all_partner_attendees + meeting_partners - all_partners
+
+            attendees_to_remove = self.env["calendar.attendee"]
+            if partners_to_remove:
+                attendees_to_remove = self.env["calendar.attendee"].search([('partner_id', 'in', partners_to_remove.ids), ('event_id', '=', meeting.id)])
+                attendees_to_remove.unlink()
+
+            result[meeting.id] = {
+                'new_attendees': meeting_attendees,
+                'old_attendees': old_attendees,
+                'removed_attendees': attendees_to_remove,
+                'removed_partners': partners_to_remove
+            }
+        return result

@@ -41,6 +41,7 @@ class CalendarAppointment(models.Model):
     _name = 'calendar.appointment'
     _inherit = ["mail.thread"]
     _description = 'Online Appointment'
+    _order = 'appointment_code desc'
 
     def _default_country_id(self):
         country_id = self.env.ref('base.co')
@@ -73,7 +74,8 @@ class CalendarAppointment(models.Model):
     # Realizada, Duplicada, No realizada, Asistida aplazada, Asistida cancelada, Cancelada
 
     name = fields.Char('Name', default=_('New'))
-    sequence = fields.Integer(string='Sequence')
+    sequence_icsfile_ctl = fields.Integer(string='Sequence ICS File')
+    appointment_code = fields.Char(string="Document Code", readonly=True, required=False, copy=False)
 
     # request_id = fields.Many2one('calendar.request', 'Calendar Request', ondelete='set null') #Solicitud
     type = fields.Selection([
@@ -81,10 +83,11 @@ class CalendarAppointment(models.Model):
         ('conference','Video conference'),
         ('streaming','Streaming')], 'Request type', default='audience')
     class_id = fields.Many2one('calendar.class', 'Calendar class', ondelete='set null')  # Clase
-    help_support = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null', domain="[('type','=','support')]")  # Ayuda
-    help_type_p = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null', domain="[('type','=','type_p')]")
-    help_type_c = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null', domain="[('type','=','type_c')]")
-    request_date = fields.Date('Request date', default=fields.Date.today())  # Date
+    help_id = fields.Many2one('calendar.help', 'Calendar help', ondelete='set null')  # Ayuda
+    partaker_type = fields.Many2one('calendar.help', 'Portaker Type', ondelete='set null')  # Ayuda
+    connection_type = fields.Many2one('calendar.help', 'Connection Type', ondelete='set null')  # Ayuda
+    request_date = fields.Date('Request date')  # Date
+    appointment_date = fields.Date('Request date', default=fields.Date.today())  # Date
 
     calendar_type = fields.Selection([('unique', 'Unique'), ('multi', 'Multi')], 'Calendar type', default='unique')  # Agenda
     calendar_datetime = fields.Datetime('Calendar datetime', tracking=True)  # Fechatag_number
@@ -97,6 +100,7 @@ class CalendarAppointment(models.Model):
     declarant_text = fields.Text('Declarant input')
     indicted_id = fields.Many2one('res.partner', 'Indicted', ondelete='set null')  # Procesado
     indicted_text = fields.Text('Indicted input')
+    applicant_id_label = fields.Char('Applicant Label', compute='_get_applicant_id_label', store=True)
 
     # Solicitante
     applicant_email = fields.Char('Applicant email', compute='_compute_applicant_id', inverse='_inverse_applicant_id')
@@ -110,11 +114,15 @@ class CalendarAppointment(models.Model):
     room_id = fields.Many2one('res.judged.room', 'Room', domain="[('partner_id','=',partner_id)]", ondelete='set null')
 
     partners_ids = fields.Many2many('res.partner', 'appointment_partner_rel', 'appointment_id', 'partner_id', 'Partners')
+    partner_ids_label = fields.Char('Partners Label', compute='_get_partner_ids_label', store=True)
+    destination_ids = fields.Many2many('res.partner', 'appointment_destination_partner_rel', 'appointment_id', 'partner_id', 'Destinations')
+    destination_ids_label = fields.Char('Detinations Label', compute='_get_destination_ids_label', store=True)
     request_type = fields.Selection([('l', 'Free'), ('r', 'Reserved')], 'Request type', default='r')
     process_number = fields.Char('Process number')
     tag_number = fields.Char('Tag number', compute='_compute_tag_number')
     record_data = fields.Char('Record data', compute='_compute_record_data')
     reception_id = fields.Many2one('calendar.reception', 'Reception medium', ondelete='set null')
+    reception_detail = fields.Char('Reception Detail')
 
     observations = fields.Text('Observations')
     state_description = fields.Text('State description')
@@ -134,6 +142,44 @@ class CalendarAppointment(models.Model):
     lifesize_modified = fields.Boolean('Modified')
 
     cw_bool = fields.Boolean('Create/Write', default=False, required=True)
+
+    @api.depends('partners_ids')
+    def _get_partner_ids_label(self):
+        label = ''
+        cont=0
+        for partner in self.partners_ids:
+            label += '\n\n' if cont else ''
+            label += str(partner.name)
+            if partner.email:
+                label += ' - ' + str(partner.email)
+            if partner.phone:
+                label += ' - tel:' + str(partner.phone)
+            cont+=1
+        self.partner_ids_label = label
+
+    @api.depends('destination_ids')
+    def _get_destination_ids_label(self):
+        label = ''
+        cont=0
+        for partner in self.destination_ids:
+            label += '\n\n' if cont else ''
+            label += str(partner.name)
+            if partner.email:
+                label += ' - ' + str(partner.email)
+            if partner.phone:
+                label += ' - tel:' + str(partner.phone)
+            cont+=1
+        self.destination_ids_label = label
+
+    @api.depends('applicant_id')
+    def _get_applicant_id_label(self):
+        for record in self:
+            record.applicant_id_label = '%s - %s - %s' % (
+                record.applicant_id.name ,
+                record.applicant_id.email if record.applicant_id.email else '',
+                record.applicant_id.phone if record.applicant_id.phone else '',
+            )
+
 
     @api.depends('calendar_datetime')
     def _compute_record_data(self):
@@ -214,7 +260,8 @@ class CalendarAppointment(models.Model):
         vals['name'] = vals.get('process_number')[0:23] + 's' + \
             self.env['ir.sequence'].next_by_code('calendar.appointment').replace('s','')  or _('None')
         vals['partner_id'] = vals.get('appointment_id')
-        vals['sequence'] = 1
+        vals['sequence_icsfile_ctl'] = 1
+        vals['appointment_code'] = self.env['ir.sequence'].next_by_code('calendar.appointment.document.number')
         vals.update(self.create_lifesize(vals))
         res = super(CalendarAppointment, self).create(vals)
         return res
@@ -222,7 +269,7 @@ class CalendarAppointment(models.Model):
     def write(self, vals):
         if vals.get('calendar_datetime'):
             vals.update(self.write_lifesize(vals))
-            vals['sequence'] = int(self.sequence) + 1
+            vals['sequence_icsfile_ctl'] = self.sequence_icsfile_ctl + 1 if int(self.sequence_icsfile_ctl) else 1
             self.write_event(vals)
         return super(CalendarAppointment, self).write(vals)
 
@@ -302,6 +349,7 @@ class CalendarAppointment(models.Model):
                 'duration': 1.0,
                 'description': _('Date: %s \n Time: %s' % (start_date, start_time)),
                 'alarm_ids': alarm_ids,
+                'appointment_code': self.appointment_code,
                 'location': location,
                 'partner_ids': vals.get('partners_ids'),
                 'categ_ids': categ_ids,
@@ -344,7 +392,10 @@ class CalendarAppointment(models.Model):
     def action_cancel(self):
         dic = {'state': 'cancel'}
         self.event_id.write(dic)
-        self.write(dic)
+        self.event_id.cancel_calendar_event()
+        self.state = 'cancel'
+        self.write_lifesize(dic)
+        #self.write(dic)
         self.unlink_lifesize()
 
     def action_postpone(self):
