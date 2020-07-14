@@ -4,7 +4,7 @@ from odoo import models, fields, api, _
 import datetime
 
 import logging
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 class CalendarClass(models.Model):
     _name = 'calendar.class'
@@ -312,6 +312,7 @@ class CalendarAppointment(models.Model):
             api.update(lecturerExtension=self.env.user.company_id.lecturer_extension)
         if self.env.user.company_id.moderator_extension:
             api.update(moderatorExtension=self.env.user.company_id.moderator_extension)
+        _logger.error('\n\n\nAPI: {} \n\n'.format(api))
         resp = self.env['api.lifesize'].api_crud(api)
         dic = self.env['api.lifesize'].resp2dict(resp)
         return dic
