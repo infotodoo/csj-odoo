@@ -83,7 +83,7 @@
                         <div class="form-group row col-xl-6 col-md-6">
                           <label for="phone" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">TELÉFONO</label>
                           <div class="col-md-12 row">
-                              <input type="char" class="form-control" name="phone" required="1" min="0" onkeypress="return isNumber(event)" onpaste="return false;"/>
+                              <input type="char" class="form-control" name="phone" required="1" min="0" onkeypress="return isNumber(event)" />
                           </div>
                         </div>
                         <div class="form-group row col-xl-6 col-md-6">
