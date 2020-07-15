@@ -259,7 +259,7 @@ class CalendarAppointment(models.Model):
     @api.model
     def create(self, vals):
         vals['name'] = vals.get('process_number')[0:23] + 's' + \
-            self.env['ir.sequence'].next_by_code('calendar.appointment').replace('s','')  or _('None')
+            self.env['ir.sequence'].next_by_code('calendar.appointment').replace('s','') or _('None')
         vals['partner_id'] = vals.get('appointment_id')
         vals['sequence_icsfile_ctl'] = 1
         vals['appointment_code'] = self.env['ir.sequence'].next_by_code('calendar.appointment.document.number')
@@ -312,7 +312,6 @@ class CalendarAppointment(models.Model):
             api.update(lecturerExtension=self.env.user.company_id.lecturer_extension)
         if self.env.user.company_id.moderator_extension:
             api.update(moderatorExtension=self.env.user.company_id.moderator_extension)
-        _logger.error('\n\n\nAPI: {} \n\n'.format(api))
         resp = self.env['api.lifesize'].api_crud(api)
         dic = self.env['api.lifesize'].resp2dict(resp)
         return dic

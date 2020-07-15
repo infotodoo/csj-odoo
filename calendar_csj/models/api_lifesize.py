@@ -29,7 +29,7 @@ class ApiLifesize(models.TransientModel):
             body = {
                 "displayName": vals.get('displayName'),
                 "description": description,
-                #"pin": code(),
+                # "pin": code(),
                 "ownerExtension": vals.get('ownerExtension'),
                 "tempMeeting": "false",
                 "hiddenMeeting": vals.get('hiddenMeeting'),
