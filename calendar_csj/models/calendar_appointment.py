@@ -294,7 +294,7 @@ class CalendarAppointment(models.Model):
         if vals.get('appointment_type_id'):
             #SEARCH appointment type
             online_appointment_type = self.env['calendar.appointment.type'].search(
-                ['id', '=', vals.get('appointment_type_id')])[0]
+                [('id', '=', vals.get('appointment_type_id'))])[0]
             #SELECT partner from judged_id field
             partner = online_appointment_type.judged_id if online_appointment_type \
                 and online_appointment_type.judged_id else False
