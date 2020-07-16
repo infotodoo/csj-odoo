@@ -173,6 +173,7 @@
                                 <field name="lifesize_uuid" readonly="True" />
                                 <field name="lifesize_pin" readonly="True" />
                                 <field name="lifesize_owner" readonly="True" />
+                                <field name="lifesize_moderator" readonly="True" />
                                 <field name="lifesize_modified" readonly="True" />
                             </group>
                         </group>

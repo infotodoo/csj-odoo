@@ -7,6 +7,8 @@ import json
 import random
 import string
 
+import logging
+_logger = logging.getLogger(__name__)
 
 class ApiLifesize(models.TransientModel):
     _name = 'api.lifesize'
@@ -37,6 +39,7 @@ class ApiLifesize(models.TransientModel):
             if vals.get('moderatorExtension'):
                 body.update({'moderatorExtension': vals.get('moderatorExtension'),
                 })
+            _logger.info(f'\n\n\nAPI CREATE: {vals};\n{body}')
             resp = requests.post(url=url,
                                  data=json.dumps(body),
                                  headers={"key": token_company,
@@ -150,5 +153,8 @@ class ApiLifesize(models.TransientModel):
                 lifesize_url = 'https://call.lifesizecloud.com/{}'.format(body.get('extension')),
                 lifesize_meeting_ext = body.get('extension'),
                 lifesize_owner = body.get('ownerExtension'),
+                lifesize_moderator = body.get('moderatorExtension') \
+                    if body.get('moderatorExtension') else body.get('moderatorUUID') \
+                        if body.get('moderatorUUID') else False,
             )
             return res

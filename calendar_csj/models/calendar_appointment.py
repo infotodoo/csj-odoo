@@ -140,6 +140,7 @@ class CalendarAppointment(models.Model):
     lifesize_url = fields.Char('URL Lifesize')
     lifesize_meeting_ext = fields.Char('Lifesize Meeting Ext')
     lifesize_owner = fields.Char('Owner Lifesize')
+    lifesize_moderator = fields.Char('Moderator Lifesize')
     lifesize_modified = fields.Boolean('Modified')
 
     cw_bool = fields.Boolean('Create/Write', default=False, required=True)
@@ -289,9 +290,11 @@ class CalendarAppointment(models.Model):
         }
         appointment_type = self.env.user.partner_id.appointment_type
         judged_extension_lifesize = False
+        _logger.info(f'\nCREATE LIFESIZE: API {api}')
         if vals.get('partner_id'):
             partner = self.env['res.partner'].search(['id', '=', vals.get('partner_id')])[0]
             if partner.extension_lifesize:
+                _logger.info(f'\nCREATE LIFESIZE: judged {partner.extension_lifesize}')
                 judged_extension_lifesize = partner.extension_lifesize
         if appointment_type and appointment_type == 'scheduler':
             api.update({
@@ -310,8 +313,9 @@ class CalendarAppointment(models.Model):
             api.update(description=vals.get('observations'))
         if self.env.user.company_id.lecturer_extension:
             api.update(lecturerExtension=self.env.user.company_id.lecturer_extension)
-        if self.env.user.company_id.moderator_extension:
-            api.update(moderatorExtension=self.env.user.company_id.moderator_extension)
+        # if self.env.user.company_id.moderator_extension:
+        #     api.update(moderatorExtension=self.env.user.company_id.moderator_extension)
+        _logger.info(f'\nCREATE LIFESIZE: API {api}')
         resp = self.env['api.lifesize'].api_crud(api)
         dic = self.env['api.lifesize'].resp2dict(resp)
         return dic
