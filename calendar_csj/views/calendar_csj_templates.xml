@@ -29,6 +29,18 @@
                       </ul>
                    </p>
                </div>
+               <div t-if="message=='already_scheduling'" class="alert alert-danger mt16" role="alert">
+                   <p>
+                       <strong>
+                         Ya existe un agendamiento para este Juzgado que se cruza con la fecha y hora seleccionados!
+                       </strong><br/><br/>
+                       <strong>Juzgado: </strong><span t-esc="appointment_type.name"/><br/>
+                       <!--<strong>Fecha Inicial: </strong><span t-esc="date_start"/><br/>
+                       <strong>Fecha Final: </strong><span t-esc="date_end"/><br/>-->
+                       <strong>Tipo: </strong><span t-esc="types"/><br/><br/>
+                       Seleccione otra fecha u hora para realizar el agendamiento.
+                   </p>
+               </div>
            </xpath>
            <xpath expr="//div//div//p[1]" position="replace">
              <p>
@@ -304,8 +316,8 @@
                           Ya existe un agendamiento para este Juzgado que se cruza con la fecha y hora seleccionados!
                         </strong><br/><br/>
                         <strong>Juzgado: </strong><span t-esc="appointment_type.name"/><br/>
-                        <strong>Fecha Inicial: </strong><span t-esc="date_start"/><br/>
-                        <strong>Fecha Final: </strong><span t-esc="date_end"/><br/>
+                        <!--<strong>Fecha Inicial: </strong><span t-esc="date_start"/><br/>
+                        <strong>Fecha Final: </strong><span t-esc="date_end"/><br/>-->
                         <strong>Tipo: </strong><span t-esc="types"/><br/><br/>
                         Seleccione otra fecha u hora para realizar el agendamiento.
                     </p>
