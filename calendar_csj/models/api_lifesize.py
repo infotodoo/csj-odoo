@@ -39,7 +39,7 @@ class ApiLifesize(models.TransientModel):
             if vals.get('moderatorExtension'):
                 body.update({'moderatorExtension': vals.get('moderatorExtension'),
                 })
-            _logger.info(f'\n\n\nAPI CREATE: {vals};\n{body}')
+            _logger.info(f'\nAPI CREATE: {vals};\n{body}')
             resp = requests.post(url=url,
                                  data=json.dumps(body),
                                  headers={"key": token_company,

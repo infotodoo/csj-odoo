@@ -290,7 +290,7 @@ class CalendarAppointment(models.Model):
         }
         appointment_type = self.env.user.partner_id.appointment_type
         judged_extension_lifesize = False
-        _logger.info(f'\nCREATE LIFESIZE: API {api}')
+        _logger.info(f'\nCREATE LIFESIZE: VALS {vals}\n')
         if vals.get('partner_id'):
             partner = self.env['res.partner'].search(['id', '=', vals.get('partner_id')])[0]
             if partner.extension_lifesize:
