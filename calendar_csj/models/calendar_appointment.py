@@ -288,9 +288,7 @@ class CalendarAppointment(models.Model):
             'hiddenMeeting': 'true',
             # 'hiddenMeeting': 'false' if vals.get('request_type') == 'l' else 'true',
         }
-        appointment_type = self.env.user.partner_id.appointment_type
         judged_extension_lifesize = False
-        _logger.info(f'\nCREATE LIFESIZE: VALS {vals}\n')
         if vals.get('appointment_type_id'):
             #SEARCH appointment type
             online_appointment_type = self.env['calendar.appointment.type'].search(
@@ -299,8 +297,9 @@ class CalendarAppointment(models.Model):
             partner = online_appointment_type.judged_id if online_appointment_type \
                 and online_appointment_type.judged_id else False
             if partner and partner.extension_lifesize:
-                _logger.info(f'\nCREATE LIFESIZE: judged {partner.extension_lifesize}')
                 judged_extension_lifesize = partner.extension_lifesize
+        ### moderator and owner rules.
+        appointment_type = self.env.user.partner_id.appointment_type
         if appointment_type and appointment_type == 'scheduler':
             api.update({
                 'ownerExtension': self.env.user.extension_lifesize or \
@@ -321,7 +320,6 @@ class CalendarAppointment(models.Model):
             api.update(lecturerExtension=self.env.user.company_id.lecturer_extension)
         # if self.env.user.company_id.moderator_extension:
         #     api.update(moderatorExtension=self.env.user.company_id.moderator_extension)
-        _logger.info(f'\nCREATE LIFESIZE: API {api}')
         resp = self.env['api.lifesize'].api_crud(api)
         dic = self.env['api.lifesize'].resp2dict(resp)
         return dic
