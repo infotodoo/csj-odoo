@@ -212,6 +212,17 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                 return request.redirect('/website/calendar/%s/appointment?failed=employee' % appointment_type.id)
         """
 
+        # check availability calendar.event with partner of appointment_type
+        if appointment_type and appointment_type.judged_id:
+            if not appointment_type.judged_id.calendar_verify_availability(date_start,date_end):
+                return request.render("website_calendar.appointment_form", {
+                    'appointment_type': appointment_type,
+                    'message': 'already_scheduling',
+                    'date_start': date_start,
+                    'date_end': date_end,
+                    'types': types,
+                })
+
         if types:
             if types[0] == 'A':
                 if len(process_number) != 23:
