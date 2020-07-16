@@ -291,9 +291,14 @@ class CalendarAppointment(models.Model):
         appointment_type = self.env.user.partner_id.appointment_type
         judged_extension_lifesize = False
         _logger.info(f'\nCREATE LIFESIZE: VALS {vals}\n')
-        if vals.get('partner_id'):
-            partner = self.env['res.partner'].search(['id', '=', vals.get('partner_id')])[0]
-            if partner.extension_lifesize:
+        if vals.get('appointment_type_id'):
+            #SEARCH appointment type
+            online_appointment_type = self.env['calendar.appointment.type'].search(
+                ['id', '=', vals.get('appointment_type_id')])[0]
+            #SELECT partner from judged_id field
+            partner = online_appointment_type.judged_id if online_appointment_type \
+                and online_appointment_type.judged_id else False
+            if partner and partner.extension_lifesize:
                 _logger.info(f'\nCREATE LIFESIZE: judged {partner.extension_lifesize}')
                 judged_extension_lifesize = partner.extension_lifesize
         if appointment_type and appointment_type == 'scheduler':
@@ -306,8 +311,9 @@ class CalendarAppointment(models.Model):
         else:
             api.update({
                 'ownerExtension': self.env.user.company_id.owner_extension,
-                'moderatorExtension':self.env.user.extension_lifesize or \
-                self.env.user.company_id.owner_extension,
+                'moderatorExtension': judged_extension_lifesize or \
+                    self.env.user.extension_lifesize or \
+                        self.env.user.company_id.owner_extension,
             })
         if vals.get('observations'):
             api.update(description=vals.get('observations'))
