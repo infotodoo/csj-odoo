@@ -65,12 +65,13 @@
                     <field name="end_hour" string="HORA FINAL"/>
                     <field name="appointment_close_date" string="FECHA DE CIERRE"/>
                     <field name="appointment_close_user_id" string="USUARIO DE CIERRE"/>
-                    <field name="state_description" string="Creado por"/>
+                    <field name="state_description" string="CREADO POR"/>
                     <field name="tag_number" string="ETIQUETA"/>
                     <field name="link_download" string="URL AGENDAMIENTO"/>
                     <field name="create_uid" string="CREADOR POR"/>
                     <field name="name" string="NOMBRE DE LA SALA LIFESIZE"/>
                     <field name="lifesize_url" string="URL LIFESIZE"/>
+                    <field name="create_uid_email" string="EMAIL AGENDADOR"/>
                 </tree>
             </field>
         </record>

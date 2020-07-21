@@ -149,6 +149,7 @@ class CalendarAppointment(models.Model):
     lifesize_moderator = fields.Char('Moderator Lifesize')
     lifesize_modified = fields.Boolean('Modified')
 
+    create_uid_email = fields.Char('Create User Email', related='create_uid.email', store=False)
     cw_bool = fields.Boolean('Create/Write', default=False, required=True)
 
     @api.depends('partners_ids')
