@@ -71,7 +71,7 @@ class CalendarAppointment(models.Model):
 
     state = fields.Selection([('draft','No confirmed'), ('open','Confirmed'), ('realized','Realized'),
                               ('unrealized','Unrealized'),
-                              #('postpone','Postponed'),
+                              ('postpone','Postponed'),
                               ('assist_postpone','Assisted and Postponed'),
                               ('assist_cancel','Assisted and Canceled'), ('cancel','Canceled')],
                               'State', default='draft', tracking=True)
