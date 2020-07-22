@@ -25,9 +25,9 @@
                     <group string="Lifesize" >
                         <field name="extension_lifesize"/>
                     </group>
-                    <group string="Email">
+                    <!--<group string="Email">
                         <field name="email"/>
-                    </group>
+                    </group>-->
                 </xpath>
             </field>
         </record>

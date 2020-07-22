@@ -136,8 +136,8 @@ class CalendarEvent(models.Model):
                     values['google_internal_event_id'] = self._context.get('google_internal_event_id')
 
                 # current user don't have to accept his own meeting
-                if partner == self.env.user.partner_id:
-                    values['state'] = 'accepted'
+                #if partner == self.env.user.partner_id:
+                #    values['state'] = 'accepted'
 
                 attendee = self.env['calendar.attendee'].create(values)
 
