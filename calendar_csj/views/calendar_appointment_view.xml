@@ -59,7 +59,7 @@
                     <field name="request_type" string="TIPO DE AUDIENCIA"/>
                     <field name="declarant_text" string="DEECLARANTE"/>
                     <field name="indicted_text" string="PROCESADO"/>
-                    <field name="appointment_date" string="FECHA DE AGENDAMIENTO"/>
+                      <field name="appointment_date" string="FECHA DE AGENDAMIENTO"/>
                     <!--<field name="write_uid" string="Usuario Cierre"/>-->
                     <field name="end_date" string="FECHA FINAL"/>
                     <field name="end_hour" string="HORA FINAL"/>
