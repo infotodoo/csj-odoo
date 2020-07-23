@@ -25,8 +25,8 @@
                     <group string="Lifesize" >
                         <field name="extension_lifesize"/>
                     </group>
-                    <group string="Notification Email">
-                        <field name="notification_email"/>
+                    <group string="Notification Partner">
+                        <field name="notification_partner"/>
                     </group>
                 </xpath>
             </field>
