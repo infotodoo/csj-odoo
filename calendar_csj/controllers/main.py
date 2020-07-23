@@ -347,8 +347,8 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         # include email copy for appointment user creation
         useremail_obj = request.env['res.users'].sudo().search([('id', '=', request.env.uid)])
         if useremail_obj.notification_partner:
-            Partner = request.env['res.partner'].sudo().search([('email', '=', useremail_obj.notification_partner.email)], limit=1)
-            partner_ids.append(Partner.id)
+            partner_obj = request.env['res.partner'].sudo().search([('email', '=', useremail_obj.notification_partner.email)], limit=1)
+            partner_ids.append(partner_obj.id)
 
         partner_ids = [(6,False,partner_ids)]
 
