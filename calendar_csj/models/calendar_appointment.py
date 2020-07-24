@@ -92,7 +92,7 @@ class CalendarAppointment(models.Model):
     partaker_type = fields.Many2one('calendar.help', 'Portaker Type', ondelete='set null')  # Ayuda
     connection_type = fields.Many2one('calendar.help', 'Connection Type', ondelete='set null')  # Ayuda
     request_date = fields.Date('Request date')  # Date
-    appointment_date = fields.Date('Request date', default=fields.Date.today())  # Date
+    appointment_date = fields.Date('Appointment date', default=fields.Date.today())  # Date
     appointment_close_date = fields.Date('Close date')
     appointment_close_user_id = fields.Many2one('res.users', 'Close user')  # Date
     calendar_type = fields.Selection([('unique', 'Unique'), ('multi', 'Multi')], 'Calendar type', default='unique')  # Agenda
@@ -455,6 +455,14 @@ class CalendarAppointment(models.Model):
                     calendar_time = float(res['datas'][index][fieldindex])
                     hour, minute = self.float_time_convert(calendar_time)
                     res['datas'][index][fieldindex] = '{0:02d}:{1:02d}'.format(hour, minute)
+                    #meter minutos
+                if fields_name.get('request_type'):
+                    fieldindex = fields_name.get('request_type')
+                    request_type_value = str(res['datas'][index][fieldindex])
+                    request_type_value = 'L' if request_type_value == 'Libre' else 'R'
+                    res['datas'][index][fieldindex] = request_type_value
+
+
         except Exception as e:
             raise UserError('It was not possible to convert the time format when exporting the file.')
         return res

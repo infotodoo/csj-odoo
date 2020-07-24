@@ -59,7 +59,7 @@
                     <field name="request_type" string="TIPO DE AUDIENCIA"/>
                     <field name="declarant_text" string="DECLARANTE"/>
                     <field name="indicted_text" string="PROCESADO"/>
-                      <field name="appointment_date" string="FECHA AGENDAMIENTO"/>
+                    <field name="appointment_date" string="FECHA AGENDAMIENTO"/>
                     <!--<field name="write_uid" string="Usuario Cierre"/>-->
                     <field name="create_uid_email" string="USUARIO AGENDAMIENTO"/>
                     <field name="appointment_close_date" string="FECHA DE CIERRE"/>
@@ -152,7 +152,7 @@
                             <group>
                                 <field name="record_data" />
                                 <field name="end_date" attrs="{'invisible': [('state','!=','realized')]}" />
-                                <field name="end_hour" attrs="{'invisible': [('state','!=','realized')]}" />
+                                <field name="end_hour" attrs="{'invisible': [('state','!=','realized')]}" widget="float_time"/>
                                 <field name="link_download" attrs="{'invisible': [('state','!=','realized')]}" />
                                 <field name="link_streaming" attrs="{'invisible': [('type','!=','streaming'),('state','!=','realized')]}" />
                             </group>
