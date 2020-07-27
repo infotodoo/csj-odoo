@@ -304,8 +304,10 @@ class CalendarAppointment(models.Model):
             api.update({
                 'ownerExtension': self.env.user.extension_lifesize or \
                     self.env.user.company_id.owner_extension,
-                'moderatorExtension': judged_extension_lifesize or \
+                'moderatorExtension': self.env.user.extension_lifesize or \
                     self.env.user.company_id.owner_extension,
+                # 'moderatorExtension': judged_extension_lifesize or \
+                #     self.env.user.company_id.owner_extension,
             })
         else:
             api.update({
