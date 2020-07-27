@@ -497,6 +497,20 @@
 
         <template id="appointment_validated_csj" inherit_id="website_calendar.appointment_validated" name="Website Appointment: Appointment Confirmed">
           <!--<xpath expr="//t[@t-if='event.description']" position="before">-->
+          <xpath expr="//div//div//div//div[4]" position="replace">
+            <div class="row">
+                <div class="col-md-2 text-right">
+                    <label>Attendees:</label>
+                </div>
+                <div class="col-md-10">
+                    <div t-foreach="event.attendee_ids" t-as="attendee">
+                        <t t-esc="attendee.email"/>
+                        <span t-if="attendee.state=='accepted'" class="fa fa-check text-success" title="Confirmed" role="img" aria-label="Confirmed"/>
+                        <span t-if="attendee.state=='declined'" class="fa fa-times text-danger" title="Declined" role="img" aria-label="Declined"/>
+                    </div>
+                </div>
+            </div>
+          </xpath>
           <xpath expr="//div//div//div//div[5]" position="after">
             <div t-if="event.appointment_code" class="row">
               <div class="col-md-2 text-right">
@@ -511,7 +525,7 @@
                   <label>Lifesize URL:</label>
               </div>
               <div class="col-md-10">
-                  <a t-attr-href="event.appointment_id.lifesize_url" t-attr-target='_black'><div t-field="event.appointment_id.lifesize_url"/></a>
+                  <a t-attr-href="event.appointment_id.lifesize_url" target='_black'><div t-field="event.appointment_id.lifesize_url"/></a>
               </div>
             </div>
           </xpath>
