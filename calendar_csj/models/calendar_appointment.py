@@ -486,6 +486,7 @@ class CalendarAppointment(models.Model):
                 'appointment_close_date': datetime.datetime.now(),
                 'appointment_close_user_id': self.env.user.id,
             })
+        if self.state in ['cancel']:
             self.action_cancel()
 
 
