@@ -506,6 +506,14 @@
                   <div t-field="event.appointment_code"/>
               </div>
             </div>
+            <div t-if="event.appointment_id.lifesize_url" class="row">
+              <div class="col-md-2 text-right">
+                  <label>Lifesize URL:</label>
+              </div>
+              <div class="col-md-10">
+                  <a t-attr-href="event.appointment_id.lifesize_url" t-attr-target='_black'><div t-field="event.appointment_id.lifesize_url"/></a>
+              </div>
+            </div>
           </xpath>
         </template>
     </data>

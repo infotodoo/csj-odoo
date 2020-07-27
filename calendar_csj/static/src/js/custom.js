@@ -108,7 +108,6 @@ $(".appointment_submit_form").submit(function(){
     Dialog.alert(this, 'Por favor registre la fecha de solicitud!');
     return false;
   };
-
   if (phone === '' || phone === null || phone === 'undefined'){
     Dialog.alert(this, 'Por favor registre un número de teléfono!');
     return false;
@@ -137,6 +136,7 @@ $(".appointment_submit_form").submit(function(){
     Dialog.alert(this, 'El tipo de Agendamiento es "Audiencia", por favor registre un número valido, debe tener 23 caracteres!');
     return false;
   };
+  $(".appointment_submit_form input[name='types']").val().replace(/[^A-Z0-9]/ig, "");
 });
 
 publicWidget.registry.websiteAppointmentSelect = publicWidget.Widget.extend({

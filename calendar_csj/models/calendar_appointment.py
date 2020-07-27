@@ -117,6 +117,8 @@ class CalendarAppointment(models.Model):
     city_id = fields.Many2one('res.city', 'City', ondelete='set null', related='partner_id.city_id')
     partner_id = fields.Many2one('res.partner', 'Judged', domain="[('city_id','=',city_id)]", ondelete='set null',
                                  related='appointment_type_id.judged_id')
+    judged_only_code = fields.Char('Partner Only Code', compute="_compute_partner_separated_name", store="False")
+    judged_only_name = fields.Char('Partner Only Name', compute="_compute_partner_separated_name", store="False")
     room_id = fields.Many2one('res.judged.room', 'Room', domain="[('partner_id','=',partner_id)]", ondelete='set null')
     room_id_mame = fields.Char('Room Name', related='room_id.virtual_room', store=False)
     partners_ids = fields.Many2many('res.partner', 'appointment_partner_rel', 'appointment_id', 'partner_id', 'Partners')
@@ -163,6 +165,20 @@ class CalendarAppointment(models.Model):
             cont+=1
         self.partner_ids_label = label
 
+    @api.depends('partner_id')
+    def _compute_partner_separated_name(self):
+        for record in self:
+            code_entity = record.partner_id.entity_id.code if record.partner_id.entity_id else ''
+            code_specialty = record.partner_id.specialty_id.code if record.partner_id.specialty_id else ''
+            name_specialty = record.partner_id.specialty_id.mame if record.partner_id.specialty_id else ''
+            zipcode = record.partner_id.city_id.zipcode if record.partner_id.city_id else ''
+            code_city = zipcode or ''
+            code = record.partner_id.code or ''
+            name = record.partner_id.mame or ''
+            #record.name = code_city + code_entity + code_specialty + code + ' ' + name_specialty + ' - ' + name
+            record.judged_only_code = code_city + code_entity + code_specialty + code
+            record.judged_only_name = name
+
     @api.depends('destination_ids')
     def _get_destination_ids_label(self):
         label = ''
@@ -190,7 +206,6 @@ class CalendarAppointment(models.Model):
                 record.applicant_id.email if record.applicant_id.email else '',
                 record.applicant_id.phone if record.applicant_id.phone else '',
             )
-
 
     @api.depends('calendar_datetime')
     def _compute_record_data(self):
@@ -454,15 +469,12 @@ class CalendarAppointment(models.Model):
                     fieldindex = fields_name.get('calendar_time')
                     calendar_time = float(res['datas'][index][fieldindex])
                     hour, minute = self.float_time_convert(calendar_time)
-                    res['datas'][index][fieldindex] = '{0:02d}:{1:02d}'.format(hour, minute)
-                    #meter minutos
+                    res['datas'][index][fieldindex] = '{0:02d}:{1:02d}:00'.format(hour, minute)
                 if fields_name.get('request_type'):
                     fieldindex = fields_name.get('request_type')
                     request_type_value = str(res['datas'][index][fieldindex])
                     request_type_value = 'L' if request_type_value == 'Libre' else 'R'
                     res['datas'][index][fieldindex] = request_type_value
-
-
         except Exception as e:
             raise UserError('It was not possible to convert the time format when exporting the file.')
         return res
@@ -474,6 +486,7 @@ class CalendarAppointment(models.Model):
                 'appointment_close_date': datetime.datetime.now(),
                 'appointment_close_user_id': self.env.user.id,
             })
+            self.action_cancel()
 
 
 class CalendarAppointmentType(models.Model):
