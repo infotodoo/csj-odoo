@@ -2,6 +2,8 @@
 
 from odoo import models, fields, api, _
 import datetime
+import math
+from odoo.exceptions import UserError, ValidationError
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -68,9 +70,11 @@ class CalendarAppointment(models.Model):
         return parent_id
 
     state = fields.Selection([('draft','No confirmed'), ('open','Confirmed'), ('realized','Realized'),
-                              ('unrealized','Unrealized'), ('postpone','Postponed'),('assist_postpone','Assisted and Postponed'),
-                               ('assist_cancel','Assisted and Canceled'), ('cancel','Canceled')],
-                               'State', default='draft', tracking=True)
+                              ('unrealized','Unrealized'),
+                              ('postpone','Postponed'),
+                              ('assist_postpone','Assisted and Postponed'),
+                              ('assist_cancel','Assisted and Canceled'), ('cancel','Canceled')],
+                              'State', default='draft', tracking=True)
     # Realizada, Duplicada, No realizada, Asistida aplazada, Asistida cancelada, Cancelada
 
     name = fields.Char('Name', default=_('New'))
@@ -89,7 +93,8 @@ class CalendarAppointment(models.Model):
     connection_type = fields.Many2one('calendar.help', 'Connection Type', ondelete='set null')  # Ayuda
     request_date = fields.Date('Request date')  # Date
     appointment_date = fields.Date('Request date', default=fields.Date.today())  # Date
-
+    appointment_close_date = fields.Date('Close date')
+    appointment_close_user_id = fields.Many2one('res.users', 'Close user')  # Date
     calendar_type = fields.Selection([('unique', 'Unique'), ('multi', 'Multi')], 'Calendar type', default='unique')  # Agenda
     calendar_datetime = fields.Datetime('Calendar datetime', tracking=True)  # Fechatag_number
     calendar_date = fields.Date('Calendar date', compute='_compute_calendar_datetime')
@@ -113,12 +118,13 @@ class CalendarAppointment(models.Model):
     partner_id = fields.Many2one('res.partner', 'Judged', domain="[('city_id','=',city_id)]", ondelete='set null',
                                  related='appointment_type_id.judged_id')
     room_id = fields.Many2one('res.judged.room', 'Room', domain="[('partner_id','=',partner_id)]", ondelete='set null')
-
+    room_id_mame = fields.Char('Room Name', related='room_id.virtual_room', store=False)
     partners_ids = fields.Many2many('res.partner', 'appointment_partner_rel', 'appointment_id', 'partner_id', 'Partners')
     partner_ids_label = fields.Char('Partners Label', compute='_get_partner_ids_label', store=True)
     destination_ids = fields.Many2many('res.partner', 'appointment_destination_partner_rel', 'appointment_id', 'partner_id', 'Destinations')
     destination_ids_label = fields.Char('Detinations Label', compute='_get_destination_ids_label', store=True)
     request_type = fields.Selection([('l', 'Free'), ('r', 'Reserved')], 'Request type', default='r')
+    request_type_label = fields.Char('Request Type Label', compute='_get_request_type_label', store=False)
     process_number = fields.Char('Process number')
     tag_number = fields.Char('Tag number', compute='_compute_tag_number')
     record_data = fields.Char('Record data', compute='_compute_record_data')
@@ -143,6 +149,7 @@ class CalendarAppointment(models.Model):
     lifesize_moderator = fields.Char('Moderator Lifesize')
     lifesize_modified = fields.Boolean('Modified')
 
+    create_uid_email = fields.Char('Create User Email', related='create_uid.email', store=False)
     cw_bool = fields.Boolean('Create/Write', default=False, required=True)
 
     @api.depends('partners_ids')
@@ -150,12 +157,9 @@ class CalendarAppointment(models.Model):
         label = ''
         cont=0
         for partner in self.partners_ids:
-            label += '\n\n' if cont else ''
-            label += str(partner.name)
+            label += '|' if cont else ''
             if partner.email:
-                label += ' - ' + str(partner.email)
-            if partner.phone:
-                label += ' - tel:' + str(partner.phone)
+                label += str(partner.email)
             cont+=1
         self.partner_ids_label = label
 
@@ -164,14 +168,19 @@ class CalendarAppointment(models.Model):
         label = ''
         cont=0
         for partner in self.destination_ids:
-            label += '\n\n' if cont else ''
+            label += ',' if cont else ''
             label += str(partner.name)
-            if partner.email:
-                label += ' - ' + str(partner.email)
-            if partner.phone:
-                label += ' - tel:' + str(partner.phone)
             cont+=1
         self.destination_ids_label = label
+
+    @api.depends('partaker_type','help_id','connection_type')
+    def _get_request_type_label(self):
+        for record in self:
+            record.request_type_label = '%s,%s,%s' % (
+                record.partaker_type.name,
+                record.help_id.name,
+                record.connection_type.name,
+            )
 
     @api.depends('applicant_id')
     def _get_applicant_id_label(self):
@@ -430,6 +439,35 @@ class CalendarAppointment(models.Model):
 
     def action_postpone(self):
         self.write({'state': 'postpone'})
+
+    def float_time_convert(self, float_val):
+        factor = float_val < 0 and -1 or 1
+        val = abs(float_val)
+        return (factor * int(math.floor(val)), int(round((val % 1) * 60)))
+
+    def export_data(self, fields_to_export):
+        """ Override to fix hour format in export file """
+        res = super(CalendarAppointment, self).export_data(fields_to_export)
+        index = range(len(fields_to_export))
+        fields_name = dict(zip(fields_to_export,index))
+        try:
+            for index, val in enumerate(res['datas']):
+                if fields_name.get('calendar_time'):
+                    fieldindex = fields_name.get('calendar_time')
+                    calendar_time = float(res['datas'][index][fieldindex])
+                    hour, minute = self.float_time_convert(calendar_time)
+                    res['datas'][index][fieldindex] = '{0:02d}:{1:02d}'.format(hour, minute)
+        except Exception as e:
+            raise UserError('It was not possible to convert the time format when exporting the file.')
+        return res
+
+    @api.onchange('state')
+    def onchange_state(self):
+        if self.state not in  ['cancel','open','draft']:
+            self.write({
+                'appointment_close_date': datetime.datetime.now(),
+                'appointment_close_user_id': self.env.user.id,
+            })
 
 
 class CalendarAppointmentType(models.Model):

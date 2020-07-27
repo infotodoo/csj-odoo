@@ -78,7 +78,7 @@ class ResSpecialty(models.Model):
         code = self.code or ''
         name = self.mame or ''
         self.name = code_entity + code + ' ' + name_entity + ' - ' + name
-    
+
     @api.model
     def create(self, vals):
         entity_id = self.env['res.entity'].browse(vals.get('entity_id'))
@@ -183,7 +183,7 @@ class ResJudged(models.Model):
             code = record.code or ''
             name = record.mame or ''
             record.name = code_city + code_entity + code_specialty + code + ' ' + name_specialty + ' - ' + name
-    
+
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -199,7 +199,7 @@ class ResPartner(models.Model):
                 record.appointment_bool = False
 
     company_type = fields.Selection([
-        ('person', 'Person'), 
+        ('person', 'Person'),
         ('company', 'Entity'),
         ('judged', 'Judged'),
         ('guest','Guest')], default='person', compute=False, inverse=False)
@@ -273,7 +273,7 @@ class ResPartner(models.Model):
         })
         dic.update(appointment_id=appointment.id)
         return dic
-    
+
     def write_hr_calendar(self, vals):
         for record in self:
             if 'active' in vals:
@@ -297,7 +297,7 @@ class ResPartner(models.Model):
             for j in date:
                 lis.append((0,0,{'weekday': str(i), 'hour': j}))
         return lis
-    
+
     def create_res_users(self, vals):
         group = self.env.ref('base.group_portal')
         user = self.env['res.users'].sudo().create({
@@ -314,6 +314,20 @@ class ResPartner(models.Model):
     def search_company_type(self):
         res = self.env['res.partner'].sudo().search([('company_type','=','judged')])
         return res
+
+    def calendar_verify_availability(self, date_start, date_end):
+        """ verify availability of the partner(s) between 2 datetimes on their calendar
+        """
+        if bool(self.env['calendar.event'].search_count([
+            ('partner_ids', 'in', self.ids),
+            ('state', 'not in', ['cancel',]),
+            '|', '&', ('start_datetime', '<', fields.Datetime.to_string(date_end)),
+                      ('stop_datetime', '>', fields.Datetime.to_string(date_start)),
+                 '&', ('allday', '=', True),
+                      '|', ('start_date', '=', fields.Date.to_string(date_end)),
+                           ('start_date', '=', fields.Date.to_string(date_start))])):
+            return False
+        return True
 
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'

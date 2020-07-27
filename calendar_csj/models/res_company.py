@@ -16,3 +16,4 @@ class ResUsers(models.Model):
     _inherit = 'res.users'
 
     extension_lifesize = fields.Char('Extension Lifesize')
+    notification_partner = fields.Many2one('res.partner', 'Notification Partner')
