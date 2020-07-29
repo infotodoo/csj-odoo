@@ -62,9 +62,9 @@
                     <field name="indicted_text" string="PROCESADO"/>
                     <field name="appointment_date" string="FECHA AGENDAMIENTO"/>
                     <!--<field name="write_uid" string="Usuario Cierre"/>-->
-                    <field name="create_uid_email" string="USUARIO AGENDAMIENTO"/>
+                    <field name="create_uid_login" string="USUARIO AGENDAMIENTO"/>
                     <field name="appointment_close_date" string="FECHA DE CIERRE"/>
-                    <field name="appointment_close_user_id" string="USUARIO DE CIERRE"/>
+                    <field name="appointment_close_user_login" string="USUARIO DE CIERRE"/>
                     <field name="end_date" string="FECHA FINAL"/>
                     <field name="end_hour" string="HORA FINAL" widget="float_time"/>
                     <field name="state_description" string="DESCRIPCION"/>
@@ -73,6 +73,7 @@
                     <field name="create_uid" string="CREADOR POR"/>
                     <field name="name" string="NOMBRE DE LA SALA LIFESIZE"/>
                     <field name="lifesize_url" string="URL LIFESIZE"/>
+                    <field name="calendar_datetime" string="FECHA Y HORA DE REALIZACIÓN"/>
                 </tree>
             </field>
         </record>

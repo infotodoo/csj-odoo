@@ -95,6 +95,7 @@ class CalendarAppointment(models.Model):
     appointment_date = fields.Date('Appointment date', default=fields.Date.today())  # Date
     appointment_close_date = fields.Date('Close date')
     appointment_close_user_id = fields.Many2one('res.users', 'Close user')  # Date
+    appointment_close_user_login = fields.Char('Closing User Login', related='appointment_close_user_id.login', store=False)  # Date
     calendar_type = fields.Selection([('unique', 'Unique'), ('multi', 'Multi')], 'Calendar type', default='unique')  # Agenda
     calendar_datetime = fields.Datetime('Calendar datetime', tracking=True)  # Fechatag_number
     calendar_date = fields.Date('Calendar date', compute='_compute_calendar_datetime')
@@ -151,7 +152,7 @@ class CalendarAppointment(models.Model):
     lifesize_moderator = fields.Char('Moderator Lifesize')
     lifesize_modified = fields.Boolean('Modified')
 
-    create_uid_email = fields.Char('Create User Email', related='create_uid.email', store=False)
+    create_uid_login = fields.Char('Create User Login', related='create_uid.login', store=False)
     cw_bool = fields.Boolean('Create/Write', default=False, required=True)
 
     @api.depends('partners_ids')
@@ -328,10 +329,8 @@ class CalendarAppointment(models.Model):
             api.update({
                 'ownerExtension': self.env.user.extension_lifesize or \
                     self.env.user.company_id.owner_extension,
-                'moderatorExtension': self.env.user.extension_lifesize or \
+                'moderatorExtension': judged_extension_lifesize or \
                     self.env.user.company_id.owner_extension,
-                # 'moderatorExtension': judged_extension_lifesize or \
-                #     self.env.user.company_id.owner_extension,
             })
         else:
             api.update({

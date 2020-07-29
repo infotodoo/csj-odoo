@@ -400,6 +400,8 @@
                         <label for="duration" class="col-md-3 col-form-label">Duración del Evento</label>
                         <div class="col-md-9" style="padding-left:8px;">
                             <select name="duration" class="form-control" id="duration" style="width:50%">
+                                <option t-att-value="0.083333333333333">00:05</option>
+                                <option t-att-value="0.166666666666667">00:10</option>
                                 <option t-att-value="0.25">00:15</option>
                                 <option t-att-value="0.5">00:30</option>
                                 <option t-att-value="0.75">00:45</option>
