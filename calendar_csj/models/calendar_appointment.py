@@ -288,7 +288,21 @@ class CalendarAppointment(models.Model):
         vals['partner_id'] = vals.get('appointment_id')
         vals['sequence_icsfile_ctl'] = 1
         vals['appointment_code'] = self.env['ir.sequence'].next_by_code('calendar.appointment.document.number')
-        vals.update(self.create_lifesize(vals))
+        online_appointment_type = self.env['calendar.appointment.type'].search(
+            [('id', '=', vals.get('appointment_type_id'))])[0]
+        partner = online_appointment_type.judged_id if online_appointment_type \
+            and online_appointment_type.judged_id else False
+        if partner and partner.permanent_room:
+            extension = partner.lifesize_meeting_extension if \
+                    partner.lifesize_meeting_extension else False
+            vals.update({
+                'lifesize_meeting_ext': extension,
+                'lifesize_url': 'https://call.lifesizecloud.com/{}'.format(extension) if extension else False,
+            })
+            _logger.error('\nSTATUS: NO CREADA EN LIFESIZE {}'.format(vals))
+        else:
+            vals.update(self.create_lifesize(vals))
+            _logger.error('\nSTATUS: CREADA EN LIFESIZE {}'.format(vals))
         res = super(CalendarAppointment, self).create(vals)
         return res
 
@@ -367,11 +381,15 @@ class CalendarAppointment(models.Model):
 
     def unlink_lifesize(self):
         for record in self:
-            api = {
-                'method': 'delete',
-                'uuid': record.lifesize_uuid,
-            }
-            self.env['api.lifesize'].api_crud(api)
+            partner = record.partner_id
+            if partner and not partner.permanent_room:
+                api = {
+                    'method': 'delete',
+                    'uuid': record.lifesize_uuid,
+                }
+                self.env['api.lifesize'].api_crud(api)
+            else:
+                _logger.error('\nSTATUS: NO CANCELADA EN LIFESIZE')
 
     def create_event(self, vals):
         dic = {}
