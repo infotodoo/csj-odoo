@@ -309,12 +309,7 @@ class CalendarAppointment(models.Model):
 
     def write(self, vals):
         if vals.get('calendar_datetime'):
-            partner = self.partner_id
-            _logger.error('\n{}, {}'.format(partner,partner.permanent_room))
-            if partner and not partner.permanent_room:
-                vals.update(self.write_lifesize(vals))
-            else:
-                _logger.error('\nSTATUS: NO MODIFICADA EN LIFESIZE {}'.format(vals))
+            vals.update(self.write_lifesize(vals))
             vals['sequence_icsfile_ctl'] = self.sequence_icsfile_ctl + 1 if int(self.sequence_icsfile_ctl) else 1
             self.write_event(vals)
         return super(CalendarAppointment, self).write(vals)
@@ -388,6 +383,7 @@ class CalendarAppointment(models.Model):
                 dic.update(state='postpone')
             else:
                 _logger.error('\nSTATUS: NO MODIFICADA EN LIFESIZE')
+                dic = {'state': 'postpone'}
         return dic
 
     def unlink_lifesize(self):
