@@ -28,7 +28,7 @@
                                 <field name="specialty_id" attrs="{'required': [('company_type', '=', 'judged')]}" />
                                 <field name="extension_lifesize" attrs="{'required': [('company_type', '=', 'judged')]}" />
                                 <field name="permanent_room" attrs="{'invisible': [('company_type', '!=', 'judged')]}" />
-                                <field name="extension_lifesize" 
+                                <field name="lifesize_meeting_extension" 
                                     attrs="{'required': [('permanent_room', '=', 'True')],
                                             'invisible': [('permanent_room', '!=', 'True')]}" />
                             </group>
