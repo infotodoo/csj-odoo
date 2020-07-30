@@ -170,7 +170,7 @@ class CalendarAppointment(models.Model):
         for record in self:
             code_entity = record.partner_id.entity_id.code if record.partner_id.entity_id else ''
             code_specialty = record.partner_id.specialty_id.code if record.partner_id.specialty_id else ''
-            name_specialty = record.partner_id.specialty_id.mame if record.partner_id.specialty_id else ''
+            name_specialty = record.partner_id.specialty_id.mame if record.partner_id.specialty_id else ''# ESTO PARA QUE?
             zipcode = record.partner_id.city_id.zipcode if record.partner_id.city_id else ''
             code_city = zipcode or ''
             code = record.partner_id.code or ''
@@ -292,6 +292,7 @@ class CalendarAppointment(models.Model):
             [('id', '=', vals.get('appointment_type_id'))])[0]
         partner = online_appointment_type.judged_id if online_appointment_type \
             and online_appointment_type.judged_id else False
+        # ERROR REPORT THIS JUDGED :C res.partner(11307,), False
         if partner and partner.permanent_room:
             extension = partner.lifesize_meeting_extension if \
                     partner.lifesize_meeting_extension else False
@@ -308,7 +309,12 @@ class CalendarAppointment(models.Model):
 
     def write(self, vals):
         if vals.get('calendar_datetime'):
-            vals.update(self.write_lifesize(vals))
+            partner = self.partner_id
+            _logger.error('\n{}, {}'.format(partner,partner.permanent_room))
+            if partner and not partner.permanent_room:
+                vals.update(self.write_lifesize(vals))
+            else:
+                _logger.error('\nSTATUS: NO MODIFICADA EN LIFESIZE {}'.format(vals))
             vals['sequence_icsfile_ctl'] = self.sequence_icsfile_ctl + 1 if int(self.sequence_icsfile_ctl) else 1
             self.write_event(vals)
         return super(CalendarAppointment, self).write(vals)
@@ -365,18 +371,23 @@ class CalendarAppointment(models.Model):
 
     def write_lifesize(self, vals):
         for record in self:
-            description = ("Updated to: %s " % (
-                record.calendar_datetime.strftime("%Y%m%d %H%M%S"))
-                )
-            api = {
-                'method': 'update',
-                'description': description,
-                'ownerExtension': record.lifesize_owner,
-                'uuid': record.lifesize_uuid,
-            }
-            resp = self.env['api.lifesize'].api_crud(api)
-            dic = self.env['api.lifesize'].resp2dict(resp)
-            dic.update(state='postpone')
+            partner = record.partner_id
+            _logger.error('\n{}, {}'.format(partner,partner.permanent_room))
+            if partner and not partner.permanent_room:
+                description = ("Updated to: %s " % (
+                    record.calendar_datetime.strftime("%Y%m%d %H%M%S"))
+                    )
+                api = {
+                    'method': 'update',
+                    'description': description,
+                    'ownerExtension': record.lifesize_owner,
+                    'uuid': record.lifesize_uuid,
+                }
+                resp = self.env['api.lifesize'].api_crud(api)
+                dic = self.env['api.lifesize'].resp2dict(resp)
+                dic.update(state='postpone')
+            else:
+                _logger.error('\nSTATUS: NO MODIFICADA EN LIFESIZE')
         return dic
 
     def unlink_lifesize(self):
