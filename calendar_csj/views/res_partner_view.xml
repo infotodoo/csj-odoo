@@ -27,6 +27,10 @@
                                 <field name="entity_id" readonly="True"/>
                                 <field name="specialty_id" attrs="{'required': [('company_type', '=', 'judged')]}" />
                                 <field name="extension_lifesize" attrs="{'required': [('company_type', '=', 'judged')]}" />
+                                <field name="permanent_room" attrs="{'invisible': [('company_type', '!=', 'judged')]}" />
+                                <field name="extension_lifesize" 
+                                    attrs="{'required': [('permanent_room', '=', 'True')],
+                                            'invisible': [('permanent_room', '!=', 'True')]}" />
                             </group>
                             <group string="Rooms">
                                 <field name="rooms_id">

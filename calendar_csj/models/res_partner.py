@@ -220,6 +220,8 @@ class ResPartner(models.Model):
     appointment_type = fields.Selection([('scheduler','Scheduler'),('secretary','Secretary')], 'Appointment type')
     appointment_user = fields.Many2one('res.users', 'Appointment user')
     appointment_bool = fields.Boolean('Appointment bool', compute='_compute_appointment_bool')
+    permanent_room = fields.Boolean('Permanent room', default=False)
+    lifesize_meeting_extension = fields.Char('Meeting extension Lifesize')
 
     @api.onchange('code', 'mame', 'city_id', 'specialty_id', 'entity_id')
     def _onchange_mame(self):
