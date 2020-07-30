@@ -382,6 +382,7 @@ class CalendarAppointment(models.Model):
     def unlink_lifesize(self):
         for record in self:
             partner = record.partner_id
+            _logger.error('\n{}, {}'.format(partner,partner.permanent_room))
             if partner and not partner.permanent_room:
                 api = {
                     'method': 'delete',
