@@ -119,7 +119,7 @@ class CalendarAppointment(models.Model):
     partner_id = fields.Many2one('res.partner', 'Judged', domain="[('city_id','=',city_id)]", ondelete='set null',
                                  related='appointment_type_id.judged_id')
     judged_only_code = fields.Char('Partner Only Code', compute="_compute_partner_separated_name", store=False)
-    judged_only_name = fields.Char('Partner Only Name', compute="_compute_partner_separated_name", store=True)
+    #judged_only_name = fields.Char('Partner Only Name', compute="_compute_partner_separated_name", store=True)
     room_id = fields.Many2one('res.judged.room', 'Room', domain="[('partner_id','=',partner_id)]", ondelete='set null')
     room_id_mame = fields.Char('Room Name', related='room_id.virtual_room', store=False)
     partners_ids = fields.Many2many('res.partner', 'appointment_partner_rel', 'appointment_id', 'partner_id', 'Partners')
