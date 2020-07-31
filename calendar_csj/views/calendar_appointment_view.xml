@@ -44,6 +44,7 @@
                     <field name="judged_only_code" string="CÓDIGO DESPACHO SOLICITANTE"/>
                     <field name="judged_only_name" string="DESPACHO SOLICITANTE"/>
                     <field name="city_id" string="ORIGEN"/>
+                    <field name="country_state_id" string="DEPARTAMENTO"/>
                     <field name="destination_ids_label" string="DESTINO"/>
                     <field name="reception_id" string="MEDIO DE RECEPCIÓN"/>
                     <field name="reception_detail" string="DETALLE MEDIO DE RECEPCIÓN"/>
@@ -140,6 +141,7 @@
                                 <!-- <field name="types_ids" widget="many2many_tags" /> -->
                                 <!-- <field name="origin_id" required="True" /> -->
                                 <field name="city_id" required="True" string="Ciudad Origen"/>
+                                <field name="country_state_id" string="Departamento"/>
                                 <field name="partner_id" required="True" string="Despacho Solicitante"/>
                                 <field name="room_id" />
                             </group>

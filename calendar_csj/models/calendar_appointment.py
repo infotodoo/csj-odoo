@@ -116,6 +116,7 @@ class CalendarAppointment(models.Model):
 
     # origin_id = fields.Many2one('res.city', 'Origin city', ondelete='set null', default=_default_origin_id)
     city_id = fields.Many2one('res.city', 'City', ondelete='set null', related='partner_id.city_id')
+    country_state_id = fields.Many2one('res.country.state', 'Country State', related='city_id.state_id')
     partner_id = fields.Many2one('res.partner', 'Judged', domain="[('city_id','=',city_id)]", ondelete='set null',
                                  related='appointment_type_id.judged_id')
     judged_only_code = fields.Char('Partner Only Code', compute="_compute_partner_separated_name", store=False)
