@@ -42,7 +42,7 @@
                     <field name="calendar_date" string="FECHA DE REALIZACIÓN"/>
                     <field name="calendar_time" string="HORA DE INICIO"  widget="float_time"/>
                     <field name="judged_only_code" string="CÓDIGO DESPACHO SOLICITANTE"/>
-		    <!--<field name="judged_only_name" string="DESPACHO SOLICITANTE"/>-->
+		    <field name="judged_only_name" string="DESPACHO SOLICITANTE"/>
                     <field name="city_id" string="ORIGEN"/>
                     <field name="country_state_id" string="DEPARTAMENTO"/>
                     <field name="destination_ids_label" string="DESTINO"/>
