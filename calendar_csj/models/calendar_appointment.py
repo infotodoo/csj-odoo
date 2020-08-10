@@ -3,6 +3,8 @@
 from odoo import models, fields, api, _
 import datetime
 import math
+import pytz
+from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError, ValidationError
 
 import logging
@@ -515,6 +517,17 @@ class CalendarAppointment(models.Model):
             })
         if self.state in ['cancel']:
             self.action_cancel()
+
+    def fetch_calendar_verify_availability(self, calendar_appointment_type_id, date_start, duration):
+        timezone = 'America/Bogota'
+        #pytz.timezone('UTC')
+        tz_session = pytz.timezone(timezone)
+        date_start = tz_session.localize(fields.Datetime.from_string(date_start)).astimezone(pytz.utc)
+        date_end = date_start + relativedelta(hours=float(duration))
+        calendar_appointment_type_obj = self.env['calendar.appointment.type'].browse(int(calendar_appointment_type_id))
+        if not calendar_appointment_type_obj.judged_id.calendar_verify_availability(date_start,date_end):
+            return False
+        return True
 
 
 class CalendarAppointmentType(models.Model):

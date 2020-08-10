@@ -17,7 +17,7 @@
     'version': '13.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['website_calendar','contacts','base_address_city','event', 'calendar'],
+    'depends': ['website_calendar','contacts','base_address_city','event', 'calendar', 'portal'],
 
     # always loaded
     'data': [

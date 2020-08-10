@@ -14,6 +14,31 @@ $( function() {
   });
 });
 
+function convertNumToTime(number) {
+    // Check sign of given number
+    var sign = (number >= 0) ? 1 : -1;
+    // Set positive value of number of sign negative
+    number = number * sign;
+    // Separate the int from the decimal part
+    var hour = Math.floor(number);
+    var decpart = number - hour;
+    var min = 1 / 60;
+    // Round to nearest minute
+    decpart = min * Math.round(decpart / min);
+    var minute = Math.floor(decpart * 60) + '';
+    // Add padding if need
+    if (minute.length < 2) {
+    minute = '0' + minute;
+    }
+    // Add Sign in final result
+    sign = sign == 1 ? '' : '-';
+    // Concate hours and minutes
+    time = sign + hour + ':' + minute;
+    return time;
+}
+
+$('#calendar_time').val(convertNumToTime(appointment.calendar_time));
+
 odoo.define('calendar_csj.select_appointment_guest_csj', function (require) {
 'use strict';
 
@@ -54,29 +79,20 @@ var time = require('web.time');
 var rpc = require('web.rpc');
 //$('#request_date').datetimepicker({inline: true,format: 'YYYY-MM-DD',sideBySide: true,});
 
-$(".o_website_appointment_form").submit(function(){
+$("#button_submit_appointment").on('click', function(e){
   var core = require('web.core');
   var rpc = require('web.rpc');
   var Dialog = require('web.Dialog');
   var date_time = $(".o_website_appointment_form input[name='date_time']").val();
+  var duration = $(".o_website_appointment_form select[name='duration']").val();
   var search_city = $(".o_website_appointment_form input[name='search_city']").val();
-  var search_appointment = $(".o_website_appointment_form input[name='search_appointment']").val();
-
-  //rpc.query({
-  //  model: 'calendar.event',
-  //  method: 'fetch_calendar_verify_availability',
-  //  args: [this, date_time, search_appointment],
-  //}).then(function (data)
-  //{
-  //  alert(data);
-  //  return true;
-  //});;
+  var calendar_appointment_type_id = $(".o_website_appointment_form input[name='calendar_appointment_type_id']").val();
 
   if (search_city === '' || search_city === null || search_city === 'undefined'){
     Dialog.alert(this, 'Por favor selecione una ciudad!');
     return false;
   };
-  if (search_appointment === '' || search_appointment === null || search_appointment === 'undefined'){
+  if (calendar_appointment_type_id === '' || calendar_appointment_type_id === null || calendar_appointment_type_id === 'undefined' || calendar_appointment_type_id === '1'){
     Dialog.alert(this, 'Por favor seleccione un Juzgado!');
     return false;
   };
@@ -85,19 +101,39 @@ $(".o_website_appointment_form").submit(function(){
     return false;
   };
 
-  //Dialog.alert(this, 'Deteniendo proceso!');
-  //return false;
-
+  $("#button_submit_appointment").prop('disabled', true);
+  rpc.query({
+    model: 'calendar.appointment',
+    method: 'fetch_calendar_verify_availability',
+    args: [this, calendar_appointment_type_id, date_time, duration],
+  }).then(function (data)
+  {
+    if (data === true){
+      $(".o_website_appointment_form").submit();
+      return true;
+    } else if (data === false) {
+      Dialog.alert(this, 'Ya existe un Agendamiento programado para esta misma Fecha y Hora, consulte la Agenda y seleccione un espacio de tiempo diferente!');
+      $("#button_submit_appointment").prop('disabled', false);
+      return false;
+    }
+    // unespect event fetch, process restart is necessary
+    $("#button_submit_appointment").prop('disabled', true);
+    return false;
+  });
+  return false;
 });;
 
 
-$(".appointment_submit_form").submit(function(){
+$("#button_submit_confirm_appointment").on('click', function(e){
   var core = require('web.core');
   var rpc = require('web.rpc');
   var Dialog = require('web.Dialog');
   var phone = $(".appointment_submit_form input[name='phone']").val();
   var email = $(".appointment_submit_form input[name='email']").val();
   var types = $(".appointment_submit_form input[name='types']").val();
+  var appointment_type = $(".appointment_submit_form input[name='appointment_type']").val();
+  var datetime = $(".appointment_submit_form input[name='datetime']").val();
+  var duration = $(".appointment_submit_form input[name='duration']").val();
   var request_date = $(".appointment_submit_form input[name='request_date']").val();
   var process_number = $(".appointment_submit_form input[name='process_number']").val();
   var destinationcont = $(".appointment_submit_form input[name='destinationcont']").val();
@@ -137,48 +173,109 @@ $(".appointment_submit_form").submit(function(){
     return false;
   };
   $(".appointment_submit_form input[name='types']").val().replace(/[^A-Z0-9]/ig, "");
+  $("#button_submit_confirm_appointment").prop('disabled', true);
+  rpc.query({
+    model: 'calendar.appointment',
+    method: 'fetch_calendar_verify_availability',
+    args: [this, appointment_type, datetime, duration],
+  }).then(function (data)
+  {
+    if (data === true){
+      $(".appointment_submit_form").submit();
+      return false;
+    } else if (data === false) {
+      Dialog.alert(this, 'Ya existe un Agendamiento programado para esta misma Fecha y Hora, consulte la Agenda, inicie el proceso de nuevo y seleccione un espacio de tiempo diferente!');
+      $("#button_submit_confirm_appointment").prop('disabled', false);
+      return false;
+    }
+    // unespect event fetch, process restart is necessary
+    $("#button_submit_confirm_appointment").prop('disabled', true);
+    return false;
+  });
+  return false;
 });
+
+// fix date to calc correct minDate in datetimepicker widget
+var oldDateObj = new Date();
+var newDateObj = new Date();
+newDateObj.setTime(oldDateObj.getTime() - (15 * 60 * 1000));
 
 publicWidget.registry.websiteAppointmentSelect = publicWidget.Widget.extend({
     selector: '.o_website_calendar_appointment',
     events: {
-        'click div.input-group span.fa-calendar': '_onCalendarIconClick',
+      'click div.input-group span.fa-calendar': '_onCalendarIconClick',
+      'focus div.input-group input.date_time': '_onCalendarIconFocus',
     },
-
-    _onCalendarIconClick: function (ev) {
+    _onCalendarIconFocus: function (ev) {
       $('.date_time').datetimepicker({
-          format : 'YYYY-MM-DD HH:mm',
-          formatTime:'H:i',
-          step: 60,
-          viewMode: 'months',
-          startDate:'+2020/06/28',
-          inline: true,
-          dayViewHeaderFormat: 'YYYY-MM',
-          sideBySide: true,
-          //daysOfWeekDisabled: [0, 6],
-          lang:'es',
-          icons: {
-              time: 'fa fa-clock-o',
-              date: 'fa fa-calendar',
-              up: 'fa fa-chevron-up',
-              down: 'fa fa-chevron-down',
-          },
-          i18n:{
-            es:{
-             months:[
-              'Enero','Febrero','Marzo','Abril',
-              'Mayo','Junio','Julio','Agosto',
-              'Septiembre','Octubre','Noviembre','Diciembre',
-             ],
-             dayOfWeek:[
-              "Lun", "Mar", "Mie", "Jue",
-              "Vie", "Sáb", "Dom",
-             ]
-            }
-          },
+        format : 'YYYY-MM-DD HH:mm',
+        formatTime:'H:i',
+        step: 60,
+        viewMode: 'months',
+        minDate: newDateObj,
+        inline: true,
+        dayViewHeaderFormat: 'YYYY-MM',
+        sideBySide: true,
+        //daysOfWeekDisabled: [0, 6],
+        lang:'es',
+        icons: {
+          time: 'fa fa-clock-o',
+          date: 'fa fa-calendar',
+          up: 'fa fa-chevron-up',
+          down: 'fa fa-chevron-down',
+        },
+        i18n:{
+          es:{
+           months:[
+            'Enero','Febrero','Marzo','Abril',
+            'Mayo','Junio','Julio','Agosto',
+            'Septiembre','Octubre','Noviembre','Diciembre',
+           ],
+           dayOfWeek:[
+            "Lun", "Mar", "Mie", "Jue",
+            "Vie", "Sáb", "Dom",
+           ]
+          }
+        },
       });
+      $(".o_website_appointment_form input[name='date_time']").attr('readonly', 'True');
     },
-
+    _onCalendarIconClick: function (ev) {
+      /*
+      $('.date_time').datetimepicker({
+        format : 'YYYY-MM-DD HH:mm',
+        formatTime:'H:i',
+        step: 60,
+        viewMode: 'months',
+        minDate: newDateObj,
+        inline: true,
+        dayViewHeaderFormat: 'YYYY-MM',
+        sideBySide: true,
+        //daysOfWeekDisabled: [0, 6],
+        lang:'es',
+        icons: {
+          time: 'fa fa-clock-o',
+          date: 'fa fa-calendar',
+          up: 'fa fa-chevron-up',
+          down: 'fa fa-chevron-down',
+        },
+        i18n:{
+          es:{
+           months:[
+            'Enero','Febrero','Marzo','Abril',
+            'Mayo','Junio','Julio','Agosto',
+            'Septiembre','Octubre','Noviembre','Diciembre',
+           ],
+           dayOfWeek:[
+            "Lun", "Mar", "Mie", "Jue",
+            "Vie", "Sáb", "Dom",
+           ]
+          }
+        },
+      });
+      $(".o_website_appointment_form input[name='date_time']").attr('readonly', 'True');
+      */
+    },
 });
 
 
@@ -207,11 +304,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
       console.log('init: search_city');
     },
     start: function () {
-        console.log('start: search_city');
-
-        //consulto cual es la ciudad del usuario logeado
-        var partner_id = $(".appointment_submit_form input[name='partner_id']").val();
-
+        var calendar_appointment_type_id = $(".appointment_submit_form input[name='calendar_appointment_type_id']").val();
         $('.search-query-appointment').typeahead({source: []});
         var self = this;
         var previousSelectedCityID = $(".o_website_appointment_form input[name='city_id']").val();
@@ -261,10 +354,10 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
                     callback: {
                       onClickAfter: function (node, a, item, event) {
                         var date_time = $(".o_website_appoinment_form select[name='date_time']").val();
-                        //console.log(date_time);
                         var duration = $(".o_website_appoinment_form select[name='duration']").val();
-                        var appointment = item['id'];
-                        var postURL = '/website/calendar/' + appointment + '/info?date_time='+ date_time + '&amp;duration=' + duration;
+                        var calendar_appointment_type_id = item['id'];
+                        $(".o_website_appointment_form input[name='calendar_appointment_type_id']").val(calendar_appointment_type_id);
+                        var postURL = '/website/calendar/' + calendar_appointment_type_id + '/info?date_time='+ date_time + '&amp;duration=' + duration;
                         $(".o_website_appointment_form").attr('action', postURL);
                       }
                     }
@@ -313,8 +406,9 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
                 var date_time = $(".o_website_appoinment_form select[name='date_time']").val();
                 //console.log(date_time);
                 var duration = $(".o_website_appoinment_form select[name='duration']").val();
-                var appointment = item['id'];
-                var postURL = '/website/calendar/' + appointment + '/info?date_time='+ date_time + '&amp;duration=' + duration;
+                var calendar_appointment_type_id = item['id'];
+                $(".o_website_appoinment_form input[name='calendar_appointment_type_id']").val(calendar_appointment_type_id);
+                var postURL = '/website/calendar/' + calendar_appointment_type_id + '/info?date_time='+ date_time + '&amp;duration=' + duration;
                 $(".o_website_appointment_form").attr('action', postURL);
               }
             }

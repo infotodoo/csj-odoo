@@ -61,7 +61,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'suggested_appointment_types': suggested_appointment_types,
             'message': message,
             'types': types,
-            'partner_id': partner.id if partner.appointment_type != 'scheduler' else 1,
+            'calendar_appointment_type_id': partner.id if partner.appointment_type != 'scheduler' else 1,
             'city_name': partner.city,
             'judged_name': judged_id.name if judged_id else '',
         })

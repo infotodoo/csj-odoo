@@ -30,5 +30,6 @@
         <record id="calendar_event_type" model="calendar.event.type">
             <field name="name">Appointment</field>
         </record>
+        
     </data>
 </odoo>
