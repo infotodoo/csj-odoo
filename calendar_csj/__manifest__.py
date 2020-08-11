@@ -36,6 +36,7 @@
         'views/calendar_class_view.xml',
         'views/calendar_help_view.xml',
         'views/calendar_csj_templates.xml',
+        'views/calendar_csj_portal.xml',
         'views/calendar_reception_view.xml',
         'views/calendar_event_view.xml',
         'views/template.xml',
