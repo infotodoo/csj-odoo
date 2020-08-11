@@ -169,6 +169,24 @@
                                 <span t-field="appointment.state" class=" badge badge-pill badge-info" title="Estado actual del agendamiento"/>
                             </div>
                         </div>
+                        
+                        <div t-if="searchbar_sortings" class="form-inline">
+                        <span class="small mr-1 navbar-text">Sort By:</span>
+                        <div class="btn-group">
+                            <button id="portal_searchbar_sortby" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
+                                <t t-esc="searchbar_sortings[sortby].get('label', 'Newest')"/>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="portal_searchbar_sortby">
+                                <t t-foreach="searchbar_sortings" t-as="option">
+                                    <a t-att-href="request.httprequest.path + '?' + keep_query('*', sortby=option)"
+                                       t-attf-class="dropdown-item#{sortby == option and ' active' or ''}">
+                                        <span t-esc="searchbar_sortings[option].get('label')"/>
+                                    </a>
+                                </t>
+                            </div>
+                        </div>
+                        </div>
+                        
                     </t>
                     <t t-set="card_body">
                         <!--<div class="mb-1" t-if="user.partner_id.id in appointment.sudo().project_id.message_partner_ids.ids">
