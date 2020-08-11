@@ -58,10 +58,10 @@ class CustomerPortal(CustomerPortal):
         }
 
         # extends filterby criteria with project the customer has access to
-        appointments = request.env['calendar.appointment'].search([('state','=','open')])
+        appointments = request.env['calendar.appointment'].search([])
         for appointment in appointments:
             searchbar_filters.update({
-                str(appointment.id): {'label': appointment.name, 'domain': [('appointment_id', '=', appointment.id)]}
+                str(appointment.id): {'label': appointment.name, 'domain': [('state', '=', 'open')]}
             })
 
         # extends filterby criteria with project (criteria name is the project id)
