@@ -1,21 +1,21 @@
+$(function () {
+    $(".appointment_portal_edit_form input[name='calendar_datetime']").datetimepicker({
+      inline: true,
+      format : 'YYYY-MM-DD HH:mm',
+      sideBySide: true
+    });
+});
+
+
 $( function() {
-  $( "#calendar_datetime" ).datepicker({
+  $( ".appointment_portal_edit_form input[name='request_date']").datepicker({
     dateFormat : 'yy-mm-dd',
-    maxDate: new Date(),
   });
 });
 
 $( function() {
-  $( "#request_date" ).datepicker({
+  $( ".appointment_portal_edit_form input[name='appointment_date']").datepicker({
     dateFormat : 'yy-mm-dd',
-    maxDate: new Date(),
-  });
-});
-
-$( function() {
-  $( "#appointment_date" ).datepicker({
-    dateFormat : 'yy-mm-dd',
-    maxDate: new Date(),
   });
 });
 
@@ -170,6 +170,16 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
       var appointment_id = $(".appointment_portal_edit_form input[name='appointment_id']").val();
       url = '/my/appointment/' + appointment_id;
       window.location.href = url;
+    });
+
+    $(".portal_appointment_save").on('click', function(e){
+
+      var calendar_datetime = $(".appointment_portal_edit_form input[name='calendar_datetime']").val();
+      if (calendar_datetime === '' || calendar_datetime === null || calendar_datetime === 'undefined'){
+        Dialog.alert(this, 'Por favor selecione una fecha de realización!');
+        return false;
+      };
+      $(".appointment_portal_edit_form").submit();
     });
 
 });

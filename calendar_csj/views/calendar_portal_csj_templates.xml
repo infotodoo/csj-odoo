@@ -192,7 +192,7 @@
                           <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;">
                               <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos de Realización</div>
                               <br/>
-                              <strong>Fecha y Hora de Realización:</strong> <span t-field="appointment.calendar_datetime" t-options='{"widget": "datetime"}'/>
+                              <strong>Fecha y Hora de Realización:</strong> <span t-esc="appointment.calendar_datetime" t-options='{"widget": "datetime"}'/>
                               <br/>
                               <strong>Duración:</strong> <span t-field="appointment.calendar_duration" t-options='{"widget": "float_date"}'/>
                               <br/>
@@ -375,10 +375,6 @@
 
 
 
-
-
-
-
       <template id="portal_my_appointment_editall" name="My Appointment Edit">
           <t t-call="portal.portal_layout">
               <t t-set="o_portal_fullwidth_alert" groups="calendar_csj.group_calendar_manager">
@@ -387,10 +383,11 @@
                   </t>
               </t>
 
-              <form class="mt32 appointment_portal_edit_form" t-attf-action="/my/appointment/#{appointment.id}/update/all/submit" method="POST">
+              <form class="mt32 appointment_portal_edit_form" t-attf-action="/my/appointment/#{appointment.id}/update/all/submit?calendar_datetime=#{calendar_datetime}&amp;calendar_duration=#{calendar_duration}&amp;appointment_type=#{appointment_type}" method="POST">
                   <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
                   <input type="hidden" name="appointment_state" t-att-value="appointment.state" />
                   <input type="hidden" name="appointment_id" t-att-value="appointment.id" />
+                  <input type="hidden" name="appointment_type" t-att-value="appointment.appointment_type_id.id"/>
 
               <t t-call="portal.portal_record_layout">
                   <t t-set="card_header">
@@ -410,7 +407,7 @@
                       <div class="row no-gutters" style="padding-top:20px;">
                           <div class="col-md">
                             <div class="btn-group" role="group" aria-label="Appointment Save Button">
-                              <button type="button" class="btn btn-secondary portal_appointment_edit" attrs="{'invisible':[('state','=','cancel')]}">
+                              <button type="button" class="btn btn-secondary portal_appointment_save" attrs="{'invisible':[('state','=','cancel')]}">
                                 Guardar
                               </button>
                             </div>
@@ -430,25 +427,25 @@
                             <div class="form-group row col-xl-6 col-md-6">
                                   <label for="partner_name" class="col-md-12 col-form-label row" style="color:#FFF;">Despacho</label>
                                   <div class="col-md-12 row">
-                                      <input type="char" class="form-control text-uppercase" name="partner_name" required="1" t-att-value="appointment.partner_id.name"/>
+                                      <input type="char" class="form-control text-uppercase" name="partner_name" readonly="1" required="1" t-att-value="appointment.partner_id.name"/>
                                   </div>
                             </div>
                             <div class="form-group row col-xl-6 col-md-6">
                               <label for="room_name" class="col-md-12 row col-form-label text-uppercase" style="color:#FFF;">Sala</label>
                               <div class="col-md-12 row">
-                                  <input type="char" class="form-control" name="room_name" required="1" t-att-value="appointment.room_id.name"/>
+                                  <input type="char" class="form-control" name="room_name" required="1" readonly="1" t-att-value="appointment.room_id.name"/>
                               </div>
                             </div>
                             <div class="form-group row col-xl-6 col-md-6">
                                   <label for="city_name" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">Ciudad</label>
                                   <div class="col-md-12 row">
-                                      <input type="char" class="form-control text-uppercase" name="city_name" required="1" t-att-value="appointment.city_id.name"/>
+                                      <input type="char" class="form-control text-uppercase" name="city_name" readonly="1" required="1" t-att-value="appointment.city_id.name"/>
                                   </div>
                             </div>
                             <div class="form-group row col-xl-6 col-md-6">
                               <label for="country_state_name" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Departamento</label>
                               <div class="col-md-12 row">
-                                  <input type="char" class="form-control" name="country_state_name" required="1" t-att-value="appointment.country_state_id.name"/>
+                                  <input type="char" class="form-control" name="country_state_name" readonly="1" required="1" t-att-value="appointment.country_state_id.name"/>
                               </div>
                             </div>
                         </div>
@@ -462,14 +459,14 @@
                               <div class="form-group row col-xl-12 col-md-12">
                                 <label for="calendar_datetime" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha y Hora de Realización</label>
                                 <div class="col-md-12 row">
-                                    <input type="text" class="form-control" data-date-format="YYYY-mm-dd" id="calendar_datetime" name="calendar_datetime" required="1" t-att-value="appointment.calendar_datetime"/>
+                                    <input type="datetime" class="form-control" id="calendar_datetime" name="calendar_datetime" required="1" t-att-value="appointment.calendar_datetime   - datetime.timedelta(hours=5)"/>
                                 </div>
                               </div>
 
                               <div class="form-group row col-xl-12 col-md-12">
-                                <label for="duration" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Duración</label>
+                                <label for="calendar_duration" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Duración</label>
                                 <div class="col-md-12 row">
-                                    <input type="char" class="form-control" name="duration" required="1" t-att-value="appointment.end_hour"/>
+                                    <input type="char" class="form-control" name="calendar_duration" required="1" t-att-value="appointment.calendar_duration" readonly="1"/>
                                 </div>
                               </div>
 

@@ -2,14 +2,20 @@
 
 from collections import OrderedDict
 from operator import itemgetter
-
-from odoo import http, _
+from odoo import http, fields, _
 from odoo.exceptions import AccessError, MissingError
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager
 from odoo.tools import groupby as groupbyelem
-from datetime import datetime,date,timedelta
 from odoo import models, fields, api
+from datetime import datetime,timedelta
+from dateutil.relativedelta import relativedelta
+from odoo.tools import html2plaintext, DEFAULT_SERVER_DATETIME_FORMAT as dtf
+import pytz
+from odoo.tools.misc import get_lang
+from babel.dates import format_datetime, format_date
+from werkzeug.urls import url_encode
+from datetime import datetime
 
 from odoo.osv.expression import OR
 
@@ -274,3 +280,54 @@ class CustomerPortal(CustomerPortal):
 
         values = self._appointment_get_page_view_values(appointment_sudo, access_token, **kw)
         return request.render("calendar_csj.portal_my_appointment_editall", values)
+
+
+
+    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/all/submit'], type='http', auth="public", website=True, method=["POST"])
+    def appointment_portal_edit_form_submit(self, calendar_datetime, calendar_duration, appointment_type, **kwargs):
+        request.session['timezone'] = 'America/Bogota'
+        _logger.error("*************************\n*******************************\n****************************+")
+        _logger.error(calendar_datetime)
+        day_name = format_datetime(datetime.strptime(calendar_datetime, "%Y-%m-%d %H:%M"), 'EEE', locale=get_lang(request.env).code)
+        date_formated = format_datetime(datetime.strptime(calendar_datetime, "%Y-%m-%d %H:%M"), locale=get_lang(request.env).code)
+        timezone = request.session['timezone']
+        tz_session = pytz.timezone(timezone)
+        date_start = tz_session.localize(fields.Datetime.from_string(calendar_datetime)).astimezone(pytz.utc)
+        date_end = date_start + relativedelta(hours=float(calendar_duration))
+
+        appointment_type_obj = request.env['calendar.appointment.type'].browse(appointment_type)
+        _logger.error(appointment_type_obj)
+        _logger.error(calendar_datetime)
+        _logger.error(kwargs['appointment_id'])
+
+
+
+        kwargs['appointment_id'].sudo().write({
+            'calendar_datetime': date_start.strftime(dtf),
+        })
+
+
+
+
+
+        return request.redirect('/my/appointment/' + str(kwargs['appointment_id'].id))
+
+        """
+        return request.render("calendar_csj.portal_my_appointment", {
+            #'partner_data': partner_data,
+            'appointment_id': kwargs['appointment_id'].id,
+        })
+        """
+
+
+        # check availability calendar.event with partner of appointment_type
+        """
+        if appointment_type_obj and appointment_type_obj.judged_id:
+            _logger.error(appointment_type_obj.judged_id)
+            if not appointment_type_obj.judged_id.calendar_verify_availability(date_start,date_end):
+                return request.render("calendar_csj.portal_my_appointment_editall", {
+                    'appointment_type': appointment_type,
+                    'message': 'already_scheduling',
+                    'appointment_id': appointment_id,
+                })
+        """
