@@ -8,6 +8,8 @@ from odoo.exceptions import AccessError, MissingError
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager
 from odoo.tools import groupby as groupbyelem
+from datetime import datetime,date,timedelta
+from odoo import models, fields, api
 
 from odoo.osv.expression import OR
 
@@ -19,7 +21,13 @@ class CustomerPortal(CustomerPortal):
 
     def _prepare_portal_layout_values(self):
         values = super(CustomerPortal, self)._prepare_portal_layout_values()
-        values['appointment_count'] = request.env['calendar.appointment'].search_count([])
+        # when partner is not scheduler they can only view their own
+        partner = request.env.user.partner_id
+        judged_id = partner.parent_id
+        domain = []
+        if partner.appointment_type != 'scheduler':
+            domain += [('partner_id', '=', judged_id.id)]
+        values['appointment_count'] = request.env['calendar.appointment'].search_count(domain)
         return values
 
     # ------------------------------------------------------------
@@ -36,46 +44,60 @@ class CustomerPortal(CustomerPortal):
     @http.route(['/my/appointments', '/my/appointments/page/<int:page>'], type='http', auth="user", website=True)
     def portal_my_appointments(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, search_in='content', groupby='appointment', **kw):
         values = self._prepare_portal_layout_values()
+
         searchbar_sortings = {
-            'date': {'label': _('Date'), 'order': 'create_date desc'},
+            'date': {'label': _('Fecha de Realización'), 'order': 'calendar_datetime desc'},
             'appointment_code': {'label': _('Appointment ID'), 'order': 'appointment_code desc'},
-            'state': {'label': _('State'), 'order': 'state'},
-            'city': {'label': _('City'), 'order': 'name'},
+            'state': {'label': _('Estado'), 'order': 'state'},
+            'city_id': {'label': _('Ciudad'), 'order': 'name'},
+            'country_state_id': {'label': _('Departamento'), 'order': 'name'},
+            'process_number': {'label': _('Número de Proceso'), 'order': 'process_number'},
         }
         searchbar_filters = {
-            'all': {'label': _('All'), 'domain': []},
+            'all': {'label': _('Todos'), 'domain': []},
+            'today': {'label': _('Hoy'), 'domain': [('calendar_datetime','<',datetime(2020,8,12,23,59,59)),('calendar_datetime','>',datetime(2020,8,12,0,0,1))]},
+            'month': {'label': _('Último Mes'), 'domain': [('calendar_datetime','>',datetime(2020,8,1,0,0,1)),('calendar_datetime','<',datetime(2020,8,31,23,59,59))]},
+            'cancel': {'label': _('Cancelados'), 'domain': [('state','=','cancel')]},
+            'realized': {'label': _('Realizados'), 'domain': [('state','=','realized')]},
         }
+
         searchbar_inputs = {
-            'content': {'input': 'content', 'label': _('Search <span class="nolabel"> (in Content)</span>')},
-            'message': {'input': 'message', 'label': _('Search in Messages')},
-            'customer': {'input': 'customer', 'label': _('Search in Customer')},
-            'stage': {'input': 'stage', 'label': _('Search in Stages')},
-            'all': {'input': 'all', 'label': _('Search in All')},
+            'appointment_code': {'input': 'appointment_code', 'label': _('Buscar <span class="nolabel"> (en Id Agendamiento)</span>')},
+            'process_number': {'input': 'process_number', 'label': _('Buscar por Número de Proceso')},
+            'applicant_id': {'input': 'applicant_id', 'label': _('Buscar por Nombre Solicitante')},
+            'declarant_text': {'input': 'declarant_text', 'label': _('Buscar por Declarante')},
+            'indicted_text': {'input': 'indicted_text', 'label': _('Buscar por Procesado')},
+            'applicant_email': {'input': 'applicant_email', 'label': _('Buscar por Email del Aplicante')},
+            'all': {'input': 'all', 'label': _('Buscar en Todos')},
         }
         searchbar_groupby = {
             'none': {'input': 'none', 'label': _('None')},
             'appointment': {'input': 'appointment_code', 'label': _('Appointment')},
+            'state': {'input': 'state', 'label': _('Estado')},
         }
 
-        # extends filterby criteria with project the customer has access to
-        appointments = request.env['calendar.appointment'].search([])
-        for appointment in appointments:
-            searchbar_filters.update({
-                str(appointment.id): {'label': appointment.name, 'domain': [('appointment_id', '=', appointment.id)]}
-            })
+        # extends filterby criteria with  appointment the customer has access to
+
+        appointments = request.env['calendar.appointment'].search([
+            #('partner_id', '=', partner.id),
+        ])
+        #for appointment in appointments:
+        #    searchbar_filters.update({
+        #        str(appointment.id): {'label': appointment.name, 'domain': [('appointment_id', '=', appointment.id)]}
+        #    })
 
         # extends filterby criteria with project (criteria name is the project id)
         # Note: portal users can't view projects they don't follow
-        #project_groups = request.env['project.task'].read_group([('project_id', 'not in', projects.ids)],
+        #appointment_groups = request.env['calendar.appointment'].read_group([('project_id', 'not in', projects.ids)],
         #                                                        ['project_id'], ['project_id'])
-
-        #for group in appointment_groups:
-        #    proj_id = group['project_id'][0] if group['project_id'] else False
-        #    proj_name = group['project_id'][1] if group['project_id'] else _('Others')
-        #    searchbar_filters.update({
-        #        str(proj_id): {'label': proj_name, 'domain': [('project_id', '=', proj_id)]}
-        #    })
-
+        """
+        for group in appointment_groups:
+            proj_id = group['project_id'][0] if group['project_id'] else False
+            proj_name = group['project_id'][1] if group['project_id'] else _('Others')
+            searchbar_filters.update({
+                str(proj_id): {'label': proj_name, 'domain': [('project_id', '=', proj_id)]}
+            })
+        """
         # default sort by value
         if not sortby:
             sortby = 'appointment_code'
@@ -101,14 +123,18 @@ class CustomerPortal(CustomerPortal):
         # search
         if search and search_in:
             search_domain = []
-            if search_in in ('content', 'all'):
-                search_domain = OR([search_domain, ['|', ('name', 'ilike', search), ('description', 'ilike', search)]])
-            if search_in in ('customer', 'all'):
-                search_domain = OR([search_domain, [('partner_id', 'ilike', search)]])
-            if search_in in ('message', 'all'):
-                search_domain = OR([search_domain, [('message_ids.body', 'ilike', search)]])
-            if search_in in ('stage', 'all'):
-                search_domain = OR([search_domain, [('stage_id', 'ilike', search)]])
+            if search_in in ('appointment_code', 'all'):
+                search_domain = OR([search_domain, [('appointment_code', 'ilike', search)]])
+            if search_in in ('process_number', 'all'):
+                search_domain = OR([search_domain, [('process_number', 'ilike', search)]])
+            if search_in in ('applicant_id', 'all'):
+                search_domain = OR([search_domain, [('applicant_id', 'ilike', search)]])
+            if search_in in ('declarant_text', 'all'):
+                search_domain = OR([search_domain, [('declarant_text', 'ilike', search)]])
+            if search_in in ('indicted_text', 'all'):
+                search_domain = OR([search_domain, [('indicted_text', 'ilike', search)]])
+            if search_in in ('applicant_email', 'all'):
+                search_domain = OR([search_domain, [('applicant_email', 'ilike', search)]])
             domain += search_domain
 
         # task count
@@ -123,6 +149,23 @@ class CustomerPortal(CustomerPortal):
             page=page,
             step=self._items_per_page
         )
+
+        """
+        if groupby == 'state':
+            order = "state, %s" % ''
+        timesheets = Timesheet_sudo.search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+        if groupby == 'project':
+            grouped_timesheets = [Timesheet_sudo.concat(*g) for k, g in groupbyelem(timesheets, itemgetter('project_id'))]
+        else:
+            grouped_timesheets = [timesheets]
+        """
+
+        # when partner is not scheduler they can only view their own
+        partner = request.env.user.partner_id
+        judged_id = partner.parent_id
+        if partner.appointment_type != 'scheduler':
+            domain += [('partner_id', '=', judged_id.id)]
+
 
         # content according to pager and archive selected
         appointments = request.env['calendar.appointment'].search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
@@ -147,32 +190,79 @@ class CustomerPortal(CustomerPortal):
         })
         return request.render("calendar_csj.portal_my_appointments", values)
 
-    @http.route(['/my/appointment/<int:appointment_id>'], type='http', auth="public", website=True)
-    def portal_my_project(self, appointment_id=None, access_token=None, **kw):
+
+    @http.route([
+        '/my/appointment/<int:appointment_id>'
+    ], type='http', auth="user", website=True)
+    def portal_my_appointment(self, appointment_id=None, access_token=None, **kw):
         try:
             appointment_sudo = self._document_check_access('calendar.appointment', appointment_id, access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
 
         values = self._appointment_get_page_view_values(appointment_sudo, access_token, **kw)
-
-        _logger.error("++++++++++++++++++++++++\n++++++++++++++++++++++++++++\n+++++++++++++++++++++++++")
-        _logger.error(appointment_sudo)
-        _logger.error(values)
-
         return request.render("calendar_csj.portal_my_appointment", values)
 
 
+    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/state/cancel'], type='http', auth="user", website=True)
+    def portal_my_appointment_cancel(self, appointment_id=None, access_token=None, **kw):
+        appointment_id.action_cancel()
+        return request.redirect('/my/appointment/' + str(appointment_id.id))
 
-    @http.route(['/my/task/<int:task_id>'], type='http', auth="public", website=True)
-    def portal_my_task(self, task_id, access_token=None, **kw):
+    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/state/realized'], type='http', auth="user", website=True)
+    def portal_my_appointment_realized(self, appointment_id=None, access_token=None, **kw):
+        appointment_id.write({
+            'state' : 'realized',
+            'appointment_close_date': datetime.now(),
+            'appointment_close_user_id': request.env.user.id,
+        });
+        return request.redirect('/my/appointment/' + str(appointment_id.id))
+
+    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/state/unrealized'], type='http', auth="user", website=True)
+    def portal_my_appointment_unrealized(self, appointment_id=None, access_token=None, **kw):
+        appointment_id.write({
+            'state' : 'unrealized',
+            'appointment_close_date': datetime.now(),
+            'appointment_close_user_id': request.env.user.id,
+        });
+        return request.redirect('/my/appointment/' + str(appointment_id.id))
+
+    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/state/postpone'], type='http', auth="user", website=True)
+    def portal_my_appointment_postpone(self, appointment_id=None, access_token=None, **kw):
+        appointment_id.write({
+            'state' : 'postpone',
+            'appointment_close_date': datetime.now(),
+            'appointment_close_user_id': request.env.user.id,
+        });
+        return request.redirect('/my/appointment/' + str(appointment_id.id))
+
+    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/state/assist_postpone'], type='http', auth="user", website=True)
+    def portal_my_appointment_assist_postpone(self, appointment_id=None, access_token=None, **kw):
+        appointment_id.write({
+            'state' : 'assist_postpone',
+            'appointment_close_date': datetime.now(),
+            'appointment_close_user_id': request.env.user.id,
+        });
+        return request.redirect('/my/appointment/' + str(appointment_id.id))
+
+    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/state/assist_cancel'], type='http', auth="user", website=True)
+    def portal_my_appointment_assist_cancel(self, appointment_id=None, access_token=None, **kw):
+        appointment_id.write({
+            'state' : 'assist_cancel',
+            'appointment_close_date': datetime.now(),
+            'appointment_close_user_id': request.env.user.id,
+        });
+        return request.redirect('/my/appointment/' + str(appointment_id.id))
+
+
+    @http.route([
+        '/my/appointment/<int:appointment_id>/update/all'
+    ], type='http', auth="user", website=True)
+    def portal_my_appointment_edit(self, appointment_id=None, access_token=None, **kw):
         try:
-            task_sudo = self._document_check_access('project.task', task_id, access_token)
+            appointment_sudo = self._document_check_access('calendar.appointment', appointment_id, access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
 
-        # ensure attachment are accessible with access token inside template
-        for attachment in task_sudo.attachment_ids:
-            attachment.generate_access_token()
-        values = self._task_get_page_view_values(task_sudo, access_token, **kw)
-        return request.render("project.portal_my_task", values)
+        values = self._appointment_get_page_view_values(appointment_sudo, access_token, **kw)
+        return request.render("calendar_csj.portal_my_appointment_editall", values)

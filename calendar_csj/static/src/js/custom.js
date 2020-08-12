@@ -37,7 +37,7 @@ function convertNumToTime(number) {
     return time;
 }
 
-$('#calendar_time').val(convertNumToTime(appointment.calendar_time));
+//$('#calendar_time').val(convertNumToTime(appointment.calendar_time));
 
 odoo.define('calendar_csj.select_appointment_guest_csj', function (require) {
 'use strict';
@@ -198,7 +198,7 @@ $("#button_submit_confirm_appointment").on('click', function(e){
 // fix date to calc correct minDate in datetimepicker widget
 var oldDateObj = new Date();
 var newDateObj = new Date();
-newDateObj.setTime(oldDateObj.getTime() - (15 * 60 * 1000));
+newDateObj.setTime(oldDateObj.getTime() - (90 * 24 * 60 * 60 * 1000));
 
 publicWidget.registry.websiteAppointmentSelect = publicWidget.Widget.extend({
     selector: '.o_website_calendar_appointment',
@@ -507,4 +507,4 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
 
 	});
 
-});;
+});
