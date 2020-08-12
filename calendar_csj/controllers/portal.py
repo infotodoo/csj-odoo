@@ -76,16 +76,15 @@ class CustomerPortal(CustomerPortal):
             'state': {'input': 'state', 'label': _('Estado')},
         }
 
-<<<<<<< HEAD
-        # extends filterby criteria with  appointment the customer has access to
-=======
+
         # extends filterby criteria with project the customer has access to
+        """
         appointments = request.env['calendar.appointment'].search([])
         for appointment in appointments:
             searchbar_filters.update({
                 str(appointment.id): {'label': appointment.name, 'domain': [('state', '=', 'open')]}
             })
->>>>>>> 3b1d5af09d2301d98c22cbdb21f3f538da06182c
+        """
 
         appointments = request.env['calendar.appointment'].search([
             #('partner_id', '=', partner.id),
