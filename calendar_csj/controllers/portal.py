@@ -74,6 +74,7 @@ class CustomerPortal(CustomerPortal):
             'month': {'label': _('Último Mes'), 'domain': [('calendar_datetime','>',datetime(2020,8,1,0,0,1)),('calendar_datetime','<',datetime(2020,8,31,23,59,59))]},
             'cancel': {'label': _('Cancelados'), 'domain': [('state','=','cancel')]},
             'realized': {'label': _('Realizados'), 'domain': [('state','=','realized')]},
+            'open': {'label': _('Confirmado'), 'domain': [('state','=','open')]},
         }
 
         searchbar_inputs = {
@@ -81,8 +82,12 @@ class CustomerPortal(CustomerPortal):
             'process_number': {'input': 'process_number', 'label': _('Buscar por Número de Proceso')},
             'applicant_id': {'input': 'applicant_id', 'label': _('Buscar por Nombre Solicitante')},
             'declarant_text': {'input': 'declarant_text', 'label': _('Buscar por Declarante')},
+            'tag_number': {'input': 'tag_number', 'label': _('Buscar Etiqueta')},
             'indicted_text': {'input': 'indicted_text', 'label': _('Buscar por Procesado')},
             'applicant_email': {'input': 'applicant_email', 'label': _('Buscar por Email del Aplicante')},
+            'lifesize_meeting_ext': {'input': 'lifesize_meeting_ext', 'label': _('Buscar por Ext reunión Lifesize')},
+            'name': {'input': 'name', 'label': _('Buscar por API Lifesize')},
+            'state': {'input': 'state', 'label': _('Buscar por Estado')},
             'all': {'input': 'all', 'label': _('Buscar en Todos')},
         }
         searchbar_groupby = {
@@ -154,10 +159,21 @@ class CustomerPortal(CustomerPortal):
                 search_domain = OR([search_domain, [('applicant_id', 'ilike', search)]])
             if search_in in ('declarant_text', 'all'):
                 search_domain = OR([search_domain, [('declarant_text', 'ilike', search)]])
+            if search_in in ('tag_number', 'all'):
+                search_domain = OR([search_domain, [('tag_number', 'ilike', search)]])
             if search_in in ('indicted_text', 'all'):
                 search_domain = OR([search_domain, [('indicted_text', 'ilike', search)]])
             if search_in in ('applicant_email', 'all'):
                 search_domain = OR([search_domain, [('applicant_email', 'ilike', search)]])
+            domain += search_domain
+            if search_in in ('lifesize_meeting_ext', 'all'):
+                search_domain = OR([search_domain, [('lifesize_meeting_ext', 'ilike', search)]])
+            domain += search_domain
+            if search_in in ('name', 'all'):
+                search_domain = OR([search_domain, [('name', 'ilike', search)]])
+            domain += search_domain
+            if search_in in ('state', 'all'):
+                search_domain = OR([search_domain, [('state', 'ilike', search)]])
             domain += search_domain
 
         # task count
