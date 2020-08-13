@@ -254,10 +254,9 @@ class ApiLifesize(models.TransientModel):
         body = resp.get("body")
         if body.get("action") == "UPDATED":
             if not body.get("pin"):
-                res = dict(lifesize_modified=True)
-                return res
-            else:
-                res = dict(lifesize_pin=body.get("pin") or False)
+                res = dict(
+                    lifesize_modified=True, lifesize_pin=body.get("pin") or False
+                )
                 return res
         elif body.get("action") == "CREATED":
             res = dict(
