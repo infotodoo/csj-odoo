@@ -65,7 +65,7 @@ class CustomerPortal(CustomerPortal):
             'month': {'label': _('Último Mes'), 'domain': [('calendar_datetime','>',datetime(2020,8,1,0,0,1)),('calendar_datetime','<',datetime(2020,8,31,23,59,59))]},
             'cancel': {'label': _('Cancelados'), 'domain': [('state','=','cancel')]},
             'realized': {'label': _('Realizados'), 'domain': [('state','=','realized')]},
-            'open': {'label': _('Realizados'), 'domain': [('state','=','open')]},
+            'open': {'label': _('Confirmado'), 'domain': [('state','=','open')]},
         }
 
         searchbar_inputs = {
