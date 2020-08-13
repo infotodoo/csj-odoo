@@ -713,6 +713,8 @@ class CalendarAppointment(models.Model):
             self.write(dic)
         if self.state in ["cancel"]:
             self.action_cancel()
+        if self.state in ["realized"]:
+            self.action_cancel()
 
     def fetch_calendar_verify_availability(
         self, calendar_appointment_type_id, date_start, duration
