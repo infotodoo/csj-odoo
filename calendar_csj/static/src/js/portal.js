@@ -4,18 +4,15 @@ $(function () {
       format : 'YYYY-MM-DD HH:mm',
       sideBySide: true
     });
-});
-
-$( function() {
-  $( ".appointment_portal_edit_form input[name='request_date']").datepicker({
-    dateFormat : 'yy-mm-dd',
-  });
-});
-
-$( function() {
-  $( ".appointment_portal_edit_form input[name='appointment_date']").datepicker({
-    dateFormat : 'yy-mm-dd',
-  });
+    $( ".appointment_portal_edit_form input[name='request_date']").datepicker({
+      dateFormat : 'yy-mm-dd',
+    });
+    $( ".appointment_portal_edit_form input[name='appointment_date']").datepicker({
+      dateFormat : 'yy-mm-dd',
+    });
+    $( ".appointment_portal_edit_form input[name='end_date']").datepicker({
+      dateFormat : 'yy-mm-dd',
+    });
 });
 
 odoo.define('calendar_csj.calendar_portal_csj', function(require) {
