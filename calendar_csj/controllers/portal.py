@@ -329,6 +329,13 @@ class CustomerPortal(CustomerPortal):
             'observations': kwargs['observations'],
         })
 
+        _logger.error("+++++++++++++++++++++++++++++++\n+++++++++++++++++++++++++++++\+++++++++++++++++++++++++++++")
+        _logger.error(date_start.strftime(dtf))
+        _logger.error(kwargs['appointment_id'].calendar_datetime)
+
+        if date_start.strftime(dtf) == kwargs['appointment_id'].calendar_datetime:
+            kwargs.pop('appointment_id')
+
         return request.redirect('/my/appointment/' + str(kwargs['appointment_id'].id))
 
         """

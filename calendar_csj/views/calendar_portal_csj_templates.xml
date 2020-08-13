@@ -477,12 +477,12 @@
                                 </div>
                               </div>
 
-                              <div class="form-group row col-xl-12 col-md-12">
+                              <!--<div class="form-group row col-xl-12 col-md-12">
                                 <label for="calendar_duration" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Duración</label>
                                 <div class="col-md-12 row">
                                     <input type="char" class="form-control" name="calendar_duration" required="1" t-att-value="appointment.calendar_duration" readonly="1"/>
                                 </div>
-                              </div>
+                              </div>-->
 
                               <div class="form-group row col-xl-12 col-md-12">
                                 <label for="appointment_date" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha de Agendamiento</label>

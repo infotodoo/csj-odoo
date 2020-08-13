@@ -16,4 +16,4 @@ acces_calendar_help_portal,acces.calendar.help.portal,model_calendar_help,base.g
 acces_calendar_class_internal,acces.calendar.class.internal,model_calendar_class,base.group_user,1,1,1,1
 acces_calendar_class_portal,acces.calendar.class.portal,model_calendar_class,base.group_portal,1,0,0,0
 acces_calendar_appointment_internal,acces.calendar.appointment.internal,model_calendar_appointment,base.group_user,1,1,1,1
-acces_calendar_appointment_portal,acces.calendar.appointment.portal,model_calendar_appointment,base.group_portal,1,0,0,0
+acces_calendar_appointment_portal,acces.calendar.appointment.portal,model_calendar_appointment,base.group_portal,1,1,0,0
