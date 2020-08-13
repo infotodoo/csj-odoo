@@ -253,11 +253,9 @@ class ApiLifesize(models.TransientModel):
     def resp2dict(self, resp):
         body = resp.get("body")
         if body.get("action") == "UPDATED":
-            res = dict(
-                lifesize_modified=True,
-            )
+            res = dict(lifesize_modified=True,)
             if body.get("pin"):
-                res.update.({'lifesize_pin': body.get("pin")})
+                res.update({"lifesize_pin": body.get("pin")})
             return res
         elif body.get("action") == "CREATED":
             res = dict(
