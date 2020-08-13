@@ -253,7 +253,7 @@ class ApiLifesize(models.TransientModel):
     def resp2dict(self, resp):
         body = resp.get("body")
         if body.get("action") == "UPDATED":
-            if not body["body"].get("pin"):
+            if not body.get("pin"):
                 res = dict(lifesize_modified=True)
                 return res
             else:
