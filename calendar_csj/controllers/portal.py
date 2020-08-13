@@ -149,10 +149,21 @@ class CustomerPortal(CustomerPortal):
                 search_domain = OR([search_domain, [('applicant_id', 'ilike', search)]])
             if search_in in ('declarant_text', 'all'):
                 search_domain = OR([search_domain, [('declarant_text', 'ilike', search)]])
+            if search_in in ('tag_number', 'all'):
+                search_domain = OR([search_domain, [('tag_number', 'ilike', search)]])
             if search_in in ('indicted_text', 'all'):
                 search_domain = OR([search_domain, [('indicted_text', 'ilike', search)]])
             if search_in in ('applicant_email', 'all'):
                 search_domain = OR([search_domain, [('applicant_email', 'ilike', search)]])
+            domain += search_domain
+            if search_in in ('lifesize_meeting_ext', 'all'):
+                search_domain = OR([search_domain, [('lifesize_meeting_ext', 'ilike', search)]])
+            domain += search_domain
+            if search_in in ('name', 'all'):
+                search_domain = OR([search_domain, [('name', 'ilike', search)]])
+            domain += search_domain
+            if search_in in ('state', 'all'):
+                search_domain = OR([search_domain, [('state', 'ilike', search)]])
             domain += search_domain
 
         # task count
