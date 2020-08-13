@@ -249,7 +249,21 @@
                             <strong>API Lifesize:</strong> <span t-field="appointment.name"/>
                             <br/>
                             <strong>Record Data:</strong> <span t-field="appointment.record_data"/>
+                            <br/>
+                            <strong>Fecha Final:</strong> <span t-field="appointment.end_date"/>
+                            <br/>
+                            <strong>Url de Agendamiento:</strong> <span t-field="appointment.link_download"/>
+                            <br/>
+                            <strong>Streaming:</strong> <span t-field="appointment.link_streaming"/>
                           </div>
+                      </div>
+
+
+                      <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;" t-if="appointment.state != 'realized' and appointment.state != 'open'">
+                        <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Descripción</div>
+                        <br/>
+                        <br/>
+                        <span t-field="appointment.state_description" style="padding-top:15px;"/>
                       </div>
 
                       <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
@@ -473,14 +487,14 @@
                               <div class="form-group row col-xl-12 col-md-12">
                                 <label for="appointment_date" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha de Agendamiento</label>
                                 <div class="col-md-12 row">
-                                    <input type="text" class="form-control" id="appointment_date" name="appointment_date" required="1" t-att-value="appointment.appointment_date"/>
+                                    <input type="text" class="form-control" id="appointment_date" name="appointment_date" required="1" t-att-value="appointment.appointment_date" readonly="1"/>
                                 </div>
                               </div>
 
                               <div class="form-group row col-xl-12 col-md-12">
                                 <label for="request_date" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha de Solicitud</label>
                                 <div class="col-md-12 row">
-                                    <input type="text" class="form-control" id="request_date" name="request_date" required="1" t-att-value="appointment.request_date"/>
+                                    <input type="text" class="form-control" id="request_date" name="request_date" required="1" t-att-value="appointment.request_date" readonly="1"/>
                                 </div>
                               </div>
 
@@ -507,28 +521,49 @@
                             <div class="form-group row col-xl-12 col-md-12">
                               <label for="type" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Tipo de Solicitud</label>
                               <div class="col-md-12 row">
-                                  <input type="char" class="form-control" name="type" required="1" t-att-value="appointment.type"/>
+                                  <input type="hidden" class="form-control" name="hidden_type" required="1" t-att-value="appointment.type"/>
+
+                                  <select name="types" class="form-control" id="types" style="width:50%">
+                                      <option t-att-value="audiencia" t-att-selected="types">Audiencia</option>
+                                      <option t-att-value="video" t-att-selected="types">Video Conferencia</option>
+                                      <option t-att-value="streaming" t-att-selected="types">Streaming</option>
+                                  </select>
                               </div>
                             </div>
 
                             <div class="form-group row col-xl-12 col-md-12">
                               <label for="class_name" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Clase de Solicitud</label>
                               <div class="col-md-12 row">
-                                  <input type="char" class="form-control" name="class_name" required="1" t-att-value="appointment.class_id.name"/>
+                                  <input type="hidden" class="form-control" name="hidden_class_id" required="1" t-att-value="appointment.class_id.id" readonly="1"/>
+                                  <select class="form-control" name="class_id" id="class_id">
+                                        <t t-foreach="suggested_class" t-as="cal_class">
+                                          <option t-att-value="cal_class.id" t-esc="cal_class.name" />
+                                      </t>
+                                  </select>
                               </div>
                             </div>
 
                             <div class="form-group row col-xl-12 col-md-12">
                               <label for="help_name" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Apoyo en Sitio</label>
                               <div class="col-md-12 row">
-                                  <input type="char" class="form-control" name="help_name" required="1" t-att-value="appointment.help_id.name"/>
+                                  <input type="hidden" class="form-control" name="hidden_suggested_help1" required="1" t-att-value="appointment.help_id.id"/>
+                                  <select class="form-control" name="help_id" id="help_id">
+                                      <t t-foreach="suggested_help1" t-as="res">
+                                          <option t-att-value="res.id" t-esc="res.name" t-att-selected="res.name" />
+                                      </t>
+                                  </select>
                               </div>
                             </div>
 
                             <div class="form-group row col-xl-12 col-md-12">
                               <label for="partaker_type" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Tipo de Participante</label>
                               <div class="col-md-12 row">
-                                  <input type="char" class="form-control" name="partaker_type" required="1" t-att-value="appointment.partaker_type"/>
+                                  <input type="hidden" class="form-control" name="hidden_partaker_type" required="1" t-att-value="appointment.partaker_type.id"/>
+                                  <select class="form-control" name="partaker_type" id="partaker_type">
+                                      <t t-foreach="suggested_help2" t-as="res">
+                                          <option t-att-value="res.id" t-esc="res.name" t-att-selected="res.name" />
+                                      </t>
+                                  </select>
                               </div>
                             </div>
 
@@ -585,7 +620,11 @@
                               <div class="form-group row col-xl-12 col-md-12">
                                 <label for="request_type" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Tipo de Audiencia</label>
                                 <div class="col-md-12 row">
-                                    <input type="char" class="form-control" name="request_type" required="1" t-att-value="appointment.request_type"/>
+                                    <input type="hidden" class="form-control" name="hidden_request_type" required="1" t-att-value="appointment.request_type"/>
+                                    <select name="request_type" class="form-control" id="type">
+                                        <option t-att-value="r">Reservedo</option>
+                                        <option t-att-value="l">Libre</option>
+                                    </select>
                                 </div>
                               </div>
 
@@ -623,16 +662,37 @@
                             </div>
 
                             <div class="form-group row col-xl-12 col-md-12">
-                              <label for="name" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">URL Lifesize</label>
+                              <label for="name" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">API Lifesize</label>
                               <div class="col-md-12 row">
-                                  <input type="char" class="form-control" name="name" required="1" t-att-value="appointment.name" readonly="0"/>
+                                  <input type="char" class="form-control" name="name" required="1" t-att-value="appointment.name"/>
                               </div>
                             </div>
 
                             <div class="form-group row col-xl-12 col-md-12">
                               <label for="record_data" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Record Data</label>
                               <div class="col-md-12 row">
-                                  <input type="char" class="form-control" name="record_data" required="1" t-att-value="appointment.record_data" readonly="0"/>
+                                  <input type="char" class="form-control" name="record_data" required="1" t-att-value="appointment.record_data"/>
+                              </div>
+                            </div>
+
+                            <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
+                              <label for="end_date" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha Final</label>
+                              <div class="col-md-12 row">
+                                  <input type="char" class="form-control" name="end_date" required="1" t-att-value="appointment.end_date"/>
+                              </div>
+                            </div>
+
+                            <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
+                              <label for="link_download" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Url de Agendamiento</label>
+                              <div class="col-md-12 row">
+                                  <input type="char" class="form-control" name="link_download" required="1" t-att-value="appointment.link_download"/>
+                              </div>
+                            </div>
+
+                            <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
+                              <label for="link_streaming" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Streaming</label>
+                              <div class="col-md-12 row">
+                                  <input type="char" class="form-control" name="link_streaming" required="1" t-att-value="appointment.link_streaming"/>
                               </div>
                             </div>
 
@@ -640,10 +700,17 @@
                       </div>
 
                       <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
+                        <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Descripción</div>
+                        <br/>
+                        <br/>
+                        <textarea class="form-control text-uppercase" rows="5" t-att-required="False" t-attf-name="description" t-att-value="appointment.state_description"/>
+                      </div>
+
+                      <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
                         <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Observaciones</div>
                         <br/>
                         <br/>
-                        <span t-field="appointment.observations" style="padding-top:15px;"/>
+                        <textarea class="form-control text-uppercase" rows="5" t-att-required="False" t-attf-name="observation" t-att-value="appointment.observations"/>
                       </div>
 
                       <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
@@ -667,13 +734,42 @@
                         <br/>
                         <table style="padding-top:15px;">
                         <t t-foreach="appointment.partners_ids" t-as="partner">
-                          <tr>
+                          <tr class="guest_remove_form{{partner.id}}">
                           <td>
                             <t t-esc='partner.email' />
+                          </td>
+                          <td>
+                            <button class="btn btn-danger fa fa-remove btn-guest_remove" onclick="remove_guest_fields('+ guest +');" type="button"></button>
                           </td>
                           </tr>
                         </t>
                         </table>
+
+                        <div class="form-group row col-xl-12">
+                          <div class="row guest_add_form" style="width:100%">
+                            <div class="col-md-5">
+                                <label for="nameguest0" class="col-md-5 col-form-label" style="color: rgba(0, 0, 0, 0.5);">NOMBRE</label>
+                                <input type="char" class="form-control text-uppercase" name="nameguest0" id="nameguest" />
+                            </div>
+                            <div class="col-md-5">
+                                <label for="emailguest0" class="col-md-5 col-form-label" style="color: rgba(0, 0, 0, 0.5);">CORREO</label>
+                                <input type="email" class="form-control text-uppercase" name="emailguest0" id="emailguest" />
+                            </div>
+                            <div class="col-md-2" style="padding-top:4vh;">
+                                <button class="btn btn-success fa fa-plus btn-guest_add" type="button"></button>
+                            </div>
+                          </div><br/>
+                          <div id="guest_fields" style="width:100%;padding-top:10px;">
+                         </div>
+                         <script type="text/javascript" >
+                           function remove_guest_fields(rid) {
+                             $('.guest_remove_form'+rid).remove();
+                             var guestSelectedCont = $(".appointment_submit_form input[name='guestcont']").val();
+                             $(".appointment_submit_form input[name='guestcont']").val(parseInt(guestSelectedCont)-1);
+                           }
+                         </script>
+                        </div>
+
                       </div>
 
                       <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">

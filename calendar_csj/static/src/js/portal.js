@@ -6,7 +6,6 @@ $(function () {
     });
 });
 
-
 $( function() {
   $( ".appointment_portal_edit_form input[name='request_date']").datepicker({
     dateFormat : 'yy-mm-dd',
@@ -98,6 +97,13 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
       url = '/my/appointment/' + appointment_id + '/update/state/cancel';
       window.location.href = url;
     });
+
+
+    var type = $(".appointment_portal_edit_form input[name='hidden_type']").val();
+    var request_type = $(".appointment_portal_edit_form input[name='hidden_request_type']").val();
+    //$(".appointment_portal_edit_form input[name='request_type']").children("option:selected")[0].getAttribute('data') || '';
+    $(".appointment_portal_edit_form input[name='request_type']").val(type)
+    $(".appointment_portal_edit_form input[name='request_type']").val(request_type)
 
 
     $("#state_cancel_btn").on('click', function(e){

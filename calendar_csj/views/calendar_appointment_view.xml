@@ -167,7 +167,7 @@
                             </group>
                             <group groups="base.group_no_one">
                                 <field name="event_id" readonly="True" />
-                                <field name="appointment_type_id" readonly="True" />
+                                <field name="appointment_type_id" readonly="False" />
                                 <field name="lifesize_uuid" readonly="True" />
                                 <field name="lifesize_pin" readonly="True" />
                                 <field name="lifesize_owner" readonly="True" />
