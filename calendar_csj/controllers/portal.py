@@ -72,8 +72,12 @@ class CustomerPortal(CustomerPortal):
             'process_number': {'input': 'process_number', 'label': _('Buscar por Número de Proceso')},
             'applicant_id': {'input': 'applicant_id', 'label': _('Buscar por Nombre Solicitante')},
             'declarant_text': {'input': 'declarant_text', 'label': _('Buscar por Declarante')},
+            'tag_number': {'input': 'tag_number', 'label': _('Buscar Etiqueta')},
             'indicted_text': {'input': 'indicted_text', 'label': _('Buscar por Procesado')},
             'applicant_email': {'input': 'applicant_email', 'label': _('Buscar por Email del Aplicante')},
+            'lifesize_meeting_ext': {'input': 'lifesize_meeting_ext', 'label': _('Buscar por Ext reunión Lifesize')},
+            'name': {'input': 'name', 'label': _('Buscar por API Lifesize')},
+            'state': {'input': 'state', 'label': _('Buscar por Estado')},
             'all': {'input': 'all', 'label': _('Buscar en Todos')},
         }
         searchbar_groupby = {
