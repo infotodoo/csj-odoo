@@ -40,9 +40,18 @@ class CustomerPortal(CustomerPortal):
     # My Appointments
     # ------------------------------------------------------------
     def _appointment_get_page_view_values(self, appointment, access_token, **kwargs):
+        if appointment.request_type == 'A':
+            suggested_class = request.env['calendar.class'].sudo().search([('type','=','audience')])
+        else:
+            suggested_class = request.env['calendar.class'].sudo().search([('type','=','other')])
+        suggested_help1 = request.env['calendar.help'].sudo().search([('type','=','support')])
+        suggested_help2 = request.env['calendar.help'].sudo().search([('type','=','type_p')])
         values = {
             'page_name': 'appointment',
             'appointment': appointment,
+            'suggested_class': suggested_class,
+            'suggested_help1': suggested_help1,
+            'suggested_help2': suggested_help2,
         }
         return self._get_page_view_values(appointment, access_token, values, 'my_appointment_history', False, **kwargs)
 
@@ -302,8 +311,6 @@ class CustomerPortal(CustomerPortal):
     @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/all/submit'], type='http', auth="public", website=True, method=["POST"])
     def appointment_portal_edit_form_submit(self, calendar_datetime, calendar_duration, appointment_type, **kwargs):
         request.session['timezone'] = 'America/Bogota'
-        _logger.error("*************************\n*******************************\n****************************+")
-        _logger.error(calendar_datetime)
         day_name = format_datetime(datetime.strptime(calendar_datetime, "%Y-%m-%d %H:%M"), 'EEE', locale=get_lang(request.env).code)
         date_formated = format_datetime(datetime.strptime(calendar_datetime, "%Y-%m-%d %H:%M"), locale=get_lang(request.env).code)
         timezone = request.session['timezone']
@@ -312,19 +319,10 @@ class CustomerPortal(CustomerPortal):
         date_end = date_start + relativedelta(hours=float(calendar_duration))
 
         appointment_type_obj = request.env['calendar.appointment.type'].browse(appointment_type)
-        _logger.error(appointment_type_obj)
-        _logger.error(calendar_datetime)
-        _logger.error(kwargs['appointment_id'])
-
-
 
         kwargs['appointment_id'].sudo().write({
             'calendar_datetime': date_start.strftime(dtf),
         })
-
-
-
-
 
         return request.redirect('/my/appointment/' + str(kwargs['appointment_id'].id))
 
