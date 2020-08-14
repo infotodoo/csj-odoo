@@ -27,20 +27,23 @@ class ResUsers(models.Model):
         for i in range(len(vals_list)):
             user = vals_list[i]
             portal_flag = False
-            if not user.get("sel_groups_1_8_9"):
+            if not user.get("sel_groups_1_8_9"):  # 'groups_id': [(6, 0, [8])]
                 try:
-                    # From res.partner the portal user only have 'groups_id': [(6, 0, [8])] like a portal identifier
                     group_8 = user.get("groups_id")
                     portal_flag = 8 == group_8[0][-1][0]
                 except:
+                    _logger.error(f"\nFail group_8: {user}\n{vals_list}\n{portal_flag}")
                     pass
             else:
                 try:
                     portal_flag = user.get("sel_groups_1_8_9") == 8
                 except:
+                    _logger.error(
+                        f"\nFail sel_groups_1_8_9: {user}\n{vals_list}\n{portal_flag}"
+                    )
                     pass
 
-            if user.get("sel_groups_1_8_9") and portal_flag:
+            if portal_flag:
                 # Search user and if exist fill fields and if not create and fill fields
                 try:
                     api = {"method": "search", "email": user.get("login")}
