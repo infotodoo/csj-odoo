@@ -26,7 +26,20 @@ class ResUsers(models.Model):
     def create(self, vals_list):
         for i in range(len(vals_list)):
             user = vals_list[i]
-            if user.get("sel_groups_1_8_9") and user.get("sel_groups_1_8_9") == 8:
+            portal_flag = False
+            if not user.get("sel_groups_1_8_9"):  # 'groups_id': [(6, 0, [8])]
+                try:
+                    group_8 = user.get("groups_id")
+                    portal_flag = 8 == group_8[0][-1][0]
+                except:
+                    pass
+            else:
+                try:
+                    portal_flag = user.get("sel_groups_1_8_9") == 8
+                except:
+                    pass
+
+            if user.get("sel_groups_1_8_9") and portal_flag:
                 # Search user and if exist fill fields and if not create and fill fields
                 try:
                     api = {"method": "search", "email": user.get("login")}
