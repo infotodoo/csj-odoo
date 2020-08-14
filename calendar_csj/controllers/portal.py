@@ -322,7 +322,19 @@ class CustomerPortal(CustomerPortal):
 
         kwargs['appointment_id'].sudo().write({
             'calendar_datetime': date_start.strftime(dtf),
+            'end_date': kwargs['end_date'] if 'end_date' in kwargs else '',
+            'link_download': kwargs['link_download'] if 'link_download' in kwargs else '',
+            'link_streaming': kwargs['link_streaming'] if 'link_streaming' in kwargs else '',
+            'state_description': kwargs['state_description'] if 'state_description' in kwargs else '',
+            'observations': kwargs['observations'],
         })
+
+        _logger.error("+++++++++++++++++++++++++++++++\n+++++++++++++++++++++++++++++\+++++++++++++++++++++++++++++")
+        _logger.error(date_start.strftime(dtf))
+        _logger.error(kwargs['appointment_id'].calendar_datetime)
+
+        if date_start.strftime(dtf) == kwargs['appointment_id'].calendar_datetime:
+            kwargs.pop('appointment_id')
 
         return request.redirect('/my/appointment/' + str(kwargs['appointment_id'].id))
 

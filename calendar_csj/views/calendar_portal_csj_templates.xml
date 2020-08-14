@@ -477,12 +477,12 @@
                                 </div>
                               </div>
 
-                              <div class="form-group row col-xl-12 col-md-12">
+                              <!--<div class="form-group row col-xl-12 col-md-12">
                                 <label for="calendar_duration" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Duración</label>
                                 <div class="col-md-12 row">
                                     <input type="char" class="form-control" name="calendar_duration" required="1" t-att-value="appointment.calendar_duration" readonly="1"/>
                                 </div>
-                              </div>
+                              </div>-->
 
                               <div class="form-group row col-xl-12 col-md-12">
                                 <label for="appointment_date" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha de Agendamiento</label>
@@ -699,18 +699,18 @@
                           </div>
                       </div>
 
-                      <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
+                      <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;" t-if="appointment.state != 'realized' and appointment.state != 'open'">
                         <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Descripción</div>
                         <br/>
                         <br/>
-                        <textarea class="form-control text-uppercase" rows="5" t-att-required="False" t-attf-name="description" t-att-value="appointment.state_description"/>
+                        <textarea class="form-control text-uppercase" rows="5" required="True" t-att-required="False" t-attf-name="description" t-att-value="appointment.state_description"/>
                       </div>
 
                       <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
                         <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Observaciones</div>
                         <br/>
                         <br/>
-                        <textarea class="form-control text-uppercase" rows="5" t-att-required="False" t-attf-name="observation" t-att-value="appointment.observations"/>
+                        <textarea class="form-control text-uppercase" rows="5" t-att-required="False" t-attf-name="observations" t-att-value="appointment.observations"/>
                       </div>
 
                       <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
@@ -734,7 +734,7 @@
                         <br/>
                         <table style="padding-top:15px;">
                         <t t-foreach="appointment.partners_ids" t-as="partner">
-                          <tr class="guest_remove_form{{partner.id}}">
+                          <tr class="guest_remove_form">
                           <td>
                             <t t-esc='partner.email' />
                           </td>
