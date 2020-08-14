@@ -31,12 +31,21 @@ class ResUsers(models.Model):
                 try:
                     group_8 = user.get("groups_id")
                     portal_flag = 8 == group_8[0][-1][0]
+                    _logger.error(f"\ngroup_8: {user}\n{vals_list}\n{portal_flag}")
                 except:
+                    _logger.error(f"\nFail group_8: {user}\n{vals_list}\n{portal_flag}")
                     pass
             else:
                 try:
                     portal_flag = user.get("sel_groups_1_8_9") == 8
+                    _logger.error(
+                        f"\nsel_groups_1_8_9: {user}\n{vals_list}\n{portal_flag}"
+                    )
+
                 except:
+                    _logger.error(
+                        f"\nFail sel_groups_1_8_9: {user}\n{vals_list}\n{portal_flag}"
+                    )
                     pass
 
             if user.get("sel_groups_1_8_9") and portal_flag:
