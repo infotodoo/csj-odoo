@@ -693,27 +693,29 @@ class CalendarAppointment(models.Model):
 
     @api.onchange("state")
     def onchange_state(self):
+        pin_logic = False
         if self.state not in ["cancel", "open", "draft"]:
             dic = {
                 "appointment_close_date": datetime.datetime.now(),
                 "appointment_close_user_id": self.env.user.id,
             }
-            length = 6
-            new_pin = "".join([random.choice(string.digits) for i in range(length)])
-            api = {
-                "method": "update",
-                "uuid": self.lifesize_uuid,
-                "ownerExtension": self.lifesize_owner,
-                "pin": new_pin,
-            }
-            resp = self.env["api.lifesize"].api_crud(api)
-            update_info = self.env["api.lifesize"].resp2dict(resp)
-            _logger.error(f"\nUpdate pin: {update_info}")
-            dic.update(update_info)
+            if pin_logic:
+                length = 6
+                new_pin = "".join([random.choice(string.digits) for i in range(length)])
+                api = {
+                    "method": "update",
+                    "uuid": self.lifesize_uuid,
+                    "ownerExtension": self.lifesize_owner,
+                    "pin": new_pin,
+                }
+                resp = self.env["api.lifesize"].api_crud(api)
+                update_info = self.env["api.lifesize"].resp2dict(resp)
+                _logger.error(f"\nUpdate pin: {update_info}")
+                dic.update(update_info)
             self.write(dic)
         if self.state in ["cancel"]:
             self.action_cancel()
-        if self.state in ["realized"]:
+        if self.state in ["realized"] and pin_logic:
             self.unlink_lifesize()
 
     def fetch_calendar_verify_availability(
