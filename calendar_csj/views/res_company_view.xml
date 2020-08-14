@@ -24,6 +24,7 @@
                 <xpath expr="//group[@name='preferences']" position="after">
                     <group string="Lifesize" >
                         <field name="extension_lifesize"/>
+                        <field name="uuid_lifesize"/>
                     </group>
                     <group string="Notification Partner">
                         <field name="notification_partner"/>
