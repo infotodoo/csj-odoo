@@ -95,6 +95,7 @@ class CalendarAppointment(models.Model):
     appointment_date = fields.Date('Appointment date', default=fields.Date.today())  # Date
     appointment_close_date = fields.Date('Close date')
     appointment_close_user_id = fields.Many2one('res.users', 'Close user')  # Date
+    appointment_close_user_login = fields.Char('Closing User Login', related='appointment_close_user_id.login', store=False)  # Date
     calendar_type = fields.Selection([('unique', 'Unique'), ('multi', 'Multi')], 'Calendar type', default='unique')  # Agenda
     calendar_datetime = fields.Datetime('Calendar datetime', tracking=True)  # Fechatag_number
     calendar_date = fields.Date('Calendar date', compute='_compute_calendar_datetime')
@@ -115,10 +116,11 @@ class CalendarAppointment(models.Model):
 
     # origin_id = fields.Many2one('res.city', 'Origin city', ondelete='set null', default=_default_origin_id)
     city_id = fields.Many2one('res.city', 'City', ondelete='set null', related='partner_id.city_id')
+    country_state_id = fields.Many2one('res.country.state', 'Country State', related='city_id.state_id')
     partner_id = fields.Many2one('res.partner', 'Judged', domain="[('city_id','=',city_id)]", ondelete='set null',
                                  related='appointment_type_id.judged_id')
-    judged_only_code = fields.Char('Partner Only Code', compute="_compute_partner_separated_name", store="False")
-    judged_only_name = fields.Char('Partner Only Name', compute="_compute_partner_separated_name", store="False")
+    judged_only_code = fields.Char('Partner Only Code', compute="_compute_partner_separated_name", store=False)
+    judged_only_name = fields.Char('Partner Only Name', compute="_compute_partner_separated_name", store=True)
     room_id = fields.Many2one('res.judged.room', 'Room', domain="[('partner_id','=',partner_id)]", ondelete='set null')
     room_id_mame = fields.Char('Room Name', related='room_id.virtual_room', store=False)
     partners_ids = fields.Many2many('res.partner', 'appointment_partner_rel', 'appointment_id', 'partner_id', 'Partners')
@@ -151,7 +153,7 @@ class CalendarAppointment(models.Model):
     lifesize_moderator = fields.Char('Moderator Lifesize')
     lifesize_modified = fields.Boolean('Modified')
 
-    create_uid_email = fields.Char('Create User Email', related='create_uid.email', store=False)
+    create_uid_login = fields.Char('Create User Login', related='create_uid.login', store=False)
     cw_bool = fields.Boolean('Create/Write', default=False, required=True)
 
     @api.depends('partners_ids')
@@ -170,7 +172,7 @@ class CalendarAppointment(models.Model):
         for record in self:
             code_entity = record.partner_id.entity_id.code if record.partner_id.entity_id else ''
             code_specialty = record.partner_id.specialty_id.code if record.partner_id.specialty_id else ''
-            name_specialty = record.partner_id.specialty_id.mame if record.partner_id.specialty_id else ''
+            name_specialty = record.partner_id.specialty_id.mame if record.partner_id.specialty_id else ''# ESTO PARA QUE?
             zipcode = record.partner_id.city_id.zipcode if record.partner_id.city_id else ''
             code_city = zipcode or ''
             code = record.partner_id.code or ''
@@ -288,7 +290,22 @@ class CalendarAppointment(models.Model):
         vals['partner_id'] = vals.get('appointment_id')
         vals['sequence_icsfile_ctl'] = 1
         vals['appointment_code'] = self.env['ir.sequence'].next_by_code('calendar.appointment.document.number')
-        vals.update(self.create_lifesize(vals))
+        online_appointment_type = self.env['calendar.appointment.type'].search(
+            [('id', '=', vals.get('appointment_type_id'))])[0]
+        partner = online_appointment_type.judged_id if online_appointment_type \
+            and online_appointment_type.judged_id else False
+        # ERROR REPORT THIS JUDGED :C res.partner(11307,), False
+        if partner and partner.permanent_room:
+            extension = partner.lifesize_meeting_extension if \
+                    partner.lifesize_meeting_extension else False
+            vals.update({
+                'lifesize_meeting_ext': extension,
+                'lifesize_url': 'https://call.lifesizecloud.com/{}'.format(extension) if extension else False,
+            })
+            _logger.error('\nSTATUS: NO CREADA EN LIFESIZE {}'.format(vals))
+        else:
+            vals.update(self.create_lifesize(vals))
+            _logger.error('\nSTATUS: CREADA EN LIFESIZE {}'.format(vals))
         res = super(CalendarAppointment, self).create(vals)
         return res
 
@@ -329,6 +346,7 @@ class CalendarAppointment(models.Model):
                 'ownerExtension': self.env.user.extension_lifesize or \
                     self.env.user.company_id.owner_extension,
                 'moderatorExtension': judged_extension_lifesize or \
+                    self.env.user.extension_lifesize or \
                     self.env.user.company_id.owner_extension,
             })
         else:
@@ -350,27 +368,38 @@ class CalendarAppointment(models.Model):
 
     def write_lifesize(self, vals):
         for record in self:
-            description = ("Updated to: %s " % (
-                record.calendar_datetime.strftime("%Y%m%d %H%M%S"))
-                )
-            api = {
-                'method': 'update',
-                'description': description,
-                'ownerExtension': record.lifesize_owner,
-                'uuid': record.lifesize_uuid,
-            }
-            resp = self.env['api.lifesize'].api_crud(api)
-            dic = self.env['api.lifesize'].resp2dict(resp)
-            dic.update(state='postpone')
+            partner = record.partner_id
+            _logger.error('\n{}, {}'.format(partner,partner.permanent_room))
+            if partner and not partner.permanent_room:
+                description = ("Updated to: %s " % (
+                    record.calendar_datetime.strftime("%Y%m%d %H%M%S"))
+                    )
+                api = {
+                    'method': 'update',
+                    'description': description,
+                    'ownerExtension': record.lifesize_owner,
+                    'uuid': record.lifesize_uuid,
+                }
+                resp = self.env['api.lifesize'].api_crud(api)
+                dic = self.env['api.lifesize'].resp2dict(resp)
+                dic.update(state='postpone')
+            else:
+                _logger.error('\nSTATUS: NO MODIFICADA EN LIFESIZE')
+                dic = {'state': 'postpone'}
         return dic
 
     def unlink_lifesize(self):
         for record in self:
-            api = {
-                'method': 'delete',
-                'uuid': record.lifesize_uuid,
-            }
-            self.env['api.lifesize'].api_crud(api)
+            partner = record.partner_id
+            _logger.error('\n{}, {}'.format(partner,partner.permanent_room))
+            if partner and not partner.permanent_room:
+                api = {
+                    'method': 'delete',
+                    'uuid': record.lifesize_uuid,
+                }
+                self.env['api.lifesize'].api_crud(api)
+            else:
+                _logger.error('\nSTATUS: NO CANCELADA EN LIFESIZE')
 
     def create_event(self, vals):
         dic = {}
