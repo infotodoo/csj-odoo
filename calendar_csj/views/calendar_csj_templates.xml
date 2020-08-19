@@ -75,7 +75,7 @@
                             <label for="class_id" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">CLASE DE VIDEOCONFERENCIA</label>
                             <div class="col-md-12 row">
                                 <select class="form-control" name="class_id" id="class_id">
-                                    <t t-foreach="suggested_class" t-as="cal_class">
+                                      <t t-foreach="suggested_class" t-as="cal_class">
                                         <option t-att-value="cal_class.id" t-esc="cal_class.name" />
                                     </t>
                                 </select>

@@ -320,8 +320,21 @@ class CustomerPortal(CustomerPortal):
 
         appointment_type_obj = request.env['calendar.appointment.type'].browse(appointment_type)
 
+
+        _logger.error("+++++++++++++++++++++++++++++++\n+++++++++++++++++++++++++++++\+++++++++++++++++++++++++++++")
+        _logger.error(date_start.strftime(dtf))
+        _logger.error(kwargs['appointment_id'].calendar_datetime)
+
+
+        new_date = date_start.strftime(dtf)
+        if str(date_start.strftime(dtf)) == str(kwargs['appointment_id'].calendar_datetime):
+            new_date = None
+            _logger.error("+++++++++++++++++++++++++++++++\n+++++++++++++++++++++++++++++\+++++++++++++++++++++++++++++")
+            _logger.error(date_start.strftime(dtf))
+            _logger.error(date_start.strftime(dtf))
+
         kwargs['appointment_id'].sudo().write({
-            'calendar_datetime': date_start.strftime(dtf),
+            'calendar_datetime': new_date,
             'end_date': kwargs['end_date'] if 'end_date' in kwargs else '',
             'link_download': kwargs['link_download'] if 'link_download' in kwargs else '',
             'link_streaming': kwargs['link_streaming'] if 'link_streaming' in kwargs else '',
@@ -329,12 +342,7 @@ class CustomerPortal(CustomerPortal):
             'observations': kwargs['observations'],
         })
 
-        _logger.error("+++++++++++++++++++++++++++++++\n+++++++++++++++++++++++++++++\+++++++++++++++++++++++++++++")
-        _logger.error(date_start.strftime(dtf))
-        _logger.error(kwargs['appointment_id'].calendar_datetime)
 
-        if date_start.strftime(dtf) == kwargs['appointment_id'].calendar_datetime:
-            kwargs.pop('appointment_id')
 
         return request.redirect('/my/appointment/' + str(kwargs['appointment_id'].id))
 

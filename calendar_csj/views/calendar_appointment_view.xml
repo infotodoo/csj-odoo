@@ -143,6 +143,7 @@
                                 <field name="city_id" required="True" string="Ciudad Origen"/>
                                 <field name="country_state_id" string="Departamento"/>
                                 <field name="partner_id" required="True" string="Despacho Solicitante"/>
+                                <field name="appointment_type_id" readonly="False" domain="[('city_id','=',city_id)]"/>
                                 <field name="room_id" />
                             </group>
                             <group>
@@ -167,7 +168,6 @@
                             </group>
                             <group groups="base.group_no_one">
                                 <field name="event_id" readonly="True" />
-                                <field name="appointment_type_id" readonly="False" />
                                 <field name="lifesize_uuid" readonly="True" />
                                 <field name="lifesize_pin" readonly="True" />
                                 <field name="lifesize_owner" readonly="True" />

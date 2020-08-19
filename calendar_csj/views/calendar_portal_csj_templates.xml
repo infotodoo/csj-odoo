@@ -80,9 +80,9 @@
                         <td>
                             <span t-esc="appointment.lifesize_url"/>
                         </td>
-                        <td>
+                        <!--<td>
                             <span t-esc="appointment.tag_number"/>
-                        </td>
+                        </td>-->
                     </tr>
                 </tbody>
               </t>
