@@ -59,6 +59,7 @@ class CustomerPortal(CustomerPortal):
             'country_state_id': {'label': _('Departamento'), 'order': 'name'},
             'process_number': {'label': _('Número de Proceso'), 'order': 'process_number'},
         }
+
         searchbar_filters = {
             'all': {'label': _('Todos'), 'domain': []},
             'today': {'label': _('Hoy'), 'domain': [('calendar_datetime','<',datetime(2020,8,12,23,59,59)),('calendar_datetime','>',datetime(2020,8,12,0,0,1))]},
@@ -81,25 +82,27 @@ class CustomerPortal(CustomerPortal):
             'state': {'input': 'state', 'label': _('Buscar por Estado')},
             'all': {'input': 'all', 'label': _('Buscar en Todos')},
         }
+
         searchbar_groupby = {
             'none': {'input': 'none', 'label': _('None')},
             'appointment': {'input': 'appointment_code', 'label': _('Appointment')},
-            'state': {'input': 'state', 'label': _('Estado')},
+            'state': {'input': 'state', 'label': _('State')},
         }
 
 
         # extends filterby criteria with project the customer has access to
-        """
-        appointments = request.env['calendar.appointment'].search([])
-        for appointment in appointments:
-            searchbar_filters.update({
-                str(appointment.id): {'label': appointment.name, 'domain': [('state', '=', 'open')]}
-            })
+
+        """appointments = request.env['calendar.appointment'].search([])
+            for appointment in appointments:
+                searchbar_filters.update({
+                    str(appointment.id): {'label': appointment.name, 'domain': [('state', '=', 'open')]}
+                })
         """
 
         appointments = request.env['calendar.appointment'].search([
             #('partner_id', '=', partner.id),
         ])
+
         #for appointment in appointments:
         #    searchbar_filters.update({
         #        str(appointment.id): {'label': appointment.name, 'domain': [('appointment_id', '=', appointment.id)]}
@@ -180,15 +183,15 @@ class CustomerPortal(CustomerPortal):
             step=self._items_per_page
         )
 
-        """
+        
         if groupby == 'state':
-            order = "state, %s" % ''
-        timesheets = Timesheet_sudo.search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
-        if groupby == 'project':
-            grouped_timesheets = [Timesheet_sudo.concat(*g) for k, g in groupbyelem(timesheets, itemgetter('project_id'))]
+            order = "state, %s" % order
+        appointments = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+        if groupby == 'state':
+            grouped_appointments = [request.env['calendar.appointment'].sudo().concat(*g) for k, g in groupbyelem(appointments, itemgetter('state'))]
         else:
-            grouped_timesheets = [timesheets]
-        """
+            grouped_appointments = [appointments]
+        
 
         # when partner is not scheduler they can only view their own
         partner = request.env.user.partner_id
@@ -205,6 +208,7 @@ class CustomerPortal(CustomerPortal):
             'date': date_begin,
             'date_end': date_end,
             'appointments': appointments,
+            'grouped_appointments': grouped_appointments,
             'page_name': 'appointment',
             'archive_groups': archive_groups,
             'default_url': '/my/appointments',

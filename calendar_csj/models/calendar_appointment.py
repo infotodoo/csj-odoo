@@ -283,31 +283,31 @@ class CalendarAppointment(models.Model):
             else:
                 continue
 
-    @api.model
-    def create(self, vals):
-        vals['name'] = vals.get('process_number')[0:23] + 's' + \
-            self.env['ir.sequence'].next_by_code('calendar.appointment').replace('s','') or _('None')
-        vals['partner_id'] = vals.get('appointment_id')
-        vals['sequence_icsfile_ctl'] = 1
-        vals['appointment_code'] = self.env['ir.sequence'].next_by_code('calendar.appointment.document.number')
-        online_appointment_type = self.env['calendar.appointment.type'].search(
-            [('id', '=', vals.get('appointment_type_id'))])[0]
-        partner = online_appointment_type.judged_id if online_appointment_type \
-            and online_appointment_type.judged_id else False
-        # ERROR REPORT THIS JUDGED :C res.partner(11307,), False
-        if partner and partner.permanent_room:
-            extension = partner.lifesize_meeting_extension if \
-                    partner.lifesize_meeting_extension else False
-            vals.update({
-                'lifesize_meeting_ext': extension,
-                'lifesize_url': 'https://call.lifesizecloud.com/{}'.format(extension) if extension else False,
-            })
-            _logger.error('\nSTATUS: NO CREADA EN LIFESIZE {}'.format(vals))
-        else:
-            vals.update(self.create_lifesize(vals))
-            _logger.error('\nSTATUS: CREADA EN LIFESIZE {}'.format(vals))
-        res = super(CalendarAppointment, self).create(vals)
-        return res
+   # @api.model
+   # def create(self, vals):
+        # vals['name'] = vals.get('process_number')[0:23] + 's' + \
+        #     self.env['ir.sequence'].next_by_code('calendar.appointment').replace('s','') or _('None')
+        # vals['partner_id'] = vals.get('appointment_id')
+        # vals['sequence_icsfile_ctl'] = 1
+        # vals['appointment_code'] = self.env['ir.sequence'].next_by_code('calendar.appointment.document.number')
+        # online_appointment_type = self.env['calendar.appointment.type'].search(
+        #     [('id', '=', vals.get('appointment_type_id'))])[0]
+        # partner = online_appointment_type.judged_id if online_appointment_type \
+        #     and online_appointment_type.judged_id else False
+        # # ERROR REPORT THIS JUDGED :C res.partner(11307,), False
+        # if partner and partner.permanent_room:
+        #     extension = partner.lifesize_meeting_extension if \
+        #             partner.lifesize_meeting_extension else False
+        #     vals.update({
+        #         'lifesize_meeting_ext': extension,
+        #         'lifesize_url': 'https://call.lifesizecloud.com/{}'.format(extension) if extension else False,
+        #     })
+        #     _logger.error('\nSTATUS: NO CREADA EN LIFESIZE {}'.format(vals))
+        # else:
+        #     vals.update(self.create_lifesize(vals))
+        #     _logger.error('\nSTATUS: CREADA EN LIFESIZE {}'.format(vals))
+        # res = super(CalendarAppointment, self).create(vals)
+        # return res
 
     def write(self, vals):
         if vals.get('calendar_datetime'):

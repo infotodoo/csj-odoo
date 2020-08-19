@@ -35,57 +35,59 @@
                       No hay agendamientos.
                   </div>
               </t>
-              <t t-if="appointments" t-call="portal.portal_table">
-                <thead>
-                    <tr t-attf-class="{{'thead-light' if not groupby == 'none' else ''}}">
-                        <th t-if="groupby == 'none'">Agendamiento ID</th>
-                        <th t-else="">Agendamiento ID
-                            <!--<em class="font-weight-normal text-muted"><span t-field="tasks[0].sudo().project_id.label_tasks"/> for project:</em>
-                            <span t-field="tasks[0].sudo().project_id.name"/>-->
-                        </th>
-                        <th class="text-center">Número de Proceso</th>
-                        <th class="text-left">Tipo</th>
-                        <th class="text-left">Fecha de Realización</th>
-                        <th class="text-left">Fecha de Agendamiento</th>
-                        <th class="text-left">Tipo de Solicitud</th>
-                        <th class="text-left">Estado</th>
-                        <th class="text-left">Fecha de Solicitud</th>
-                        <th class="text-left">Lifesize URL</th>
-                        <th class="text-left">Etiqueta</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr t-foreach="appointments" t-as="appointment">
-                        <td>
-                            <a t-attf-href="/my/appointment/#{appointment.id}?{{ keep_query() }}"><span t-field="appointment.appointment_code"/></a>
-                        </td>
-                        <td>
-                            <span t-field="appointment.process_number"/>
-                        </td>
-                        <td>
-                            <span t-field="appointment.type"/>
-                        </td>
-                        <td>
-                            <span t-field="appointment.calendar_datetime"/>
-                        </td>
-                        <td>
-                            <span t-field="appointment.appointment_date"/>
-                        </td>
-                        <td>
-                            <span t-field="appointment.request_type"/>
-                        </td>
-                        <td>
-                            <span class="badge badge-pill badge-info" title="Current state of the appointment" t-esc="appointment.state"/>
-                        </td>
-                        <td>
-                            <span t-esc="appointment.lifesize_url"/>
-                        </td>
-                        <td>
-                            <span t-esc="appointment.tag_number"/>
-                        </td>
-                    </tr>
-                </tbody>
-              </t>
+              <t t-if="grouped_appointments">
+                <t t-call="portal.portal_table">
+                    <t t-foreach="grouped_appointments" t-as="appointments">
+                        <thead>
+                            <tr t-attf-class="{{'thead-light' if not groupby == 'none' else ''}}">
+                                <th t-if="groupby == 'none'">Description</th>
+                                <th t-else="">
+                                    <em class="font-weight-normal text-muted">Appointment for state:</em>
+                                    <span t-field="appointments[0].state"/></th>
+                                <th class="text-center">Número de Proceso</th>
+                                <th class="text-left">Tipo</th>
+                                <th class="text-left">Fecha de Realización</th>
+                                <th class="text-left">Fecha de Agendamiento</th>
+                                <th class="text-left">Tipo de Solicitud</th>
+                                <th class="text-left">Estado</th>
+                                <th class="text-left">Fecha de Solicitud</th>
+                                <th class="text-left">Lifesize URL</th>
+                                <th class="text-left">Etiqueta</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="appointments" t-as="appointment">
+                                <tr>
+                                    <td>
+                                        <span t-field="appointment.process_number"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.type"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.calendar_datetime"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.appointment_date"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.request_type"/>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-pill badge-info" title="Current state of the appointment" t-esc="appointment.state"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.lifesize_url"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.tag_number"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </t>
+                </t>
+            </t>
           </t>
       </template>
 
@@ -96,18 +98,6 @@
                       <t t-set="backend_url" t-value="'/web#model=calendar.appointment&amp;id=%s&amp;view_type=form' % (appointment.id)"/>
                   </t>
               </t>
-
-              <!--<t t-if="message == 'appointment_cancel'">
-                  <div class="alert alert-warning mt8" role="alert">
-                      Se ha cancelado el agendamiento, un correo ha sido enviado con la notificación de este evento.
-                  </div>
-              </t>
-              <t t-if="message == 'appointment_reconfirm'">
-                  <div class="alert alert-warning mt8" role="alert">
-                      Se ha modificado la fecha de realización del agendamiento, un correo ha sido enviado con la notificación de este evento.
-                  </div>
-              </t>-->
-
               <t t-call="portal.portal_record_layout">
                   <t t-set="card_header">
                       <div class="row no-gutters">
@@ -135,11 +125,6 @@
                                 Confirmar
                               </button>
                             </div>
-                            <!--<div class="btn-group" role="group" aria-label="Appointment Cancel Button">
-                              <button type="button" class="btn btn-secondary" attrs="{'invisible':[('state','=','cancel')]}">
-                                Cancelar
-                              </button>
-                            </div>-->
                           </div>
                           <div class="col-md text-md-right">
                               <div class="appointment_statebar">
@@ -177,9 +162,6 @@
                   </t>
 
                   <t t-set="card_body">
-                      <!--<div class="mb-1" t-if="user.partner_id.id in appointment.sudo().project_id.message_partner_ids.ids">
-                          <strong>Project:</strong> <a t-attf-href="/my/project/#{task.project_id.id}" t-field="task.project_id.name"/>
-                      </div>-->
 
                       <div class="mb-1" style="text-align:center;background-color: #00a09d;padding-top:15px;padding-bottom:15px;color:#FFF;">
                           <strong>Despacho:</strong> <span t-field="appointment.partner_id.name"/><br/>
