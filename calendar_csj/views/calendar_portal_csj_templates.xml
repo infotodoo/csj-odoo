@@ -430,34 +430,39 @@
                   </t>
 
                   <t t-set="card_body">
+                    <!--
                       <div class="mb-1" style="text-align:center;background-color: #00a09d;padding-top:15px;padding-bottom:15px;color:#FFF;">
                         <div class="form-group row col-xl-12 col-md-12" style="padding-left:30px;">
                             <div class="form-group row col-xl-6 col-md-6">
-                                  <label for="partner_name" class="col-md-12 col-form-label row" style="color:#FFF;">Despacho</label>
+                                  <label for="partner_name" class="col-md-12 col-form-label row">Despacho</label>
                                   <div class="col-md-12 row">
                                       <input type="char" class="form-control text-uppercase" name="partner_name" readonly="1" required="1" t-att-value="appointment.partner_id.name"/>
+                                      <span t-esc='appointment.partner_id.name' style="color:#FFF;"/>
                                   </div>
                             </div>
                             <div class="form-group row col-xl-6 col-md-6">
-                              <label for="room_name" class="col-md-12 row col-form-label text-uppercase" style="color:#FFF;">Sala</label>
+                              <label for="room_name" class="col-md-12 row col-form-label text-uppercase">Sala</label>
                               <div class="col-md-12 row">
                                   <input type="char" class="form-control" name="room_name" required="1" readonly="1" t-att-value="appointment.room_id.name"/>
+                                  <span t-esc='appointment.partner_id.name' style="color:#FFF;"/>
                               </div>
                             </div>
-                            <div class="form-group row col-xl-6 col-md-6">
+                            <div class="form-group row col-xl-6 col-md-6" style="color:#FFF;">
                                   <label for="city_name" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">Ciudad</label>
                                   <div class="col-md-12 row">
                                       <input type="char" class="form-control text-uppercase" name="city_name" readonly="1" required="1" t-att-value="appointment.city_id.name"/>
+                                      <span t-esc='appointment.city_id.name' style="color:#FFF;"/>
                                   </div>
                             </div>
                             <div class="form-group row col-xl-6 col-md-6">
                               <label for="country_state_name" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Departamento</label>
                               <div class="col-md-12 row">
                                   <input type="char" class="form-control" name="country_state_name" readonly="1" required="1" t-att-value="appointment.country_state_id.name"/>
+                                  <span t-esc='appointment.country_state_id.name' style="color:#FFF;"/>
                               </div>
                             </div>
                         </div>
-                      </div>
+                      </div>-->
 
                       <div class="row col-12 mb-4" style="padding-top:20px;">
                           <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;">
@@ -555,21 +560,21 @@
                                     </div>
                                   </div>
 
-                                  <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state != 'realized' and appointment.state != 'open'">
+                                  <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
                                     <label for="end_date" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha Final</label>
                                     <div class="col-md-12 row">
                                         <input type="char" class="form-control" name="end_date" required="1" t-att-value="appointment.end_date"/>
                                     </div>
                                   </div>
 
-                                  <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state != 'realized' and appointment.state != 'open'">
+                                  <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
                                     <label for="end_hour" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Hora Final</label>
                                     <div class="col-md-12 row">
                                         <input type="char" class="form-control" name="end_hour" required="1" t-att-value="appointment.end_hour"/>
                                     </div>
                                   </div>
 
-                                  <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state != 'realized' and appointment.state != 'open'">
+                                  <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
                                     <label for="link_download" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Link de Descarga</label>
                                     <div class="col-md-12 row">
                                         <input type="char" class="form-control" name="link_download" required="1" t-att-value="appointment.link_download"/>
@@ -718,14 +723,14 @@
                         <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Descripción</div>
                         <br/>
                         <br/>
-                        <textarea class="form-control text-uppercase" rows="5" required="True" t-att-required="False" t-attf-name="state_description" t-att-value="appointment.state_description"/>
+                        <textarea class="form-control text-uppercase" rows="5" t-att-required="False" t-attf-name="state_description"><t t-esc="appointment.state_description"/></textarea>
                       </div>
 
                       <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
                         <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Observaciones</div>
                         <br/>
                         <br/>
-                        <textarea class="form-control text-uppercase" rows="5" t-att-required="False" t-attf-name="observations" t-att-value="appointment.observations"/>
+                        <textarea class="form-control text-uppercase" rows="5" t-att-required="False" t-attf-name="observations"><t t-esc="appointment.observations"/></textarea>
                       </div>
 
                       <!--<div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
@@ -862,7 +867,7 @@
                 </t>
                 <t t-set="card_body">
                     <div class="mb-1" style="text-align:center;background-color: #00a09d;padding-top:15px;padding-bottom:15px;color:#FFF;">
-                      <h2>Seleccione la nueva información de Agendamiento</h2>
+                      <h3>Seleccione la nueva información de Agendamiento</h3>
                     </div>
                     <div class="row col-12 mb-4" style="padding-top:20px;">
                         <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;">
@@ -923,7 +928,7 @@
                           </button>
                         </div>
                         <div class="btn-group" role="group" aria-label="Appointment Discart Button">
-                          <button type="button" class="btn btn-secondary portal_appointment_reschedule_cancel">
+                          <button type="button" class="btn btn-secondary portal_appointment_judged_change_cancel">
                             Descartar
                           </button>
                         </div>
