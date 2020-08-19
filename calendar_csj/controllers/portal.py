@@ -186,7 +186,7 @@ class CustomerPortal(CustomerPortal):
         # pager
         pager = portal_pager(
             url="/my/appointments",
-            url_args={'date_begin': date_begin, 'date_end': date_end, 'sortby': sortby},
+            url_args={'date_begin': date_begin, 'date_end': date_end, 'search': search, 'sortby': sortby},
             total=appointment_count,
             page=page,
             step=self._items_per_page
