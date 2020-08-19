@@ -318,6 +318,7 @@ class CustomerPortal(CustomerPortal):
 
         kwargs['appointment_id'].sudo().write({
             'end_date': kwargs['end_date'] if 'end_date' in kwargs else '',
+            'end_hour': kwargs['end_date'] if 'end_date' in kwargs else '',
             'link_download': kwargs['link_download'] if 'link_download' in kwargs else '',
             'link_streaming': kwargs['link_streaming'] if 'link_streaming' in kwargs else '',
             'state_description': kwargs['state_description'] if 'state_description' in kwargs else '',

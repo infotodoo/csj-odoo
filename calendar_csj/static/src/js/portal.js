@@ -18,6 +18,10 @@ $(function () {
     $( ".appointment_portal_edit_form input[name='end_date']").datepicker({
       dateFormat : 'yy-mm-dd',
     });
+
+    $( ".appointment_portal_edit_form input[name='end_hour']").datetimepicker({
+      dateFormat : 'HH:MM',
+    });
 });
 
 odoo.define('calendar_csj.calendar_portal_csj', function(require) {
