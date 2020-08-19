@@ -494,7 +494,6 @@ class CalendarAppointment(models.Model):
             _logger.error("\nSTATUS: CREADA EN LIFESIZE {}".format(vals))
         res = super(CalendarAppointment, self).create(vals)
         return res
->>>>>>> a95cd8a6880eaa5a4cce3ba508de54f9f33deb72
 
     def write(self, vals):
         if vals.get("calendar_datetime"):
