@@ -68,6 +68,7 @@ class CustomerPortal(CustomerPortal):
             'country_state_id': {'label': _('Departamento'), 'order': 'name'},
             'process_number': {'label': _('Número de Proceso'), 'order': 'process_number'},
         }
+
         searchbar_filters = {
             'all': {'label': _('Todos'), 'domain': []},
             'today': {'label': _('Hoy'), 'domain': [('calendar_datetime','<',datetime(2020,8,12,23,59,59)),('calendar_datetime','>',datetime(2020,8,12,0,0,1))]},
@@ -90,25 +91,27 @@ class CustomerPortal(CustomerPortal):
             'state': {'input': 'state', 'label': _('Buscar por Estado')},
             'all': {'input': 'all', 'label': _('Buscar en Todos')},
         }
+
         searchbar_groupby = {
             'none': {'input': 'none', 'label': _('None')},
             'appointment': {'input': 'appointment_code', 'label': _('Appointment')},
-            'state': {'input': 'state', 'label': _('Estado')},
+            'state': {'input': 'state', 'label': _('State')},
         }
 
 
         # extends filterby criteria with project the customer has access to
-        """
-        appointments = request.env['calendar.appointment'].search([])
-        for appointment in appointments:
-            searchbar_filters.update({
-                str(appointment.id): {'label': appointment.name, 'domain': [('state', '=', 'open')]}
-            })
+
+        """appointments = request.env['calendar.appointment'].search([])
+            for appointment in appointments:
+                searchbar_filters.update({
+                    str(appointment.id): {'label': appointment.name, 'domain': [('state', '=', 'open')]}
+                })
         """
 
         appointments = request.env['calendar.appointment'].search([
             #('partner_id', '=', partner.id),
         ])
+
         #for appointment in appointments:
         #    searchbar_filters.update({
         #        str(appointment.id): {'label': appointment.name, 'domain': [('appointment_id', '=', appointment.id)]}
@@ -183,21 +186,21 @@ class CustomerPortal(CustomerPortal):
         # pager
         pager = portal_pager(
             url="/my/appointments",
-            url_args={'date_begin': date_begin, 'date_end': date_end, 'sortby': sortby},
+            url_args={'date_begin': date_begin, 'date_end': date_end, 'search': search, 'sortby': sortby},
             total=appointment_count,
             page=page,
             step=self._items_per_page
         )
 
-        """
+
         if groupby == 'state':
-            order = "state, %s" % ''
-        timesheets = Timesheet_sudo.search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
-        if groupby == 'project':
-            grouped_timesheets = [Timesheet_sudo.concat(*g) for k, g in groupbyelem(timesheets, itemgetter('project_id'))]
+            order = "state, %s" % order
+        appointments = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+        if groupby == 'state':
+            grouped_appointments = [request.env['calendar.appointment'].sudo().concat(*g) for k, g in groupbyelem(appointments, itemgetter('state'))]
         else:
-            grouped_timesheets = [timesheets]
-        """
+            grouped_appointments = [appointments]
+
 
         # when partner is not scheduler they can only view their own
         partner = request.env.user.partner_id
@@ -214,6 +217,7 @@ class CustomerPortal(CustomerPortal):
             'date': date_begin,
             'date_end': date_end,
             'appointments': appointments,
+            'grouped_appointments': grouped_appointments,
             'page_name': 'appointment',
             'archive_groups': archive_groups,
             'default_url': '/my/appointments',
@@ -310,6 +314,39 @@ class CustomerPortal(CustomerPortal):
 
     @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/all/submit'], type='http', auth="public", website=True, method=["POST"])
     def appointment_portal_edit_form_submit(self, calendar_datetime, calendar_duration, appointment_type, **kwargs):
+        appointment_type_obj = request.env['calendar.appointment.type'].browse(appointment_type)
+
+        kwargs['appointment_id'].sudo().write({
+            'end_date': kwargs['end_date'] if 'end_date' in kwargs else '',
+            'link_download': kwargs['link_download'] if 'link_download' in kwargs else '',
+            'link_streaming': kwargs['link_streaming'] if 'link_streaming' in kwargs else '',
+            'state_description': kwargs['state_description'] if 'state_description' in kwargs else '',
+            'observations': kwargs['observations'],
+        })
+
+        return request.redirect('/my/appointment/' + str(kwargs['appointment_id'].id))
+
+
+
+
+
+    @http.route([
+        '/my/appointment/<int:appointment_id>/update/reschedule'
+    ], type='http', auth="user", website=True)
+    def portal_my_appointment_reschedule(self, appointment_id=None, access_token=None, **kw):
+        try:
+            appointment_sudo = self._document_check_access('calendar.appointment', appointment_id, access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+
+        values = self._appointment_get_page_view_values(appointment_sudo, access_token, **kw)
+        return request.render("calendar_csj.portal_my_appointment_reschedule", values)
+
+
+
+
+    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/reschedule/submit'], type='http', auth="public", website=True, method=["POST"])
+    def appointment_portal_reschedule_form_submit(self, calendar_datetime, calendar_duration, appointment_type, **kwargs):
         request.session['timezone'] = 'America/Bogota'
         day_name = format_datetime(datetime.strptime(calendar_datetime, "%Y-%m-%d %H:%M"), 'EEE', locale=get_lang(request.env).code)
         date_formated = format_datetime(datetime.strptime(calendar_datetime, "%Y-%m-%d %H:%M"), locale=get_lang(request.env).code)
@@ -320,48 +357,27 @@ class CustomerPortal(CustomerPortal):
 
         appointment_type_obj = request.env['calendar.appointment.type'].browse(appointment_type)
 
-
-        _logger.error("+++++++++++++++++++++++++++++++\n+++++++++++++++++++++++++++++\+++++++++++++++++++++++++++++")
-        _logger.error(date_start.strftime(dtf))
-        _logger.error(kwargs['appointment_id'].calendar_datetime)
-
-
         new_date = date_start.strftime(dtf)
         if str(date_start.strftime(dtf)) == str(kwargs['appointment_id'].calendar_datetime):
             new_date = None
-            _logger.error("+++++++++++++++++++++++++++++++\n+++++++++++++++++++++++++++++\+++++++++++++++++++++++++++++")
-            _logger.error(date_start.strftime(dtf))
-            _logger.error(date_start.strftime(dtf))
 
         kwargs['appointment_id'].sudo().write({
             'calendar_datetime': new_date,
-            'end_date': kwargs['end_date'] if 'end_date' in kwargs else '',
-            'link_download': kwargs['link_download'] if 'link_download' in kwargs else '',
-            'link_streaming': kwargs['link_streaming'] if 'link_streaming' in kwargs else '',
-            'state_description': kwargs['state_description'] if 'state_description' in kwargs else '',
-            'observations': kwargs['observations'],
         })
-
-
 
         return request.redirect('/my/appointment/' + str(kwargs['appointment_id'].id))
 
-        """
-        return request.render("calendar_csj.portal_my_appointment", {
-            #'partner_data': partner_data,
-            'appointment_id': kwargs['appointment_id'].id,
-        })
-        """
 
 
-        # check availability calendar.event with partner of appointment_type
-        """
-        if appointment_type_obj and appointment_type_obj.judged_id:
-            _logger.error(appointment_type_obj.judged_id)
-            if not appointment_type_obj.judged_id.calendar_verify_availability(date_start,date_end):
-                return request.render("calendar_csj.portal_my_appointment_editall", {
-                    'appointment_type': appointment_type,
-                    'message': 'already_scheduling',
-                    'appointment_id': appointment_id,
-                })
-        """
+
+    @http.route([
+        '/my/appointment/<int:appointment_id>/update/judged'
+    ], type='http', auth="user", website=True)
+    def portal_my_appointment_judged(self, appointment_id=None, access_token=None, **kw):
+        try:
+            appointment_sudo = self._document_check_access('calendar.appointment', appointment_id, access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+
+        values = self._appointment_get_page_view_values(appointment_sudo, access_token, **kw)
+        return request.render("calendar_csj.portal_my_appointment_judged_change", values)

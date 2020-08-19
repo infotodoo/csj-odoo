@@ -159,7 +159,7 @@
                                 <field name="end_date" attrs="{'invisible': [('state','!=','realized')]}" />
                                 <field name="end_hour" attrs="{'invisible': [('state','!=','realized')]}" widget="float_time"/>
                                 <field name="link_download" attrs="{'invisible': [('state','!=','realized')]}" />
-                                <field name="link_streaming" attrs="{'invisible': [('type','!=','streaming'),('state','!=','realized')]}" />
+                                <!--<field name="link_streaming" attrs="{'invisible': [('type','!=','streaming'),('state','!=','realized')]}" />-->
                             </group>
                             <group>
                                 <field name="lifesize_meeting_ext" readonly="True" string="Ext reunión Lifesize"/>

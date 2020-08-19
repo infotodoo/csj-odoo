@@ -35,57 +35,64 @@
                       No hay agendamientos.
                   </div>
               </t>
-              <t t-if="appointments" t-call="portal.portal_table">
-                <thead>
-                    <tr t-attf-class="{{'thead-light' if not groupby == 'none' else ''}}">
-                        <th t-if="groupby == 'none'">Agendamiento ID</th>
-                        <th t-else="">Agendamiento ID
-                            <!--<em class="font-weight-normal text-muted"><span t-field="tasks[0].sudo().project_id.label_tasks"/> for project:</em>
-                            <span t-field="tasks[0].sudo().project_id.name"/>-->
-                        </th>
-                        <th class="text-center">Número de Proceso</th>
-                        <th class="text-left">Tipo</th>
-                        <th class="text-left">Fecha de Realización</th>
-                        <th class="text-left">Fecha de Agendamiento</th>
-                        <th class="text-left">Tipo de Solicitud</th>
-                        <th class="text-left">Estado</th>
-                        <th class="text-left">Fecha de Solicitud</th>
-                        <th class="text-left">Lifesize URL</th>
-                        <th class="text-left">Etiqueta</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr t-foreach="appointments" t-as="appointment">
-                        <td>
-                            <a t-attf-href="/my/appointment/#{appointment.id}?{{ keep_query() }}"><span t-field="appointment.appointment_code"/></a>
-                        </td>
-                        <td>
-                            <span t-field="appointment.process_number"/>
-                        </td>
-                        <td>
-                            <span t-field="appointment.type"/>
-                        </td>
-                        <td>
-                            <span t-field="appointment.calendar_datetime"/>
-                        </td>
-                        <td>
-                            <span t-field="appointment.appointment_date"/>
-                        </td>
-                        <td>
-                            <span t-field="appointment.request_type"/>
-                        </td>
-                        <td>
-                            <span class="badge badge-pill badge-info" title="Current state of the appointment" t-esc="appointment.state"/>
-                        </td>
-                        <td>
-                            <span t-esc="appointment.lifesize_url"/>
-                        </td>
-                        <!--<td>
-                            <span t-esc="appointment.tag_number"/>
-                        </td>-->
-                    </tr>
-                </tbody>
-              </t>
+
+              <t t-if="grouped_appointments">
+                <t t-call="portal.portal_table">
+                    <t t-foreach="grouped_appointments" t-as="appointments">
+                        <thead>
+                            <tr t-attf-class="{{'thead-light' if not groupby == 'none' else ''}}">
+                                <th t-if="groupby == 'none'">Agendamiento ID</th>
+                                <th t-else="">Agendamiento ID
+                                    <em class="font-weight-normal text-muted">Appointment for state:</em>
+                                    <span t-field="appointments[0].state"/></th>
+                                <th class="text-center">Número de Proceso</th>
+                                <th class="text-left">Tipo</th>
+                                <th class="text-left">Fecha de Realización</th>
+                                <th class="text-left">Fecha de Agendamiento</th>
+                                <th class="text-left">Tipo de Solicitud</th>
+                                <th class="text-left">Estado</th>
+                                <th class="text-left">Fecha de Solicitud</th>
+                                <th class="text-left">Lifesize URL</th>
+                                <th class="text-left">Etiqueta</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="appointments" t-as="appointment">
+                                <tr>
+                                  <td>
+                                      <a t-attf-href="/my/appointment/#{appointment.id}?{{ keep_query() }}"><span t-field="appointment.appointment_code"/></a>
+                                  </td>
+                                    <td>
+                                        <span t-field="appointment.process_number"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.type"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.calendar_datetime"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.appointment_date"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.request_type"/>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-pill badge-info" title="Current state of the appointment" t-esc="appointment.state"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.lifesize_url"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.tag_number"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </t>
+                </t>
+            </t>
+
           </t>
       </template>
 
@@ -96,18 +103,6 @@
                       <t t-set="backend_url" t-value="'/web#model=calendar.appointment&amp;id=%s&amp;view_type=form' % (appointment.id)"/>
                   </t>
               </t>
-
-              <!--<t t-if="message == 'appointment_cancel'">
-                  <div class="alert alert-warning mt8" role="alert">
-                      Se ha cancelado el agendamiento, un correo ha sido enviado con la notificación de este evento.
-                  </div>
-              </t>
-              <t t-if="message == 'appointment_reconfirm'">
-                  <div class="alert alert-warning mt8" role="alert">
-                      Se ha modificado la fecha de realización del agendamiento, un correo ha sido enviado con la notificación de este evento.
-                  </div>
-              </t>-->
-
               <t t-call="portal.portal_record_layout">
                   <t t-set="card_header">
                       <div class="row no-gutters">
@@ -130,16 +125,16 @@
                                 Editar
                               </button>
                             </div>
-                            <div class="btn-group" role="group" aria-label="Appointment Confirm Button">
-                              <button type="button" class="btn btn-secondary" attrs="{'invisible':[('state','=','cancel')]}">
-                                Confirmar
+                            <div class="btn-group" role="group" aria-label="Appointment Reschedule Button">
+                              <button type="button" class="btn btn-secondary portal_appointment_reschedule" attrs="{'invisible':[('state','=','cancel')]}">
+                                Reagendar
                               </button>
                             </div>
-                            <!--<div class="btn-group" role="group" aria-label="Appointment Cancel Button">
-                              <button type="button" class="btn btn-secondary" attrs="{'invisible':[('state','=','cancel')]}">
-                                Cancelar
+                            <div class="btn-group" role="group" aria-label="Appointment Confirm Button">
+                              <button type="button" class="btn btn-secondary portal_appointment_judged_change" attrs="{'invisible':[('state','=','cancel')]}">
+                                Cambiar Juzgado
                               </button>
-                            </div>-->
+                            </div>
                           </div>
                           <div class="col-md text-md-right">
                               <div class="appointment_statebar">
@@ -177,9 +172,6 @@
                   </t>
 
                   <t t-set="card_body">
-                      <!--<div class="mb-1" t-if="user.partner_id.id in appointment.sudo().project_id.message_partner_ids.ids">
-                          <strong>Project:</strong> <a t-attf-href="/my/project/#{task.project_id.id}" t-field="task.project_id.name"/>
-                      </div>-->
 
                       <div class="mb-1" style="text-align:center;background-color: #00a09d;padding-top:15px;padding-bottom:15px;color:#FFF;">
                           <strong>Despacho:</strong> <span t-field="appointment.partner_id.name"/><br/>
@@ -237,7 +229,7 @@
                               <br/>
                               <strong>Número de Proceso:</strong> <span t-field="appointment.process_number"/>
                               <br/>
-                              <strong>Etiqueta:</strong> <span t-field="appointment.tag_number"/>
+                              <strong>Etiqueta:</strong> <!--<span t-field="appointment.tag_number"/>-->
                           </div>
                           <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;" t-if="appointment.calendar_duration">
                             <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos de Reunión</div>
@@ -248,7 +240,7 @@
                             <br/>
                             <strong>API Lifesize:</strong> <span t-field="appointment.name"/>
                             <br/>
-                            <strong>Record Data:</strong> <span t-field="appointment.record_data"/>
+                            <strong>Record Data:</strong> <!--<span t-field="appointment.record_data"/>-->
                             <br/>
                             <strong>Fecha Final:</strong> <span t-field="appointment.end_date"/>
                             <br/>
@@ -402,7 +394,7 @@
                   <input type="hidden" name="appointment_state" t-att-value="appointment.state" />
                   <input type="hidden" name="appointment_id" t-att-value="appointment.id" />
                   <input type="hidden" name="appointment_type" t-att-value="appointment.appointment_type_id.id"/>
-
+                  <input type="hidden" name="calendar_duration" t-att-value="appointment.calendar_duration"/>
               <t t-call="portal.portal_record_layout">
                   <t t-set="card_header">
                       <div class="row no-gutters">
@@ -467,7 +459,7 @@
 
                       <div class="row col-12 mb-4" style="padding-top:20px;">
                           <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;">
-                              <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos de Realización</div>
+                              <!--<div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos de Realización</div>
                               <br/>
 
                               <div class="form-group row col-xl-12 col-md-12">
@@ -475,14 +467,14 @@
                                 <div class="col-md-12 row">
                                     <input type="datetime" class="form-control" id="calendar_datetime" name="calendar_datetime" required="1" t-att-value="appointment.calendar_datetime   - datetime.timedelta(hours=5)"/>
                                 </div>
-                              </div>
+                              </div>-->
 
                               <!--<div class="form-group row col-xl-12 col-md-12">
                                 <label for="calendar_duration" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Duración</label>
                                 <div class="col-md-12 row">
                                     <input type="char" class="form-control" name="calendar_duration" required="1" t-att-value="appointment.calendar_duration" readonly="1"/>
                                 </div>
-                              </div>-->
+                              </div>
 
                               <div class="form-group row col-xl-12 col-md-12">
                                 <label for="appointment_date" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha de Agendamiento</label>
@@ -510,7 +502,59 @@
                                 <div class="col-md-12 row">
                                     <input type="char" class="form-control" name="appointment_close_user_id" required="1" t-att-value="appointment.appointment_close_user_id.name" readonly="1"/>
                                 </div>
-                              </div>
+                              </div>-->
+
+                                  <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos del Proceso</div>
+                                  <br/>
+
+                                  <div class="form-group row col-xl-12 col-md-12">
+                                    <label for="applicant_name" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Nombre Solicitante</label>
+                                    <div class="col-md-12 row">
+                                        <input type="char" class="form-control" name="applicant_name" required="1" t-att-value="appointment.applicant_id.name"/>
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row col-xl-12 col-md-12">
+                                    <label for="declarant_text" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Declarante</label>
+                                    <div class="col-md-12 row">
+                                        <input type="char" class="form-control" name="declarant_text" required="1" t-att-value="appointment.declarant_text"/>
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row col-xl-12 col-md-12">
+                                    <label for="indicted_text" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Procesado</label>
+                                    <div class="col-md-12 row">
+                                        <input type="char" class="form-control" name="indicted_text" required="1" t-att-value="appointment.indicted_text"/>
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row col-xl-12 col-md-12">
+                                    <label for="request_type" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Tipo de Audiencia</label>
+                                    <div class="col-md-12 row">
+                                        <input type="hidden" class="form-control" name="hidden_request_type" required="1" t-att-value="appointment.request_type"/>
+                                        <select name="request_type" class="form-control" id="type">
+                                            <option t-att-value="r">Reservedo</option>
+                                            <option t-att-value="l">Libre</option>
+                                        </select>
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row col-xl-12 col-md-12">
+                                    <label for="process_number" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Número de Proceso</label>
+                                    <div class="col-md-12 row">
+                                        <input type="char" class="form-control" name="process_number" required="1" t-att-value="appointment.process_number"/>
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row col-xl-12 col-md-12">
+                                    <label for="tag_number" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Etiqueta</label>
+                                    <div class="col-md-12 row">
+                                        <input type="char" class="form-control" name="tag_number" required="1" t-att-value="appointment.tag_number"/>
+                                    </div>
+                                  </div>
+
+
+
                           </div>
 
 
@@ -591,59 +635,8 @@
                           </div>
                       </div>
 
-                      <div class="row col-12 mb-4" style="padding-top:20px;">
-                          <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;">
-                              <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos del Proceso</div>
-                              <br/>
-
-                              <div class="form-group row col-xl-12 col-md-12">
-                                <label for="applicant_name" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Nombre Solicitante</label>
-                                <div class="col-md-12 row">
-                                    <input type="char" class="form-control" name="applicant_name" required="1" t-att-value="appointment.applicant_id.name"/>
-                                </div>
-                              </div>
-
-                              <div class="form-group row col-xl-12 col-md-12">
-                                <label for="declarant_text" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Declarante</label>
-                                <div class="col-md-12 row">
-                                    <input type="char" class="form-control" name="declarant_text" required="1" t-att-value="appointment.declarant_text"/>
-                                </div>
-                              </div>
-
-                              <div class="form-group row col-xl-12 col-md-12">
-                                <label for="indicted_text" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Procesado</label>
-                                <div class="col-md-12 row">
-                                    <input type="char" class="form-control" name="indicted_text" required="1" t-att-value="appointment.indicted_text"/>
-                                </div>
-                              </div>
-
-                              <div class="form-group row col-xl-12 col-md-12">
-                                <label for="request_type" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Tipo de Audiencia</label>
-                                <div class="col-md-12 row">
-                                    <input type="hidden" class="form-control" name="hidden_request_type" required="1" t-att-value="appointment.request_type"/>
-                                    <select name="request_type" class="form-control" id="type">
-                                        <option t-att-value="r">Reservedo</option>
-                                        <option t-att-value="l">Libre</option>
-                                    </select>
-                                </div>
-                              </div>
-
-                              <div class="form-group row col-xl-12 col-md-12">
-                                <label for="process_number" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Número de Proceso</label>
-                                <div class="col-md-12 row">
-                                    <input type="char" class="form-control" name="process_number" required="1" t-att-value="appointment.process_number"/>
-                                </div>
-                              </div>
-
-                              <div class="form-group row col-xl-12 col-md-12">
-                                <label for="tag_number" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Etiqueta</label>
-                                <div class="col-md-12 row">
-                                    <input type="char" class="form-control" name="tag_number" required="1" t-att-value="appointment.tag_number"/>
-                                </div>
-                              </div>
-
-                          </div>
-                          <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;" t-if="appointment.calendar_duration">
+                      <!--<div class="row col-12 mb-4" style="padding-top:20px;">
+                                                    <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;" t-if="appointment.calendar_duration">
                             <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos de Reunión</div>
                             <br/>
 
@@ -697,13 +690,13 @@
                             </div>
 
                           </div>
-                      </div>
+                      </div>-->
 
                       <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;" t-if="appointment.state != 'realized' and appointment.state != 'open'">
                         <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Descripción</div>
                         <br/>
                         <br/>
-                        <textarea class="form-control text-uppercase" rows="5" required="True" t-att-required="False" t-attf-name="description" t-att-value="appointment.state_description"/>
+                        <textarea class="form-control text-uppercase" rows="5" required="True" t-att-required="False" t-attf-name="state_description" t-att-value="appointment.state_description"/>
                       </div>
 
                       <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
@@ -713,7 +706,7 @@
                         <textarea class="form-control text-uppercase" rows="5" t-att-required="False" t-attf-name="observations" t-att-value="appointment.observations"/>
                       </div>
 
-                      <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
+                      <!--<div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
                         <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos del solicitante</div>
                         <br/>
                         <table style="padding-top:15px;"><tr>
@@ -727,9 +720,9 @@
                           <strong>Teléfono:</strong> <span t-field="appointment.applicant_mobile"/>
                         </td>
                         </tr></table>
-                      </div>
+                      </div>-->
 
-                      <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
+                      <!--<div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
                         <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Invitados</div>
                         <br/>
                         <table style="padding-top:15px;">
@@ -770,9 +763,9 @@
                          </script>
                         </div>
 
-                      </div>
+                      </div>-->
 
-                      <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
+                      <!--<div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
                         <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Destinos</div>
                         <br/>
                         <table style="padding-top:15px; width:100%;">
@@ -790,13 +783,158 @@
                           </tr>
                         </t>
                         </table>
-                      </div>
+                      </div>-->
                   </t>
               </t>
             </form>
 
           </t>
       </template>
+
+
+
+
+      <template id="portal_my_appointment_reschedule" name="My Appointment Reschedule">
+          <t t-call="portal.portal_layout">
+              <t t-set="o_portal_fullwidth_alert" groups="calendar_csj.group_calendar_manager">
+                  <t t-call="portal.portal_back_in_edit_mode">
+                      <t t-set="backend_url" t-value="'/web#model=calendar.appointment&amp;id=%s&amp;view_type=form' % (appointment.id)"/>
+                  </t>
+              </t>
+              <form class="mt32 appointment_portal_reschedule_form" t-attf-action="/my/appointment/#{appointment.id}/update/reschedule/submit?calendar_datetime=#{calendar_datetime}&amp;calendar_duration=#{calendar_duration}&amp;appointment_type=#{appointment_type}" method="POST">
+                  <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                  <input type="hidden" name="appointment_state" t-att-value="appointment.state" />
+                  <input type="hidden" name="appointment_id" t-att-value="appointment.id" />
+                  <input type="hidden" name="appointment_type" t-att-value="appointment.appointment_type_id.id"/>
+                  <input type="hidden" name="calendar_duration" t-att-value="appointment.calendar_duration"/>
+              <t t-call="portal.portal_record_layout">
+                <t t-set="card_header">
+                    <div class="row no-gutters">
+                        <div class="col-md">
+                            <h5 class="mb-1 mb-md-0">
+                                <span>ID Agendamiento: </span>
+                                <span t-field="appointment.appointment_code"/>
+                                <small class="text-muted"> (#<span t-field="appointment.id"/>)</small>
+                            </h5>
+                        </div>
+                        <div class="col-md text-md-right">
+                            <small class="text-right">Estado:</small>
+                            <span t-field="appointment.state" class=" badge badge-pill badge-info" title="Estado actual del agendamiento"/>
+                        </div>
+                    </div>
+                    <div class="row no-gutters" style="padding-top:20px;">
+                        <div class="col-md">
+                          <div class="btn-group" role="group" aria-label="Appointment Reschedule Save Button">
+                            <button type="button" class="btn btn-secondary portal_appointment_reschedule_save" attrs="{'invisible':[('state','=','cancel')]}">
+                              Confirmar
+                            </button>
+                          </div>
+                          <div class="btn-group" role="group" aria-label="Appointment Discart Button">
+                            <button type="button" class="btn btn-secondary portal_appointment_reschedule_cancel">
+                              Descartar
+                            </button>
+                          </div>
+                        </div>
+
+                    </div>
+                </t>
+                <t t-set="card_body">
+                    <div class="mb-1" style="text-align:center;background-color: #00a09d;padding-top:15px;padding-bottom:15px;color:#FFF;">
+                      <h2>Seleccione la nueva información de Agendamiento</h2>
+                    </div>
+                    <div class="row col-12 mb-4" style="padding-top:20px;">
+                        <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;">
+                            <!--<div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Cuando se llevará a cabo</div>
+                            <br/>-->
+                            <div class="form-group row col-xl-12 col-md-12">
+                              <label for="calendar_datetime" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha y Hora de Realización</label>
+                              <div class="col-md-12 row">
+                                  <input type="datetime" class="form-control" id="calendar_datetime" name="calendar_datetime" required="1" t-att-value="appointment.calendar_datetime   - datetime.timedelta(hours=5)"/>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+
+                  </t>
+              </t>
+            </form>
+
+          </t>
+    </template>
+
+
+
+
+    <template id="portal_my_appointment_judged_change" name="My Appointment Judged Change">
+        <t t-call="portal.portal_layout">
+            <t t-set="o_portal_fullwidth_alert" groups="calendar_csj.group_calendar_manager">
+                <t t-call="portal.portal_back_in_edit_mode">
+                    <t t-set="backend_url" t-value="'/web#model=calendar.appointment&amp;id=%s&amp;view_type=form' % (appointment.id)"/>
+                </t>
+            </t>
+            <form class="mt32 appointment_portal_judged_change_form" t-attf-action="/my/appointment/#{appointment.id}/update/judged/submit?calendar_datetime=#{calendar_datetime}&amp;calendar_duration=#{calendar_duration}&amp;appointment_type=#{appointment_type}" method="POST">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                <input type="hidden" name="appointment_state" t-att-value="appointment.state" />
+                <input type="hidden" name="appointment_id" t-att-value="appointment.id" />
+                <input type="hidden" name="appointment_type" t-att-value="appointment.appointment_type_id.id"/>
+                <input type="hidden" name="calendar_duration" t-att-value="appointment.calendar_duration"/>
+            <t t-call="portal.portal_record_layout">
+              <t t-set="card_header">
+                  <div class="row no-gutters">
+                      <div class="col-md">
+                          <h5 class="mb-1 mb-md-0">
+                              <span>ID Agendamiento: </span>
+                              <span t-field="appointment.appointment_code"/>
+                              <small class="text-muted"> (#<span t-field="appointment.id"/>)</small>
+                          </h5>
+                      </div>
+                      <div class="col-md text-md-right">
+                          <small class="text-right">Estado:</small>
+                          <span t-field="appointment.state" class=" badge badge-pill badge-info" title="Estado actual del agendamiento"/>
+                      </div>
+                  </div>
+                  <div class="row no-gutters" style="padding-top:20px;">
+                      <div class="col-md">
+                        <div class="btn-group" role="group" aria-label="Appointment Reschedule Save Button">
+                          <button type="button" class="btn btn-secondary portal_appointment_reschedule_save" attrs="{'invisible':[('state','=','cancel')]}">
+                            Confirmar
+                          </button>
+                        </div>
+                        <div class="btn-group" role="group" aria-label="Appointment Discart Button">
+                          <button type="button" class="btn btn-secondary portal_appointment_reschedule_cancel">
+                            Descartar
+                          </button>
+                        </div>
+                      </div>
+
+                  </div>
+              </t>
+              <t t-set="card_body">
+                  <div class="mb-1" style="text-align:center;background-color: #00a09d;padding-top:15px;padding-bottom:15px;color:#FFF;">
+                    <h2>Seleccione la nueva información de Despacho</h2>
+                  </div>
+                  <div class="row col-12 mb-4" style="padding-top:20px;">
+                      <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;">
+                          <!--<div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Cuando se llevará a cabo</div>
+                          <br/>-->
+                          <div class="form-group row col-xl-12 col-md-12">
+                            <label for="calendar_datetime" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Despacho</label>
+                            <div class="col-md-12 row">
+                                <input type="char" class="form-control" id="appointment_type_id" name="calendar_datetime" required="1" t-att-value="appointment.appointment_type_id.judged_id.name"/>
+                            </div>
+                          </div>
+                      </div>
+                  </div>
+
+                </t>
+            </t>
+          </form>
+
+        </t>
+  </template>
+
+
+
 
     </data>
 </odoo>
