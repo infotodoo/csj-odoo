@@ -391,7 +391,7 @@
                   </t>
               </t>
 
-              <form class="mt32 appointment_portal_edit_form" t-attf-action="/my/appointment/#{appointment.id}/update/all/submit?calendar_datetime=#{calendar_datetime}&amp;calendar_duration=#{calendar_duration}&amp;appointment_type=#{appointment_type}" method="POST">
+              <form class="mt32 appointment_portal_edit_form" t-attf-action="/my/appointment/#{appointment.id}/update/all/submit" method="POST">
                   <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
                   <input type="hidden" name="appointment_state" t-att-value="appointment.state" />
                   <input type="hidden" name="appointment_id" t-att-value="appointment.id" />

@@ -313,22 +313,16 @@ class CustomerPortal(CustomerPortal):
 
 
     @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/all/submit'], type='http', auth="public", website=True, method=["POST"])
-    def appointment_portal_edit_form_submit(self, calendar_datetime, calendar_duration, appointment_type, **kwargs):
-        appointment_type_obj = request.env['calendar.appointment.type'].browse(appointment_type)
-
+    def appointment_portal_edit_form_submit(self, **kwargs):
         kwargs['appointment_id'].sudo().write({
             'end_date': kwargs['end_date'] if 'end_date' in kwargs else '',
-            'end_hour': kwargs['end_date'] if 'end_date' in kwargs else '',
+            'end_hour': kwargs['end_hour'] if 'end_hour' in kwargs else '',
             'link_download': kwargs['link_download'] if 'link_download' in kwargs else '',
             'link_streaming': kwargs['link_streaming'] if 'link_streaming' in kwargs else '',
             'state_description': kwargs['state_description'] if 'state_description' in kwargs else '',
             'observations': kwargs['observations'],
         })
-
         return request.redirect('/my/appointment/' + str(kwargs['appointment_id'].id))
-
-
-
 
 
     @http.route([
