@@ -426,7 +426,7 @@ class CalendarAppointment(models.Model):
             else:
                 continue
 
-<<<<<<< HEAD
+
    # @api.model
    # def create(self, vals):
         # vals['name'] = vals.get('process_number')[0:23] + 's' + \
@@ -452,7 +452,7 @@ class CalendarAppointment(models.Model):
         #     _logger.error('\nSTATUS: CREADA EN LIFESIZE {}'.format(vals))
         # res = super(CalendarAppointment, self).create(vals)
         # return res
-=======
+
     @api.model
     def create(self, vals):
         vals["name"] = vals.get("process_number")[0:23] + "s" + self.env[
