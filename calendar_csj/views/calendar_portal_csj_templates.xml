@@ -139,7 +139,7 @@
                                         <span t-esc="appointment.observations"/>
                                     </td>
                                     <td>
-                                        <span t-esc="appointment.tag_numer"/>
+                                        <span t-esc="appointment.tag_number"/>
                                     </td>
                                 </tr>
                             </t>
