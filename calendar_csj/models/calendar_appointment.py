@@ -78,7 +78,9 @@ class CalendarAppointment(models.Model):
                               ('assist_cancel','Assisted and Canceled'), ('cancel','Canceled'), ('draft','No confirmed')],
                               'State', default='draft', tracking=True)
     # Realizada, Duplicada, No realizada, Asistida aplazada, Asistida cancelada, Cancelada
-
+    
+    state_label = fields.Char('Estado en español', compute='_get_state_label', store=True)
+    
     name = fields.Char('Name', default=_('New'))
     active = fields.Boolean('Active', default=True)
     sequence_icsfile_ctl = fields.Integer(string='Sequence ICS File')
@@ -570,9 +572,25 @@ class CalendarAppointment(models.Model):
         if not calendar_appointment_type_obj.judged_id.calendar_verify_availability(date_start,date_end):
             return False
         return True
-    def _read_group_states(self, values, domain, order):
-            selection = self.env['calendar.appointment'].fields_get(allfields=['state'])['state']['selection']
-            return [s[0] for s in selection]
+    @api.depends('state')
+    def _get_state_label(self): 
+        for record in self:
+            if record.state == 'open':
+                self.state_label='AGENDADO'
+            if record.state == 'realized':
+                self.state_label='REALIZADA'
+            if record.state == 'unrealized':
+                self.state_label='NO REALIZADA'
+            if record.state == 'assist_postpone':
+                self.state_label='ASISTIDA Y APLAZADA'
+            if record.state == 'postpone':
+                self.state_label='APLAZADA'
+            if record.state == 'assist_cancel':
+                self.state_label='ASISTIDA Y CANCELADA'
+            if record.state == 'cancel':
+                self.state_label='CANCELADO'
+            if record.state == 'draft':
+                self.state_label='DUPLICADO'
 
 class CalendarAppointmentType(models.Model):
     _inherit = 'calendar.appointment.type'
