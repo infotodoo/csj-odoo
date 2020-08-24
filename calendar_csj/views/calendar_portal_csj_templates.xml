@@ -69,8 +69,10 @@
                                 <th class="text-left">Hora de inicio</th>
                                 <th class="text-left">Usuario del cierre</th>
                                 <th class="text-left">Url de grabación</th>
-                                <th class="text-left">Descripción</th>
+                                <th class="text-left">Descripciónn</th>
                                 <th class="text-left">Observaciones</th>
+                                <th class="text-left">Etiqueta</th>
+                                
                             </tr>
                         </thead>
                         <tbody>
@@ -98,6 +100,9 @@
                                         <span class="badge badge-pill badge-info" title="Current state of the appointment" t-esc="appointment.state"/>
                                     </td>
                                     <td>
+                                        <span t-esc="appointment.request_date"/>
+                                    </td>
+                                    <td>
                                         <span t-esc="appointment.lifesize_url"/>
                                     </td>
                                     <td>
@@ -110,7 +115,7 @@
                                         <span t-esc="appointment.city_id.name"/>
                                     </td>
                                     <td>
-                                        <span t-esc="appointment.class_id"/>
+                                        <span t-esc="appointment.class_id.name"/>
                                     </td>
                                     <td>
                                         <span t-esc="appointment.judged_only_code"/>
@@ -122,7 +127,7 @@
                                         <span t-esc="appointment.calendar_time"/>
                                     </td>
                                     <td>
-                                        <span t-esc="appointment.appointment_close_user_id"/>
+                                        <span t-esc="appointment.appointment_close_user_id.login"/>
                                     </td>
                                     <td>
                                         <span t-esc="appointment.link_download"/>
@@ -132,6 +137,9 @@
                                     </td>
                                     <td>
                                         <span t-esc="appointment.observations"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.tag_numer"/>
                                     </td>
                                 </tr>
                             </t>
