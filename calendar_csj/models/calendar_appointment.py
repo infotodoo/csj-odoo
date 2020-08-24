@@ -71,11 +71,11 @@ class CalendarAppointment(models.Model):
         parent_id = partner_id.parent_id if partner_id else False
         return parent_id
 
-    state = fields.Selection([('draft','No confirmed'), ('open','Confirmed'), ('realized','Realized'),
+    state = fields.Selection([('open','Confirmed'), ('realized','Realized'),
                               ('unrealized','Unrealized'),
                               ('postpone','Postponed'),
                               ('assist_postpone','Assisted and Postponed'),
-                              ('assist_cancel','Assisted and Canceled'), ('cancel','Canceled')],
+                              ('assist_cancel','Assisted and Canceled'), ('cancel','Canceled'), ('draft','No confirmed')],
                               'State', default='draft', tracking=True)
     # Realizada, Duplicada, No realizada, Asistida aplazada, Asistida cancelada, Cancelada
 

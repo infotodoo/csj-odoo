@@ -186,9 +186,6 @@
                                 <span t-raw="appointment.id" id="appointment_id" invisible="1"/>
                                 <ul class="nav nav-pills">
                                   <li class="nav-item">
-                                    <a class="nav-link" href="#" id="state_draft_btn">Duplicado</a>
-                                  </li>
-                                  <li class="nav-item">
                                     <a class="nav-link" href="#" id="state_open_btn">Agendado</a>
                                   </li>
                                   <li class="nav-item">
@@ -208,6 +205,9 @@
                                   </li>
                                   <li class="nav-item">
                                     <a class="nav-link" href="#" id="state_cancel_btn">Cancelado</a>
+                                  </li>
+                                  <li class="nav-item">
+                                    <a class="nav-link" href="#" id="state_draft_btn">Duplicado</a>
                                   </li>
                                 </ul>
                               </div>
