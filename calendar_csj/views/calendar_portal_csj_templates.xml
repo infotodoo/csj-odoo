@@ -97,8 +97,8 @@
                                         <span t-field="appointment.request_type"/>
                                     </td>
                                     <td>
-                                        <!--<span class="badge badge-pill badge-info" title="Current state of the appointment" t-esc="appointment.state"/>-->
-                                        <span t-esc="appointment.state_label"/>
+                                        <span class="badge badge-pill badge-info" title="Current state of the appointment" t-esc="appointment.state"/>
+                                       <!-- <span t-esc="appointment.state_label"/>-->
                                     </td>
                                     <td>
                                         <span t-esc="appointment.request_date"/>
