@@ -60,7 +60,6 @@
                                 <th class="text-left">Estado</th>
                                 <th class="text-left">Fecha de Solicitud</th>
                                 <th class="text-left">Lifesize URL</th>
-                                <th class="text-left">Etiqueta</th>
                                 <th class="text-left">Nombre del solicitante</th>
                                 <th class="text-left">Departamento de origen</th>
                                 <th class="text-left">Ciudad de origen</th>
@@ -100,9 +99,6 @@
                                     </td>
                                     <td>
                                         <span t-esc="appointment.lifesize_url"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="appointment.tag_number"/>
                                     </td>
                                     <td>
                                         <span t-esc="appointment.applicant_id.name"/>
