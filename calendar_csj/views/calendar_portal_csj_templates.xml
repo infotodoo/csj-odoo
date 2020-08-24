@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <data>
+
+     <!-- <template id="my_account_my_link" name="Link to frontend portal" inherit_id="portal.frontend_layout">
+          <xpath expr="//a[2]" position="replace">
+              <a href="/my/home" role="menuitem" class="dropdown-item">My Accgfgount</a>
+          </xpath>
+      </template>-->
+
       <template id="portal_layout_csj" name="Portal layout: appointment menu entry" inherit_id="portal.portal_breadcrumbs" priority="40">
           <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
               <li t-if="page_name == 'appointment' or appointment" t-attf-class="breadcrumb-item #{'active ' if not appointment else ''}">
@@ -98,13 +105,13 @@
                                         <span t-esc="appointment.tag_number"/>
                                     </td>
                                     <td>
-                                        <span t-esc="appointment.applicant_domain"/>
+                                        <span t-esc="appointment.applicant_id.name"/>
                                     </td>
                                     <td>
-                                        <span t-esc="appointment.country_state_id"/>
+                                        <span t-esc="appointment.country_state_id.name"/>
                                     </td>
                                     <td>
-                                        <span t-esc="appointment.city_id"/>
+                                        <span t-esc="appointment.city_id.name"/>
                                     </td>
                                     <td>
                                         <span t-esc="appointment.class_id"/>
