@@ -575,7 +575,7 @@
                                   </div>
 
                                   <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
-                                    <label for="link_download" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Url de Agendamiento</label>
+                                    <label for="link_download" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Url de grabación</label>
                                     <div class="col-md-12 row">
                                         <input type="char" class="form-control" name="link_download" required="1" t-att-value="appointment.link_download"/>
                                     </div>
