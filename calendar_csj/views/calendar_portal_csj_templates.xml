@@ -54,6 +54,7 @@
                                 <th class="text-left">Fecha de Solicitud</th>
                                 <th class="text-left">Lifesize URL</th>
                                 <th class="text-left">Etiqueta</th>
+                                <th class="text-left">Url de grabación</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -85,6 +86,9 @@
                                     </td>
                                     <td>
                                         <span t-esc="appointment.tag_number"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.link_download"/>
                                     </td>
                                 </tr>
                             </t>
