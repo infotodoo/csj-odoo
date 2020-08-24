@@ -290,7 +290,7 @@
                             <br/>
                             <strong>Hora Final:</strong> <span t-field="appointment.end_hour"/>
                             <br/>
-                            <strong>Url de Agendamiento:</strong> <span t-field="appointment.link_download"/>
+                            <strong>Url de grabación:</strong> <span t-field="appointment.link_download"/>
                             <!--<br/>
                             <strng>Streaming:</strong> <span t-field="appointment.link_streaming"/>-->
                           </div>
