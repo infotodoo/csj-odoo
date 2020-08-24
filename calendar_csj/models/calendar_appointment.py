@@ -570,7 +570,9 @@ class CalendarAppointment(models.Model):
         if not calendar_appointment_type_obj.judged_id.calendar_verify_availability(date_start,date_end):
             return False
         return True
-
+    def _read_group_states(self, values, domain, order):
+            selection = self.env['calendar.appointment'].fields_get(allfields=['state'])['state']['selection']
+            return [s[0] for s in selection]
 
 class CalendarAppointmentType(models.Model):
     _inherit = 'calendar.appointment.type'
