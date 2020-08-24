@@ -54,7 +54,17 @@
                                 <th class="text-left">Fecha de Solicitud</th>
                                 <th class="text-left">Lifesize URL</th>
                                 <th class="text-left">Etiqueta</th>
+                                <th class="text-left">Nombre del solicitante</th>
+                                <th class="text-left">Departamento de origen</th>
+                                <th class="text-left">Ciudad de origen</th>
+                                <th class="text-left">Clase de videoconferencia</th>
+                                <th class="text-left">Codigo despacho solicitante</th>
+                                <th class="text-left">Despacho solicitante</th>
+                                <th class="text-left">Hora de inicio</th>
+                                <th class="text-left">Usuario del cierre</th>
                                 <th class="text-left">Url de grabación</th>
+                                <th class="text-left">Descripción</th>
+                                <th class="text-left">Observaciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -88,7 +98,37 @@
                                         <span t-esc="appointment.tag_number"/>
                                     </td>
                                     <td>
+                                        <span t-esc="appointment.applicant_domain"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.country_state_id"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.city_id"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.class_id"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.judged_only_code"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.judged_only_name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.calendar_time"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.appointment_close_user_id"/>
+                                    </td>
+                                    <td>
                                         <span t-esc="appointment.link_download"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.state_description"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.observations"/>
                                     </td>
                                 </tr>
                             </t>
