@@ -125,8 +125,8 @@
                             <group>
                                 <field name="calendar_type" required="True" invisible="1"/>
                                 <field name="calendar_datetime" required="True" string="Fecha y Hora de Realización"/>
-                                <!--<field name="calendar_date" readonly="True" string="Fecha y Hora de Realización"/>
-				<field name="state_label" string="Label state"/>-->
+                                <!--<field name="calendar_date" readonly="True" string="Fecha y Hora de Realización"/>-->
+				<field name="state_label" string="Test ESpañol estado"/>
                                 <field name="calendar_time" readonly="True" widget="float_time" />
                                 <field name="reception_id" readonly="True" string="Medio de Recepción"/>
                                 <field name="reception_detail" readonly="True" string="Detalle Medio de Recepción"/>
