@@ -573,7 +573,7 @@ class CalendarAppointment(models.Model):
             return False
         return True
     
-    @api.depends('state')
+    @api.depends('state','state_label')
     def _get_state_label(self): 
         for record in self:
             if record.state == 'open':
