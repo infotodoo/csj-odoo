@@ -299,7 +299,7 @@
                             <br/>
                             <strong>Fecha Final:</strong> <span t-field="appointment.end_date"/>
                             <br/>
-                            <strong>Hora Final:</strong> <span t-field="appointment.end_hour"/>
+                            <strong>Hora Final:</strong> <strong>Hora Final:</strong> <span t-field="'%02d:%02d' % (int(str(appointment.end_hour).split('.')[0]), int(float(str('%.2f' % appointment.end_hour).split('.')[1])/100*60))" />
                             <br/>
                             <strong>Url de grabación:</strong> <span t-field="appointment.link_download"/>
                             <!--<br/>
