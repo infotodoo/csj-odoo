@@ -577,21 +577,21 @@ class CalendarAppointment(models.Model):
     def _get_state_label(self): 
         for record in self:
             if record.state == 'open':
-                record.state_label='AGENDADO'
+                self.state_label='AGENDADO'
             if record.state == 'realized':
-                record.state_label='REALIZADA'
+                self.state_label='REALIZADA'
             if record.state == 'unrealized':
-                record.state_label='NO REALIZADA'
+                self.state_label='NO REALIZADA'
             if record.state == 'assist_postpone':
-                record.state_label='ASISTIDA Y APLAZADA'
+                self.state_label='ASISTIDA Y APLAZADA'
             if record.state == 'postpone':
-                record.state_label='APLAZADA'
+                self.state_label='APLAZADA'
             if record.state == 'assist_cancel':
-                record.state_label='ASISTIDA Y CANCELADA'
+                self.state_label='ASISTIDA Y CANCELADA'
             if record.state == 'cancel':
-                record.state_label='CANCELADO'
+                self.state_label='CANCELADO'
             if record.state == 'draft':
-                record.state_label='DUPLICADO'
+                self.state_label='DUPLICADO'
 
 class CalendarAppointmentType(models.Model):
     _inherit = 'calendar.appointment.type'
