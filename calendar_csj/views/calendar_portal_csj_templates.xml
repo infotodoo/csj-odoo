@@ -97,7 +97,15 @@
                                         <span t-field="appointment.request_type"/>
                                     </td>
                                     <td>
-                                        <span class="badge badge-pill badge-info" t-esc="appointment.state"/>
+                                        <!--<span class="badge badge-pill badge-info" t-esc="appointment.state"/>-->
+                                        <span class="badge badge-pill badge-info" t-if="appointment.sate == 'open'">AGENDADO</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.sate == 'realized'">REALIZADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.sate == 'unrealized'">NO REALIZADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.sate == 'assist_postpone'">ASISTIDA Y APLAZADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.sate == 'postpone'">APLAZADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.sate == 'assist_cancel'">ASISTIDA Y CANCELADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.sate == 'cancel'">CANCELADO</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.sate == 'draft'">DUPLICADO</span>
                                     </td>
                                     <td>
                                         <span t-esc="appointment.request_date"/>
