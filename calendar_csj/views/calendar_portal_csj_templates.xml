@@ -124,7 +124,7 @@
                                         <span t-esc="appointment.judged_only_name"/>
                                     </td>
                                     <td>
-                                        <span t-esc="appointment.calendar_time"/>
+                                        <span t-esc="appointment.calendar_time" t-esc-options='{"widget": "float_time"}'/>
                                     </td>
                                     <td>
                                         <span t-esc="appointment.appointment_close_user_id.login"/>
