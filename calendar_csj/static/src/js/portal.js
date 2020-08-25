@@ -20,9 +20,9 @@ $(function () {
     });
 
     $( ".appointment_portal_edit_form input[name='end_hour']").timepicker({
-      timeFormat: 'h:mm',
+      timeFormat: 'H:mm',
       interval: 60,
-      minTime: '10',
+      minTime: '6',
       maxTime: '8:00pm',
       defaultTime: '11',
       startTime: '06:00',
