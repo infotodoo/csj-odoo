@@ -79,7 +79,7 @@ class CalendarAppointment(models.Model):
                               'State', default='draft', tracking=True)
     # Realizada, Duplicada, No realizada, Asistida aplazada, Asistida cancelada, Cancelada
     
-    state_label = fields.Char(string='Estado en español')
+    #state_label = fields.Char(string='Estado en español')
     
     name = fields.Char('Name', default=_('New'))
     active = fields.Boolean('Active', default=True)
