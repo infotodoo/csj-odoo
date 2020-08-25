@@ -17,8 +17,8 @@ acces_calendar_class_internal,acces.calendar.class.internal,model_calendar_class
 acces_calendar_class_portal,acces.calendar.class.portal,model_calendar_class,base.group_portal,1,0,0,0
 acces_calendar_appointment_internal,acces.calendar.appointment.internal,model_calendar_appointment,base.group_user,1,1,1,1
 acces_calendar_appointment_portal,acces.calendar.appointment.portal,model_calendar_appointment,base.group_portal,1,1,0,0
-access_mail_activity,acces.mail.activity.portal,model_mail_activity,base.group_portal,1,0,0,0
-access_ir_attachment,acces.ir.attachment.portal,model_ir_attachment,base.group_portal,1,1,0,0
-access_mail_mail,acces.mail.mail.portal,model_mail_mail,base.group_portal,1,1,1,0
-access_mail_template,acces.mail.template.portal,model_mail_template,base.group_portal,1,0,0,0
-access_mail_followers,acces.mail.followers.portal,model_mail_followers_portal,base.group_portal,1,1,1,0
+access_mail_activity,access.mail.activity.portal,model_mail_activity,base.group_portal,1,0,0,0
+access_ir_attachment,access.ir.attachment.portal,model_ir_attachment,base.group_portal,1,1,0,0
+access_mail_mail,access.mail.mail.portal,model_mail_mail,base.group_portal,1,1,1,0
+access_mail_template,access.mail.template.portal,model_mail_template,base.group_portal,1,0,0,0
+access_mail_followers,access.mail.followers.portal,model_mail_followers_portal,base.group_portal,1,1,1,0
