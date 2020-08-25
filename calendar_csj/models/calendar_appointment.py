@@ -78,9 +78,9 @@ class CalendarAppointment(models.Model):
                               ('assist_cancel','Assisted and Canceled'), ('cancel','Canceled'), ('draft','No confirmed')],
                               'State', default='draft', tracking=True)
     # Realizada, Duplicada, No realizada, Asistida aplazada, Asistida cancelada, Cancelada
-    
+
     state_label = fields.Char(string='Estado en español', compute='_get_state_label', store=True)
-    
+
     name = fields.Char('Name', default=_('New'))
     active = fields.Boolean('Active', default=True)
     sequence_icsfile_ctl = fields.Integer(string='Sequence ICS File')
@@ -572,9 +572,9 @@ class CalendarAppointment(models.Model):
         if not calendar_appointment_type_obj.judged_id.calendar_verify_availability(date_start,date_end):
             return False
         return True
-    
-    @api.depends('state','state_label')
-    def _get_state_label(self): 
+
+    @api.depends('state')
+    def _get_state_label(self):
         for record in self:
             if record.state == 'open':
                 self.state_label='AGENDADO'
