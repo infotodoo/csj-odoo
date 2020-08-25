@@ -57,7 +57,7 @@
                                 <th class="text-left">Fecha de Realización</th>
                                 <th class="text-left">Fecha de Agendamiento</th>
                                 <th class="text-left">Tipo de Solicitud</th>
-                                <th class="text-left">Estadosss</th>
+                                <th class="text-left">Estados</th>
                                 <th class="text-left">Fecha de Solicitud</th>
                                 <th class="text-left">Lifesize URL</th>
                                 <th class="text-left">Nombre del solicitante</th>
@@ -97,8 +97,7 @@
                                         <span t-field="appointment.request_type"/>
                                     </td>
                                     <td>
-                                        <span class="badge badge-pill badge-info" title="Current state of the appointment" t-esc="appointment.state"/>
-                                       <!-- <span t-esc="appointment.state_label"/>-->
+                                        <span t-esc="appointment.state_label"/>
                                     </td>
                                     <td>
                                         <span t-esc="appointment.request_date"/>
