@@ -79,7 +79,7 @@ class CalendarAppointment(models.Model):
                               'State', default='draft', tracking=True)
     # Realizada, Duplicada, No realizada, Asistida aplazada, Asistida cancelada, Cancelada
 
-    state_label = fields.Char(string='Estado en español', compute='_get_state_label', store=True)
+    #state_label = fields.Char(string='Estado en español', compute='_get_state_label', store=False)
 
     name = fields.Char('Name', default=_('New'))
     active = fields.Boolean('Active', default=True)
@@ -573,6 +573,7 @@ class CalendarAppointment(models.Model):
             return False
         return True
 
+    """
     @api.depends('state')
     def _get_state_label(self):
         for record in self:
@@ -592,6 +593,7 @@ class CalendarAppointment(models.Model):
                 self.state_label='CANCELADO'
             if record.state == 'draft':
                 self.state_label='DUPLICADO'
+    """
 
 class CalendarAppointmentType(models.Model):
     _inherit = 'calendar.appointment.type'
