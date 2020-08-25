@@ -19,9 +19,7 @@ $(function () {
       dateFormat : 'yy-mm-dd',
     });
 
-    $( ".appointment_portal_edit_form input[name='end_hour']").datetimepicker({
-      dateFormat : 'HH:MM',
-    });
+    $( ".appointment_portal_edit_form input[name='end_hour']").timepicker({});
 });
 
 odoo.define('calendar_csj.calendar_portal_csj', function(require) {
