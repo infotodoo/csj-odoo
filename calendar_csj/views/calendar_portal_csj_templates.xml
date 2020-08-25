@@ -71,7 +71,7 @@
                                 <th class="text-left">Url de grabación</th>
                                 <th class="text-left">Descripciónn</th>
                                 <th class="text-left">Observaciones</th>
-                               <!-- <th class="text-left">Etiqueta</th>-->
+                                <th class="text-left">Etiqueta</th>
                                 
                             </tr>
                         </thead>
@@ -138,9 +138,9 @@
                                     <td>
                                         <span t-esc="appointment.observations"/>
                                     </td>
-                                  <!--  <td>
+                                    <td>
                                         <span t-esc="appointment.tag_number"/>
-                                    </td>-->
+                                    </td>
                                 </tr>
                             </t>
                         </tbody>
