@@ -143,6 +143,7 @@ class CalendarAppointment(models.Model):
     state_description = fields.Text('State description')
     link_streaming = fields.Char('Streaming')
     link_download = fields.Char('Descarga de grabacion')
+    link_download_text = fields.Text('Descarga de grabacion tipo text', compute='_get_link_download')
     end_date = fields.Date('Fecha finalizacion')
     end_hour = fields.Float('Hora de finalizacion')
 
@@ -594,6 +595,14 @@ class CalendarAppointment(models.Model):
             if record.state == 'draft':
                 self.state_label='DUPLICADO'
     """
+    
+    @api.depends('link_download','link_download_text')
+    def _get_link_download(self): 
+        for record in self:
+            if record.link_download:
+                record.link_download_text=record.link_download
+            else:
+                record.link_download_text= False
 
 class CalendarAppointmentType(models.Model):
     _inherit = 'calendar.appointment.type'
