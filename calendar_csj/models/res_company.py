@@ -52,19 +52,23 @@ class ResUsers(models.Model):
                     vals_list[i]["uuid_lifesize"] = resp["userObject"]["UUID"]
                     _logger.error(f"\nSEARCH LIFESIZE OK: {user}\n{vals_list}")
                 except ValueError:
-                    api = {
-                        "method": "create",
-                        "email": user.get("login"),
-                        "name": user.get("name"),
-                    }
-                    resp = self.env["api.lifesize"].api_user_crud(api)
-                    vals_list[i]["extension_lifesize"] = resp["userObject"]["extension"]
-                    vals_list[i]["uuid_lifesize"] = resp["userObject"]["UUID"]
-                    _logger.error(f"\nCREATE LIFESIZE OK: {user}\n{vals_list}")
-                except:
-                    _logger.error(
-                        f"\nSOMETING WENT WRONG LIFESIZE: {user}\n{vals_list}"
-                    )
+                    try:
+                        api = {
+                            "method": "create",
+                            "email": user.get("login"),
+                            "name": user.get("name"),
+                        }
+                        resp = self.env["api.lifesize"].api_user_crud(api)
+                        vals_list[i]["extension_lifesize"] = resp["userObject"][
+                            "extension"
+                        ]
+                        vals_list[i]["uuid_lifesize"] = resp["userObject"]["UUID"]
+                        _logger.error(f"\nCREATE LIFESIZE OK: {user}\n{vals_list}")
+                    except:
+                        _logger.error(
+                            f"\nSOMETING WENT WRONG LIFESIZE: {user}\n{vals_list}"
+                        )
+                finally:
                     pass
         users = super(ResUsers, self).create(vals_list)
         _logger.error(
