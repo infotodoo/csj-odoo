@@ -57,7 +57,7 @@ class CustomerPortal(CustomerPortal):
 
 
     @http.route(['/my/appointments', '/my/appointments/page/<int:page>'], type='http', auth="user", website=True)
-    def portal_my_appointments(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, search_in='content', groupby='none', **kw):
+    def portal_my_appointments(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, search_in='all', groupby='none', **kw):
         values = self._prepare_portal_layout_values()
 
         searchbar_sortings = {
