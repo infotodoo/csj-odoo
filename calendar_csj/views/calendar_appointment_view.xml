@@ -71,6 +71,7 @@
                     <field name="state_description" string="DESCRIPCION"/>
                     <field name="tag_number" string="ETIQUETA"/>
                     <field name="link_download" string="URL AGENDAMIENTO"/>
+		    <field name="link_download_text" string="URL AGENDAMIENTO TEXT"/>
                     <field name="create_uid" string="CREADOR POR"/>
                     <field name="name" string="NOMBRE DE LA SALA LIFESIZE"/>
                     <field name="lifesize_url" string="URL LIFESIZE"/>
@@ -126,6 +127,7 @@
                                 <field name="calendar_type" required="True" invisible="1"/>
                                 <field name="calendar_datetime" required="True" string="Fecha y Hora de Realización"/>
                                 <!--<field name="calendar_date" readonly="True" string="Fecha y Hora de Realización"/>-->
+				                        <!--<field name="state_label" string="Test ESpañol estado" invisible="1"/> -->
                                 <field name="calendar_time" readonly="True" widget="float_time" />
                                 <field name="reception_id" readonly="True" string="Medio de Recepción"/>
                                 <field name="reception_detail" readonly="True" string="Detalle Medio de Recepción"/>
@@ -143,6 +145,7 @@
                                 <field name="city_id" required="True" string="Ciudad Origen"/>
                                 <field name="country_state_id" string="Departamento"/>
                                 <field name="partner_id" required="True" string="Despacho Solicitante"/>
+                                <field name="appointment_type_id" readonly="False" domain="[('city_id','=',city_id)]"/>
                                 <field name="room_id" />
                             </group>
                             <group>
@@ -158,7 +161,7 @@
                                 <field name="end_date" attrs="{'invisible': [('state','!=','realized')]}" />
                                 <field name="end_hour" attrs="{'invisible': [('state','!=','realized')]}" widget="float_time"/>
                                 <field name="link_download" attrs="{'invisible': [('state','!=','realized')]}" />
-                                <field name="link_streaming" attrs="{'invisible': [('type','!=','streaming'),('state','!=','realized')]}" />
+                                <!--<field name="link_streaming" attrs="{'invisible': [('type','!=','streaming'),('state','!=','realized')]}" />-->
                             </group>
                             <group>
                                 <field name="lifesize_meeting_ext" readonly="True" string="Ext reunión Lifesize"/>
@@ -167,7 +170,6 @@
                             </group>
                             <group groups="base.group_no_one">
                                 <field name="event_id" readonly="True" />
-                                <field name="appointment_type_id" readonly="False" />
                                 <field name="lifesize_uuid" readonly="True" />
                                 <field name="lifesize_pin" readonly="True" />
                                 <field name="lifesize_owner" readonly="True" />

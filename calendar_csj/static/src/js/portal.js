@@ -4,6 +4,11 @@ $(function () {
       format : 'YYYY-MM-DD HH:mm',
       sideBySide: true
     });
+    $(".appointment_portal_reschedule_form input[name='calendar_datetime']").datetimepicker({
+      inline: true,
+      format : 'YYYY-MM-DD HH:mm',
+      sideBySide: true
+    });
     $( ".appointment_portal_edit_form input[name='request_date']").datepicker({
       dateFormat : 'yy-mm-dd',
     });
@@ -13,6 +18,19 @@ $(function () {
     $( ".appointment_portal_edit_form input[name='end_date']").datepicker({
       dateFormat : 'yy-mm-dd',
     });
+
+    $( ".appointment_portal_edit_form input[name='end_hour']").timepicker({
+      timeFormat: 'H:mm',
+      interval: 60,
+      minTime: '6',
+      maxTime: '8:00pm',
+      defaultTime: '11',
+      startTime: '06:00',
+      dynamic: false,
+      dropdown: true,
+      scrollbar: true
+  });
+
 });
 
 odoo.define('calendar_csj.calendar_portal_csj', function(require) {
@@ -175,6 +193,33 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
       window.location.href = url;
     });
 
+
+    $(".portal_appointment_reschedule").on('click', function(e){
+      url = '/my/appointment/' + appointment_id + '/update/reschedule';
+      window.location.href = url;
+    });
+
+    $(".portal_appointment_reschedule_cancel").on('click', function(e){
+      var appointment_id = $(".appointment_portal_reschedule_form input[name='appointment_id']").val();
+      url = '/my/appointment/' + appointment_id;
+      window.location.href = url;
+    });
+
+
+    $(".portal_appointment_judged_change").on('click', function(e){
+      url = '/my/appointment/' + appointment_id + '/update/judged';
+      window.location.href = url;
+    });
+
+    $(".portal_appointment_judged_change_cancel").on('click', function(e){
+      var appointment_id = $(".appointment_portal_judged_change_form input[name='appointment_id']").val();
+      url = '/my/appointment/' + appointment_id;
+      window.location.href = url;
+    });
+
+
+
+
     $(".portal_appointment_save").on('click', function(e){
 
       var calendar_datetime = $(".appointment_portal_edit_form input[name='calendar_datetime']").val();
@@ -183,6 +228,18 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
         return false;
       };
       $(".appointment_portal_edit_form").submit();
+    });
+
+
+
+    $(".portal_appointment_reschedule_save").on('click', function(e){
+
+      var calendar_datetime = $(".appointment_portal_reschedule_form input[name='calendar_datetime']").val();
+      if (calendar_datetime === '' || calendar_datetime === null || calendar_datetime === 'undefined'){
+        Dialog.alert(this, 'Por favor selecione una fecha de realización!');
+        return false;
+      };
+      $(".appointment_portal_reschedule_form").submit();
     });
 
 });

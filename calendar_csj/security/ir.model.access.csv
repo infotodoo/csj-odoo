@@ -8,7 +8,7 @@ acces_res_judged_portal,acces.res.judged.portal,model_res_judged,base.group_port
 acces_res_judged_room_internal,acces.res.judged.room.internal,model_res_judged_room,base.group_user,1,1,1,1
 acces_res_judged_room_portal,acces.res.judged.room.portal,model_res_judged_room,base.group_portal,1,0,0,0
 acces_res_partner_portal,acces.res.partner.portal,model_res_partner,base.group_portal,1,0,0,0
-acces_calendar_event_portal,acces.calendar.event.portal,model_calendar_event,base.group_portal,1,0,0,0
+acces_calendar_event_portal,acces.calendar.event.portal,model_calendar_event,base.group_portal,1,1,0,0
 acces_calendar_reception_internal,acces.calendar.reception.internal,model_calendar_reception,base.group_user,1,1,1,1
 acces_calendar_reception_portal,acces.calendar.reception.portal,model_calendar_reception,base.group_portal,1,0,0,0
 acces_calendar_help_internal,acces.calendar.help.internal,model_calendar_help,base.group_user,1,1,1,1
@@ -17,3 +17,8 @@ acces_calendar_class_internal,acces.calendar.class.internal,model_calendar_class
 acces_calendar_class_portal,acces.calendar.class.portal,model_calendar_class,base.group_portal,1,0,0,0
 acces_calendar_appointment_internal,acces.calendar.appointment.internal,model_calendar_appointment,base.group_user,1,1,1,1
 acces_calendar_appointment_portal,acces.calendar.appointment.portal,model_calendar_appointment,base.group_portal,1,1,0,0
+access_mail_activity,access.mail.activity.portal,mail.model_mail_activity,base.group_portal,1,0,0,0
+access_ir_attachment,access.ir.attachment.portal,base.model_ir_attachment,base.group_portal,1,1,0,0
+access_mail_mail,access.mail.mail.portal,mail.model_mail_mail,base.group_portal,1,1,1,0
+access_mail_template,access.mail.template.portal,mail.model_mail_template,base.group_portal,1,0,0,0
+access_mail_followers,access.mail.followers.portal,mail.model_mail_followers,base.group_portal,1,1,1,0
