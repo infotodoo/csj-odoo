@@ -97,7 +97,8 @@
                             type="object"
                             name="action_cancel"
                             attrs="{'invisible':[('state','=','cancel')]}"/>
-                        <field name="state" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}"/>
+                        <field name="state" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}" statusbar_visible="open,realized,unrealized,postpone,assint_postpone,assist_cancel,draft,cancel" attrs="{'invisible':[('state','=','cancel')]}"/>
+                        <field name="state_copy" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}" statusbar_visible="cancel" attrs="{'invisible':[('state_copy','!=','cancel')]}"/>
 		                <!-- <field name="stage_id" widget="statusbar"  class="ml-2" on_change="1" can_create="false" can_write="false" modifiers="{}"/> -->
                     </header>
                     <sheet>
