@@ -2,11 +2,11 @@
 <odoo>
     <data>
 
-     <!-- <template id="my_account_my_link" name="Link to frontend portal" inherit_id="portal.frontend_layout">
-          <xpath expr="//a[2]" position="replace">
-              <a href="/my/home" role="menuitem" class="dropdown-item">My Accgfgount</a>
-          </xpath>
-      </template>-->
+      <template id="my_account_link" name="Link to frontend portal" inherit_id="portal.frontend_layout">
+        <xpath expr="//div/div/ul/li/div/a[1]" position="replace">
+            <a style="visibility: hidden;" href="/my/home" role="menuitem" class="dropdown-item"></a>
+        </xpath>
+      </template>
 
       <template id="portal_layout_csj" name="Portal layout: appointment menu entry" inherit_id="portal.portal_breadcrumbs" priority="40">
           <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
