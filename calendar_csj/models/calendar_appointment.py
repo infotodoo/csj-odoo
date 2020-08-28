@@ -77,6 +77,14 @@ class CalendarAppointment(models.Model):
                               ('assist_postpone','Assisted and Postponed'),
                               ('assist_cancel','Assisted and Canceled'), ('cancel','Canceled'), ('draft','No confirmed')],
                               'State', default='draft', tracking=True)
+    
+    state_copy = fields.Selection([('open','Confirmed'), ('realized','Realized'),
+                              ('unrealized','Unrealized'),
+                              ('postpone','Postponed'),
+                              ('assist_postpone','Assisted and Postponed'),
+                              ('assist_cancel','Assisted and Canceled'), ('cancel','Canceled'), ('draft','No confirmed')],
+                              'State', default='draft', tracking=True, compute='_get_state')
+    
     # Realizada, Duplicada, No realizada, Asistida aplazada, Asistida cancelada, Cancelada
 
     #state_label = fields.Char(string='Estado en español', compute='_get_state_label', store=False)
@@ -603,6 +611,11 @@ class CalendarAppointment(models.Model):
                 record.link_download_text= '"'+ record.link_download + '"'
             else:
                 record.link_download_text= False
+                
+    @api.depends('state')
+    def _get_state(self): 
+        for record in self:
+            record.state_copy=record.state
 
 class CalendarAppointmentType(models.Model):
     _inherit = 'calendar.appointment.type'
