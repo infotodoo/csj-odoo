@@ -307,7 +307,7 @@
                             <br/>
                             <strong>Fecha Final:</strong> <span t-field="appointment.end_date"/>
                             <br/>
-                            <strong>Hora Final:</strong> <span t-field="appointment.end_hour" t-field-options="{'widget': 'time'}" />
+                            <strong>Hora Final:</strong> <span t-field="'%02d:%02d' % (int(appointment.end_hour), appointment.end_hour % 1 * 60)" />
                             <br/>
                             <strong>Url de grabación:</strong> <span t-field="appointment.link_download"/>
                             <!--<br/>
