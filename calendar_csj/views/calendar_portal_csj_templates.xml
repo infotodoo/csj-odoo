@@ -307,7 +307,7 @@
                             <br/>
                             <strong>Fecha Final:</strong> <span t-field="appointment.end_date"/>
                             <br/>
-                            <strong>Hora Final:</strong> <span t-field="'{0:,.2f}'.format(float(appointment.end_date)).replace(':', ' ')" />
+                            <strong>Hora Final:</strong> <span t-field="appointment.end_hour"/>
                             <br/>
                             <strong>Url de grabación:</strong> <span t-field="appointment.link_download"/>
                             <!--<br/>
@@ -633,7 +633,7 @@
                                   <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
                                     <label for="end_hour" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Hora Final</label>
                                     <div class="col-md-12 row">
-                                        <input type="char" class="form-control" name="end_hour" required="1" t-att-value="appointment.end_hour"/>
+                                        <input type="char" class="form-control" name="end_hour" required="1" t-att-value="str(appointment.end_hour)"/>
                                     </div>
                                   </div>
 
