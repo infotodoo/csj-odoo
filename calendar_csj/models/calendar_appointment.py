@@ -154,6 +154,7 @@ class CalendarAppointment(models.Model):
     link_download_text = fields.Char('Descarga de grabacion tipo text', compute='_get_link_download')
     end_date = fields.Date('Fecha finalizacion')
     end_hour = fields.Float('Hora de finalizacion')
+    end_hour_string = fields.Char('Hora de finalizacion string', compute='_get_end_hour')
 
     event_id = fields.Many2one('calendar.event', 'Event', ondelete='set null')
     appointment_type_id = fields.Many2one('calendar.appointment.type', 'Online Appointment', default=_default_type_id)
@@ -616,6 +617,11 @@ class CalendarAppointment(models.Model):
     def _get_state(self): 
         for record in self:
             record.state_copy=record.state
+            
+    @api.depends('end_hour')
+    def _get_end_hour(self): 
+        for record in self:
+            record.end_hour_string= '{0:02.0f}:{1:02.0f}'.format(*divmod(record.end_hour * 60, 60))
 
 class CalendarAppointmentType(models.Model):
     _inherit = 'calendar.appointment.type'
