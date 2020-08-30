@@ -307,7 +307,7 @@
                             <br/>
                             <strong>Fecha Final:</strong> <span t-field="appointment.end_date"/>
                             <br/>
-                            <strong>Hora Final:</strong> <span t-field="'{0:02.0f}:{1:02.0f}'.format(*divmod(appointment.end_hour * 60, 60)" />
+                            <strong>Hora Final:</strong> <span t-field="appointment.end_hour" />
                             <br/>
                             <strong>Url de grabación:</strong> <span t-field="appointment.link_download"/>
                             <!--<br/>
