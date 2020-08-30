@@ -633,7 +633,7 @@
                                   <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
                                     <label for="end_hour" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Hora Final</label>
                                     <div class="col-md-12 row">
-                                        <input type="char" class="form-control" name="end_hour" required="1" t-att-value="appoinment.end_hour"/>
+                                        <input type="char" class="form-control" name="end_hour" required="1" t-att-value="appointment.end_hour"/>
                                     </div>
                                   </div>
 
