@@ -316,7 +316,7 @@ class CustomerPortal(CustomerPortal):
     def appointment_portal_edit_form_submit(self, **kwargs):
         kwargs['appointment_id'].sudo().write({
             'end_date': kwargs['end_date'] if 'end_date' in kwargs else '',
-            'end_hour': float(kwargs['end_hour'].replace(":","."))  if 'end_hour' in kwargs else '',
+            'end_hour': kwargs['end_hour'] if 'end_hour' in kwargs else '',
             'link_download': kwargs['link_download'] if 'link_download' in kwargs else '',
             'link_streaming': kwargs['link_streaming'] if 'link_streaming' in kwargs else '',
             'state_description': kwargs['state_description'] if 'state_description' in kwargs else '',
