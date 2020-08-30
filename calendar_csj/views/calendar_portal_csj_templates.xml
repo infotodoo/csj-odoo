@@ -626,7 +626,7 @@
                                   <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
                                     <label for="end_date" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha Final</label>
                                     <div class="col-md-12 row">
-                                        <input type="char" class="form-control" name="end_date" required="1" t-att-value="appointment.end_date"/>
+                                        <input type="char" class="form-control" name="end_date" required="1" t-att-value="appointment.end_date" t-options='{"widget": "float", "precision": 2}'/>
                                     </div>
                                   </div>
 
