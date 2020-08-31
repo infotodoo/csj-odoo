@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <data>
-      <template id="my_account_link" name="Link to frontend portal" inherit_id="portal.pager">
-        <xpath expr="//ul" position="inside"> 
-              <t t-set="total" t-value="0"/>
-                <t t-set="total" t-value="request.env['calendar.appointment'].search_count([])"/> 
-              <h1 align="right" style="font-style:italic; padding-top:12px; font-size: 15px; -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoj';" >  Total de agendamientos <t t-esc="total" style="font-size: 15px; "/></h1>
-        </xpath>
-      </template>
-
+        
       <template id="my_account_link" name="Link to frontend portal" inherit_id="portal.frontend_layout">
         <xpath expr="//div/div/ul/li/div/a[1]" position="replace">
             <a style="visibility: hidden;" href="/my/home" role="menuitem" class="dropdown-item"></a>
