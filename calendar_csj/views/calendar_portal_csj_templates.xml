@@ -153,7 +153,7 @@
                                 <th t-else="">Agendamiento ID
                                     <em class="font-weight-normal text-muted">Appointment for state:</em>
                                     <span t-field="appointments[0].state"/></th>
-                                <th class="text-center">Número de Proceso</th>
+                                <th class="text-center">Número de Procesooo</th>
                                 <th class="text-left">Tipo</th>
                                 <th class="text-left">Fecha de Realización</th>
                                 <th class="text-left">Fecha de Agendamiento</th>
