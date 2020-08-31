@@ -32,17 +32,111 @@
 
       <template id="portal_my_appointments" name="My Appointments">
           <t t-call="portal.portal_layout">
-              <t t-set="breadcrumbs_searchbar" t-value="True"/>
-
-              <t t-call="portal.portal_searchbar">
+              <t t-set="breadcrumbs_searchbar" t-value="False"/>
+              <!--<t t-call="portal.portal_searchbar">
                   <t t-set="title">Agendamientos</t>
-              </t>
+              </t>-->
+              <nav t-attf-class="navbar navbar-light navbar-expand-lg border py-0 mb-2 o_portal_navbar {{classes if classes else ''}} {{'mt-3 rounded' if breadcrumbs_searchbar else 'border-top-0' }}">
+                  <!--  Navbar breadcrumb or title  -->
+                  <t t-if="breadcrumbs_searchbar">
+                      <t t-call="portal.portal_breadcrumbs"/>
+                  </t>
+                  <span t-else="" class="navbar-brand mb-0 h1 mr-auto" t-esc="title or 'Filtros'"/>
+
+                  <!--  Collapse button -->
+                  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#o_portal_navbar_content" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle filters">
+                      <span class="navbar-toggler-icon small"/>
+                  </button>
+
+                  <!--  Collapsable content  -->
+                  <div class="collapse navbar-collapse" id="o_portal_navbar_content">
+                      <div class="nav flex-column flex-lg-row ml-auto p-0 mb-3 mb-lg-0 mt-1 mt-lg-0">
+                          <div t-if="searchbar_sortings" class="form-inline">
+                              <span class="small mr-1 navbar-text">Sort By:</span>
+                              <div class="btn-group">
+                                  <button id="portal_searchbar_sortby" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
+                                      <t t-esc="searchbar_sortings[sortby].get('label', 'Newest')"/>
+                                  </button>
+                                  <div class="dropdown-menu" aria-labelledby="portal_searchbar_sortby">
+                                      <t t-foreach="searchbar_sortings" t-as="option">
+                                          <a t-att-href="request.httprequest.path + '?' + keep_query('*', sortby=option)"
+                                             t-attf-class="dropdown-item#{sortby == option and ' active' or ''}">
+                                              <span t-esc="searchbar_sortings[option].get('label')"/>
+                                          </a>
+                                      </t>
+                                  </div>
+                              </div>
+                          </div>
+                          <div t-if="searchbar_filters" class="form-inline ml-lg-2">
+                              <span class="small mr-1 navbar-text">Filter By:</span>
+                              <div class="btn-group">
+                                  <button id="portal_searchbar_filters" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
+                                      <t t-esc="searchbar_filters[filterby].get('label', 'All')"/>
+                                  </button>
+                                  <div class="dropdown-menu" aria-labelledby="portal_searchbar_filters">
+                                      <t t-foreach="searchbar_filters" t-as="option">
+                                          <a t-att-href="default_url + '?' + keep_query('*', filterby=option)"
+                                             t-attf-class="dropdown-item#{filterby == option and ' active' or ''}">
+                                              <span t-esc="searchbar_filters[option].get('label')"/>
+                                          </a>
+                                      </t>
+                                  </div>
+                              </div>
+                          </div>
+                          <div t-if="searchbar_groupby" class="form-inline ml-lg-2">
+                              <span class="small mr-1 navbar-text">Group By:</span>
+                              <div class="btn-group">
+                                  <button id="portal_searchbar_groupby" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
+                                      <t t-esc="searchbar_groupby[groupby].get('label', 'None')"/>
+                                  </button>
+                                  <div class="dropdown-menu" aria-labelledby="portal_searchbar_groupby">
+                                      <t t-foreach="searchbar_groupby" t-as="option">
+                                          <a t-att-href="default_url + '?' + keep_query('*', groupby=option)"
+                                             t-attf-class="dropdown-item#{groupby == option and ' active' or ''}">
+                                              <span t-esc="searchbar_groupby[option].get('label')"/>
+                                          </a>
+                                      </t>
+                                  </div>
+                              </div>
+                          </div>
+                          <t t-raw="0"/>
+                      </div>
+                      <form t-if="searchbar_inputs" class="form-inline o_portal_search_panel_csj ml-lg-4" action="/werwerwerwe">
+                          <div class="input-group input-group-sm w-50" style="padding-right:5px;">
+                            <input type="text" class="form-control form-control-sm" placeholder="Desde" t-att-value='date_begin' name="date_begin" id="date_begin"/>
+                            <input type="text" class="form-control form-control-sm" placeholder="Hasta" t-att-value='date_end' name="date_end" id="date_end"/>
+                          </div>
+                          <div class="input-group input-group-sm w-45" style="padding-right:5px;">
+                              <div class="input-group-prepend">
+                                  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"/>
+                                  <div class="dropdown-menu" role="menu">
+                                      <t t-foreach='searchbar_inputs' t-as='input'>
+                                          <a t-att-href="'#' + searchbar_inputs[input]['input']"
+                                              t-attf-class="dropdown-item#{search_in == searchbar_inputs[input]['input'] and ' active' or ''}">
+                                              <span t-raw="searchbar_inputs[input]['label']"/>
+                                          </a>
+                                      </t>
+                                  </div>
+                              </div>
+                              <input type="text" class="form-control form-control-sm" placeholder="Search" t-att-value='search' name="search"/>
+                              <span class="input-group-append">
+                                  <button class="btn btn-secondary search-submit-csj" type="button">
+                                      <span class="fa fa-search"/>
+                                  </button>
+                              </span>
+                          </div>
+                          <div class="input-group input-group-sm w-5" style="padding-left:15px;background-color:#00a09d;">
+                            <input type="checkbox" name="export"/><br/>
+                            <span class="fa fa-file-excel-o" style="font-size:20px;padding:15px;"/>
+                          </div>
+                      </form>
+                  </div>
+              </nav>
               <t t-if="not appointments">
                   <div class="alert alert-warning mt8" role="alert">
                       No hay agendamientos.
                   </div>
               </t>
-
               <t t-if="grouped_appointments">
                 <t t-call="portal.portal_table">
                     <t t-foreach="grouped_appointments" t-as="appointments">
@@ -155,7 +249,6 @@
                     </t>
                 </t>
             </t>
-
           </t>
       </template>
 
@@ -308,7 +401,7 @@
                             <strong>Fecha Final:</strong> <span t-field="appointment.end_date"/>
                             <br/>
                              <strong>Hora Final:</strong> <span t-set="appointment.end_hour" t-value="1.5" /><span t-esc="'%s:%02d' % (str(appointment.end_hour).split('.')[0], int(float(str('%.2f' % appointment.end_hour).split('.')[1])/100*60))" />
-    
+
                             <br/>
                             <strong>Url de grabación:</strong> <span t-field="appointment.link_download"/>
                             <!--<br/>

@@ -31,10 +31,65 @@ $(function () {
       scrollbar: true
   });
 
+  $( "#date_begin").datepicker({
+    dateFormat : 'yy-mm-dd',
+  });
+
+  $( "#date_end").datepicker({
+    dateFormat : 'yy-mm-dd',
+  });
 });
 
 odoo.define('calendar_csj.calendar_portal_csj', function(require) {
     "use strict";
+
+    var publicWidget = require('web.public.widget');
+
+
+    publicWidget.registry.portalSearchPanelCSJ = publicWidget.Widget.extend({
+        selector: '.o_portal_search_panel_csj',
+        events: {
+            'click .search-submit-csj': '_onSearchSubmitClick',
+            'click .dropdown-item': '_onDropdownItemClick',
+            'keyup input[name="search"]': '_onSearchInputKeyup',
+        },
+        start: function () {
+            var def = this._super.apply(this, arguments);
+            this._adaptSearchLabel(this.$('.dropdown-item.active'));
+            return def;
+        },
+        _adaptSearchLabel: function (elem) {
+            var $label = $(elem).clone();
+            $label.find('span.nolabel').remove();
+            this.$('input[name="search"]').attr('placeholder', $label.text().trim());
+        },
+        _search: function () {
+            var search = $.deparam(window.location.search.substring(1));
+            search['search_in'] = this.$('.dropdown-item.active').attr('href').replace('#', '');
+            search['search'] = this.$('input[name="search"]').val();
+            search['date_begin'] = this.$('input[name="date_begin"]').val();
+            search['date_end'] = this.$('input[name="date_end"]').val();
+            search['export'] = this.$('input[name="export"]:checked').val();
+            window.location.search = $.param(search);
+        },
+        _onSearchSubmitClick: function () {
+            this._search();
+        },
+        _onDropdownItemClick: function (ev) {
+            ev.preventDefault();
+            var $item = $(ev.currentTarget);
+            $item.closest('.dropdown-menu').find('.dropdown-item').removeClass('active');
+            $item.addClass('active');
+
+            this._adaptSearchLabel(ev.currentTarget);
+        },
+        _onSearchInputKeyup: function (ev) {
+            if (ev.keyCode === $.ui.keyCode.ENTER) {
+                this._search();
+            }
+        },
+    });
+
 
     var ajax = require('web.ajax');
   	var core = require('web.core');
@@ -43,8 +98,6 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
     var ajax = require('web.ajax');
     var time = require('web.time');
     var Dialog = require('web.Dialog');
-
-
     var appointment_state =  $("#appointment_state").text();
     var appointment_id = $("#appointment_id").text();
     $("#appointment_state").hide();
