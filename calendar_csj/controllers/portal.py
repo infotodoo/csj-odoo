@@ -209,9 +209,11 @@ class CustomerPortal(CustomerPortal):
         appointments = request.env['calendar.appointment'].search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
         request.session['my_appointments_history'] = appointments.ids[:100]
 
+
         # excel generation
         # Create a workbook and add a worksheet.
         if export == 'on' and date_begin and date_end:
+            appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order)
             response = request.make_response(
                 None,
                 headers=[('Content-Type', 'application/vnd.ms-excel'), ('Content-Disposition', content_disposition('Reporte_Agendamientos.xlsx'))
@@ -309,7 +311,8 @@ class CustomerPortal(CustomerPortal):
             sheet.write('AL1', 'URL LIFESIZE', head)
             sheet.write('AM1', 'FECHA Y HORA DE REALIZACIÓN', head)
             row = 2
-            for appointment in appointments:
+
+            for appointment in appointments_total:
                 sheet.write('A'+str(row), appointment.appointment_code, cell_format)
                 sheet.write('B'+str(row), appointment.request_type_label, cell_format)
                 sheet.write('C'+str(row), appointment.type, cell_format)
@@ -349,6 +352,7 @@ class CustomerPortal(CustomerPortal):
                 sheet.write('AK'+str(row), appointment.name, cell_format)
                 sheet.write('AL'+str(row), appointment.lifesize_url, cell_format)
                 sheet.write('AM'+str(row), appointment.calendar_datetime, datetimeformat)
+
                 row+=1
 
             workbook.close()
