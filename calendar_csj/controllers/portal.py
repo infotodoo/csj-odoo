@@ -4,7 +4,7 @@ from collections import OrderedDict
 from operator import itemgetter
 from odoo import http, fields, _
 from odoo.exceptions import AccessError, MissingError
-from odoo.http import request
+from odoo.http import content_disposition, request
 from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager
 from odoo.tools import groupby as groupbyelem
 from odoo import models, fields, api
@@ -12,10 +12,12 @@ from datetime import datetime,timedelta
 from dateutil.relativedelta import relativedelta
 from odoo.tools import html2plaintext, DEFAULT_SERVER_DATETIME_FORMAT as dtf
 import pytz
+import io
 from odoo.tools.misc import get_lang
 from babel.dates import format_datetime, format_date
 from werkzeug.urls import url_encode
 from datetime import datetime
+import xlsxwriter
 
 from odoo.osv.expression import OR
 
@@ -57,7 +59,7 @@ class CustomerPortal(CustomerPortal):
 
 
     @http.route(['/my/appointments', '/my/appointments/page/<int:page>'], type='http', auth="user", website=True)
-    def portal_my_appointments(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, search_in='all', groupby='none', **kw):
+    def portal_my_appointments(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, search_in='all', groupby='none', export='none', **kw):
         values = self._prepare_portal_layout_values()
 
         searchbar_sortings = {
@@ -99,18 +101,12 @@ class CustomerPortal(CustomerPortal):
         }
 
 
-        # extends filterby criteria with project the customer has access to
-
         """appointments = request.env['calendar.appointment'].search([])
             for appointment in appointments:
                 searchbar_filters.update({
                     str(appointment.id): {'label': appointment.name, 'domain': [('state', '=', 'open')]}
                 })
         """
-
-        appointments = request.env['calendar.appointment'].search([
-            #('partner_id', '=', partner.id),
-        ])
 
         #for appointment in appointments:
         #    searchbar_filters.update({
@@ -146,7 +142,7 @@ class CustomerPortal(CustomerPortal):
         # archive groups - Default Group By 'create_date'
         archive_groups = self._get_archive_groups('calendar.appointment', domain)
         if date_begin and date_end:
-            domain += [('create_date', '>', date_begin), ('create_date', '<=', date_end)]
+            domain += [('calendar_datetime', '>', date_begin), ('calendar_datetime', '<=', date_end)]
 
         # appointments count
         #appointment_count = Appointment.search_count(domain)
@@ -179,9 +175,18 @@ class CustomerPortal(CustomerPortal):
                 search_domain = OR([search_domain, [('state', 'ilike', search)]])
             domain += search_domain
 
-        # task count
+        _logger.error(domain)
+
+        # when partner is not scheduler they can only view their own
+        partner = request.env.user.partner_id
+        judged_id = partner.parent_id
+        if partner.appointment_type != 'scheduler':
+            domain += [('partner_id', '=', judged_id.id)]
+
         appointment_count = request.env['calendar.appointment'].search_count(domain)
 
+        _logger.error('**********************************************\n***************************************')
+        _logger.error(appointment_count)
 
         # pager
         pager = portal_pager(
@@ -192,7 +197,6 @@ class CustomerPortal(CustomerPortal):
             step=self._items_per_page
         )
 
-
         if groupby == 'state':
             order = "state, %s" % order
         appointments = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
@@ -201,20 +205,171 @@ class CustomerPortal(CustomerPortal):
         else:
             grouped_appointments = [appointments]
 
-
-        # when partner is not scheduler they can only view their own
-        partner = request.env.user.partner_id
-        judged_id = partner.parent_id
-        if partner.appointment_type != 'scheduler':
-            domain += [('partner_id', '=', judged_id.id)]
-
-
         # content according to pager and archive selected
         appointments = request.env['calendar.appointment'].search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
         request.session['my_appointments_history'] = appointments.ids[:100]
 
+        # excel generation
+        # Create a workbook and add a worksheet.
+        if export == 'on':
+            response = request.make_response(
+                None,
+                headers=[('Content-Type', 'application/vnd.ms-excel'), ('Content-Disposition', content_disposition('Reporte_Agendamientos.xlsx'))
+                ]
+            )
+            output = io.BytesIO()
+            workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+            sheet = workbook.add_worksheet('Agendamientos')
+            cell_format = workbook.add_format({'font_size': '12px'})
+            head = workbook.add_format({'align': 'center', 'bold': True,'font_size':'12px'})
+            txt = workbook.add_format({'font_size': '10px'})
+            dateformat = workbook.add_format({'font_size': '12px','num_format': 'dd/mm/yyyy'})
+            timeformat = workbook.add_format({'font_size': '12px','num_format': 'hh:mm'})
+            datetimeformat = workbook.add_format({'font_size': '12px','num_format': 'dd/mm/yyyy hh:mm'})
+
+            sheet.set_column('A:A', 20)
+            sheet.set_column('B:B', 40)
+            sheet.set_column('C:C', 20)
+            sheet.set_column('C:C', 20)
+            sheet.set_column('D:D', 20)
+            sheet.set_column('E:E', 20)
+            sheet.set_column('F:F', 20)
+            sheet.set_column('G:G', 60)
+            sheet.set_column('H:H', 20)
+            sheet.set_column('I:I', 20)
+            sheet.set_column('J:J', 20)
+            sheet.set_column('K:K', 20)
+            sheet.set_column('L:L', 50)
+            sheet.set_column('M:M', 50)
+            sheet.set_column('N:N', 20)
+            sheet.set_column('O:O', 40)
+            sheet.set_column('P:P', 20)
+            sheet.set_column('Q:Q', 50)
+            sheet.set_column('R:R', 30)
+            sheet.set_column('S:S', 20)
+            sheet.set_column('T:T', 40)
+            sheet.set_column('U:U', 20)
+            sheet.set_column('V:V', 20)
+            sheet.set_column('W:W', 20)
+            sheet.set_column('X:X', 20)
+            sheet.set_column('Y:Y', 40)
+            sheet.set_column('Z:Z', 20)
+            sheet.set_column('AA:AA', 50)
+            sheet.set_column('AB:AB', 20)
+            sheet.set_column('AC:AC', 20)
+            sheet.set_column('AD:AD', 20)
+            sheet.set_column('AE:AE', 20)
+            sheet.set_column('AF:AF', 20)
+            sheet.set_column('AG:AG', 20)
+            sheet.set_column('AH:AH', 60)
+            sheet.set_column('AI:AI', 60)
+            sheet.set_column('AJ:AJ', 20)
+            sheet.set_column('AK:AK', 40)
+            sheet.set_column('AL:AL', 20)
+            sheet.set_column('AM:AM', 40)
+
+
+            #sheet.merge_range('B2:I3', 'REPORTE DE AGENDAMIENTOS', head)
+            sheet.write('A1', 'ID SOLICITUD', head)
+            sheet.write('B1', 'TIPO DE SOLICITUD', head)
+            sheet.write('C1', 'TIPO DE AUDIENCIA', head)
+            sheet.write('D1', 'FECHA DE REALIZACIÓN', head)
+            sheet.write('E1', 'HORA DE INICIO', head)
+            sheet.write('F1', 'CÓDIGO DESPACHO SOLICITANTE', head)
+            sheet.write('G1', 'DESPACHO SOLICITANTE', head)
+            sheet.write('H1', 'CIUDAD ORIGEN', head)
+            sheet.write('I1', 'DEPARTAMENTO ORIGEN', head)
+            sheet.write('J1', 'DESTINOS', head)
+            sheet.write('K1', 'MEDIO DE RECEPCIÓN', head)
+            sheet.write('L1', 'DETALLES MEDIO DE RECEPCIÓN', head)
+            sheet.write('M1', 'OBSERVACIONES', head)
+            sheet.write('N1', 'FECHA DE SOLICITUD', head)
+            sheet.write('O1', 'NOMBRE DEL SOLICITANTE', head)
+            sheet.write('P1', 'ESTADO', head)
+            sheet.write('Q1', 'CORREO SALIENTE', head)
+            sheet.write('R1', 'NÚMERO DE PROCESO', head)
+            sheet.write('S1', 'SALA', head)
+            sheet.write('T1', 'CORREO PARTICIPANTES', head)
+            sheet.write('U1', 'CELULAR', head)
+            sheet.write('V1', 'CLASE DE VIDEOCONFERENCIA', head)
+            sheet.write('W1', 'TIPO DE AUDIENCIA', head)
+            sheet.write('X1', 'DECLARANTE', head)
+            sheet.write('Y1', 'PROCESADO', head)
+            sheet.write('Z1', 'FECHA AGENDAMIENTO', head)
+            sheet.write('AA1', 'USUARIO AGENDAMIENTO', head)
+            sheet.write('AB1', 'FECHA CIERRE', head)
+            sheet.write('AC1', 'USUARIO DE CIERRE', head)
+            sheet.write('AD1', 'FECHA FINAL', head)
+            sheet.write('AE1', 'HORA FINAL', head)
+            sheet.write('AF1', 'DESCRIPCION', head)
+            sheet.write('AG1', 'ETIQUETA', head)
+            sheet.write('AH1', 'URL DE AGENDAMIENTO', head)
+            sheet.write('AI1', 'DESCARGA DE GRABACIÓN', head)
+            sheet.write('AJ1', 'CREADO POR', head)
+            sheet.write('AK1', 'NOMBRE SALA LIFESIZE', head)
+            sheet.write('AL1', 'URL LIFESIZE', head)
+            sheet.write('AM1', 'FECHA Y HORA DE REALIZACIÓN', head)
+            row = 2
+            for appointment in appointments:
+                sheet.write('A'+str(row), appointment.appointment_code, cell_format)
+                sheet.write('B'+str(row), appointment.request_type_label, cell_format)
+                sheet.write('C'+str(row), appointment.type, cell_format)
+                sheet.write('D'+str(row), appointment.calendar_date, dateformat)
+                sheet.write('E'+str(row), appointment.calendar_time, timeformat)
+                sheet.write('F'+str(row), appointment.judged_only_code, cell_format)
+                sheet.write('G'+str(row), appointment.judged_only_name, cell_format)
+                sheet.write('H'+str(row), appointment.city_id.name, cell_format)
+                sheet.write('I'+str(row), appointment.country_state_id.name, cell_format)
+                sheet.write('J'+str(row), appointment.destination_ids_label, cell_format)
+                sheet.write('K'+str(row), appointment.reception_id.name, cell_format)
+                sheet.write('L'+str(row), appointment.reception_detail, cell_format)
+                sheet.write('M'+str(row), appointment.observations, cell_format)
+                sheet.write('N'+str(row), appointment.request_date, dateformat)
+                sheet.write('O'+str(row), appointment.applicant_id.name, cell_format)
+                sheet.write('P'+str(row), appointment.state, cell_format)
+                sheet.write('Q'+str(row), appointment.applicant_email, cell_format)
+                sheet.write('R'+str(row), appointment.process_number, cell_format)
+                sheet.write('S'+str(row), appointment.room_id_mame, cell_format)
+                sheet.write('T'+str(row), appointment.partner_ids_label, cell_format)
+                sheet.write('U'+str(row), appointment.applicant_mobile, cell_format)
+                sheet.write('V'+str(row), appointment.class_id.name, cell_format)
+                sheet.write('W'+str(row), appointment.request_type, cell_format)
+                sheet.write('X'+str(row), appointment.declarant_text, cell_format)
+                sheet.write('Y'+str(row), appointment.indicted_text, cell_format)
+                sheet.write('Z'+str(row), appointment.appointment_date, dateformat)
+                sheet.write('AA'+str(row), appointment.create_uid_login, cell_format)
+                sheet.write('AB'+str(row), appointment.appointment_close_date, dateformat)
+                sheet.write('AC'+str(row), appointment.appointment_close_user_login, cell_format)
+                sheet.write('AD'+str(row), appointment.end_date, dateformat)
+                sheet.write('AE'+str(row), appointment.end_hour, timeformat)
+                sheet.write('AF'+str(row), appointment.state_description, cell_format)
+                sheet.write('AG'+str(row), appointment.tag_number, cell_format)
+                sheet.write('AH'+str(row), appointment.link_download, cell_format)
+                sheet.write('AI'+str(row), appointment.link_download_text, cell_format)
+                sheet.write('AJ'+str(row), appointment.create_uid.login, cell_format)
+                sheet.write('AK'+str(row), appointment.name, cell_format)
+                sheet.write('AL'+str(row), appointment.lifesize_url, cell_format)
+                sheet.write('AM'+str(row), appointment.calendar_datetime, datetimeformat)
+
+                row+=1
+
+
+            workbook.close()
+            output.seek(0)
+            response.stream.write(output.read())
+            output.close()
+
+
+
+            #response.set_cookie('fileToken', token)
+            return response
+
+
+
+
+
         values.update({
-            'date': date_begin,
+            'date_begin': date_begin,
             'date_end': date_end,
             'appointments': appointments,
             'grouped_appointments': grouped_appointments,
@@ -227,6 +382,7 @@ class CustomerPortal(CustomerPortal):
             'searchbar_inputs': searchbar_inputs,
             'search_in': search_in,
             'sortby': sortby,
+            'search': search,
             'groupby': groupby,
             'searchbar_filters': OrderedDict(sorted(searchbar_filters.items())),
             'filterby': filterby,
