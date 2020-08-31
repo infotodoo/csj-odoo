@@ -211,7 +211,7 @@ class CustomerPortal(CustomerPortal):
 
         # excel generation
         # Create a workbook and add a worksheet.
-        if export == 'on' and date_begin and date_end::
+        if export == 'on' and date_begin and date_end:
             response = request.make_response(
                 None,
                 headers=[('Content-Type', 'application/vnd.ms-excel'), ('Content-Disposition', content_disposition('Reporte_Agendamientos.xlsx'))
