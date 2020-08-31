@@ -211,7 +211,7 @@ class CustomerPortal(CustomerPortal):
 
         # excel generation
         # Create a workbook and add a worksheet.
-        if export == 'on':
+        if export == 'on' and date_begin and date_end::
             response = request.make_response(
                 None,
                 headers=[('Content-Type', 'application/vnd.ms-excel'), ('Content-Disposition', content_disposition('Reporte_Agendamientos.xlsx'))
@@ -267,7 +267,6 @@ class CustomerPortal(CustomerPortal):
             sheet.set_column('AK:AK', 40)
             sheet.set_column('AL:AL', 20)
             sheet.set_column('AM:AM', 40)
-
 
             #sheet.merge_range('B2:I3', 'REPORTE DE AGENDAMIENTOS', head)
             sheet.write('A1', 'ID SOLICITUD', head)
@@ -350,23 +349,15 @@ class CustomerPortal(CustomerPortal):
                 sheet.write('AK'+str(row), appointment.name, cell_format)
                 sheet.write('AL'+str(row), appointment.lifesize_url, cell_format)
                 sheet.write('AM'+str(row), appointment.calendar_datetime, datetimeformat)
-
                 row+=1
-
 
             workbook.close()
             output.seek(0)
             response.stream.write(output.read())
             output.close()
 
-
-
             #response.set_cookie('fileToken', token)
             return response
-
-
-
-
 
         values.update({
             'date_begin': date_begin,
