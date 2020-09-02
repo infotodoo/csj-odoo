@@ -136,6 +136,11 @@
                             <input type="checkbox" name="export"/><br/>
                             <span class="fa fa-file-excel-o" style="font-size:20px;padding:15px;"/>
                           </div>
+                          <div aling="right" class="input-group input-group-sm w-5">
+                            <t t-set="total" t-value="total"/> 
+                            <h1 aling="right" style="font-style:italic; padding-rigth:5px; font-size: 15px; -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoj';" >  Total agendamientos <t t-esc="total" aling="right" style="font-size: 15px; "/></h1>
+                            <t aling="right" t-set="i" t-value="1"/>
+                          </div>
                       </form>
                   </div>
               </nav>
