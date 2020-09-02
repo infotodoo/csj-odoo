@@ -392,7 +392,7 @@
                               <br/>
                               <strong>Número de Proceso:</strong> <span t-field="appointment.process_number"/>
                               <br/>
-                              <strong>Etiqueta:</strong> <span t-field="appointment.tag_number"/>
+                           <!--   <strong>Etiqueta:</strong> <span t-field="appointment.tag_number"/>-->
                           </div>
                           <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;" t-if="appointment.calendar_duration">
                             <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos de Reunión</div>
