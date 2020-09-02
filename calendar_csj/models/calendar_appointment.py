@@ -258,8 +258,8 @@ class CalendarAppointment(models.Model):
     def _compute_calendar_datetime(self):
         for record in self:
             # record.write({'state': 'postpone'})
-            record.calendar_date = record.calendar_datetime.date() if \
-                record.calendar_datetime else False
+            record.calendar_date = (record.calendar_datetime - datetime.timedelta(hours=5)).date() if \
+                record.calendar_datetime - datetime.timedelta(hours=5) else False
             tz_offset = self.env.user.tz_offset if self.env.user.tz_offset else False
             tz = int(tz_offset)/100 if tz_offset else 0
             record.calendar_time = record.calendar_datetime.hour + tz + \
