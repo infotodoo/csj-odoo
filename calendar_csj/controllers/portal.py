@@ -369,6 +369,7 @@ class CustomerPortal(CustomerPortal):
             'date_end': date_end,
             'appointments': appointments,
             'grouped_appointments': grouped_appointments,
+            'total': appointment_count,
             'page_name': 'appointment',
             'archive_groups': archive_groups,
             'default_url': '/my/appointments',
