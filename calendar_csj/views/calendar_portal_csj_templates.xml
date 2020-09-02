@@ -717,12 +717,12 @@
                                     </div>
                                   </div>
 
-                                  <div class="form-group row col-xl-12 col-md-12">
+                                <!--  <div class="form-group row col-xl-12 col-md-12">
                                     <label for="tag_number" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Etiqueta</label>
                                     <div class="col-md-12 row">
                                         <input type="char" class="form-control" name="tag_number" required="1" t-att-value="appointment.tag_number"/>
                                     </div>
-                                  </div>
+                                  </div> -->
 
                                   <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
                                     <label for="end_date" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha Final</label>
