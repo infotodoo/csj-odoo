@@ -212,7 +212,8 @@ class CustomerPortal(CustomerPortal):
 
         # excel generation
         # Create a workbook and add a worksheet.
-        if export == 'on' and date_begin and date_end:
+        #if export == 'on' and date_begin and date_end:
+        if export == 'on':
             appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order)
             response = request.make_response(
                 None,
