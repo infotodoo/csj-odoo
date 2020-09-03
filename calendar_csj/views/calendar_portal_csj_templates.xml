@@ -1129,7 +1129,7 @@
         </t>
   </template>
         
-  <template id="hidden_comment" name="Hidden comment" inherit_id="portal_my_appointments">
+  <template id="hidden_comment" name="Hidden comment" inherit_id="calendar_csj.portal_my_appointment">
         <xpath expr="//body/div/main/div[2]/div[1]/div[2]" position="replace">
             <a style="visibility: hidden;" href="/my/home" role="menuitem" class="dropdown-item"></a>
         </xpath>
