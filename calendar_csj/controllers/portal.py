@@ -83,6 +83,8 @@ class CustomerPortal(CustomerPortal):
         searchbar_inputs = {
             'appointment_code': {'input': 'appointment_code', 'label': _('Buscar <span class="nolabel"> (en Id Agendamiento)</span>')},
             'process_number': {'input': 'process_number', 'label': _('Buscar por Número de Proceso')},
+            'create_uid': {'input': 'create_uid', 'label': _('Creado por')},
+            'judged_only_name': {'input': 'judged_only_name', 'label': _('Despacho solicitante')},
             'applicant_id': {'input': 'applicant_id', 'label': _('Buscar por Nombre Solicitante')},
             'declarant_text': {'input': 'declarant_text', 'label': _('Buscar por Declarante')},
             'tag_number': {'input': 'tag_number', 'label': _('Buscar Etiqueta')},
@@ -152,6 +154,10 @@ class CustomerPortal(CustomerPortal):
             search_domain = []
             if search_in in ('appointment_code', 'all'):
                 search_domain = OR([search_domain, [('appointment_code', 'ilike', search)]])
+            if search_in in ('create_uid', 'all'):
+                search_domain = OR([search_domain, [('create_uid', 'ilike', search)]])    
+            if search_in in ('judged_only_name', 'all'):
+                search_domain = OR([search_domain, [('judged_only_name', 'ilike', search)]])
             if search_in in ('process_number', 'all'):
                 search_domain = OR([search_domain, [('process_number', 'ilike', search)]])
             if search_in in ('applicant_id', 'all'):
