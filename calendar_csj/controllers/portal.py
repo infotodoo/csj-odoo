@@ -320,6 +320,32 @@ class CustomerPortal(CustomerPortal):
             row = 2
 
             for appointment in appointments_total:
+    ########## ##TRADUCCION ESTADOS ###################
+                if appointment.state == 'open':
+                    state_label='AGENDADO'
+                if appointment.state == 'realized':
+                    state_label='REALIZADA'
+                if appointment.state == 'unrealized':
+                    state_label='NO REALIZADA'
+                if appointment.state == 'assist_postpone':
+                    state_label='ASISTIDA Y APLAZADA'
+                if appointment.state == 'postpone':
+                    state_label='APLAZADA'
+                if appointment.state == 'assist_cancel':
+                    state_label='ASISTIDA Y CANCELADA'
+                if appointment.state == 'cancel':
+                    state_label='CANCELADO'
+                if appointment.state == 'draft':
+                    state_label='DUPLICADO'
+########## ##TRADUCIÓN TIPO AUDIENCIA ###################
+
+                if appointment.type == 'audience':
+                    type_label='AUDIENCIA'
+                if appointment.type == 'conference':
+                    type_label='VIDEO CONFERENCIA'
+                if appointment.type == 'streaming':
+                    type_label='STREAMING'
+                    
                 sheet.write('A'+str(row), appointment.appointment_code, cell_format)
                 sheet.write('B'+str(row), appointment.request_type_label, cell_format)
                 sheet.write('C'+str(row), appointment.type, cell_format)
