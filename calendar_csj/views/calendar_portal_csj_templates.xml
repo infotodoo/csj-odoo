@@ -38,9 +38,6 @@
       </template>
 
       <template id="portal_my_appointments" name="My Appointments">
-          <xpath expr="//body/div/main/div[2]/div[1]/div[2]" position="replace">
-            <a style="visibility: hidden;" href="/my/home" role="menuitem" class="dropdown-item"></a>
-          </xpath>
           <t t-call="portal.portal_layout">
               <t t-set="breadcrumbs_searchbar" t-value="False"/>
               <!--<t t-call="portal.portal_searchbar">
@@ -1131,6 +1128,12 @@
 
         </t>
   </template>
+        
+  <template id="hidden_comment" name="Hidden comment" inherit_id="portal_my_appointments">
+        <xpath expr="//body/div/main/div[2]/div[1]/div[2]" position="replace">
+            <a style="visibility: hidden;" href="/my/home" role="menuitem" class="dropdown-item"></a>
+        </xpath>
+   </template>
 
 
 
