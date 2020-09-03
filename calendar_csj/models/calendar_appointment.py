@@ -263,9 +263,9 @@ class CalendarAppointment(models.Model):
 
             tz_offset = self.env.user.tz_offset if self.env.user.tz_offset else False
             tz = int(tz_offset)/100 if tz_offset else 0
-            record.calendar_time = (record.calendar_datetime- datetime.timedelta(hours=5)).hour + tz + \
+            record.calendar_time = record.calendar_datetimehour + tz + \
                 record.calendar_datetime.minute/60.0 if \
-                    record.calendar_datetime + datetime.timedelta(hours=5) else False
+                    record.calendar_datetime - datetime.timedelta(hours=5) else False
 
     @api.depends('applicant_id')
     def _compute_applicant_id(self):
