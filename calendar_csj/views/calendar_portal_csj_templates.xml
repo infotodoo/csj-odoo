@@ -10,7 +10,7 @@
       </template>
         
       <template id="hidden_comment" name="Hidden comment" inherit_id="portal.frontend_layout">
-        <xpath expr="///main/div[2]/div/div[2]" position="replace">
+        <xpath expr="//div/main/div[2]/div/div[2]" position="replace">
             <a style="visibility: hidden;" href="/my/home" role="menuitem" class="dropdown-item"></a>
         </xpath>
       </template> 
