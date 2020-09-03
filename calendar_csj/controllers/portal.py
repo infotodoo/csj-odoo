@@ -155,7 +155,7 @@ class CustomerPortal(CustomerPortal):
             if search_in in ('appointment_code', 'all'):
                 search_domain = OR([search_domain, [('appointment_code', 'ilike', search)]])
             if search_in in ('create_uid', 'all'):
-                search_domain = OR([search_domain, [('create_uid', 'ilike', search)]])    
+                search_domain = OR([search_domain, [('create_uid', 'ilike', search)]])
             if search_in in ('judged_only_name', 'all'):
                 search_domain = OR([search_domain, [('judged_only_name', 'ilike', search)]])
             if search_in in ('process_number', 'all'):
@@ -345,7 +345,7 @@ class CustomerPortal(CustomerPortal):
                     type_label='VIDEO CONFERENCIA'
                 if appointment.type == 'streaming':
                     type_label='STREAMING'
-                    
+
                 sheet.write('A'+str(row), appointment.appointment_code, cell_format)
                 sheet.write('B'+str(row), appointment.request_type_label, cell_format)
                 sheet.write('C'+str(row), type_label, cell_format)
@@ -373,14 +373,18 @@ class CustomerPortal(CustomerPortal):
                 sheet.write('Y'+str(row), appointment.indicted_text, cell_format)
                 sheet.write('Z'+str(row), appointment.appointment_date, dateformat)
                 sheet.write('AA'+str(row), appointment.create_uid_login, cell_format)
-                sheet.write('AB'+str(row), appointment.appointment_close_date, dateformat)
-                sheet.write('AC'+str(row), appointment.appointment_close_user_login, cell_format)
-                sheet.write('AD'+str(row), appointment.end_date, dateformat)
+                sheet.write('AB'+str(row), appointment.appointment_close_date if appointment.appointment_close_date else '', dateformat)
+                sheet.write('AC'+str(row), appointment.appointment_close_user_login if appointment.appointment_close_user_login else '', cell_format)
+                sheet.write('AD'+str(row), appointment.end_date if appointment.end_date else '', dateformat)
                 sheet.write('AE'+str(row), appointment.end_hour, timeformat)
-                sheet.write('AF'+str(row), appointment.state_description, cell_format)
+                sheet.write('AF'+str(row), appointment.state_description if appointment.state_description else '', cell_format)
                 sheet.write('AG'+str(row), appointment.tag_number, cell_format)
-                sheet.write('AH'+str(row), appointment.link_download, cell_format)
-                sheet.write('AI'+str(row), appointment.link_download_text, cell_format)
+
+                _logger.error(appointment.link_download)
+                _logger.error(appointment.link_download_text)
+
+                sheet.write('AH'+str(row), appointment.link_download if appointment.link_download else '', cell_format)
+                sheet.write('AI'+str(row), appointment.link_download_text if appointment.link_download_text else '', cell_format)
                 sheet.write('AJ'+str(row), appointment.create_uid.login, cell_format)
                 sheet.write('AK'+str(row), appointment.name, cell_format)
                 sheet.write('AL'+str(row), appointment.lifesize_url, cell_format)
