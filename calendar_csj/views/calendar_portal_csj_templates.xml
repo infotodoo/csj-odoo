@@ -9,6 +9,12 @@
         </xpath>
       </template>
         
+      <template id="hidden_comment" name="Hidden comment" inherit_id="portal.frontend_layout">
+        <xpath expr="///main/div[2]/div/div[2]" position="replace">
+            <a style="visibility: hidden;" href="/my/home" role="menuitem" class="dropdown-item"></a>
+        </xpath>
+      </template> 
+        
       <template id="my_account_link" name="Link to frontend portal" inherit_id="portal.frontend_layout">
         <xpath expr="//div/div/ul/li/div/a[1]" position="replace">
             <a style="visibility: hidden;" href="/my/home" role="menuitem" class="dropdown-item"></a>
