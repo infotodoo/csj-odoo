@@ -72,7 +72,7 @@ class CustomerPortal(CustomerPortal):
         }
 
         searchbar_filters = {
-            'all': {'label': _('Todos'), 'domain': []},
+            'all': {'label': _('Todosss'), 'domain': []},
             'today': {'label': _('Hoy'), 'domain': [('calendar_datetime','<',datetime(2020,8,12,23,59,59)),('calendar_datetime','>',datetime(2020,8,12,0,0,1))]},
             'month': {'label': _('Último Mes'), 'domain': [('calendar_datetime','>',datetime(2020,8,1,0,0,1)),('calendar_datetime','<',datetime(2020,8,31,23,59,59))]},
             'cancel': {'label': _('Cancelados'), 'domain': [('state','=','cancel')]},
