@@ -227,7 +227,7 @@ class CustomerPortal(CustomerPortal):
                 ]
             )
             output = io.BytesIO()
-            workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+            workbook = xlsxwriter.Workbook(output, {'in_memory': True, 'default_date_format': 'yyyy/mm/dd'})
             sheet = workbook.add_worksheet('Agendamientos')
             cell_format = workbook.add_format({'font_size': '12px'})
             head = workbook.add_format({'align': 'center', 'bold': True,'font_size':'12px'})
