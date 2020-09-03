@@ -38,7 +38,7 @@
       </template>
 
       <template id="portal_my_appointments" name="My Appointments">
-          <xpath expr="//div/main/div[2]/div/div[2]" position="replace">
+          <xpath expr="//body/div/main/div[2]/div[1]/div[2]" position="replace">
             <a style="visibility: hidden;" href="/my/home" role="menuitem" class="dropdown-item"></a>
           </xpath>
           <t t-call="portal.portal_layout">
