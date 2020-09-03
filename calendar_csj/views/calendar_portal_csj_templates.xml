@@ -540,7 +540,7 @@
                   <h4><strong>Historia de Mensajes y Comunicación sobre este Agendamiento</strong></h4>
                   <t t-call="portal.message_thread">
                       <t t-set="object" t-value="appointment"/>
-                      <!--<t t-set="token" t-value="appointment.access_token"/>
+                      <t t-set="token" t-value="appointment.access_token"/>
                       <t t-set="pid" t-value="pid"/>
                       <t t-set="hash" t-value="hash"/>
                   </t>
