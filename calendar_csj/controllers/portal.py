@@ -348,7 +348,7 @@ class CustomerPortal(CustomerPortal):
                     
                 sheet.write('A'+str(row), appointment.appointment_code, cell_format)
                 sheet.write('B'+str(row), appointment.request_type_label, cell_format)
-                sheet.write('C'+str(row), appointment.type, cell_format)
+                sheet.write('C'+str(row), type_label, cell_format)
                 sheet.write('D'+str(row), appointment.calendar_date, dateformat)
                 sheet.write('E'+str(row), appointment.calendar_time, timeformat)
                 sheet.write('F'+str(row), appointment.judged_only_code, cell_format)
@@ -361,7 +361,7 @@ class CustomerPortal(CustomerPortal):
                 sheet.write('M'+str(row), appointment.observations, cell_format)
                 sheet.write('N'+str(row), appointment.request_date, dateformat)
                 sheet.write('O'+str(row), appointment.applicant_id.name, cell_format)
-                sheet.write('P'+str(row), appointment.state, cell_format)
+                sheet.write('P'+str(row), state_label, cell_format)
                 sheet.write('Q'+str(row), appointment.applicant_email, cell_format)
                 sheet.write('R'+str(row), appointment.process_number, cell_format)
                 sheet.write('S'+str(row), appointment.room_id_mame, cell_format)
