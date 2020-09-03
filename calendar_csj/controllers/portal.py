@@ -346,11 +346,14 @@ class CustomerPortal(CustomerPortal):
                 if appointment.type == 'streaming':
                     type_label='STREAMING'
 
+
+
                 sheet.write('A'+str(row), appointment.appointment_code, cell_format)
                 sheet.write('B'+str(row), appointment.request_type_label, cell_format)
                 sheet.write('C'+str(row), type_label, cell_format)
                 sheet.write('D'+str(row), str(appointment.calendar_date), cell_format)
-                sheet.write('E'+str(row), str(appointment.calendar_time), cell_format)
+                newstrtime = '{0:02.0f}:{1:02.0f}'.format(*divmod(appointment.calendar_time * 60, 60))
+                sheet.write('E'+str(row), newstrtime, cell_format)
                 sheet.write('F'+str(row), appointment.judged_only_code, cell_format)
                 sheet.write('G'+str(row), appointment.judged_only_name, cell_format)
                 sheet.write('H'+str(row), appointment.city_id.name, cell_format)
