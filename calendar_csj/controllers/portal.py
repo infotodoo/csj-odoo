@@ -232,9 +232,9 @@ class CustomerPortal(CustomerPortal):
             cell_format = workbook.add_format({'font_size': '12px'})
             head = workbook.add_format({'align': 'center', 'bold': True,'font_size':'12px'})
             txt = workbook.add_format({'font_size': '10px'})
-            dateformat = workbook.add_format({'font_size': '12px','num_format': 'dd/mm/yyyy'})
+            dateformat = workbook.add_format({'font_size': '12px','num_format': 'yyyy/mm/dd'})
             timeformat = workbook.add_format({'font_size': '12px','num_format': 'hh:mm'})
-            datetimeformat = workbook.add_format({'font_size': '12px','num_format': 'dd/mm/yyyy hh:mm'})
+            datetimeformat = workbook.add_format({'font_size': '12px','num_format': 'yyyy/mm/dd hh:mm'})
 
             sheet.set_column('A:A', 20)
             sheet.set_column('B:B', 40)
