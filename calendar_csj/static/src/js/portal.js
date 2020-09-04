@@ -290,7 +290,6 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
 
     $(".portal_appointment_judgedchange_save").on('click', function(e){
       var appointment_type = $(".appointment_portal_judged_change_form input[name='appointment_type']").val();
-      alert(appointment_type);
       if (appointment_type === '' || appointment_type === null || appointment_type === 'undefined'){
         Dialog.alert(this, 'Por favor selecione un Despacho!');
         return false;
