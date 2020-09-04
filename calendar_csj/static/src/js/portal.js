@@ -327,6 +327,13 @@ odoo.define('calendar_csj.calendar_portal_csj_edit_judged', function(require) {
         $('.search-portal-query-appointment').typeahead({source: []});
         var self = this;
         var previousSelectedCityID = $(".appointment_portal_judged_change_form input[name='city_id']").val();
+        var url_suggest = "/search/suggestion_city"
+        var city_id = $(".appointment_portal_judged_change_form input[name='city_id']").val();
+        var appointment_judged_type = $(".appointment_portal_judged_change_form input[name='appointment_judged_type']").val();
+        if (appointment_judged_type == 'scheduler') {
+          var url_suggest = url_suggest + "/" + city_id
+        }
+        alert(url_suggest);
         this.$target.attr("autocomplete","off");
         this.$target.parent().addClass("typeahead__container");
         this.$target.typeahead({
@@ -345,7 +352,7 @@ odoo.define('calendar_csj.calendar_portal_csj_edit_judged', function(require) {
           template: '<span>' +
                       '<span>{{city}}</span>' +
                       '</span>',
-          source:{ city:{ url: [{ type : "GET", url : "/search/suggestion_city", data : { query : "{{query}}"},},"data.cities"] },},
+          source:{ city:{ url: [{ type : "GET", url : url_suggest, data : { query : "{{query}}"},},"data.cities"] },},
           callback: {
               onClickAfter: function (node, a, item, event) {
                 event.preventDefault;

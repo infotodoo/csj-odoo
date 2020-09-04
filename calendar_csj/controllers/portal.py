@@ -54,6 +54,7 @@ class CustomerPortal(CustomerPortal):
             'suggested_class': suggested_class,
             'suggested_help1': suggested_help1,
             'suggested_help2': suggested_help2,
+            'appointment_judged_type' : request.env.user.partner_id.appointment_type
         }
         return self._get_page_view_values(appointment, access_token, values, 'my_appointment_history', False, **kwargs)
 
