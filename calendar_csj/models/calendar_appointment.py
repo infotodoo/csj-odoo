@@ -392,7 +392,7 @@ class CalendarAppointment(models.Model):
             partner = online_appointment_type.judged_id if online_appointment_type \
                 and online_appointment_type.judged_id else False
             if partner and partner.extension_lifesize:
-                judged_extension_lifesize = partner.extension_lifesize if partner.extension_lifesize or self.env.user.company_id.owner_extension
+                judged_extension_lifesize = partner.extension_lifesize
         ### moderator and owner rules.
         appointment_type = self.env.user.partner_id.appointment_type
         if appointment_type and appointment_type == 'scheduler':
