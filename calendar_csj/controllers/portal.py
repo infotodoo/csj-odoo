@@ -60,12 +60,12 @@ class CustomerPortal(CustomerPortal):
 
 
     @http.route(['/my/appointments', '/my/appointments/page/<int:page>'], type='http', auth="user", website=True)
-    def portal_my_appointments(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, search_in='all', groupby='none', export='none', **kw):
+    def portal_my_appointments(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):
         values = self._prepare_portal_layout_values()
 
         searchbar_sortings = {
             'date': {'label': _('Fecha de Realización'), 'order': 'calendar_datetime desc'},
-            'appointment_code': {'label': _('Appointment ID'), 'order': 'appointment_code desc'},
+            'appointment_code': {'label': _('Agendamiento ID'), 'order': 'appointment_code desc'},
             'state': {'label': _('Estado'), 'order': 'state'},
             'city_id': {'label': _('Ciudad'), 'order': 'name'},
             'country_state_id': {'label': _('Departamento'), 'order': 'name'},
