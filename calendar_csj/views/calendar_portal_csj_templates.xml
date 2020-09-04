@@ -1074,6 +1074,7 @@
                 <input type="hidden" name="appointment_state" t-att-value="appointment.state" />
                 <input type="hidden" name="appointment_id" t-att-value="appointment.id" />
                 <input type="hidden" name="appointment_type" t-att-value="appointment.appointment_type_id.id"/>
+                <input type="hidden" name="appointment_judged_type" t-att-value="appointment_judged_type"/>
                 <input type="hidden" name="calendar_duration" t-att-value="appointment.calendar_duration"/>
             <t t-call="portal.portal_record_layout">
               <t t-set="card_header">
@@ -1124,7 +1125,7 @@
                                     placeholder="Seleccione una Ciudad..."
                                     data-limit="10"
                                     t-att-value="search_city"/>
-                                <input type="hidden" name="city_id" class="search-query-city-id"/>
+                                <input type="hidden" name="city_id" class="search-query-city-id" t-att-value="appointment.city_id.id"/>
                             </div>
                             <label for="calendar_datetime" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Despacho</label>
                             <div class="col-md-12 row">
