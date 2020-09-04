@@ -330,10 +330,9 @@ odoo.define('calendar_csj.calendar_portal_csj_edit_judged', function(require) {
         var url_suggest = "/search/suggestion_city"
         var city_id = $(".appointment_portal_judged_change_form input[name='city_id']").val();
         var appointment_judged_type = $(".appointment_portal_judged_change_form input[name='appointment_judged_type']").val();
-        if (appointment_judged_type == 'scheduler') {
+        if (appointment_judged_type != 'scheduler') {
           var url_suggest = url_suggest + "/" + city_id
         }
-        alert(url_suggest);
         this.$target.attr("autocomplete","off");
         this.$target.parent().addClass("typeahead__container");
         this.$target.typeahead({
