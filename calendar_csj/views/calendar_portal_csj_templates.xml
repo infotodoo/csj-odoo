@@ -1069,7 +1069,7 @@
                     <t t-set="backend_url" t-value="'/web#model=calendar.appointment&amp;id=%s&amp;view_type=form' % (appointment.id)"/>
                 </t>
             </t>
-            <form class="mt32 appointment_portal_judged_change_form" t-attf-action="/my/appointment/#{appointment.id}/update/judged/submit?calendar_datetime=#{calendar_datetime}&amp;calendar_duration=#{calendar_duration}&amp;appointment_type=#{appointment_type}" method="POST">
+            <form class="mt32 appointment_portal_judged_change_form" t-attf-action="/my/appointment/#{appointment.id}/update/judged/submit" method="POST">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
                 <input type="hidden" name="appointment_state" t-att-value="appointment.state" />
                 <input type="hidden" name="appointment_id" t-att-value="appointment.id" />
@@ -1093,7 +1093,7 @@
                   <div class="row no-gutters" style="padding-top:20px;">
                       <div class="col-md">
                         <div class="btn-group" role="group" aria-label="Appointment Reschedule Save Button">
-                          <button type="button" class="btn btn-secondary portal_appointment_reschedule_save" attrs="{'invisible':[('state','=','cancel')]}">
+                          <button type="button" class="btn btn-secondary portal_appointment_judgedchange_save" attrs="{'invisible':[('state','=','cancel')]}">
                             Confirmar
                           </button>
                         </div>
@@ -1111,22 +1111,38 @@
                     <h2>Seleccione la nueva información de Despacho</h2>
                   </div>
                   <div class="row col-12 mb-4" style="padding-top:20px;">
-                      <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;">
+                      <div class="col-12 col-md-12 mb-1" style="border: solid 1px #ccc;margin-left:0px;">
                           <!--<div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Cuando se llevará a cabo</div>
                           <br/>-->
                           <div class="form-group row col-xl-12 col-md-12">
+                            <label for="calendar_datetime" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Ciudad</label>
+                            <div class="col-md-12 row">
+                                <input
+                                    type="text"
+                                    name="search_city"
+                                    class="search-portal-query-city form-control oe_search_box"
+                                    placeholder="Seleccione una Ciudad..."
+                                    data-limit="10"
+                                    t-att-value="search_city"/>
+                                <input type="hidden" name="city_id" class="search-query-city-id"/>
+                            </div>
                             <label for="calendar_datetime" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Despacho</label>
                             <div class="col-md-12 row">
-                                <input type="char" class="form-control" id="appointment_type_id" name="calendar_datetime" required="1" t-att-value="appointment.appointment_type_id.judged_id.name"/>
+                                <input
+                                    type="text"
+                                    name="search_appointment"
+                                    class="search-portal-query-appointment form-control oe_search_box"
+                                    placeholder="Seleccione una Juzgado..."
+                                    data-limit="10"
+                                    t-att-value="search_appointment"/>
+                                <input type="hidden" name="judged_id" class="o_appointment_search_order_by"/>
                             </div>
                           </div>
                       </div>
                   </div>
-
                 </t>
             </t>
           </form>
-
         </t>
   </template>
 
