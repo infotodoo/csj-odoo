@@ -64,7 +64,7 @@ class CustomerPortal(CustomerPortal):
 
         searchbar_sortings = {
             'date': {'label': _('Fecha de Realización'), 'order': 'calendar_datetime desc'},
-            'appointment_code': {'label': _('ID de Agendamiento'), 'order': 'appointment_code desc'},
+            'appointment_code': {'label': _('Agendamiento ID'), 'order': 'appointment_code desc'},
             'state': {'label': _('Estado'), 'order': 'state'},
             'city_id': {'label': _('Ciudad'), 'order': 'name'},
             'country_state_id': {'label': _('Departamento'), 'order': 'name'},
