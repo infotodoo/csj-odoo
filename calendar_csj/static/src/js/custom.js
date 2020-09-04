@@ -346,7 +346,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
                     searchOnFocus: true,
                     hint: true,
                     accent: true,
-                    display: ["id","cita"],
+                    display: ["cita"],
                     template: '<span>' +
                                 '<span>{{cita}}</span>' +
                                 '</span>',

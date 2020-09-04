@@ -551,8 +551,6 @@ class CustomerPortal(CustomerPortal):
         return request.redirect('/my/appointment/' + str(kwargs['appointment_id'].id))
 
 
-
-
     @http.route([
         '/my/appointment/<int:appointment_id>/update/judged'
     ], type='http', auth="user", website=True)
@@ -564,3 +562,14 @@ class CustomerPortal(CustomerPortal):
 
         values = self._appointment_get_page_view_values(appointment_sudo, access_token, **kw)
         return request.render("calendar_csj.portal_my_appointment_judged_change", values)
+
+
+    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/judged/submit'], type='http', auth="public", website=True, method=["POST"])
+    def appointment_portal_reschedule_form_submit(self, appointment_id=None, **kwargs):
+        appointment_type_obj = request.env['calendar.appointment.type'].search([ ('id','=',kwargs['appointment_type']) ])
+
+        request.env['calendar.appointment'].browse(appointment_id.id).write({
+            'appointment_type_id': appointment_type_obj.id,
+        })
+
+        return request.redirect('/my/appointment/' + str(appointment_id.id))
