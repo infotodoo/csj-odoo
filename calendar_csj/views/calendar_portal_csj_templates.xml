@@ -252,9 +252,9 @@
                                     <td>
                                         <span t-esc="appointment.observations"/>
                                     </td>
-                                    <!--<td>
+                                    <td>
                                         <span t-esc="appointment.tag_number"/>
-                                    </td>-->
+                                    </td>
                                 </tr>
                             </t>
                         </tbody>
@@ -398,7 +398,7 @@
                               <br/>
                               <strong>Número de Proceso:</strong> <span t-field="appointment.process_number"/>
                               <br/>
-                           <!--   <strong>Etiqueta:</strong> <span t-field="appointment.tag_number"/>-->
+                              <strong>Etiqueta:</strong> <span t-field="appointment.tag_number"/>
                           </div>
                           <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;" t-if="appointment.calendar_duration">
                             <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos de Reunión</div>
@@ -723,12 +723,12 @@
                                     </div>
                                   </div>
 
-                                <!--  <div class="form-group row col-xl-12 col-md-12">
+                                  <div class="form-group row col-xl-12 col-md-12">
                                     <label for="tag_number" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Etiqueta</label>
                                     <div class="col-md-12 row">
                                         <input type="char" class="form-control" name="tag_number" required="1" t-att-value="appointment.tag_number"/>
                                     </div>
-                                  </div> -->
+                                  </div> 
 
                                   <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
                                     <label for="end_date" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha Final</label>
