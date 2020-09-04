@@ -377,8 +377,7 @@ class CalendarAppointment(models.Model):
     def create_lifesize(self, vals):
         api = {
             'method': 'create',
-            'displayName': vals.get('name')
-            #CAMBIAR
+            'displayName': vals.get('name'),
             'ownerExtension': self.env.user.extension_lifesize or \
                 self.env.user.company_id.owner_extension,
             'hiddenMeeting': 'true',
