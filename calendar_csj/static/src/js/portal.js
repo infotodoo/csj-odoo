@@ -316,88 +316,6 @@ odoo.define('calendar_csj.calendar_portal_csj_edit_judged', function(require) {
 
   var dest = 0
 
-  sAnimation.registry.OdooWebsitePortalSearchCity = sAnimation.Class.extend({
-    selector: ".search-portal-query-city",
-    autocompleteMinWidth: 300,
-    init: function () {
-      console.log('init: search_city');
-    },
-    start: function () {
-        //var calendar_appointment_type_id = $(".appointment_portal_judged_change_form input[name='calendar_appointment_type_id']").val();
-        $('.search-portal-query-appointment').typeahead({source: []});
-        var self = this;
-        var previousSelectedCityID = $(".appointment_portal_judged_change_form input[name='city_id']").val();
-        var url_suggest = "/search/suggestion_city"
-        var city_id = $(".appointment_portal_judged_change_form input[name='city_id']").val();
-        var appointment_judged_type = $(".appointment_portal_judged_change_form input[name='appointment_judged_type']").val();
-        if (appointment_judged_type != 'scheduler') {
-          var url_suggest = url_suggest + "/" + city_id
-        }
-        this.$target.attr("autocomplete","off");
-        this.$target.parent().addClass("typeahead__container");
-        this.$target.typeahead({
-          minLength: 1,
-          maxItem: 15,
-          delay: 500,
-          order: "asc",
-          cache: false,
-          autoFocus:true,
-          hint: true,
-          accent: true,
-          mustSelectItem: true,
-          item: 5334,
-          //display: ["id","city"],
-          display: ["city"],
-          template: '<span>' +
-                      '<span>{{city}}</span>' +
-                      '</span>',
-          source:{ city:{ url: [{ type : "GET", url : url_suggest, data : { query : "{{query}}"},},"data.cities"] },},
-          callback: {
-              onClickAfter: function (node, a, item, event) {
-                event.preventDefault;
-                $('.search-portal-query-city-id').val(item.id);
-                //var previousSelectedCityID = $(".o_website_appointment_form input[name='city_id']").val();
-                var url = '/search/suggestion';
-                if (item.id){
-                  var url = '/search/suggestion/'.concat(item.id);
-                }
-                //$('.search-portal-query-appointment').text();
-                $('.search-portal-query-appointment').typeahead({source: []});
-                $('.search-portal-query-appointment').typeahead({
-                    minLength: 1,
-                    maxItem: 15,
-                    delay: 500,
-                    order: "asc",
-                    cache: false,
-                    searchOnFocus: true,
-                    hint: true,
-                    accent: true,
-                    display: ["cita"],
-                    template: '<span>' +
-                                '<span>{{cita}}</span>' +
-                                '</span>',
-                    source:{ appointment:{ url: [{ type : "GET", url : url, data : { query : "{{query}}"},},"data.cita"] },},
-                    callback: {
-                      onClickAfter: function (node, a, item, event) {
-                        //var date_time = $(".o_website_appoinment_form select[name='date_time']").val();
-                        //var duration = $(".o_website_appoinment_form select[name='duration']").val();
-                        var calendar_appointment_type_id = item['id'];
-                        $(".appointment_portal_judged_change_form input[name='appointment_type']").val(calendar_appointment_type_id);
-                        //var postURL = '/website/calendar/' + calendar_appointment_type_id + '/info?date_time='+ date_time + '&amp;duration=' + duration;
-                        //$(".o_website_appointment_form").attr('action', postURL);
-                      }
-                    }
-                });
-                $('.appointment-container .typeahead__result').hide();
-                //$('.appointment-container').addClass('visible');
-              }
-          }
-        });
-    },
-    debug: true,
-  });
-
-
 	sAnimation.registry.OdooWebsitePortalSearchAppointment = sAnimation.Class.extend({
 		selector: ".search-portal-query-appointment",
     //xmlDependencies: ['/calendar_csj/static/src/xml/calendar_csj_utils.xml'],
@@ -429,14 +347,8 @@ odoo.define('calendar_csj.calendar_portal_csj_edit_judged', function(require) {
           source:{ appointment:{ url: [{ type : "GET", url : url, data : { query : "{{query}}"},},"data.cita"] },},
           callback: {
               onClickAfter: function (node, a, item, event) {
-                //var date_time = $(".o_website_appoinment_form select[name='date_time']").val();
-                //console.log(date_time);
-                //var duration = $(".o_website_appoinment_form select[name='duration']").val();
-                //var calendar_appointment_type_id = item['id'];
-                //$(".appointment_portal_judged_change_form input[name='calendar_appointment_type_id']").val(calendar_appointment_type_id);
-                //var postURL = '/website/calendar/' + calendar_appointment_type_id + '/info?date_time='+ date_time + '&amp;duration=' + duration;
-                //$(".o_website_appointment_form").attr('action', postURL);
-                //alert("pasanro por caa2")
+                var calendar_appointment_type_id = item['id'];
+                $(".appointment_portal_judged_change_form input[name='appointment_type']").val(calendar_appointment_type_id);
               }
             }
         });
