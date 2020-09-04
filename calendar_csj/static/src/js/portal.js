@@ -99,9 +99,9 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
     var time = require('web.time');
     var Dialog = require('web.Dialog');
     var appointment_state =  $("#appointment_state").text();
-    var appointment_id = $("#appointment_id").text();
+    var appointment_id = $("#appointment_id").val();
     $("#appointment_state").hide();
-    $("#appointment_id").hide();
+    //$("#appointment_id").hide();
     function removeActiveDisabledButton(){
       $("#state_draft_btn").removeClass('active');
       $("#state_open_btn").removeClass('active');
@@ -162,7 +162,7 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
       $("#state_cancel_btn").addClass('active');
     }
     $("#state_open_btn").on('click', function(e){
-      url = '/my/appointment/' + appointment_id + '/update/state/cancel';
+      var url = '/my/appointment/' + appointment_id + '/update/state/cancel';
       window.location.href = url;
     });
 
@@ -177,7 +177,7 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
     $("#state_cancel_btn").on('click', function(e){
       Dialog.confirm(this, 'El agendamiento se cancelará y un correo electrónico será enviado a los invitados notificando esta cancelación', {
           confirm_callback: function() {
-            url = '/my/appointment/' + appointment_id + '/update/state/cancel';
+            var url = '/my/appointment/' + appointment_id + '/update/state/cancel';
             window.location.href = url;
           },
           title: _t('Cancelción de Agendamiento'),
@@ -187,7 +187,7 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
     $("#state_realized_btn").on('click', function(e){
       Dialog.confirm(this, 'El agendamiento será marcado como realizado y se actualizará la fecha y usuario de cierre', {
           confirm_callback: function() {
-            url = '/my/appointment/' + appointment_id + '/update/state/realized';
+            var url = '/my/appointment/' + appointment_id + '/update/state/realized';
             window.location.href = url;
           },
           title: _t('Confirmación de Realización de Agendamiento'),
@@ -197,7 +197,7 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
     $("#state_unrealized_btn").on('click', function(e){
       Dialog.confirm(this, 'El agendamiento será marcado como NO realizado y se actualizará la fecha y usuario de cierre', {
           confirm_callback: function() {
-            url = '/my/appointment/' + appointment_id + '/update/state/unrealized';
+            var url = '/my/appointment/' + appointment_id + '/update/state/unrealized';
             window.location.href = url;
           },
           title: _t('Confirmación de NO Realización de Agendamiento'),
@@ -207,7 +207,7 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
     $("#state_postpone_btn").on('click', function(e){
       Dialog.confirm(this, 'El agendamiento será marcado como Pospuesto y se actualizará la fecha y usuario de cierre', {
           confirm_callback: function() {
-            url = '/my/appointment/' + appointment_id + '/update/state/postpone';
+            var url = '/my/appointment/' + appointment_id + '/update/state/postpone';
             window.location.href = url;
           },
           title: _t('Confirmación para posponer el Agendamiento'),
@@ -217,7 +217,7 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
     $("#state_assist_postpone_btn").on('click', function(e){
       Dialog.confirm(this, 'El agendamiento será marcado como Pospuesto y se actualizará la fecha y usuario de cierre', {
           confirm_callback: function() {
-            url = '/my/appointment/' + appointment_id + '/update/state/assist_postpone';
+            var url = '/my/appointment/' + appointment_id + '/update/state/assist_postpone';
             window.location.href = url;
           },
           title: _t('Confirmación para posponer el Agendamiento'),
@@ -227,7 +227,7 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
     $("#state_assist_cancel_btn").on('click', function(e){
       Dialog.confirm(this, 'El agendamiento será marcado como Pospuesto y se actualizará la fecha y usuario de cierre', {
           confirm_callback: function() {
-            url = '/my/appointment/' + appointment_id + '/update/state/assist_cancel';
+            var url = '/my/appointment/' + appointment_id + '/update/state/assist_cancel';
             window.location.href = url;
           },
           title: _t('Confirmación para posponer el Agendamiento'),
@@ -236,7 +236,7 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
 
 
     $(".portal_appointment_edit").on('click', function(e){
-      url = '/my/appointment/' + appointment_id + '/update/all';
+      var url = '/my/appointment/' + appointment_id + '/update/all';
       window.location.href = url;
     });
 
@@ -248,7 +248,7 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
 
 
     $(".portal_appointment_reschedule").on('click', function(e){
-      url = '/my/appointment/' + appointment_id + '/update/reschedule';
+      var url = '/my/appointment/' + appointment_id + '/update/reschedule';
       window.location.href = url;
     });
 
@@ -260,13 +260,13 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
 
 
     $(".portal_appointment_judged_change").on('click', function(e){
-      url = '/my/appointment/' + appointment_id + '/update/judged';
+      var url = '/my/appointment/' + appointment_id + '/update/judged';
       window.location.href = url;
     });
 
     $(".portal_appointment_judged_change_cancel").on('click', function(e){
       var appointment_id = $(".appointment_portal_judged_change_form input[name='appointment_id']").val();
-      url = '/my/appointment/' + appointment_id;
+      var url = '/my/appointment/' + appointment_id;
       window.location.href = url;
     });
 
