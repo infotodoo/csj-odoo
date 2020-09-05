@@ -443,20 +443,13 @@ class OdooWebsiteSearchAppointment(http.Controller):
 
 class OdooWebsiteSearchCity(http.Controller):
 
-    @http.route(['/search/suggestion_city','/search/suggestion_city/<int:city_id>'], type='http', auth="public", website=True)
+    @http.route(['/search/suggestion_city'], type='http', auth="public", website=True)
     def search_suggestion(self, city_id=None, **post):
         cities = []
         if post:
-
-            _logger.error('######################################################\n********************************************')
-            _logger.error(city_id)
             query = post.get('query').lower()
             for suggestion in query.split(" "):
-                domain = []
-                if city_id:
-                    suggested_cities = request.env['res.city'].sudo().search([('id', '=', city_id)])
-                else:
-                    suggested_cities = request.env['res.city'].sudo().search()
+                suggested_cities = request.env['res.city'].sudo().search([])
                 for city in suggested_cities:
                     #if len(cities) > 0 and city.id in [line.get('id') for line in cities]:
                     #    continue

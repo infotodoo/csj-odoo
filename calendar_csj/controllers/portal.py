@@ -192,9 +192,6 @@ class CustomerPortal(CustomerPortal):
 
         appointment_count = request.env['calendar.appointment'].search_count(domain)
 
-        _logger.error('**********************************************\n***************************************')
-        _logger.error(appointment_count)
-
         # pager
         pager = portal_pager(
             url="/my/appointments",
@@ -498,7 +495,6 @@ class CustomerPortal(CustomerPortal):
 
         values = self._appointment_get_page_view_values(appointment_sudo, access_token, **kw)
         return request.render("calendar_csj.portal_my_appointment_editall", values)
-
 
 
     @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/all/submit'], type='http', auth="public", website=True, method=["POST"])
