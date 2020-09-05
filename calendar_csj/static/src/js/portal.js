@@ -161,10 +161,12 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
       addDisabledButton();
       $("#state_cancel_btn").addClass('active');
     }
-    $("#state_open_btn").on('click', function(e){
-      var url = '/my/appointment/' + appointment_id + '/update/state/cancel';
-      window.location.href = url;
-    });
+
+
+    //$("#state_open_btn").on('click', function(e){
+    //  var url = '/my/appointment/' + appointment_id + '/update/state/cancel';
+    //  window.location.href = url;
+    //});
 
 
     var type = $(".appointment_portal_edit_form input[name='hidden_type']").val();

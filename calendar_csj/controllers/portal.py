@@ -566,12 +566,8 @@ class CustomerPortal(CustomerPortal):
 
 
     @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/judged/submit'], type='http', auth="public", website=True, method=["POST"])
-    def appointment_portal_reschedule_form_submit(self, appointment_id=None, **kwargs):
+    def appointment_portal_judgededit_form_submit(self, appointment_id=None, **kwargs):
         appointment_type_obj = request.env['calendar.appointment.type'].search([ ('id','=',kwargs['appointment_type']) ])
-
-        _logger.error('*****************************************\n++++++++++++++++++++++++++++++++++++++++++++++++++++')
-        _logger.error(appointment_type_obj)
-        _logger.error(appointment_type_obj.id)
 
         request.env['calendar.appointment'].browse(appointment_id.id).write({
             'appointment_type_id': appointment_type_obj.id,
