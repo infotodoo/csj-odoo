@@ -237,11 +237,8 @@
                                     <td>
                                         <span t-esc="appointment.judged_only_name"/>
                                     </td>
-                                    <!--<td>
-                                        <span t-esc="'%02d:%02d' % (int(str(appointment.calendar_time).split('.')[0]), int(float(str('%.2f' % appointment.calendar_time).split('.')[1])/100*60))"/>
-                                    </td>-->
                                     <td>
-                                        <span t-esc="appointment.appointment.calendar_time"/>
+                                        <span t-esc="'%02d:%02d' % (int(str(appointment.calendar_time).split('.')[0]), int(float(str('%.2f' % appointment.calendar_time).split('.')[1])/100*60))"/>
                                     </td>
                                     <td>
                                         <span t-esc="appointment.appointment_close_user_id.login"/>
