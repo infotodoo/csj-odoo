@@ -428,10 +428,12 @@ class CustomerPortal(CustomerPortal):
     ], type='http', auth="user", website=True)
     def portal_my_appointment(self, appointment_id=None, access_token=None, **kw):
         try:
-            appointment_sudo = self._document_check_access('calendar.appointment', appointment_id, access_token)
+            #appointment_sudo = self._document_check_access('calendar.appointment', appointment_id, access_token)
+            # Don't work with _document_check_access for compute tag_number field
+            appointment_sudo = request.env['calendar.appointment'].sudo().browse(appointment_id)
         except (AccessError, MissingError):
             return request.redirect('/my')
-
+        
         values = self._appointment_get_page_view_values(appointment_sudo, access_token, **kw)
         return request.render("calendar_csj.portal_my_appointment", values)
 
