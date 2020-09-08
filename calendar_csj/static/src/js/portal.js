@@ -39,8 +39,25 @@ $(function () {
     dateFormat : 'yy-mm-dd',
   });
 
-  $('#datetimepicker_begin').datetimepicker();
-  $('#datetimepicker_end').datetimepicker();
+  $(".o_portal_search_panel_csj input[name='date_begin']").datetimepicker({
+    inline: true,
+    format : 'YYYY-MM-DD HH:mm',
+    sideBySide: false
+  });
+
+  $(".o_portal_search_panel_csj input[name='date_end']").datetimepicker({
+    inline: true,
+    format : 'YYYY-MM-DD HH:mm',
+    sideBySide: false
+  });
+
+  $("#container_datetime_filter").hide();
+  $("#datetime_filter_icon").on('click', function(e){
+    $("#container_datetime_filter").toggle();
+  });
+  $("#container_datetime_filter").on('mouseleave', function(e){
+    $("#container_datetime_filter").hide();
+  });
 });
 
 odoo.define('calendar_csj.calendar_portal_csj', function(require) {

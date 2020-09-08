@@ -48,7 +48,7 @@
                   <t t-if="breadcrumbs_searchbar">
                       <t t-call="portal.portal_breadcrumbs"/>
                   </t>
-                  <span t-else="" class="navbar-brand mb-0 h1 mr-auto" t-esc="title or 'Filtros'"/>
+                  <!--<span t-else="" class="navbar-brand mb-0 h1 mr-auto" t-esc="title or 'Filtros'"/>-->
 
                   <!--  Collapse button -->
                   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#o_portal_navbar_content" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle filters">
@@ -56,40 +56,109 @@
                   </button>
 
                   <!--  Collapsable content  -->
+
                   <div class="collapse navbar-collapse" id="o_portal_navbar_content">
-                      <div class="nav flex-column flex-lg-row ml-auto p-0 mb-3 mb-lg-0 mt-1 mt-lg-0">
-                          <div t-if="searchbar_sortings" class="form-inline">
-                              <span class="small mr-1 navbar-text">Sort By:</span>
-                              <div class="btn-group">
-                                  <button id="portal_searchbar_sortby" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
-                                      <t t-esc="searchbar_sortings[sortby].get('label', 'Newest')"/>
-                                  </button>
-                                  <div class="dropdown-menu" aria-labelledby="portal_searchbar_sortby">
-                                      <t t-foreach="searchbar_sortings" t-as="option">
-                                          <a t-att-href="request.httprequest.path + '?' + keep_query('*', sortby=option)"
-                                             t-attf-class="dropdown-item#{sortby == option and ' active' or ''}">
-                                              <span t-esc="searchbar_sortings[option].get('label')"/>
-                                          </a>
-                                      </t>
+                      <div style="width:100%;">
+                        <form t-if="searchbar_inputs" class="form-inline o_portal_search_panel_csj ml-lg-4">
+                        <table style="width:100%;"><tr>
+                          <td style="width:20%;">
+                            <div t-if="searchbar_sortings" class="form-inline">
+                                <span class="small mr-1 navbar-text">Sort By:</span>
+                                <div class="btn-group">
+                                    <button id="portal_searchbar_sortby" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
+                                        <t t-esc="searchbar_sortings[sortby].get('label', 'Newest')"/>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="portal_searchbar_sortby">
+                                        <t t-foreach="searchbar_sortings" t-as="option">
+                                            <a t-att-href="request.httprequest.path + '?' + keep_query('*', sortby=option)"
+                                               t-attf-class="dropdown-item#{sortby == option and ' active' or ''}">
+                                                <span t-esc="searchbar_sortings[option].get('label')"/>
+                                            </a>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                          </td>
+                            <td style="width:20%;">
+                                <div t-if="searchbar_filters" class="form-inline ml-lg-2">
+                                    <span class="small mr-1 navbar-text">Filter By:</span>
+                                    <div class="btn-group">
+                                        <button id="portal_searchbar_filters" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
+                                            <t t-esc="searchbar_filters[filterby].get('label', 'All')"/>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="portal_searchbar_filters">
+                                            <t t-foreach="searchbar_filters" t-as="option">
+                                                <a t-att-href="default_url + '?' + keep_query('*', filterby=option)"
+                                                   t-attf-class="dropdown-item#{filterby == option and ' active' or ''}">
+                                                    <span t-esc="searchbar_filters[option].get('label')"/>
+                                                </a>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+
+                            <td style="width:50%;">
+                              <div class="input-group input-group-sm w-45" style="padding-right:5px;">
+                                  <div class="input-group-prepend">
+                                      <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"/>
+                                      <div class="dropdown-menu" role="menu">
+                                          <t t-foreach='searchbar_inputs' t-as='input'>
+                                              <a t-att-href="'#' + searchbar_inputs[input]['input']"
+                                                  t-attf-class="dropdown-item#{search_in == searchbar_inputs[input]['input'] and ' active' or ''}">
+                                                  <span t-raw="searchbar_inputs[input]['label']"/>
+                                              </a>
+                                          </t>
+                                      </div>
                                   </div>
+                                  <input type="text" class="form-control form-control-sm" placeholder="Search" t-att-value='search' name="search"/>
+                                  <span class="input-group-append">
+                                      <button class="btn btn-secondary search-submit-csj" type="button">
+                                          <span class="fa fa-search"/>
+                                      </button>
+                                  </span>
                               </div>
-                          </div>
-                          <div t-if="searchbar_filters" class="form-inline ml-lg-2">
-                              <span class="small mr-1 navbar-text">Filter By:</span>
-                              <div class="btn-group">
-                                  <button id="portal_searchbar_filters" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
-                                      <t t-esc="searchbar_filters[filterby].get('label', 'All')"/>
-                                  </button>
-                                  <div class="dropdown-menu" aria-labelledby="portal_searchbar_filters">
-                                      <t t-foreach="searchbar_filters" t-as="option">
-                                          <a t-att-href="default_url + '?' + keep_query('*', filterby=option)"
-                                             t-attf-class="dropdown-item#{filterby == option and ' active' or ''}">
-                                              <span t-esc="searchbar_filters[option].get('label')"/>
-                                          </a>
-                                      </t>
+                            </td>
+
+                            <td style="width:10%;">
+                              <div class="input-group input-group-sm w-5" style="padding-left:15px;background-color:#00a09d;">
+                                <input type="checkbox" name="export"/><br/>
+                                <span class="fa fa-file-excel-o" style="font-size:20px;padding:15px;"/>
+                                <span class="fa fa-calendar" id="datetime_filter_icon" style="font-size:20px;padding:15px;"/>
+                              </div>
+
+                            </td>
+                        </tr><tr>
+                            <td colspan="4" style="text-align:left">
+                            <div aling="right" class="input-group input-group-sm w-5">
+                              <t t-set="total" t-value="total"/>
+                              <h1 aling="right" style="font-style:italic; padding-rigth:5px; font-size: 15px; -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoj';" >  Total agendamientos <t t-esc="total" aling="right" style="font-size: 15px; "/></h1>
+                              <t aling="right" t-set="i" t-value="1"/>
+                            </div>
+                          </td>
+                            </tr><tr>
+                              <td colspan="2" style="text-align:right;"></td>
+                              <td colspan="2" style="text-align:right;width:100%;">
+                                <div class="input-group input-group-sm" style="padding-right:5px;" id="container_datetime_filter">
+                                  <!--<input type="text" class="form-control form-control-sm" placeholder="Desde" t-att-value='date_begin' name="date_begin" id="date_begin"/>-->
+                                  <div class='input-group date' id='datetimepicker_begin'>
+                                      <input type='text' class="form-control" name="date_begin" t-att-value="date_begin"/>
+                                      <!--<span class="input-group-addon">
+                                          <span class="fa fa-calendar"></span>
+                                      </span>-->
                                   </div>
-                              </div>
-                          </div>
+                                  <!--<input type="text" class="form-control form-control-sm" placeholder="Hasta" t-att-value='date_end' name="date_end" id="date_end"/>-->
+                                  <div class='input-group date' id='datetimepicker_end'>
+                                      <input type='text' class="form-control" name="date_end" t-att-value="date_end"/>
+                                      <!--<span class="input-group-addon">
+                                          <span class="fa fa-calendar"></span>
+                                      </span>-->
+                                  </div>
+                                </div>
+                            </td>
+                          </tr></table>
+                        </form>
                          <!-- <div t-if="searchbar_groupby" class="form-inline ml-lg-2">
                               <span class="small mr-1 navbar-text">Group By:</span>
                               <div class="btn-group">
@@ -108,53 +177,8 @@
                           </div>-->
                           <t t-raw="0"/>
                       </div>
-                      <form t-if="searchbar_inputs" class="form-inline o_portal_search_panel_csj ml-lg-4" action="/werwerwerwe">
-                          <div class="input-group input-group-sm w-50" style="padding-right:5px;">
-                            <!--<input type="text" class="form-control form-control-sm" placeholder="Desde" t-att-value='date_begin' name="date_begin" id="date_begin"/>-->
-                            <div class='input-group date' id='datetimepicker_begin'>
-                                <input type='text' class="form-control" />
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
-                            </div>
-                            <!--<input type="text" class="form-control form-control-sm" placeholder="Hasta" t-att-value='date_end' name="date_end" id="date_end"/>-->
-                            <div class='input-group date' id='datetimepicker_end'>
-                                <input type='text' class="form-control" />
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
-                            </div>
-                          </div>
-                          <div class="input-group input-group-sm w-45" style="padding-right:5px;">
-                              <div class="input-group-prepend">
-                                  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"/>
-                                  <div class="dropdown-menu" role="menu">
-                                      <t t-foreach='searchbar_inputs' t-as='input'>
-                                          <a t-att-href="'#' + searchbar_inputs[input]['input']"
-                                              t-attf-class="dropdown-item#{search_in == searchbar_inputs[input]['input'] and ' active' or ''}">
-                                              <span t-raw="searchbar_inputs[input]['label']"/>
-                                          </a>
-                                      </t>
-                                  </div>
-                              </div>
-                              <input type="text" class="form-control form-control-sm" placeholder="Search" t-att-value='search' name="search"/>
-                              <span class="input-group-append">
-                                  <button class="btn btn-secondary search-submit-csj" type="button">
-                                      <span class="fa fa-search"/>
-                                  </button>
-                              </span>
-                          </div>
-                          <div class="input-group input-group-sm w-5" style="padding-left:15px;background-color:#00a09d;">
-                            <input type="checkbox" name="export"/><br/>
-                            <span class="fa fa-file-excel-o" style="font-size:20px;padding:15px;"/>
-                          </div>
-                          <div aling="right" class="input-group input-group-sm w-5">
-                            <t t-set="total" t-value="total"/>
-                            <h1 aling="right" style="font-style:italic; padding-rigth:5px; font-size: 15px; -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoj';" >  Total agendamientos <t t-esc="total" aling="right" style="font-size: 15px; "/></h1>
-                            <t aling="right" t-set="i" t-value="1"/>
-                          </div>
-                      </form>
-                  </div>
+                    </div>
+
               </nav>
               <t t-if="not appointments">
                   <div class="alert alert-warning mt8" role="alert">
