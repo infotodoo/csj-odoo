@@ -76,9 +76,14 @@ class CustomerPortal(CustomerPortal):
             'all': {'label': _('Todos'), 'domain': []},
             'today': {'label': _('Hoy'), 'domain': [('calendar_datetime','<',datetime(2020,8,12,23,59,59)),('calendar_datetime','>',datetime(2020,8,12,0,0,1))]},
             'month': {'label': _('Último Mes'), 'domain': [('calendar_datetime','>',datetime(2020,8,1,0,0,1)),('calendar_datetime','<',datetime(2020,8,31,23,59,59))]},
-            'cancel': {'label': _('Cancelados'), 'domain': [('state','=','cancel')]},
-            'realized': {'label': _('Realizados'), 'domain': [('state','=','realized')]},
-            'open': {'label': _('Confirmado'), 'domain': [('state','=','open')]},
+            'realized': {'label': _('Realizada'), 'domain': [('state','=','realized')]},
+            'open': {'label': _('Agendado'), 'domain': [('state','=','open')]},
+            'unrealized': {'label': _('No realizada'), 'domain': [('state','=','unrealized')]},
+            'postpone': {'label': _('Confirmado'), 'domain': [('state','=','postpone')]},
+            'assist_postpone': {'label': _('Asistida y aplazada'), 'domain': [('state','=','assist_postpone')]},
+            'assist_cancel': {'label': _('Asistida y Cancelada'), 'domain': [('state','=','assist_cancel')]},
+            'draft': {'label': _('Duplicado'), 'domain': [('state','=','draft')]},
+            'cancel': {'label': _('Cancelado'), 'domain': [('state','=','cancel')]},
         }
 
         searchbar_inputs = {
