@@ -51,13 +51,15 @@ $(function () {
     sideBySide: false
   });
 
-  $("#container_datetime_filter").hide();
+  //$("#container_datetime_filter").hide();
   $("#datetime_filter_icon").on('click', function(e){
     $("#container_datetime_filter").toggle();
   });
-  $("#container_datetime_filter").on('mouseleave', function(e){
-    $("#container_datetime_filter").hide();
-  });
+
+  //$("#container_datetime_filter").on('mouseleave', function(e){
+  //  $("#container_datetime_filter").hide();
+  //});
+
 });
 
 odoo.define('calendar_csj.calendar_portal_csj', function(require) {

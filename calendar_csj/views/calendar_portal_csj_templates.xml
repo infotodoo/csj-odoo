@@ -58,8 +58,8 @@
                   <!--  Collapsable content  -->
 
                   <div class="collapse navbar-collapse" id="o_portal_navbar_content">
-                      <div style="width:100%;">
-                        <form t-if="searchbar_inputs" class="form-inline o_portal_search_panel_csj ml-lg-4">
+                      <div style="width:100%;" class="col-12 row">
+                        <div class="col-4">
                         <table style="width:100%;"><tr>
                           <td style="width:20%;">
                             <div t-if="searchbar_sortings" class="form-inline">
@@ -97,9 +97,15 @@
                                     </div>
                                 </div>
                             </td>
+                          </tr></table>
+                        </div>
+                        <div class="col-8">
 
 
-                            <td style="width:50%;">
+                          <form t-if="searchbar_inputs" class="form-inline o_portal_search_panel_csj ml-lg-4">
+                            <table style="width:100%;"><tr>
+
+                            <td style="width:90%;">
                               <div class="input-group input-group-sm w-45" style="padding-right:5px;">
                                   <div class="input-group-prepend">
                                       <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"/>
@@ -129,36 +135,43 @@
                               </div>
 
                             </td>
-                        </tr><tr>
-                            <td colspan="4" style="text-align:left">
-                            <div aling="right" class="input-group input-group-sm w-5">
-                              <t t-set="total" t-value="total"/>
-                              <h1 aling="right" style="font-style:italic; padding-rigth:5px; font-size: 15px; -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoj';" >  Total agendamientos <t t-esc="total" aling="right" style="font-size: 15px; "/></h1>
-                              <t aling="right" t-set="i" t-value="1"/>
-                            </div>
-                          </td>
                             </tr><tr>
-                              <td colspan="2" style="text-align:right;"></td>
+
+
                               <td colspan="2" style="text-align:right;width:100%;">
                                 <div class="input-group input-group-sm" style="padding-right:5px;" id="container_datetime_filter">
                                   <!--<input type="text" class="form-control form-control-sm" placeholder="Desde" t-att-value='date_begin' name="date_begin" id="date_begin"/>-->
                                   <div class='input-group date' id='datetimepicker_begin'>
-                                      <input type='text' class="form-control" name="date_begin" t-att-value="date_begin"/>
+                                      <input type='datetime' class="form-control" name="date_begin" t-att-value="date_begin"/>
                                       <!--<span class="input-group-addon">
                                           <span class="fa fa-calendar"></span>
                                       </span>-->
                                   </div>
                                   <!--<input type="text" class="form-control form-control-sm" placeholder="Hasta" t-att-value='date_end' name="date_end" id="date_end"/>-->
                                   <div class='input-group date' id='datetimepicker_end'>
-                                      <input type='text' class="form-control" name="date_end" t-att-value="date_end"/>
+                                      <input type='datetime' class="form-control" name="date_end" t-att-value="date_end"/>
                                       <!--<span class="input-group-addon">
                                           <span class="fa fa-calendar"></span>
                                       </span>-->
                                   </div>
                                 </div>
                             </td>
+
                           </tr></table>
+
+
                         </form>
+                      </div>
+                        <table style="width:100%;"><tr>
+                      </tr><tr>
+                          <td colspan="2" style="text-align:left">
+                            <div aling="right" class="input-group input-group-sm w-5">
+                              <t t-set="total" t-value="total"/>
+                              <h1 aling="right" style="font-style:italic; padding-rigth:5px; font-size: 15px; -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoj';" >  Total agendamientos <t t-esc="total" aling="right" style="font-size: 15px; "/></h1>
+                              <t aling="right" t-set="i" t-value="1"/>
+                            </div>
+                          </td></tr></table>
+
                          <!-- <div t-if="searchbar_groupby" class="form-inline ml-lg-2">
                               <span class="small mr-1 navbar-text">Group By:</span>
                               <div class="btn-group">
