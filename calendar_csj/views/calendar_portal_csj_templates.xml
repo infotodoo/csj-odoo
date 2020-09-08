@@ -462,7 +462,7 @@
                             <br/>
                             <strong>Fecha Final:</strong> <span t-field="appointment.end_date"/>
                             <br/>
-                             <strong>Hora Final:</strong> <span t-set="appointment.end_hour" t-value="1.5" /><span t-esc="'%s:%02d' % (str(appointment.end_hour).split('.')[0], int(float(str('%.2f' % appointment.end_hour).split('.')[1])/1))" />
+                             <strong>Hora Final:</strong> <span t-set="appointment.end_hour" value="0" /><span t-esc="'%s:%02d' % (str(appointment.end_hour).split('.')[0], int(float(str('%.2f' % appointment.end_hour).split('.')[1])/1))" />
 
                             <br/>
                             <strong>Url de grabación:</strong> <span t-field="appointment.link_download"/>
