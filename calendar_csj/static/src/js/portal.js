@@ -38,6 +38,9 @@ $(function () {
   $( "#date_end").datepicker({
     dateFormat : 'yy-mm-dd',
   });
+
+  $('#datetimepicker_begin').datetimepicker();
+  $('#datetimepicker_end').datetimepicker();
 });
 
 odoo.define('calendar_csj.calendar_portal_csj', function(require) {

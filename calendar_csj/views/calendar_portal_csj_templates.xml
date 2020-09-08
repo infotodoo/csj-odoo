@@ -110,8 +110,20 @@
                       </div>
                       <form t-if="searchbar_inputs" class="form-inline o_portal_search_panel_csj ml-lg-4" action="/werwerwerwe">
                           <div class="input-group input-group-sm w-50" style="padding-right:5px;">
-                            <input type="text" class="form-control form-control-sm" placeholder="Desde" t-att-value='date_begin' name="date_begin" id="date_begin"/>
-                            <input type="text" class="form-control form-control-sm" placeholder="Hasta" t-att-value='date_end' name="date_end" id="date_end"/>
+                            <!--<input type="text" class="form-control form-control-sm" placeholder="Desde" t-att-value='date_begin' name="date_begin" id="date_begin"/>-->
+                            <div class='input-group date' id='datetimepicker_begin'>
+                                <input type='text' class="form-control" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                            <!--<input type="text" class="form-control form-control-sm" placeholder="Hasta" t-att-value='date_end' name="date_end" id="date_end"/>-->
+                            <div class='input-group date' id='datetimepicker_end'>
+                                <input type='text' class="form-control" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
                           </div>
                           <div class="input-group input-group-sm w-45" style="padding-right:5px;">
                               <div class="input-group-prepend">
