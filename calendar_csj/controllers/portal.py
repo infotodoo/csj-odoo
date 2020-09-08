@@ -79,7 +79,7 @@ class CustomerPortal(CustomerPortal):
             'realized': {'label': _('Realizada'), 'domain': [('state','=','realized')]},
             'open': {'label': _('Agendado'), 'domain': [('state','=','open')]},
             'unrealized': {'label': _('No realizada'), 'domain': [('state','=','unrealized')]},
-            'postpone': {'label': _('Confirmado'), 'domain': [('state','=','postpone')]},
+            'postpone': {'label': _('Aplazado'), 'domain': [('state','=','postpone')]},
             'assist_postpone': {'label': _('Asistida y aplazada'), 'domain': [('state','=','assist_postpone')]},
             'assist_cancel': {'label': _('Asistida y Cancelada'), 'domain': [('state','=','assist_cancel')]},
             'draft': {'label': _('Duplicado'), 'domain': [('state','=','draft')]},
