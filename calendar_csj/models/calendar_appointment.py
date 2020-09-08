@@ -109,7 +109,7 @@ class CalendarAppointment(models.Model):
     appointment_close_user_id = fields.Many2one('res.users', 'Close user')  # Date
     appointment_close_user_login = fields.Char('Closing User Login', related='appointment_close_user_id.login', store=False)  # Date
     calendar_type = fields.Selection([('unique', 'Unique'), ('multi', 'Multi')], 'Calendar type', default='unique')  # Agenda
-    calendar_datetime = fields.Datetime('Calendar datetime', tracking=True)  # Fechatag_number
+    calendar_datetime = fields.Datetime('Calendar datetime', tracking=True, required=True)  # Fechatag_number
     calendar_date = fields.Date('Calendar date', compute='_compute_calendar_datetime')
     calendar_time = fields.Float('Calendar time', compute='_compute_calendar_datetime')
     calendar_duration = fields.Float('Calendar duration', default=1.00)
