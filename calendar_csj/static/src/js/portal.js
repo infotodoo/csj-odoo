@@ -44,7 +44,8 @@ $(function () {
     inline: true,
     format : 'YYYY-MM-DD HH:mm',
     formatTime:'H:i',
-    sideBySide: false
+    sideBySide: false,
+    setHour: '00:00:01'
   });
 
   $(".o_portal_search_panel_csj input[name='date_end']").datetimepicker({

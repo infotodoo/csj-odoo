@@ -393,7 +393,7 @@ class CustomerPortal(CustomerPortal):
                 sheet.write('AJ'+str(row), appointment.create_uid.login, cell_format)
                 sheet.write('AK'+str(row), appointment.name, cell_format)
                 sheet.write('AL'+str(row), appointment.lifesize_url, cell_format)
-                sheet.write('AM'+str(row), str(appointment.calendar_datetime), cell_format)
+                sheet.write('AM'+str(row), str(appointment.calendar_datetime - relativedelta(hours=5)), cell_format)
 
                 row+=1
 
@@ -438,7 +438,7 @@ class CustomerPortal(CustomerPortal):
             appointment_sudo = request.env['calendar.appointment'].sudo().browse(appointment_id)
         except (AccessError, MissingError):
             return request.redirect('/my')
-        
+
         values = self._appointment_get_page_view_values(appointment_sudo, access_token, **kw)
         return request.render("calendar_csj.portal_my_appointment", values)
 
