@@ -90,7 +90,7 @@
                                   </div>
                               </div>
                           </div>
-                          <div t-if="searchbar_groupby" class="form-inline ml-lg-2">
+                         <!-- <div t-if="searchbar_groupby" class="form-inline ml-lg-2">
                               <span class="small mr-1 navbar-text">Group By:</span>
                               <div class="btn-group">
                                   <button id="portal_searchbar_groupby" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
@@ -105,7 +105,7 @@
                                       </t>
                                   </div>
                               </div>
-                          </div>
+                          </div>-->
                           <t t-raw="0"/>
                       </div>
                       <form t-if="searchbar_inputs" class="form-inline o_portal_search_panel_csj ml-lg-4" action="/werwerwerwe">
