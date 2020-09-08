@@ -139,7 +139,7 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
       $("#state_assist_postpone_btn").removeClass('active');
       $("#state_assist_cancel_btn").removeClass('active');
       $("#state_cancel_btn").removeClass('active');
-      $("#state_draft_btn_btn").removeClass('disabled');
+      $("#state_draft_btn").removeClass('disabled');
       $("#state_open_btn").removeClass('disabled');
       $("#state_realized_btn").removeClass('disabled');
       $("#state_unrealized_btn").removeClass('disabled');
