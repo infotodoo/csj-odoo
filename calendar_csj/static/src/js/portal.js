@@ -1,4 +1,5 @@
 $(function () {
+  $("#container_datetime_filter").hide();
     $(".appointment_portal_edit_form input[name='calendar_datetime']").datetimepicker({
       inline: true,
       format : 'YYYY-MM-DD HH:mm',
@@ -42,16 +43,21 @@ $(function () {
   $(".o_portal_search_panel_csj input[name='date_begin']").datetimepicker({
     inline: true,
     format : 'YYYY-MM-DD HH:mm',
+    formatTime:'H:i',
     sideBySide: false
   });
 
   $(".o_portal_search_panel_csj input[name='date_end']").datetimepicker({
     inline: true,
     format : 'YYYY-MM-DD HH:mm',
+    formatTime:'H:i',
     sideBySide: false
   });
 
-  //$("#container_datetime_filter").hide();
+  $(".o_portal_search_panel_csj input[name='date_begin']").val('')
+  $(".o_portal_search_panel_csj input[name='date_end']").val('')
+
+
   $("#datetime_filter_icon").on('click', function(e){
     $("#container_datetime_filter").toggle();
   });
