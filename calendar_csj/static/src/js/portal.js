@@ -265,7 +265,7 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
     });
 	
     $("#state_draft_btn").on('click', function(e){
-      Dialog.confirm(this, 'El agendamiento será marcado como Duplicado', {
+      Dialog.confirm(this, 'El agendamiento será marcado erecomo Duplicado', {
           confirm_callback: function() {
             var url = '/my/appointment/' + appointment_id + '/update/state/draft';
             window.location.href = url;
