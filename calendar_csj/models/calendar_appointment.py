@@ -87,7 +87,7 @@ class CalendarAppointment(models.Model):
 
     # Realizada, Duplicada, No realizada, Asistida aplazada, Asistida cancelada, Cancelada
 
-    #state_label = fields.Char(string='Estado en español', compute='_get_state_label', store=False)
+    state_label = fields.Char(string='Estado en español', compute='_get_state_label', store=False)
 
     name = fields.Char('Name', default=_('New'))
     active = fields.Boolean('Active', default=True)
@@ -259,7 +259,7 @@ class CalendarAppointment(models.Model):
         for record in self:
             # record.write({'state': 'postpone'})
             record.calendar_date = (record.calendar_datetime - datetime.timedelta(hours=5)).date() if \
-                record.calendar_datetime else False
+                record.calendar_datetime - datetime.timedelta(hours=5) else False
             tz_offset = self.env.user.tz_offset if self.env.user.tz_offset else False
             tz = int(tz_offset)/100 if tz_offset else 0
             record.calendar_time = (record.calendar_datetime).hour + tz + \
@@ -585,7 +585,7 @@ class CalendarAppointment(models.Model):
             return False
         return True
 
-    """
+    
     @api.depends('state')
     def _get_state_label(self):
         for record in self:
@@ -605,7 +605,7 @@ class CalendarAppointment(models.Model):
                 self.state_label='CANCELADO'
             if record.state == 'draft':
                 self.state_label='DUPLICADO'
-    """
+    
 
     @api.depends('link_download')
     def _get_link_download(self):

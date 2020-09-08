@@ -76,14 +76,20 @@ class CustomerPortal(CustomerPortal):
             'all': {'label': _('Todos'), 'domain': []},
             'today': {'label': _('Hoy'), 'domain': [('calendar_datetime','<',datetime(2020,8,12,23,59,59)),('calendar_datetime','>',datetime(2020,8,12,0,0,1))]},
             'month': {'label': _('Último Mes'), 'domain': [('calendar_datetime','>',datetime(2020,8,1,0,0,1)),('calendar_datetime','<',datetime(2020,8,31,23,59,59))]},
-            'cancel': {'label': _('Cancelados'), 'domain': [('state','=','cancel')]},
-            'realized': {'label': _('Realizados'), 'domain': [('state','=','realized')]},
-            'open': {'label': _('Confirmado'), 'domain': [('state','=','open')]},
+            'realized': {'label': _('Realizada'), 'domain': [('state','=','realized')]},
+            'open': {'label': _('Agendado'), 'domain': [('state','=','open')]},
+            'unrealized': {'label': _('No realizada'), 'domain': [('state','=','unrealized')]},
+            'postpone': {'label': _('Aplazado'), 'domain': [('state','=','postpone')]},
+            'assist_postpone': {'label': _('Asistida y aplazada'), 'domain': [('state','=','assist_postpone')]},
+            'assist_cancel': {'label': _('Asistida y Cancelada'), 'domain': [('state','=','assist_cancel')]},
+            'draft': {'label': _('Duplicado'), 'domain': [('state','=','draft')]},
+            'cancel': {'label': _('Cancelado'), 'domain': [('state','=','cancel')]},
         }
 
         searchbar_inputs = {
             'appointment_code': {'input': 'appointment_code', 'label': _('Buscar <span class="nolabel"> (en Id Agendamiento)</span>')},
             'process_number': {'input': 'process_number', 'label': _('Buscar por Número de Proceso')},
+            'city_id': {'input': 'city_id', 'label': _('Ciudad')},
             'create_uid': {'input': 'create_uid', 'label': _('Creado por')},
             'judged_only_name': {'input': 'judged_only_name', 'label': _('Despacho solicitante')},
             'applicant_id': {'input': 'applicant_id', 'label': _('Buscar por Nombre Solicitante')},
@@ -157,6 +163,8 @@ class CustomerPortal(CustomerPortal):
                 search_domain = OR([search_domain, [('appointment_code', 'ilike', search)]])
             if search_in in ('create_uid', 'all'):
                 search_domain = OR([search_domain, [('create_uid', 'ilike', search)]])
+            if search_in in ('city_id', 'all'):
+                search_domain = OR([search_domain, [('city_id', 'ilike', search)]])
             if search_in in ('judged_only_name', 'all'):
                 search_domain = OR([search_domain, [('judged_only_name', 'ilike', search)]])
             if search_in in ('process_number', 'all'):
@@ -385,7 +393,7 @@ class CustomerPortal(CustomerPortal):
                 sheet.write('AJ'+str(row), appointment.create_uid.login, cell_format)
                 sheet.write('AK'+str(row), appointment.name, cell_format)
                 sheet.write('AL'+str(row), appointment.lifesize_url, cell_format)
-                sheet.write('AM'+str(row), str(appointment.calendar_datetime), cell_format)
+                sheet.write('AM'+str(row), str(appointment.calendar_datetime - relativedelta(hours=5)), cell_format)
 
                 row+=1
 
@@ -425,7 +433,9 @@ class CustomerPortal(CustomerPortal):
     ], type='http', auth="user", website=True)
     def portal_my_appointment(self, appointment_id=None, access_token=None, **kw):
         try:
-            appointment_sudo = self._document_check_access('calendar.appointment', appointment_id, access_token)
+            #appointment_sudo = self._document_check_access('calendar.appointment', appointment_id, access_token)
+            # Don't work with _document_check_access for compute tag_number field
+            appointment_sudo = request.env['calendar.appointment'].sudo().browse(appointment_id)
         except (AccessError, MissingError):
             return request.redirect('/my')
 
