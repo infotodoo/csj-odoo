@@ -310,7 +310,7 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
     });
 	
     $(".portal_appointment_confirm_update").on('click', function(e){
-      var url = '/my/appointment/' + appointment_id + '/update/judged';
+      var url = '/my/appointment/' + appointment_id;
       window.location.href = url;
     });
 	
