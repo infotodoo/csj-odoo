@@ -755,7 +755,7 @@
                                     </div>
                                   </div>
 
-                                  <div class="form-group row col-xl-12 col-md-12">
+                                 <!-- <div class="form-group row col-xl-12 col-md-12">
                                     <label for="request_type" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Tipo de Audiencia</label>
                                     <div class="col-md-12 row">
                                         <input type="hidden" class="form-control" name="hidden_request_type" required="1" t-att-value="appointment.request_type"/>
@@ -764,7 +764,7 @@
                                             <option t-att-value="l">Libre</option>
                                         </select>
                                     </div>
-                                  </div>
+                                  </div>-->
 
                                   <div class="form-group row col-xl-12 col-md-12">
                                     <label for="process_number" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Número de Proceso</label>
