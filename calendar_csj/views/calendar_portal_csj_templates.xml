@@ -352,6 +352,11 @@
                                 Cambiar Juzgado
                               </button>
                             </div>
+                            <div class="btn-group" role="group" aria-label="Appointment Confirm Button Update">
+                              <button type="button" class="btn btn-secondary portal_appointment_judged_change" attrs="{'invisible':[('state','=','cancel')]}">
+                                Actualizar
+                              </button>
+                            </div>
                           </div>
                           <div class="col-md text-md-right">
                               <div class="appointment_statebar">
