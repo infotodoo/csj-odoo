@@ -315,8 +315,7 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
     });
 	
     $(".portal_appointment_confirm_update").on('click', function(e){
-      var appointment_id = $(".appointment_portal_edit_form input[name='appointment_id']").val();
-      url = '/my/appointment/' + appointment_id+ '/update/state/open';
+      var url = '/my/appointment/' + appointment_id;
       window.location.href = url;
     });
 	
