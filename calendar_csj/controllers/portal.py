@@ -496,7 +496,7 @@ class CustomerPortal(CustomerPortal):
     @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/state/draft'], type='http', auth="user", website=True)
     def portal_my_appointment_assist_draft(self, appointment_id=None, access_token=None, **kw):
         appointment_id.write({
-            'state' : 'draft',
+            'state' : 'open',
             'appointment_close_date': datetime.now(),
             'appointment_close_user_id': request.env.user.id,
         });
