@@ -61,7 +61,7 @@
                       <div style="width:100%;" class="col-12 row">
                         <div class="col-4">
                         <table style="width:100%;"><tr>
-                          <td style="width:20%;">
+                  <!--        <td style="width:20%;">
                             <div t-if="searchbar_sortings" class="form-inline">
                                 <span class="small mr-1 navbar-text">Ordenar por:</span>
                                 <div class="btn-group">
@@ -78,7 +78,7 @@
                                     </div>
                                 </div>
                             </div>
-                          </td>
+                          </td>-->
                             <td style="width:20%;">
                                 <div t-if="searchbar_filters" class="form-inline ml-lg-2">
                                     <span class="small mr-1 navbar-text">Filtrar por:</span>
