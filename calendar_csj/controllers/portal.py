@@ -512,9 +512,7 @@ class CustomerPortal(CustomerPortal):
         return request.redirect('/my/appointment/' + str(appointment_id.id))
 
 
-    @http.route([
-        '/my/appointment/<int:appointment_id>/update/all'
-    ], type='http', auth="user", website=True)
+    @http.route(['/my/appointment/<int:appointment_id>/update/all'], type='http', auth="user", website=True)
     def portal_my_appointment_edit(self, appointment_id=None, access_token=None, **kw):
         try:
             appointment_sudo = self._document_check_access('calendar.appointment', appointment_id, access_token)
