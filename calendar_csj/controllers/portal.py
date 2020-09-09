@@ -493,7 +493,7 @@ class CustomerPortal(CustomerPortal):
         });
         return request.redirect('/my/appointment/' + str(appointment_id.id))
     
-    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/state/open'], type='http', auth="user", website=True)
+    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>'], type='http', auth="user", website=True)
     def portal_my_appointment_assist_open(self, appointment_id=None, access_token=None, **kw):
         appointment_id.write({
             'state' : 'open',
