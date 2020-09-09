@@ -335,63 +335,65 @@
                               <span t-field="appointment.state" class=" badge badge-pill badge-info" title="Estado actual del agendamiento"/>
                           </div>
                       </div>
-                      <div class="row no-gutters" style="padding-top:20px;">
-                          <div class="col-md">
-                            <div class="btn-group" role="group" aria-label="Appointment Edit Button">
-                              <button type="button" class="btn btn-secondary portal_appointment_edit" attrs="{'invisible':[('appointment.state','=','cancel')]}">
-                                Editar
-                              </button>
-                            </div>
-                            <div class="btn-group" role="group" aria-label="Appointment Reschedule Button">
-                              <button type="button" class="btn btn-secondary portal_appointment_reschedule" attrs="{'invisible':[('appointment.state','=','cancel')]}">
-                                Reagendar
-                              </button>
-                            </div>
-                            <div class="btn-group" role="group" aria-label="Appointment Confirm Button">
-                              <button type="button" class="btn btn-secondary portal_appointment_judged_change" attrs="{'invisible':[('appointment.state','=','cancel')]}">
-                                Cambiar Juzgado
-                              </button>
-                            </div>
-                            <div class="btn-group" role="group" aria-label="Appointment Confirm Button Update">
-                              <button type="button" class="btn btn-secondary portal_appointment_confirm_update" attrs="{'invisible':[('appointment.state','=','cancel')]}">
-                                Actualizar
-                              </button>
-                            </div>
-                          </div>
-                          <div class="col-md text-md-right">
-                              <div class="appointment_statebar">
-                                <span t-raw="appointment.state" id="appointment_state" invisible="1"/>
-                                <!--<span t-raw="appointment.id" id="appointment_id" invisible="1"/>-->
-                                <input type="hidden" id="appointment_id" t-att-value="appointment.id"/>
-                                <ul class="nav nav-pills">
-                                  <li class="nav-item">
-                                    <a class="nav-link" href="#" id="state_open_btn">Agendado</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" href="#" id="state_realized_btn">Realizada</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" href="#" id="state_unrealized_btn">No Realizada</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" href="#" id="state_postpone_btn">Aplazada</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" href="#" id="state_assist_postpone_btn">Asistida y Aplazada</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" href="#" id="state_assist_cancel_btn">Asistida y Cancelada</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" href="#" id="state_cancel_btn">Cancelado</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" href="#" id="state_draft_btn">Duplicado</a>
-                                  </li>
-                                </ul>
+                      <t t-foreach="appointments" t-as="appointment">
+                        <div class="row no-gutters" style="padding-top:20px;">
+                            <div class="col-md">
+                              <div class="btn-group" role="group" aria-label="Appointment Edit Button">
+                                <button type="button" class="btn btn-secondary portal_appointment_edit" attrs="{'invisible':[('appointment.state','=','cancel')]}">
+                                  Editar
+                                </button>
                               </div>
-                          </div>
-                      </div>
+                              <div class="btn-group" role="group" aria-label="Appointment Reschedule Button">
+                                <button type="button" class="btn btn-secondary portal_appointment_reschedule" attrs="{'invisible':[('appointment.state','=','cancel')]}">
+                                  Reagendar
+                                </button>
+                              </div>
+                              <div class="btn-group" role="group" aria-label="Appointment Confirm Button">
+                                <button type="button" class="btn btn-secondary portal_appointment_judged_change" attrs="{'invisible':[('appointment.state','=','cancel')]}">
+                                  Cambiar Juzgado
+                                </button>
+                              </div>
+                              <div class="btn-group" role="group" aria-label="Appointment Confirm Button Update">
+                                <button type="button" class="btn btn-secondary portal_appointment_confirm_update" attrs="{'invisible':[('appointment.state','=','cancel')]}">
+                                  Actualizar
+                                </button>
+                              </div>
+                            </div>
+                            <div class="col-md text-md-right">
+                                <div class="appointment_statebar">
+                                  <span t-raw="appointment.state" id="appointment_state" invisible="1"/>
+                                  <!--<span t-raw="appointment.id" id="appointment_id" invisible="1"/>-->
+                                  <input type="hidden" id="appointment_id" t-att-value="appointment.id"/>
+                                  <ul class="nav nav-pills">
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_open_btn">Agendado</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_realized_btn">Realizada</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_unrealized_btn">No Realizada</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_postpone_btn">Aplazada</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_assist_postpone_btn">Asistida y Aplazada</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_assist_cancel_btn">Asistida y Cancelada</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_cancel_btn">Cancelado</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_draft_btn">Duplicado</a>
+                                    </li>
+                                  </ul>
+                                </div>
+                            </div>
+                        </div>
+                        </t>
                   </t>
 
                   <t t-set="card_body">
