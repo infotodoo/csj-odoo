@@ -309,6 +309,17 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
       window.location.href = url;
     });
 
+    $("#portal_appointment_confirm_update").on('click', function(e){
+	Dialog.confirm(this, 'El agendamiento será marcado erecomo Duplicado', {
+	  confirm_callback: function() {
+	    var url = '/my/appointment/' + appointment_id + '/update/state/draft';
+	    window.location.href = url;
+	  },
+	  title: _t('Confirmación para posponer el Agendamiento'),
+	});
+    });
+	
+
     $(".portal_appointment_save").on('click', function(e){
       var calendar_datetime = $(".appointment_portal_edit_form input[name='calendar_datetime']").val();
       if (calendar_datetime === '' || calendar_datetime === null || calendar_datetime === 'undefined'){
