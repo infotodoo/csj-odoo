@@ -274,6 +274,11 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
       });
     });
 
+    $(".portal_appointment_edit").on('click', function(e){
+      var url = '/my/appointment/' + appointment_id + '/update/all';
+      window.location.href = url;
+    });
+
     $(".portal_appointment_edit_cancel").on('click', function(e){
       var appointment_id = $(".appointment_portal_edit_form input[name='appointment_id']").val();
       url = '/my/appointment/' + appointment_id;
@@ -304,15 +309,15 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
       window.location.href = url;
     });
 	
+    $(".portal_appointment_edit").on('click', function(e){
+      var url = '/my/appointment/' + appointment_id + '/update/all';
+      window.location.href = url;
+    });
+
 
     $(".portal_appointment_confirm_update").on('click', function(e){
-      Dialog.confirm(this, 'El agendamiento será marcado como Pospuesto y se actualizará la fecha y usuario de cierre', {
-          confirm_callback: function() {
-            var url = '/my/appointment/' + appointment_id + '/update/state/open';
-            window.location.href = url;
-          },
-          title: _t('Confirmación para posponer el Agendamiento'),
-      });
+      var url = '/my/appointment/' + appointment_id + '/update/all';
+      window.location.href = url;
     });
 	
     $(".portal_appointment_save").on('click', function(e){
