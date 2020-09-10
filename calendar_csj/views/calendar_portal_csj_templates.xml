@@ -338,7 +338,7 @@
                         <div class="row no-gutters" style="padding-top:20px;">
                             <div class="col-md">
                               <div class="btn-group" role="group" aria-label="Appointment Edit Button">
-                                <button type="button" class="btn btn-secondary portal_appointment_edit" attrs="{'invisible':[('appointment.state','=','cancel')]}">
+                                <button type="button" class="btn btn-secondary portal_appointment_edit" invisible="1">
                                   Editar
                                 </button>
                               </div>
