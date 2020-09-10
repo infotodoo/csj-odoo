@@ -23,10 +23,10 @@ $(function () {
     $( ".appointment_portal_edit_form input[name='end_hour']").timepicker({
       timeFormat: 'H:mm',
       interval: 60,
-      minTime: '6',
+      minTime: '0',
       maxTime: '8:00pm',
       defaultTime: '11:00',
-      startTime: new Date(0,0),
+      startTime: '0',
       dynamic: false,
       dropdown: true,
       scrollbar: true
