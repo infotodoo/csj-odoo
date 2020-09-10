@@ -54,7 +54,7 @@ $(function () {
     inline: true,
     format : 'YYYY-MM-DD HH:mm',
     formatTime:'H:i',
-    defaultDate:moment(dateNow).hours(0).minutes(0),
+    defaultDate:moment(dateNow).hours(23).minutes(59),
     sideBySide: false
   });
 
