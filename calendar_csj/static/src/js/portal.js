@@ -25,7 +25,7 @@ $(function () {
       interval: 60,
       minTime: '0',
       maxTime: '8:00pm',
-      defaultTime: '11:00',
+      defaultTime: '0',
       startTime: '0',
       dynamic: false,
       dropdown: true,
