@@ -44,6 +44,7 @@ $(function () {
     inline: true,
     format : 'YYYY-MM-DD HH:mm',
     formatTime:'H:i',
+    defaultTime: '00:00',
     sideBySide: false,
   });
 
