@@ -39,20 +39,22 @@ $(function () {
   $( "#date_end").datepicker({
     dateFormat : 'yy-mm-dd',
   });
+  
+  var dateNow = new Date();
 
   $(".o_portal_search_panel_csj input[name='date_begin']").datetimepicker({
     inline: true,
     format : 'YYYY-MM-DD HH:mm',
     formatTime:'H:i',
-    defaultTime: '0',
+    defaultDate:moment(dateNow).hours(0).minutes(0),
     sideBySide: false,
   });
-
+ 
   $(".o_portal_search_panel_csj input[name='date_end']").datetimepicker({
     inline: true,
     format : 'YYYY-MM-DD HH:mm',
     formatTime:'H:i',
-    defaultTime: '0',
+    defaultDate:moment(dateNow).hours(0).minutes(0),
     sideBySide: false
   });
 
