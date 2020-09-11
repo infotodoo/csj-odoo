@@ -260,11 +260,20 @@ class CalendarAppointment(models.Model):
             # record.write({'state': 'postpone'})
             record.calendar_date = (record.calendar_datetime - datetime.timedelta(hours=5)).date() if \
                 record.calendar_datetime else False
+
+            calendar_datetime_timez = record.calendar_datetime - datetime.timedelta(hours=5)
+
             tz_offset = self.env.user.tz_offset if self.env.user.tz_offset else False
             tz = int(tz_offset)/100 if tz_offset else 0
-            record.calendar_time = (record.calendar_datetime).hour + tz + \
+            if (record.calendar_datetime).hour <5:
+                record.calendar_time = (calendar_datetime_timez).hour + \
                 record.calendar_datetime.minute/60.0 if \
-                    record.calendar_datetime else False
+                record.calendar_datetime else False
+            else:
+                record.calendar_time = (record.calendar_datetime).hour + tz + \
+                record.calendar_datetime.minute/60.0 if \
+                record.calendar_datetime else False 
+
 
     @api.depends('applicant_id')
     def _compute_applicant_id(self):
