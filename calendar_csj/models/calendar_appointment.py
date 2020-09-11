@@ -104,7 +104,7 @@ class CalendarAppointment(models.Model):
     partaker_type = fields.Many2one('calendar.help', 'Portaker Type', ondelete='set null')  # Ayuda
     connection_type = fields.Many2one('calendar.help', 'Connection Type', ondelete='set null')  # Ayuda
     request_date = fields.Date('Request date')  # Date
-    appointment_date = fields.Date('Appointment date', default= fields.datetime.now(pytz.timezone("America/Bogota")) )  # Date
+    appointment_date = fields.Date('Appointment date', default=fields.Date.today(), compute='_get_date_today')  # Date
     appointment_close_date = fields.Date('Close date')
     appointment_close_user_id = fields.Many2one('res.users', 'Close user')  # Date
     appointment_close_user_login = fields.Char('Closing User Login', related='appointment_close_user_id.login', store=False)  # Date
@@ -275,10 +275,10 @@ class CalendarAppointment(models.Model):
                 record.calendar_datetime.minute/60.0 if \
                 record.calendar_datetime else False 
 
-    # @api.depends('appointment_date')
-    # def _get_date_today(self):
-    #     for record in self:
-    #         record.appointment_date = (record.appointment_date - datetime.timedelta(hours=5)).date() 
+    @api.depends('appointment_date')
+    def _get_date_today(self):
+        for record in self:
+            record.appointment_date = (record.appointment_date - datetime.timedelta(hours=5)).date() 
 
     @api.depends('applicant_id')
     def _compute_applicant_id(self):
