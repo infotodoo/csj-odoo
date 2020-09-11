@@ -67,7 +67,7 @@
                     <field name="appointment_close_date" string="FECHA DE CIERRE"/>
                     <field name="appointment_close_user_login" string="USUARIO DE CIERRE"/>
                     <field name="end_date" string="FECHA FINAL"/>
-                    <field name="end_hour" string="HORA FINAL" widget="float_time"/>
+                    <field name="end_hour" string="HORA FINAL" attrs="{'invisible': [('state', '!=', 'realized')]}" widget="float_time"/>
                     <field name="state_description" string="DESCRIPCION"/>
                     <field name="tag_number" string="ETIQUETA"/>
                     <field name="link_download" string="URL AGENDAMIENTO"/>
