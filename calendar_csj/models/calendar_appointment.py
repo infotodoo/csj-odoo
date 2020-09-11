@@ -153,7 +153,7 @@ class CalendarAppointment(models.Model):
     link_download = fields.Char('Descarga de grabacion')
     link_download_text = fields.Char('Descarga de grabacion tipo text', compute='_get_link_download')
     end_date = fields.Date('Fecha finalizacion')
-    end_hour = fields.Float('Hora de finalizacion' compute='_get_change_hour')
+    end_hour = fields.Float('Hora de finalizacion', compute='_get_change_hour')
 
     event_id = fields.Many2one('calendar.event', 'Event', ondelete='set null')
     appointment_type_id = fields.Many2one('calendar.appointment.type', 'Online Appointment', default=_default_type_id)
@@ -182,10 +182,10 @@ class CalendarAppointment(models.Model):
 
 
     @api.depends('end_hour')
-        def _get_partner_ids_label(self):
-            for record in self:
-                if record.end_hour == 0:
-                    record.end_hour = False
+    def _get_change_hour(self):
+        for record in self:
+            if record.end_hour == 0:
+                record.end_hour = False
 
 
     @api.depends('partner_id')
