@@ -278,8 +278,8 @@ class CalendarAppointment(models.Model):
     @api.depends('appointment_date')
     def _get_date_today(self):
         for record in self:
-            # record.write({'state': 'postpone'})
             record.appointment_date = (datetime.datetime.today() - datetime.timedelta(hours=5)).date() if \
+            record.appointment_date else False
 
     @api.depends('applicant_id')
     def _compute_applicant_id(self):
