@@ -104,7 +104,7 @@ class CalendarAppointment(models.Model):
     partaker_type = fields.Many2one('calendar.help', 'Portaker Type', ondelete='set null')  # Ayuda
     connection_type = fields.Many2one('calendar.help', 'Connection Type', ondelete='set null')  # Ayuda
     request_date = fields.Date('Request date')  # Date
-    appointment_date = fields.Date('Appointment date', default=datetime.datetime.today()-datetime.timedelta(hours=5))  # Date
+    appointment_date = fields.Date('Appointment date', default=(fields.datetime.now()-datetime.timedelta(hours=5)))  # Date
     appointment_close_date = fields.Date('Close date')
     appointment_close_user_id = fields.Many2one('res.users', 'Close user')  # Date
     appointment_close_user_login = fields.Char('Closing User Login', related='appointment_close_user_id.login', store=False)  # Date
