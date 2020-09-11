@@ -279,7 +279,7 @@ class CalendarAppointment(models.Model):
     def _get_date_today(self):
         for record in self:
             if record.appointment_date:
-                record.appointment_date = (record.appointment_date - datetime.timedelta(hours=5)).date() 
+                record.appointment_date = (record.appointment_date - datetime.timedelta(hours=5)) 
 
 
     @api.depends('applicant_id')
