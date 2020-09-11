@@ -23,10 +23,10 @@ $(function () {
     $( ".appointment_portal_edit_form input[name='end_hour']").timepicker({
       timeFormat: 'H:mm',
       interval: 60,
-      minTime: '6',
+      minTime: '0',
       maxTime: '8:00pm',
-      defaultTime: '11',
-      startTime: '06:00',
+      defaultTime: '0',
+      startTime: '0',
       dynamic: false,
       dropdown: true,
       scrollbar: true
@@ -39,18 +39,22 @@ $(function () {
   $( "#date_end").datepicker({
     dateFormat : 'yy-mm-dd',
   });
+  
+  var dateNow = new Date();
 
   $(".o_portal_search_panel_csj input[name='date_begin']").datetimepicker({
     inline: true,
     format : 'YYYY-MM-DD HH:mm',
     formatTime:'H:i',
+    defaultDate:moment(dateNow).hours(0).minutes(0),
     sideBySide: false,
   });
-
+ 
   $(".o_portal_search_panel_csj input[name='date_end']").datetimepicker({
     inline: true,
     format : 'YYYY-MM-DD HH:mm',
     formatTime:'H:i',
+    defaultDate:moment(dateNow).hours(23).minutes(59),
     sideBySide: false
   });
 
@@ -139,7 +143,7 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
       $("#state_assist_postpone_btn").removeClass('active');
       $("#state_assist_cancel_btn").removeClass('active');
       $("#state_cancel_btn").removeClass('active');
-      $("#state_draft_btn_btn").removeClass('disabled');
+      $("#state_draft_btn").removeClass('disabled');
       $("#state_open_btn").removeClass('disabled');
       $("#state_realized_btn").removeClass('disabled');
       $("#state_unrealized_btn").removeClass('disabled');
@@ -263,7 +267,16 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
           title: _t('Confirmación para posponer el Agendamiento'),
       });
     });
-
+	
+    $("#state_draft_btn").on('click', function(e){
+      Dialog.confirm(this, 'El agendamiento será marcado erecomo Duplicado', {
+          confirm_callback: function() {
+            var url = '/my/appointment/' + appointment_id + '/update/state/draft';
+            window.location.href = url;
+          },
+          title: _t('Confirmación para posponer el Agendamiento'),
+      });
+    });
 
     $(".portal_appointment_edit").on('click', function(e){
       var url = '/my/appointment/' + appointment_id + '/update/all';
@@ -299,7 +312,12 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
       var url = '/my/appointment/' + appointment_id;
       window.location.href = url;
     });
-
+	
+    $(".portal_appointment_confirm_update").on('click', function(e){
+      var url = '/my/appointment/' + appointment_id + '/update/state/open';
+      window.location.href = url;
+    });
+	
     $(".portal_appointment_save").on('click', function(e){
       var calendar_datetime = $(".appointment_portal_edit_form input[name='calendar_datetime']").val();
       if (calendar_datetime === '' || calendar_datetime === null || calendar_datetime === 'undefined'){

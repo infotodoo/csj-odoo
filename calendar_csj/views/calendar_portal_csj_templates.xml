@@ -61,7 +61,7 @@
                       <div style="width:100%;" class="col-12 row">
                         <div class="col-4">
                         <table style="width:100%;"><tr>
-                          <td style="width:20%;">
+                  <!--        <td style="width:20%;">
                             <div t-if="searchbar_sortings" class="form-inline">
                                 <span class="small mr-1 navbar-text">Ordenar por:</span>
                                 <div class="btn-group">
@@ -78,7 +78,7 @@
                                     </div>
                                 </div>
                             </div>
-                          </td>
+                          </td>-->
                             <td style="width:20%;">
                                 <div t-if="searchbar_filters" class="form-inline ml-lg-2">
                                     <span class="small mr-1 navbar-text">Filtrar por:</span>
@@ -335,58 +335,63 @@
                               <span t-field="appointment.state" class=" badge badge-pill badge-info" title="Estado actual del agendamiento"/>
                           </div>
                       </div>
-                      <div class="row no-gutters" style="padding-top:20px;">
-                          <div class="col-md">
-                            <div class="btn-group" role="group" aria-label="Appointment Edit Button">
-                              <button type="button" class="btn btn-secondary portal_appointment_edit" attrs="{'invisible':[('state','=','cancel')]}">
-                                Editar
-                              </button>
-                            </div>
-                            <div class="btn-group" role="group" aria-label="Appointment Reschedule Button">
-                              <button type="button" class="btn btn-secondary portal_appointment_reschedule" attrs="{'invisible':[('state','=','cancel')]}">
-                                Reagendar
-                              </button>
-                            </div>
-                            <div class="btn-group" role="group" aria-label="Appointment Confirm Button">
-                              <button type="button" class="btn btn-secondary portal_appointment_judged_change" attrs="{'invisible':[('state','=','cancel')]}">
-                                Cambiar Juzgado
-                              </button>
-                            </div>
-                          </div>
-                          <div class="col-md text-md-right">
-                              <div class="appointment_statebar">
-                                <span t-raw="appointment.state" id="appointment_state" invisible="1"/>
-                                <!--<span t-raw="appointment.id" id="appointment_id" invisible="1"/>-->
-                                <input type="hidden" id="appointment_id" t-att-value="appointment.id"/>
-                                <ul class="nav nav-pills">
-                                  <li class="nav-item">
-                                    <a class="nav-link" href="#" id="state_open_btn">Agendado</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" href="#" id="state_realized_btn">Realizada</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" href="#" id="state_unrealized_btn">No Realizada</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" href="#" id="state_postpone_btn">Aplazada</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" href="#" id="state_assist_postpone_btn">Asistida y Aplazada</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" href="#" id="state_assist_cancel_btn">Asistida y Cancelada</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" href="#" id="state_cancel_btn">Cancelado</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" href="#" id="state_draft_btn">Duplicado</a>
-                                  </li>
-                                </ul>
+                        <div class="row no-gutters" style="padding-top:20px;">
+                            <div class="col-md">
+                              <div class="btn-group" role="group" aria-label="Appointment Edit Button" t-if="appointment.state != 'cancel'">
+                                <button type="button" class="btn btn-secondary portal_appointment_edit" >
+                                  Editar
+                                </button>
                               </div>
-                          </div>
-                      </div>
+                              <div class="btn-group" role="group" aria-label="Appointment Reschedule Button" t-if="appointment.state != 'cancel'">
+                                <button type="button" class="btn btn-secondary portal_appointment_reschedule" attrs="{'invisible':[('appointments.state','=','cancel')]}">
+                                  Reagendar
+                                </button>
+                              </div>
+                              <div class="btn-group" role="group" aria-label="Appointment Confirm Button" t-if="appointment.state != 'cancel'">
+                                <button type="button" class="btn btn-secondary portal_appointment_judged_change" attrs="{'invisible':[('grouped_appointments.state','=','cancel')]}">
+                                  Cambiar Juzgado
+                                </button>
+                              </div>
+                              <div class="btn-group" role="group" aria-label="Appointment Confirm Button Update" t-if="appointment.state != 'cancel'">
+                                <button type="button" class="btn btn-secondary portal_appointment_confirm_update" attrs="{'invisible':[('state','=','cancel')]}">
+                                  Actualizar
+                                </button>
+                              </div>
+                            </div>
+                            <div class="col-md text-md-right">
+                                <div class="appointment_statebar">
+                                  <span t-raw="appointment.state" id="appointment_state" invisible="1"/>
+                                  <!--<span t-raw="appointment.id" id="appointment_id" invisible="1"/>-->
+                                  <input type="hidden" id="appointment_id" t-att-value="appointment.id"/>
+                                  <ul class="nav nav-pills">
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_open_btn">Agendado</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_realized_btn">Realizada</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_unrealized_btn">No Realizada</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_postpone_btn">Aplazada</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_assist_postpone_btn">Asistida y Aplazada</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_assist_cancel_btn">Asistida y Cancelada</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_cancel_btn">Cancelado</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_draft_btn">Duplicado</a>
+                                    </li>
+                                  </ul>
+                                </div>
+                            </div>
+                        </div>
                   </t>
 
                   <t t-set="card_body">
@@ -462,8 +467,9 @@
                             <br/>
                             <strong>Fecha Final:</strong> <span t-field="appointment.end_date"/>
                             <br/>
-                             <strong>Hora Final:</strong> <span t-set="appointment.end_hour" t-value="1.5" /><span t-esc="'%s:%02d' % (str(appointment.end_hour).split('.')[0], int(float(str('%.2f' % appointment.end_hour).split('.')[1])/1))" />
-
+                                <div t-if="appointment.state != 'draft'">
+                                     <strong>Hora Final:</strong> <span t-set="appointment.end_hour" value="0" /><span t-esc="'%s:%02d' % (str(appointment.end_hour).split('.')[0], int(float(str('%.2f' % appointment.end_hour).split('.')[1])/1))" />
+                                </div>
                             <br/>
                             <strong>Url de grabación:</strong> <span t-field="appointment.link_download"/>
                             <!--<br/>
@@ -754,7 +760,7 @@
                                     </div>
                                   </div>
 
-                                  <div class="form-group row col-xl-12 col-md-12">
+                                 <!-- <div class="form-group row col-xl-12 col-md-12">
                                     <label for="request_type" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Tipo de Audiencia</label>
                                     <div class="col-md-12 row">
                                         <input type="hidden" class="form-control" name="hidden_request_type" required="1" t-att-value="appointment.request_type"/>
@@ -763,7 +769,7 @@
                                             <option t-att-value="l">Libre</option>
                                         </select>
                                     </div>
-                                  </div>
+                                  </div>-->
 
                                   <div class="form-group row col-xl-12 col-md-12">
                                     <label for="process_number" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Número de Proceso</label>
@@ -790,7 +796,7 @@
                                   <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
                                     <label for="end_hour" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Hora Final</label>
                                     <div class="col-md-12 row">
-                                        <input type="char" class="form-control" name="end_hour" required="1" t-att-value="appointment.end_hour"/>
+                                        <input type="char" class="form-control" value="0" selected="true" name="end_hour" required="1"/>
                                     </div>
                                   </div>
 

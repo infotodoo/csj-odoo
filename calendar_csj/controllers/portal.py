@@ -203,7 +203,7 @@ class CustomerPortal(CustomerPortal):
         # pager
         pager = portal_pager(
             url="/my/appointments",
-            url_args={'date_begin': date_begin, 'date_end': date_end, 'search': search, 'sortby': sortby},
+            url_args={'date_begin': date_begin, 'date_end': date_end, 'search': search, 'sortby': sortby, 'filterby': filterby, 'search_in': search_in},
             total=appointment_count,
             page=page,
             step=self._items_per_page
@@ -492,11 +492,27 @@ class CustomerPortal(CustomerPortal):
             'appointment_close_user_id': request.env.user.id,
         });
         return request.redirect('/my/appointment/' + str(appointment_id.id))
+    
+    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/state/open'], type='http', auth="user", website=True)
+    def portal_my_appointment_assist_open(self, appointment_id=None, access_token=None, **kw):
+        appointment_id.write({
+            'state' : 'open',
+            'appointment_close_date': datetime.now(),
+            'appointment_close_user_id': request.env.user.id,
+        });
+        return request.redirect('/my/appointment/' + str(appointment_id.id))
+    
+    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/state/draft'], type='http', auth="user", website=True)
+    def portal_my_appointment_assist_draft(self, appointment_id=None, access_token=None, **kw):
+        appointment_id.write({
+            'state' : 'draft',
+            'appointment_close_date': datetime.now(),
+            'appointment_close_user_id': request.env.user.id,
+        });
+        return request.redirect('/my/appointment/' + str(appointment_id.id))
 
 
-    @http.route([
-        '/my/appointment/<int:appointment_id>/update/all'
-    ], type='http', auth="user", website=True)
+    @http.route(['/my/appointment/<int:appointment_id>/update/all'], type='http', auth="user", website=True)
     def portal_my_appointment_edit(self, appointment_id=None, access_token=None, **kw):
         try:
             appointment_sudo = self._document_check_access('calendar.appointment', appointment_id, access_token)

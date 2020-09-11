@@ -104,7 +104,7 @@ class CalendarAppointment(models.Model):
     partaker_type = fields.Many2one('calendar.help', 'Portaker Type', ondelete='set null')  # Ayuda
     connection_type = fields.Many2one('calendar.help', 'Connection Type', ondelete='set null')  # Ayuda
     request_date = fields.Date('Request date')  # Date
-    appointment_date = fields.Date('Appointment date', default=fields.Date.today())  # Date
+    appointment_date = fields.Date('Appointment date', default=fields.datetime.now(pytz.timezone("America/Bogota")))  # Date
     appointment_close_date = fields.Date('Close date')
     appointment_close_user_id = fields.Many2one('res.users', 'Close user')  # Date
     appointment_close_user_login = fields.Char('Closing User Login', related='appointment_close_user_id.login', store=False)  # Date
@@ -180,6 +180,7 @@ class CalendarAppointment(models.Model):
             cont+=1
         self.partner_ids_label = label
 
+
     @api.depends('partner_id')
     def _compute_partner_separated_name(self):
         for record in self:
@@ -254,17 +255,34 @@ class CalendarAppointment(models.Model):
             else:
                 record.tag_number = 'Configurar los valores'
 
+
     @api.depends('calendar_datetime')
     def _compute_calendar_datetime(self):
         for record in self:
             # record.write({'state': 'postpone'})
             record.calendar_date = (record.calendar_datetime - datetime.timedelta(hours=5)).date() if \
                 record.calendar_datetime else False
+
+            calendar_datetime_timez = record.calendar_datetime - datetime.timedelta(hours=5)
+
+
             tz_offset = self.env.user.tz_offset if self.env.user.tz_offset else False
             tz = int(tz_offset)/100 if tz_offset else 0
-            record.calendar_time = (record.calendar_datetime).hour + tz + \
+            if (record.calendar_datetime).hour <5:
+                record.calendar_time = (calendar_datetime_timez).hour + \
                 record.calendar_datetime.minute/60.0 if \
-                    record.calendar_datetime else False
+                record.calendar_datetime else False
+            else:
+                record.calendar_time = (record.calendar_datetime).hour + tz + \
+                record.calendar_datetime.minute/60.0 if \
+                record.calendar_datetime else False 
+
+    # @api.depends('appointment_date')
+    # def _get_date_today(self):
+    #     for record in self:
+    #         if record.appointment_date:
+    #             record.appointment_date = (record.appointment_date - datetime.timedelta(1)) 
+
 
     @api.depends('applicant_id')
     def _compute_applicant_id(self):
