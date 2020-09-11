@@ -265,6 +265,7 @@ class CalendarAppointment(models.Model):
 
             calendar_datetime_timez = record.calendar_datetime - datetime.timedelta(hours=5)
 
+
             tz_offset = self.env.user.tz_offset if self.env.user.tz_offset else False
             tz = int(tz_offset)/100 if tz_offset else 0
             if (record.calendar_datetime).hour <5:
