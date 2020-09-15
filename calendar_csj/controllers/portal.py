@@ -591,8 +591,30 @@ class CustomerPortal(CustomerPortal):
     def appointment_portal_judgededit_form_submit(self, appointment_id=None, **kwargs):
         appointment_type_obj = request.env['calendar.appointment.type'].search([ ('id','=',kwargs['appointment_type']) ])
 
-        request.env['calendar.appointment'].browse(appointment_id.id).write({
+        appointment_obj = request.env['calendar.appointment'].browse(appointment_id.id)
+        appointment_obj.write({
             'appointment_type_id': appointment_type_obj.id,
         })
+        judged_extension_lifesize = False
+        partner = appointment_obj.appointment_type_id.judged_id if appointment_obj \
+            and appointment_obj.appointment_type_id.judged_id else False
+        if partner and partner.extension_lifesize:
+            judged_extension_lifesize = partner.extension_lifesize
+
+        description = ("Updated to: %s " % (
+            appointment_obj.calendar_datetime.strftime("%Y%m%d %H%M%S"))
+            )
+        api = {
+            'method': 'update',
+            'uuid': appointment_obj.lifesize_uuid,
+            'description': description,
+            'ownerExtension': judged_extension_lifesize or \
+                request.env.user.company_id.owner_extension,
+            'moderatorExtension': judged_extension_lifesize or \
+                request.env.user.company_id.owner_extension,
+        }
+
+        resp = request.env['api.lifesize'].api_crud(api)
+        dic = request.env['api.lifesize'].resp2dict(resp)
 
         return request.redirect('/my/appointment/' + str(appointment_id.id))
