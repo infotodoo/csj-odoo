@@ -409,7 +409,7 @@
                               <br/>
                               <strong>Fecha y Hora de Realización:</strong> <span t-esc="appointment.calendar_datetime" t-options='{"widget": "datetime"}'/>
                               <br/>
-                              <strong>Duración:</strong> <span t-field="appointment.calendar_duration" t-options='{"widget": "float_date"}'/>
+                           <!--   <strong>Duración:</strong> <span t-field="appointment.calendar_duration" t-options='{"widget": "float_date"}'/> -->
                               <br/>
                               <strong>Fecha de Agendamiento:</strong> <span t-field="appointment.appointment_date" t-options='{"widget": "date"}'/>
                               <br/>
