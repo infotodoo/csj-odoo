@@ -64,7 +64,7 @@
                       <div class="form-group row col-xl-6 col-md-6">
                             <label for="room_id" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">SALA</label>
                             <div class="col-md-12 row">
-                                <select class="form-control" value='Sala Audiencia Virtual' name="room_id" id="room_id">
+                                <select class="form-control" name="room_id" id="room_id">
                                     <t t-foreach="suggested_rooms" t-as="room">
                                         <option t-att-value="room.id" t-esc="room.virtual_room" />
                                     </t>
