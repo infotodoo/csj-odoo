@@ -398,7 +398,7 @@
 
                       <div class="mb-1" style="text-align:center;background-color: #00a09d;padding-top:15px;padding-bottom:15px;color:#FFF;">
                           <strong>Despacho:</strong> <span t-field="appointment.partner_id.name"/><br/>
-                          <strong>Sala:</strong> <span t-field="appointment.room_id.name" value="Sala Audiencia Virtual"/><br/>
+                          <strong>Sala:</strong> <span t-field="appointment.room_id.name" value="11526"/><br/>
                           <strong>Ciudad:</strong> <span t-field="appointment.city_id.name"/> <br/>
                           <strong>Departamento:</strong> <span t-field="appointment.country_state_id.name"/>
                       </div>
