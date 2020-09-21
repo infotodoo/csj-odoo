@@ -66,7 +66,7 @@
                             <div class="col-md-12 row">
                                 <select class="form-control" name="room_id" id="room_id">
                                     <t t-foreach="suggested_rooms" t-as="room">
-                                        <option t-att-value="room.id" t-esc="room.virtual_room" />
+                                        <option t-att-value="room.id" t-esc="room.virtual_room" default_order="sequence desc"/>
                                     </t>
                                 </select>
                             </div>
