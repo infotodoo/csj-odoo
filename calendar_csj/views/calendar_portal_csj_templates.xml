@@ -216,6 +216,7 @@
                                 <th class="text-left">Fecha de Solicitud</th>
                                 <th class="text-left">Lifesize URL</th>
                                 <th class="text-left">Nombre del solicitante</th>
+                                <th class="text-left">Nombre de la Sala</th>
                                 <th class="text-left">Departamento de origen</th>
                                 <th class="text-left">Ciudad de origen</th>
                                 <th class="text-left">Clase de videoconferencia</th>
@@ -270,6 +271,9 @@
                                     </td>
                                     <td>
                                         <span t-esc="appointment.applicant_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.name"/>
                                     </td>
                                     <td>
                                         <span t-esc="appointment.country_state_id.name"/>
