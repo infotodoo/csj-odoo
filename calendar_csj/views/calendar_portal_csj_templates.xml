@@ -216,6 +216,7 @@
                                 <th class="text-left">Fecha de Solicitud</th>
                                 <th class="text-left">Lifesize URL</th>
                                 <th class="text-left">Nombre del solicitante</th>
+                                <th class="text-left">Nombre de la Sala</th>
                                 <th class="text-left">Departamento de origen</th>
                                 <th class="text-left">Ciudad de origen</th>
                                 <th class="text-left">Clase de videoconferencia</th>
@@ -270,6 +271,9 @@
                                     </td>
                                     <td>
                                         <span t-esc="appointment.applicant_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.name"/>
                                     </td>
                                     <td>
                                         <span t-esc="appointment.country_state_id.name"/>
@@ -399,7 +403,7 @@
                       <div class="mb-1" style="text-align:center;background-color: #00a09d;padding-top:15px;padding-bottom:15px;color:#FFF;">
                           <strong>Despacho:</strong> <span t-field="appointment.partner_id.name"/><br/>
                           <strong>Sala:</strong> <span t-field="appointment.room_id.name"/><br/>
-                          <strong>Ciudad:</strong> <span t-field="appointment.city_id.name"/><br/>
+                          <strong>Ciudad:</strong> <span t-field="appointment.city_id.name"/> <br/>
                           <strong>Departamento:</strong> <span t-field="appointment.country_state_id.name"/>
                       </div>
 
@@ -409,7 +413,7 @@
                               <br/>
                               <strong>Fecha y Hora de Realización:</strong> <span t-esc="appointment.calendar_datetime" t-options='{"widget": "datetime"}'/>
                               <br/>
-                              <strong>Duración:</strong> <span t-field="appointment.calendar_duration" t-options='{"widget": "float_date"}'/>
+                           <!--   <strong>Duración:</strong> <span t-field="appointment.calendar_duration" t-options='{"widget": "float_date"}'/> -->
                               <br/>
                               <strong>Fecha de Agendamiento:</strong> <span t-field="appointment.appointment_date" t-options='{"widget": "date"}'/>
                               <br/>
