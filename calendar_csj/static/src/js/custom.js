@@ -12,8 +12,12 @@ $( function() {
     dateFormat : 'yy-mm-dd',
     maxDate: new Date(),
   });
-  $('#room_id option[name="Sala Audiencia Virtual"]').attr('selected','selected');
-});
+//  $('#room_id option[name="Sala Audiencia Virtual"]').attr('selected','selected');
+
+var $select = $('#room_id');
+$select.children().filter(function(){ 
+  return this.text == "Sala Audiencia Virtual";
+  }).prop('selected', true);
 
 
 function convertNumToTime(number) {
