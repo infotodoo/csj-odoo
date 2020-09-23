@@ -19,6 +19,8 @@ $select.children().filter(function(){
   return this.text == "Sala Audiencia Virtual";
   }).prop('selected', true);
 
+});
+
 
 function convertNumToTime(number) {
     // Check sign of given number
