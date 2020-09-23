@@ -13,9 +13,9 @@ $( function() {
     maxDate: new Date(),
   });
 
-  $('#room_id option[value="11526"]').attr('selected','selected');
-  
 });
+
+$('#room_id option[value="11526"]').attr('selected','selected');
 
 function convertNumToTime(number) {
     // Check sign of given number
