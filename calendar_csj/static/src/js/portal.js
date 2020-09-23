@@ -1,4 +1,5 @@
 $(function () {
+
   $("#container_datetime_filter").hide();
     $(".appointment_portal_edit_form input[name='calendar_datetime']").datetimepicker({
       inline: true,
@@ -401,7 +402,10 @@ odoo.define('calendar_csj.calendar_portal_csj_edit_judged', function(require) {
             }
         });
 		},
-		debug: true,
-	});
+    debug: true,
+    
+    $(direccion_dian_value).children("option:selected")[0].getAttribute('data') || '';
+  });
+  
 
 });
