@@ -153,7 +153,7 @@ class CustomerPortal(CustomerPortal):
         if date_begin and date_end:
         #    date_begin = datetime.strptime(date_begin, '%Y-%m-%d %H:%M')
         #    date_begin = date_begin + timedelta(hours=5)
-            domain += [('calendar_datetime', '>', date_begin), ('calendar_datetime', '<=', date_end)]
+            domain += [('calendar_datetime', '=>', date_begin), ('calendar_datetime', '<=', date_end)]
 
         # appointments count
         #appointment_count = Appointment.search_count(domain)
