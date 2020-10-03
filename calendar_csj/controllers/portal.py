@@ -151,7 +151,11 @@ class CustomerPortal(CustomerPortal):
         # archive groups - Default Group By 'create_date'
         archive_groups = self._get_archive_groups('calendar.appointment', domain)
         if date_begin and date_end:
-            domain += [('calendar_datetime', '>', date_begin), ('calendar_datetime', '<=', date_end)]
+            date_begin = datetime.strptime(date_begin, '%Y-%m-%d %H:%M')
+            date_begin = date_begin + timedelta(hours=5)
+            date_end = datetime.strptime(date_end, '%Y-%m-%d %H:%M')
+            date_end = date_end + timedelta(hours=5)
+            domain += [('calendar_datetime', '>=', date_begin), ('calendar_datetime', '<=', date_end)]
 
         # appointments count
         #appointment_count = Appointment.search_count(domain)
