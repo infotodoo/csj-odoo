@@ -319,7 +319,7 @@ class CustomerPortal(CustomerPortal):
             sheet.write('AE1', 'HORA FINAL', head)
             sheet.write('AF1', 'DESCRIPCION', head)
             sheet.write('AG1', 'ETIQUETA', head)
-            sheet.write('AH1', 'URL DE AGENDAMIENTO', head)
+            sheet.write('AH1', 'URL DE GRABACIÓN', head)
             sheet.write('AI1', 'DESCARGA DE GRABACIÓN', head)
             sheet.write('AJ1', 'CREADO POR', head)
             sheet.write('AK1', 'NOMBRE SALA LIFESIZE', head)
