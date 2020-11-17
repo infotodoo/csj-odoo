@@ -70,8 +70,8 @@
                     <field name="end_hour" string="HORA FINAL" attrs="{'invisible': [('state', '!=', 'realized')]}" widget="float_time"/>
                     <field name="state_description" string="DESCRIPCION"/>
                     <field name="tag_number" string="ETIQUETA"/>
-                    <field name="link_download" string="URL AGENDAMIENTO"/>
-	            <field name="link_download_text" string="URL AGENDAMIENTO TEXT"/>
+                    <field name="link_download" string="URL DE GRABACIÓN"/>
+	            <field name="link_download_text" string="URL DE GRABACIÓN TEXT"/>
                     <field name="create_uid" string="CREADOR POR"/>
                     <field name="name" string="NOMBRE DE LA SALA LIFESIZE"/>
                     <field name="lifesize_url" string="URL LIFESIZE"/>
