@@ -120,7 +120,7 @@
                                 <field name="class_id" required="True" string="Clase de Solicitud" />
                                 <field name="help_id" />
                                 <field name="partaker_type" string="Tipo de Participante"/>
-                                <field name="connection_type"  string="Tipo de Conexión"/>
+                                <field name="connection_type"  string="Tipo de Conexión" invisible="1"/>
                                 <field name="appointment_date" required="True" string="Fecha de Agendamiento"/>
                                 <field name="request_date" required="True" />
                             </group>
