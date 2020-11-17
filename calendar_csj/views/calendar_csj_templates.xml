@@ -181,8 +181,8 @@
                               </select>
                           </div>
                       </div>
-                      <div class="form-group row col-xl-6 col-md-6">
-                          <label for="help_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5); display: none">TIPO DE CONEXIÓN</label>
+                      <div class="form-group row col-xl-6 col-md-6" style="display: none">
+                          <label for="help_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5)">TIPO DE CONEXIÓN</label>
                           <div class="col-md-12 row">
                               <select class="form-control" name="connection_type" id="connection_type">
                                   <t t-foreach="suggested_help3" t-as="res">
