@@ -341,7 +341,7 @@
                       </div>
                         <div class="row no-gutters" style="padding-top:20px;">
                             <div class="col-md">
-                              <div class="btn-group" role="group" aria-label="Appointment Edit Button" t-if="appointment.state != 'cancel'">
+                              <div class="btn-group" role="group" aria-label="Appointment Edit Button">
                                 <button type="button" class="btn btn-secondary portal_appointment_edit" >
                                   Editar
                                 </button>
