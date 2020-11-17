@@ -117,13 +117,13 @@
                           <label class="col-md-12 col-form-label" style="width:100%;background-color:#00a09d; color:#FFF;">
                             <span class="fa fa-hand-o-right" style="padding-right:3px;">DATOS AGENDA:</span></label>
                       </div>
-                        <div class="form-group row col-xl-6 col-md-6">
+                        <div class="form-group row col-xl-6 col-md-6" invisible = "True">
                           <label for="indicted_text" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">PROCESADO</label>
                           <div class="col-md-12 row">
                               <input type="char" class="form-control text-uppercase" name="indicted_text" />
                           </div>
                         </div>
-                      <div class="form-group row col-xl-6 col-md-6">
+                      <div class="form-group row col-xl-6 col-md-6" invisible = "True">
                               <label for="declarant_text" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">DECLARANTE</label>
                               <div class="col-md-12 row">
                                   <input type="char" class="form-control text-uppercase" name="declarant_text" />
