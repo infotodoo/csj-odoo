@@ -150,8 +150,8 @@ class CalendarAppointment(models.Model):
     observations = fields.Text('Observations')
     state_description = fields.Text('State description')
     link_streaming = fields.Char('Streaming')
-    link_download = fields.Char('Descarga de grabacion')
-    link_download_text = fields.Char('Descarga de grabacion tipo text', compute='_get_link_download')
+    link_download = fields.Char('Url de Agendamiento')
+    link_download_text = fields.Char('Url de Agendamiento tipo text', compute='_get_link_download')
     end_date = fields.Date('Fecha finalizacion')
     end_hour = fields.Float('Hora de finalizacion')
 
