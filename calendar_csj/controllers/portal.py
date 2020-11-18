@@ -364,7 +364,7 @@ class CustomerPortal(CustomerPortal):
                 sheet.write('E'+str(row), newstrtime, cell_format)
                 sheet.write('F'+str(row), appointment.judged_only_code, cell_format)
                 sheet.write('G'+str(row), appointment.judged_only_name, cell_format)
-                sheet.write('H'+str(row), appointment.city_id.name, cell_format)
+                sheet.write('H'+str(row), appointment.city_id.name.upper(), cell_format)
                 sheet.write('I'+str(row), appointment.country_state_id.name, cell_format)
                 sheet.write('J'+str(row), appointment.destination_ids_label, cell_format)
                 sheet.write('K'+str(row), appointment.reception_id.name, cell_format)
