@@ -573,6 +573,12 @@ class CalendarAppointment(models.Model):
                     calendar_time = float(res['datas'][index][fieldindex])
                     hour, minute = self.float_time_convert(calendar_time)
                     res['datas'][index][fieldindex] = '{0:02d}:{1:02d}:00'.format(hour, minute)
+                if fields_name.get('end_hour'):
+                    fieldindex = fields_name.get('end_hour')
+                    end_hour = float(res['datas'][index][fieldindex])
+                    hour, minute = self.float_time_convert(end_hour)
+                    res['datas'][index][fieldindex] = '{0:02d}:{1:02d}:00'.format(hour, minute)
+                    
                 if fields_name.get('request_type'):
                     fieldindex = fields_name.get('request_type')
                     request_type_value = str(res['datas'][index][fieldindex])
