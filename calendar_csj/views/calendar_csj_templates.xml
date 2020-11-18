@@ -340,7 +340,7 @@
                        .typeahead__cancel-button{padding: 0.5rem 1.5rem;}
                     </style>
                     <div t-attf-class="input-group row">
-                      <label for="city_id" class="col-md-3 col-form-label">Ciudad Origen</label>
+                      <label for="city_id" class="col-md-3 col-form-label">Ciudad Origen*</label>
                       <t t-if="calendar_appointment_type_id == 1">
                         <div class="col-md-9">
                           <input
@@ -360,7 +360,7 @@
                       </t>
                     </div>
                     <div t-attf-class="input-group appointment-container row" style="margin-top:4vh;">
-                        <label for="search_appointment" class="col-md-3 col-form-label">Despacho Solicitante</label>
+                        <label for="search_appointment" class="col-md-3 col-form-label">Despacho Solicitante*</label>
                         <t t-if="calendar_appointment_type_id == 1">
                           <div class="col-md-9">
                             <input
@@ -381,7 +381,7 @@
                         </t>
                     </div>
                     <div class="form-group row" style="margin-top:4vh;">
-                        <label for="date_time" class="col-md-3 col-form-label">Fecha y Hora de Realización</label>
+                        <label for="date_time" class="col-md-3 col-form-label">Fecha y Hora de Realización*</label>
                         <div class="col-md-9" style="padding-left:8px;">
                           <div class="input-group date" id="appointment_csj_div" data-target-input="nearest" style="width:70%">
                               <input type="text" min="2020-01-01" name="date_time" t-att-value="date_formatted" class="form-control date_time"/>
@@ -394,7 +394,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="duration" class="col-md-3 col-form-label">Duración del Evento</label>
+                        <label for="duration" class="col-md-3 col-form-label">Duración del Evento*</label>
                         <div class="col-md-9" style="padding-left:8px;">
                             <select name="duration" class="form-control" id="duration" style="width:50%">
                                 <option t-att-value="0.083333333333333">00:05</option>
@@ -419,7 +419,7 @@
                         </div>
                     </div>
                     <div class="form-group row" style="margin-top:4vh;">
-                        <label for="types" class="col-md-3 col-form-label">Solicitud</label>
+                        <label for="types" class="col-md-3 col-form-label">Solicitud*</label>
                         <div class="col-md-9" style="padding-left:8px;">
                             <select name="types" class="form-control" id="types" style="width:50%">
                                 <option t-att-value="audiencia" t-att-selected="types">Audiencia</option>
