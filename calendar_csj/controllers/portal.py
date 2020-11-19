@@ -389,7 +389,7 @@ class CustomerPortal(CustomerPortal):
                 sheet.write('AD'+str(row), str(appointment.end_date) if appointment.end_date else '', cell_format)
                 newstrtime_end_hour = '{0:02.0f}:{1:02.0f}'.format(*divmod(appointment.end_hour * 60, 60))
                 sheet.write('AE'+str(row), str(newstrtime_end_hour) if newstrtime_end_hour else '', cell_format)
-                sheet.write('AF'+str(row), appointment.state_description.upper() if appointment.state_description.upper() else '', cell_format)
+                sheet.write('AF'+str(row), appointment.state_description if appointment.state_description.upper() else '', cell_format)
                 sheet.write('AG'+str(row), appointment.tag_number, cell_format)
                 sheet.write('AH'+str(row), appointment.link_download if appointment.link_download else '', cell_format)
                 sheet.write('AI'+str(row), appointment.link_download_text if appointment.link_download_text else '', cell_format)
