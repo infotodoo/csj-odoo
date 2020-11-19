@@ -584,6 +584,13 @@ class CalendarAppointment(models.Model):
                     request_type_value = str(res['datas'][index][fieldindex])
                     request_type_value = 'L' if request_type_value == 'Libre' else 'R'
                     res['datas'][index][fieldindex] = request_type_value
+                    
+                if fields_name.get('city_id'):
+                    fieldindex = fields_name.get('city_id')
+                    city_id = str(res['datas'][index][fieldindex])
+                    city_id = city_id.name.upper()
+                    res['datas'][index][fieldindex] = city_id
+                    
         except Exception as e:
             raise UserError('It was not possible to convert the time format when exporting the file.')
         return res
