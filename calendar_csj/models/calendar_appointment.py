@@ -588,7 +588,7 @@ class CalendarAppointment(models.Model):
                 if fields_name.get('city_id'):
                     fieldindex = fields_name.get('city_id')
                     city_id = str(res['datas'][index][fieldindex])
-                    city_id = city_id.name.upper()
+                    city_id = city_id.upper()
                     res['datas'][index][fieldindex] = city_id
                     
         except Exception as e:
