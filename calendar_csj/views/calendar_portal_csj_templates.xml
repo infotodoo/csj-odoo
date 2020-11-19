@@ -434,8 +434,8 @@
                             <br/>
                             <strong>Tipo de Participante:</strong> <span t-field="appointment.partaker_type"/>
                             <br/>
-                            <strong>Tipo de Conexión:</strong> <span t-field="appointment.connection_type"/>
-                            <br/>
+                            <!--<strong>Tipo de Conexión:</strong> <span t-field="appointment.connection_type"/>
+                            <br/>-->
                             <strong>Medio de Recepción:</strong> <span t-field="appointment.reception_id.name"/>
                             <br/>
                             <strong>Detalles Medio de Recepción:</strong> <span t-field="appointment.reception_detail"/>
@@ -448,10 +448,10 @@
                               <br/>
                               <strong>Nombre Solicitante:</strong> <span t-field="appointment.applicant_id.name"/>
                               <br/>
-                              <strong>Declarante:</strong> <span t-field="appointment.declarant_text"/>
-                              <br/>
-                              <strong>Procesado:</strong> <span t-field="appointment.indicted_text"/>
-                              <br/>
+                              <!--<strong>Declarante:</strong> <span t-field="appointment.declarant_text"/>
+                              <br/>-->
+                              <!--<strong>Procesado:</strong> <span t-field="appointment.indicted_text"/>
+                              <br/> -->
                               <strong>Tipo de Audiencia:</strong> <span t-field="appointment.request_type"/>
                               <br/>
                               <strong>Número de Proceso:</strong> <span t-field="appointment.process_number"/>
