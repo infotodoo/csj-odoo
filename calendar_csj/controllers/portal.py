@@ -375,7 +375,7 @@ class CustomerPortal(CustomerPortal):
                 sheet.write('P'+str(row), state_label, cell_format)
                 sheet.write('Q'+str(row), appointment.applicant_email, cell_format)
                 sheet.write('R'+str(row), appointment.process_number, cell_format)
-                sheet.write('S'+str(row), appointment.room_id_name.upper(), cell_format)
+                sheet.write('S'+str(row), appointment.room_id_name.upper() if appointment.room_id_name else '', cell_format)
                 sheet.write('T'+str(row), appointment.partner_ids_label, cell_format)
                 sheet.write('U'+str(row), appointment.applicant_mobile, cell_format)
                 sheet.write('V'+str(row), appointment.class_id.name.upper(), cell_format)
