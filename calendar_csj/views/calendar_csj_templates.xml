@@ -130,7 +130,7 @@
                               </div>
                       </div>
                       <div class="form-group row col-xl-6 col-md-6">
-                        <label for="request_type" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">TIPO DE AUDIENCIA</label>
+                        <label for="request_type" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">TIPO DE AUDIENCIA*</label>
                         <div class="col-md-12 row">
                             <select name="request_type" class="form-control" id="request_type">
                                 <option t-att-value="r">Reserved</option>
