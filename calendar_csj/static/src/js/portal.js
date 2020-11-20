@@ -13,10 +13,7 @@ $(function () {
     });
     $( ".appointment_portal_edit_form input[name='request_date']").datepicker({
       dateFormat : 'yy-mm-dd',
-      var appointment_type = $(".appointment_portal_judged_change_form input[name='appointment_type']").val();
-      if (appointment_type === 'secretary'){
-          defaultDate:moment(dateNow),
-          };
+      defaultDate:moment(dateNow),
     });
     $( ".appointment_portal_edit_form input[name='appointment_date']").datepicker({
       dateFormat : 'yy-mm-dd',
