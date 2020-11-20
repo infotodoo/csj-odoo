@@ -102,7 +102,7 @@
                         <div class="form-group row col-xl-6 col-md-6">
                               <label for="request_date" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">FECHA DE SOLICITUD*</label>
                               <div class="col-md-12 row">
-                                    <input type="text" data-date-format="YYYY-mm-dd" name="request_date" id="request_date" t-att-value="datetime.datetime.now().date()" class="form-control request_date"/>
+                                    <input type="text" data-date-format="YYYY-mm-dd" name="request_date" id="request_date" t-esc="datetime.datetime.now().strftime('%Y-%m-%d')" class="form-control request_date"/>
                               </div>
                         </div>
                         <div class="form-group row col-xl-6 col-md-6">
