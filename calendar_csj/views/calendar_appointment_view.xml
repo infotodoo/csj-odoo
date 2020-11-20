@@ -59,8 +59,8 @@
                     <field name="applicant_mobile" string="CELULAR"/>
                     <field name="class_id" string="CLASE DE VIDEOCONFERENCIA"/>
                     <field name="request_type" string="TIPO DE AUDIENCIA"/>
-                    <field name="declarant_text" string="DECLARANTE"/>
-                    <field name="indicted_text" string="PROCESADO"/>
+                    <!--<field name="declarant_text" string="DECLARANTE"/>-->
+                    <!--<field name="indicted_text" string="PROCESADO"/>-->
                     <field name="appointment_date" string="FECHA AGENDAMIENTO"/>
                     <!--<field name="write_uid" string="Usuario Cierre"/>-->
                     <field name="create_uid_login" string="USUARIO AGENDAMIENTO"/>
