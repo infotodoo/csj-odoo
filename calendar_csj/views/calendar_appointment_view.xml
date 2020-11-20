@@ -137,8 +137,8 @@
                             </group>
                             <group>
                                 <field name="applicant_id" required="True" />
-                                <field name="declarant_text" />
-                                <field name="indicted_text" />
+                                <field name="declarant_text" invisible="True"/>
+                                <field name="indicted_text" invisible="True"/>
                             </group>
                             <group>
                                 <!-- <field name="types_ids" widget="many2many_tags" /> -->
