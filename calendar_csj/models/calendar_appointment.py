@@ -591,6 +591,44 @@ class CalendarAppointment(models.Model):
                     city_id = city_id.upper()
                     res['datas'][index][fieldindex] = city_id
                     
+                if fields_name.get('country_state_id'):
+                    fieldindex = fields_name.get('country_state_id')
+                    country_state_id = str(res['datas'][index][fieldindex])
+                    country_state_id = country_state_id.upper()
+                    res['datas'][index][fieldindex] = country_state_id
+                
+                if fields_name.get('reception_detail'):
+                    fieldindex = fields_name.get('reception_detail')
+                    reception_detail = str(res['datas'][index][fieldindex])
+                    reception_detail = reception_detail.upper()
+                    res['datas'][index][fieldindex] = reception_detail
+                    
+                if fields_name.get('observations'):
+                    fieldindex = fields_name.get('observations')
+                    observations = str(res['datas'][index][fieldindex])
+                    observations = observations.upper()
+                    res['datas'][index][fieldindex] = observations
+                    
+                if fields_name.get('aplicant_id'):
+                    fieldindex = fields_name.get('aplicant_id')
+                    aplicant_id = str(res['datas'][index][fieldindex])
+                    aplicant_id = aplicant_id.upper()
+                    res['datas'][index][fieldindex] = aplicant_id
+                    
+                if fields_name.get('room_id_mame'):
+                    fieldindex = fields_name.get('room_id_mame')
+                    room_id_mame = str(res['datas'][index][fieldindex])
+                    room_id_mame = room_id_mame.upper()
+                    res['datas'][index][fieldindex] = room_id_mame
+                    
+                if fields_name.get('class_id'):
+                    fieldindex = fields_name.get('class_id')
+                    class_id = str(res['datas'][index][fieldindex])
+                    class_id = class_id.upper()
+                    res['datas'][index][fieldindex] = class_id
+                    
+
+                    
         except Exception as e:
             raise UserError('It was not possible to convert the time format when exporting the file.')
         return res
