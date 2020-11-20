@@ -115,9 +115,9 @@ class CalendarAppointment(models.Model):
     calendar_duration = fields.Float('Calendar duration', default=1.00)
 
     applicant_id = fields.Many2one('res.partner', 'Applicant', ondelete='set null')  # Solicitante
-    # declarant_id = fields.Many2one('res.partner', 'Declarant', ondelete='set null', invisible=True)  # Declarante
+    declarant_id = fields.Many2one('res.partner', 'Declarant', ondelete='set null')  # Declarante
     declarant_text = fields.Text('Declarant input')
-    # indicted_id = fields.Many2one('res.partner', 'Indicted', ondelete='set null', invisible=True)  # Procesado
+    indicted_id = fields.Many2one('res.partner', 'Indicted', ondelete='set null')  # Procesado
     indicted_text = fields.Text('Indicted input')
     applicant_id_label = fields.Char('Applicant Label', compute='_get_applicant_id_label', store=True)
 
