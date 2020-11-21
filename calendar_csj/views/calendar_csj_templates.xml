@@ -62,7 +62,7 @@
                     <input type="hidden" name="appointment_type" t-att-value="appointment_type.id" readonly="1"/>
                     <div class="form-group row col-xl-12 col-md-12">
                       <div class="form-group row col-xl-6 col-md-6">
-                            <label for="room_id" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">SALA</label>
+                            <label for="room_id" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">SALA*</label>
                             <div class="col-md-12 row">
                                 <select class="form-control" name="room_id" id="room_id">
                                     <t t-foreach="suggested_rooms" t-as="room">
@@ -72,7 +72,7 @@
                             </div>
                       </div>
                       <div class="form-group row col-xl-6 col-md-6">
-                            <label for="class_id" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">CLASE DE VIDEOCONFERENCIA</label>
+                            <label for="class_id" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">CLASE DE VIDEOCONFERENCIA*</label>
                             <div class="col-md-12 row">
                                 <select class="form-control" name="class_id" id="class_id">
                                       <t t-foreach="suggested_class" t-as="cal_class">
@@ -88,25 +88,25 @@
                               <span class="fa fa-hand-o-right" style="padding-right:3px;">SOLICITANTE:</span></label>
                         </div>
                         <div class="form-group row col-xl-6 col-md-6">
-                              <label for="name" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">NOMBRE</label>
+                              <label for="name" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">NOMBRE*</label>
                               <div class="col-md-12 row">
                                   <input type="char" class="form-control text-uppercase" name="name" />
                               </div>
                         </div>
                         <div class="form-group row col-xl-6 col-md-6">
-                          <label for="phone" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">TELÉFONO</label>
+                          <label for="phone" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">TELÉFONO*</label>
                           <div class="col-md-12 row">
                               <input type="char" class="form-control" name="phone"  min="0" onkeypress="return isNumber(event)" />
                           </div>
                         </div>
                         <div class="form-group row col-xl-6 col-md-6">
-                              <label for="request_date" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">FECHA DE SOLICITUD</label>
+                              <label for="request_date" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">FECHA DE SOLICITUD*</label>
                               <div class="col-md-12 row">
-                                    <input type="text" data-date-format="YYYY-mm-dd" name="request_date" id="request_date" class="form-control request_date"/>
-                              </div>
+                               <input type="text" data-date-format="YYYY-mm-dd" name="request_date" id="request_date" class="form-control request_date"/>
+                            </div>
                         </div>
                         <div class="form-group row col-xl-6 col-md-6">
-                          <label for="email" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">CORREO</label>
+                          <label for="email" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">CORREO*</label>
                           <div class="col-md-12 row">
                               <input type="email" class="form-control text-uppercase" name="email" />
                           </div>
@@ -117,20 +117,20 @@
                           <label class="col-md-12 col-form-label" style="width:100%;background-color:#00a09d; color:#FFF;">
                             <span class="fa fa-hand-o-right" style="padding-right:3px;">DATOS AGENDA:</span></label>
                       </div>
-                        <div class="form-group row col-xl-6 col-md-6">
-                          <label for="indicted_text" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">PROCESADO</label>
+                        <div class="form-group row col-xl-6 col-md-6" style="display: none">
+                          <label for="indicted_text" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">PROCESADO*</label>
                           <div class="col-md-12 row">
                               <input type="char" class="form-control text-uppercase" name="indicted_text" />
                           </div>
                         </div>
-                      <div class="form-group row col-xl-6 col-md-6">
-                              <label for="declarant_text" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">DECLARANTE</label>
+                      <div class="form-group row col-xl-6 col-md-6" style="display: none">
+                              <label for="declarant_text" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">DECLARANTE*</label>
                               <div class="col-md-12 row">
                                   <input type="char" class="form-control text-uppercase" name="declarant_text" />
                               </div>
                       </div>
                       <div class="form-group row col-xl-6 col-md-6">
-                        <label for="request_type" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">TIPO DE AUDIENCIA</label>
+                        <label for="request_type" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">TIPO DE AUDIENCIA*</label>
                         <div class="col-md-12 row">
                             <select name="request_type" class="form-control" id="request_type">
                                 <option t-att-value="r">Reserved</option>
@@ -140,13 +140,13 @@
                       </div>
 
                       <div class="form-group row col-xl-6 col-md-6">
-                          <label for="process_number" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">NUMERO DE PROCESO</label>
+                          <label for="process_number" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">NUMERO DE PROCESO*</label>
                           <div class="col-md-12 row">
                               <input type="char" class="form-control text-uppercase" name="process_number" required="1"/>
                           </div>
                       </div>
                       <div class="form-group row col-xl-6 col-md-6">
-                          <label for="reception_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">MEDIO DE RECEPCIÓN</label>
+                          <label for="reception_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">MEDIO DE RECEPCIÓN*</label>
                           <div class="col-md-12 row">
                               <select class="form-control" name="reception_id" id="reception_id">
                                   <t t-foreach="suggested_reception" t-as="res">
@@ -156,13 +156,13 @@
                           </div>
                       </div>
                       <div class="form-group row col-xl-6 col-md-6">
-                            <label for="name" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">DETALLES MEDIO DE RECEPCIÓN</label>
+                            <label for="name" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">DETALLES MEDIO DE RECEPCIÓN*</label>
                             <div class="col-md-12 row eception_detail">
                                 <input type="char" class="form-control text-uppercase" name="reception_detail" id="reception_detail" required="0" />
                             </div>
                       </div>
                       <div class="form-group row col-xl-6 col-md-6">
-                          <label for="help_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">APOYO EN SITIO</label>
+                          <label for="help_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">APOYO EN SITIO*</label>
                           <div class="col-md-12 row">
                               <select class="form-control" name="help_id" id="help_id">
                                   <t t-foreach="suggested_help1" t-as="res">
@@ -172,7 +172,7 @@
                           </div>
                       </div>
                       <div class="form-group row col-xl-6 col-md-6">
-                          <label for="help_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">TIPO DE PARTICIPANTE</label>
+                          <label for="help_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">TIPO DE PARTICIPANTE*</label>
                           <div class="col-md-12 row">
                               <select class="form-control" name="partaker_type" id="partaker_type">
                                   <t t-foreach="suggested_help2" t-as="res">
@@ -181,8 +181,8 @@
                               </select>
                           </div>
                       </div>
-                      <div class="form-group row col-xl-6 col-md-6">
-                          <label for="help_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">TIPO DE CONEXIÓN</label>
+                      <div class="form-group row col-xl-6 col-md-6" style="display: none">
+                          <label for="help_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5)">TIPO DE CONEXIÓN</label>
                           <div class="col-md-12 row">
                               <select class="form-control" name="connection_type" id="connection_type">
                                   <t t-foreach="suggested_help3" t-as="res">
@@ -340,7 +340,7 @@
                        .typeahead__cancel-button{padding: 0.5rem 1.5rem;}
                     </style>
                     <div t-attf-class="input-group row">
-                      <label for="city_id" class="col-md-3 col-form-label">Ciudad Origen</label>
+                      <label for="city_id" class="col-md-3 col-form-label">Ciudad Origen*</label>
                       <t t-if="calendar_appointment_type_id == 1">
                         <div class="col-md-9">
                           <input
@@ -360,7 +360,7 @@
                       </t>
                     </div>
                     <div t-attf-class="input-group appointment-container row" style="margin-top:4vh;">
-                        <label for="search_appointment" class="col-md-3 col-form-label">Despacho Solicitante</label>
+                        <label for="search_appointment" class="col-md-3 col-form-label">Despacho Solicitante*</label>
                         <t t-if="calendar_appointment_type_id == 1">
                           <div class="col-md-9">
                             <input
@@ -381,7 +381,7 @@
                         </t>
                     </div>
                     <div class="form-group row" style="margin-top:4vh;">
-                        <label for="date_time" class="col-md-3 col-form-label">Fecha y Hora de Realización</label>
+                        <label for="date_time" class="col-md-3 col-form-label">Fecha y Hora de Realización*</label>
                         <div class="col-md-9" style="padding-left:8px;">
                           <div class="input-group date" id="appointment_csj_div" data-target-input="nearest" style="width:70%">
                               <input type="text" min="2020-01-01" name="date_time" t-att-value="date_formatted" class="form-control date_time"/>
@@ -393,8 +393,8 @@
                           </div>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label for="duration" class="col-md-3 col-form-label">Duración del Evento</label>
+                    <div class="form-group row" style="display: none">
+                        <label for="duration" class="col-md-3 col-form-label">Duración del Evento*</label>
                         <div class="col-md-9" style="padding-left:8px;">
                             <select name="duration" class="form-control" id="duration" style="width:50%">
                                 <option t-att-value="0.083333333333333">00:05</option>
@@ -419,7 +419,7 @@
                         </div>
                     </div>
                     <div class="form-group row" style="margin-top:4vh;">
-                        <label for="types" class="col-md-3 col-form-label">Solicitud</label>
+                        <label for="types" class="col-md-3 col-form-label">Solicitud*</label>
                         <div class="col-md-9" style="padding-left:8px;">
                             <select name="types" class="form-control" id="types" style="width:50%">
                                 <option t-att-value="audiencia" t-att-selected="types">Audiencia</option>

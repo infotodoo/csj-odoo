@@ -1,5 +1,6 @@
 $(function () {
   $("#container_datetime_filter").hide();
+    var dateNow = new Date();
     $(".appointment_portal_edit_form input[name='calendar_datetime']").datetimepicker({
       inline: true,
       format : 'YYYY-MM-DD HH:mm',
@@ -12,6 +13,7 @@ $(function () {
     });
     $( ".appointment_portal_edit_form input[name='request_date']").datepicker({
       dateFormat : 'yy-mm-dd',
+      defaultDate:moment(dateNow),
     });
     $( ".appointment_portal_edit_form input[name='appointment_date']").datepicker({
       dateFormat : 'yy-mm-dd',

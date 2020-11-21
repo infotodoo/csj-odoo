@@ -59,8 +59,8 @@
                     <field name="applicant_mobile" string="CELULAR"/>
                     <field name="class_id" string="CLASE DE VIDEOCONFERENCIA"/>
                     <field name="request_type" string="TIPO DE AUDIENCIA"/>
-                    <field name="declarant_text" string="DECLARANTE"/>
-                    <field name="indicted_text" string="PROCESADO"/>
+                    <!--<field name="declarant_text" string="DECLARANTE"/>-->
+                    <!--<field name="indicted_text" string="PROCESADO"/>-->
                     <field name="appointment_date" string="FECHA AGENDAMIENTO"/>
                     <!--<field name="write_uid" string="Usuario Cierre"/>-->
                     <field name="create_uid_login" string="USUARIO AGENDAMIENTO"/>
@@ -70,8 +70,8 @@
                     <field name="end_hour" string="HORA FINAL" attrs="{'invisible': [('state', '!=', 'realized')]}" widget="float_time"/>
                     <field name="state_description" string="DESCRIPCION"/>
                     <field name="tag_number" string="ETIQUETA"/>
-                    <field name="link_download" string="URL AGENDAMIENTO"/>
-	            <field name="link_download_text" string="URL AGENDAMIENTO TEXT"/>
+                    <field name="link_download" string="URL DE GRABACIÓN"/>
+	            <field name="link_download_text" string="URL DE GRABACIÓN TEXT"/>
                     <field name="create_uid" string="CREADOR POR"/>
                     <field name="name" string="NOMBRE DE LA SALA LIFESIZE"/>
                     <field name="lifesize_url" string="URL LIFESIZE"/>
@@ -120,7 +120,7 @@
                                 <field name="class_id" required="True" string="Clase de Solicitud" />
                                 <field name="help_id" />
                                 <field name="partaker_type" string="Tipo de Participante"/>
-                                <field name="connection_type"  string="Tipo de Conexión"/>
+                                <field name="connection_type"  string="Tipo de Conexión" invisible="1"/>
                                 <field name="appointment_date" required="True" string="Fecha de Agendamiento"/>
                                 <field name="request_date" required="True" />
                             </group>
@@ -137,8 +137,8 @@
                             </group>
                             <group>
                                 <field name="applicant_id" required="True" />
-                                <field name="declarant_text" />
-                                <field name="indicted_text" />
+                                <field name="declarant_text" invisible="True"/>
+                                <field name="indicted_text" invisible="True"/>
                             </group>
                             <group>
                                 <!-- <field name="types_ids" widget="many2many_tags" /> -->
