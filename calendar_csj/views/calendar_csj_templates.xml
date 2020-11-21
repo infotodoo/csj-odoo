@@ -323,7 +323,7 @@
             <xpath expr="//ul[@class='wizard mt32 float-right']//li[2]" position="replace"/>
             <xpath expr="//div[1]/div[1]/form[1]" position="replace">
                 <form class="o_website_appointment_form w-md-70" t-attf-action="/website/calendar/#{ slug(appointment_type) }/info?date_time=#{date_time}&amp;{duration}" type="post">
-                    <input type="hidden" name="calendar_appointment_type_id" t-att-value="calendar_appointment_type_id"/>
+                    <input type="hidden" name="calendar_appointment_type_id" t-att-value="appointment_type.id"/>
                     <div id="appointment" class="form-group row o_hidden" style="display: none">
                         <label for="calendarType" class="col-md-3 col-form-label">Appointment</label>
                         <div class="col-md-9">
