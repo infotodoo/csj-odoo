@@ -4,7 +4,7 @@
 from odoo.addons.base_rest.controllers import main
 
 
-class BaseRestThomasPrivateApiController(main.RestController):
+class BaseRestCsjPrivateApiController(main.RestController):
     _root_path = "/base_rest_api_rest/private/"
-    _collection_name = "base.rest.thomasgregandsons.private.services"
+    _collection_name = "base.rest.csj.odoo.private.services"
     _default_auth = "user"

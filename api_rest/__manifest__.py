@@ -8,9 +8,8 @@
     "author": "ACSONE SA/NV, " "Odoo Community Association (OCA)",
     "maintainers": ["lmignon"],
     "website": "https://acsone.eu/",
-    "depends": ["base_rest", "component", "mrp","mrp_workorder"],
+    "depends": ["base_rest", "component"],
     "data": [
-        'views/mrp_workcenter_productivity_loss_view.xml',
     ],
     "demo": [],
     "external_dependencies": {"python": ["jsondiff"]},
