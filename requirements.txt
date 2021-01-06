@@ -1,0 +1,6 @@
+Cerberus>=1.3.2
+pyquerystring>=1.1
+parse-accept-language>=0.1.2
+jsondiff2>=1.2.3
+graphene>=2.1.8
+graphql-server-core<=2.0.0
