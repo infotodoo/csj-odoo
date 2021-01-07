@@ -35,7 +35,7 @@ class Service(Component):
         """
         
         partners = self.env["res.partner"].name_search(name)
-        partners = self.env["res.partner"].browse([i[0] for i in partners])
+        partners = self.env["res.partner"].search([('company_type', '=', 'judged')])
         rows = []
         res = {"count": len(partners), "rows": rows}
         for partner in partners:
@@ -75,6 +75,11 @@ class Service(Component):
         res = {
              
             "name": {"type": "string", "required": True, "empty": False},
+            "code": {"type": "string", "required": False, "empty": True},
+            "office": {"type": "string", "required": False, "empty": True},
+            "entity_name": {"type": "string", "required": False, "empty": True},
+            "specialty_name": {"type": "string", "required": False, "empty": True},
+            #"ext_lifesize": {"type": "string", "required": False, "empty": True}
         }
         return res
 
@@ -97,7 +102,13 @@ class Service(Component):
     def _to_json(self, partner):
         res = {
             "id": partner.id,
-            "name": partner.name
+            "name": partner.name,
+            "code": partner.code,
+            "office": partner.mame,
+            "entity_name": partner.entity_id.name,
+            "specialty_name": partner.specialty_id.name,
+            #"ext_lifesize": partner.extension_lifesize
         }
         return res
+
 
