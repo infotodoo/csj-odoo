@@ -11,50 +11,52 @@ import json
 _logger = logging.getLogger(__name__)
 
 
-class Service(Component):
+class EntityService(Component):
     _inherit = "base.rest.service"
-    _name = "judged.service"
-    _usage = "Judged"
+    _name = "res.entity.appointment.service"
+    _usage = "ResEntity"
     _collection = "base.rest.csj.odoo.private.services"
     _description = """
-        Judged Services
-        Access to the Judged services is only allowed to authenticated partners.
+        Res Entity
+        Access to the calendar appointment services is only allowed to authenticated calendars.
         If you are not authenticated go to <a href='/web/login'>Login</a>
     """
     
     def get(self, _id):
         """
-        Obtener Información de un Juzgado
+        Obtener Información de una Entidad
         """
-        partner = self.env["res.partner"].browse(_id)
-        return self._to_json(partner)
+        appointment = self.env["res.entity"].browse(_id)
+        return self._to_json(appointment)
 
     def search(self, name):
         """
-        Buscar Juzgados por Nombre
+        Buscar Entidades
         """
-
-        partners = self.env["res.partner"].name_search(name)
-        partners = self.env["res.partner"].search([('name','ilike',name),('company_type', '=', 'judged')])
-        rows = []
-        res = {"count": len(partners), "rows": rows}
-        for partner in partners:
-            _logger.error('--------------------------partners----------------------')
-            _logger.error(partner)
-            rows.append(self._to_json(partner))
-        return res
+        entity_ids = self.env["res.entity"].sudo().search([
+        ])
+        
+        if entity_ids:
+            rows = []
+            res = {"count": len(entity_ids), "rows": rows}
+            for entity in entity_ids:
+                _logger.error('--------------------------users----------------------')
+                _logger.error(entity)
+                #if partner.company_type == 'judged':
+                rows.append(self._to_json(entity))
+            return res
 
 
     def _get(self, _id):
-        return self.env["res.partner"].browse(_id)
+        return self.env["res.entity"].browse(_id)
 
     def _get_document(self, _id):
-        return self.env["res.partner"].browse(_id)
+        return self.env["res.entity"].browse(_id)
 
     # Validator
     def _validator_return_get(self):
         res = self._validator_create()
-        res.update({"id": {"type": "string", "required": True, "empty": False}})
+        res.update({"id": {"type": "integer", "required": False, "empty": False}})
         return res
 
     def _validator_search(self):
@@ -73,13 +75,9 @@ class Service(Component):
 
     def _validator_create(self):
         res = {
-             
             "name": {"type": "string", "required": True, "empty": False},
             "code": {"type": "string", "required": False, "empty": True},
-            "office": {"type": "string", "required": False, "empty": True},
-            "entity_name": {"type": "string", "required": False, "empty": True},
-            "specialty_name": {"type": "string", "required": False, "empty": True},
-            #"ext_lifesize": {"type": "string", "required": False, "empty": True}
+            "complete_name": {"type": "string", "required": False, "empty": True},
         }
         return res
 
@@ -99,15 +97,12 @@ class Service(Component):
     def _validator_archive(self):
         return {}
 
-    def _to_json(self, partner):
+    def _to_json(self, entity):
         res = {
-            "id": partner.judged_only_code,
-            "name": partner.name,
-            "code": partner.code,
-            "office": partner.mame,
-            "entity_name": partner.entity_id.name,
-            "specialty_name": partner.specialty_id.name,
-            #"ext_lifesize": partner.extension_lifesize
+            #"id": calendar.id,
+            "name": entity.mame,
+            "code": entity.code,
+            "complete_name": entity.name,
         }
         return res
 

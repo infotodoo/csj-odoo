@@ -1,6 +1,7 @@
 
 # Copyright 2018 ACSONE SA/NV
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
+import odoo
 from odoo.addons.base_rest.components.service import to_bool, to_int
 from odoo.addons.component.core import Component
 from odoo import api, fields, models, SUPERUSER_ID, _
@@ -8,53 +9,84 @@ from datetime import datetime
 import logging
 import json
 
+
+import werkzeug.contrib.sessions
+import werkzeug.datastructures
+import werkzeug.exceptions
+import werkzeug.local
+import werkzeug.routing
+import werkzeug.wrappers
+import werkzeug.wsgi
+from werkzeug import urls
+from werkzeug.wsgi import wrap_file
+
+
 _logger = logging.getLogger(__name__)
 
 
-class Service(Component):
+class ServiceAuth(Component):
     _inherit = "base.rest.service"
-    _name = "judged.service"
-    _usage = "Judged"
+    _name = "user.auth.service"
+    _usage = "ValidateToken"
     _collection = "base.rest.csj.odoo.private.services"
     _description = """
-        Judged Services
-        Access to the Judged services is only allowed to authenticated partners.
+        Judged Auth Services
+        Access to the Judged Auth Services is only allowed to authenticated partners.
         If you are not authenticated go to <a href='/web/login'>Login</a>
     """
     
+    '''
     def get(self, _id):
         """
-        Obtener Información de un Juzgado
+        Get Token Session
         """
         partner = self.env["res.partner"].browse(_id)
         return self._to_json(partner)
+    '''
 
     def search(self, name):
         """
-        Buscar Juzgados por Nombre
+        Searh Token Session
         """
-
-        partners = self.env["res.partner"].name_search(name)
-        partners = self.env["res.partner"].search([('name','ilike',name),('company_type', '=', 'judged')])
+        
+        path = odoo.tools.config.session_dir
+        _logger.error(path)
+        
+        result = werkzeug.contrib.sessions.FilesystemSessionStore(
+            path, session_class=name, renew_missing=False)
+        _logger.error('----------------------dir--------------')
+        _logger.error(dir(result))
+        _logger.error('----------------------validate key--------------')
+        _logger.error(result.is_valid_key(name))
+        
+ 
+        if result.is_valid_key(name):
+            res = {
+                "id": name,
+                "name": 'Token Valido',
+                "code": 'True',
+            }
+        else:
+            res = {
+                "id": name,
+                "name": 'Token NO Valido',
+                "code": 'False',
+            }
         rows = []
-        res = {"count": len(partners), "rows": rows}
-        for partner in partners:
-            _logger.error('--------------------------partners----------------------')
-            _logger.error(partner)
-            rows.append(self._to_json(partner))
+        rows.append(res)
+        res = {"count": 1, "rows": rows}
         return res
 
+    #def _get(self, _id):
+    #    return self.env["res.partner"].browse(_id)
 
-    def _get(self, _id):
-        return self.env["res.partner"].browse(_id)
-
-    def _get_document(self, _id):
-        return self.env["res.partner"].browse(_id)
+    #def _get_document(self, _id):
+    #    return self.env["res.partner"].browse(_id)
 
     # Validator
     def _validator_return_get(self):
         res = self._validator_create()
-        res.update({"id": {"type": "string", "required": True, "empty": False}})
+        #res.update({"id": {"type": "integer", "required": False, "empty": False}})
         return res
 
     def _validator_search(self):
@@ -66,20 +98,15 @@ class Service(Component):
             "count": {"type": "integer", "required": True},
             "rows": {
                 "type": "list",
-                "required": True,
+                "required": False,
                 "schema": {"type": "dict", "schema": self._validator_return_get()},
             },
         }
 
     def _validator_create(self):
         res = {
-             
-            "name": {"type": "string", "required": True, "empty": False},
+            "name": {"type": "string", "required": False, "empty": True},
             "code": {"type": "string", "required": False, "empty": True},
-            "office": {"type": "string", "required": False, "empty": True},
-            "entity_name": {"type": "string", "required": False, "empty": True},
-            "specialty_name": {"type": "string", "required": False, "empty": True},
-            #"ext_lifesize": {"type": "string", "required": False, "empty": True}
         }
         return res
 
@@ -101,13 +128,9 @@ class Service(Component):
 
     def _to_json(self, partner):
         res = {
-            "id": partner.judged_only_code,
+            "id": partner.id,
             "name": partner.name,
             "code": partner.code,
-            "office": partner.mame,
-            "entity_name": partner.entity_id.name,
-            "specialty_name": partner.specialty_id.name,
-            #"ext_lifesize": partner.extension_lifesize
         }
         return res
 

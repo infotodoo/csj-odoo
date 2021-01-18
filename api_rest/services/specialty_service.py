@@ -11,50 +11,52 @@ import json
 _logger = logging.getLogger(__name__)
 
 
-class Service(Component):
+class SpecialtyService(Component):
     _inherit = "base.rest.service"
-    _name = "judged.service"
-    _usage = "Judged"
+    _name = "res.specialty.appointment.service"
+    _usage = "ResSpecialty"
     _collection = "base.rest.csj.odoo.private.services"
     _description = """
-        Judged Services
-        Access to the Judged services is only allowed to authenticated partners.
+        Res Specialty
+        Access to the Res Specialty services is only allowed to authenticated calendars.
         If you are not authenticated go to <a href='/web/login'>Login</a>
     """
     
     def get(self, _id):
         """
-        Obtener Información de un Juzgado
+        Obtener Información de una Especialidad
         """
-        partner = self.env["res.partner"].browse(_id)
-        return self._to_json(partner)
+        specialty = self.env["res.specialty"].browse(_id)
+        return self._to_json(specialty)
 
     def search(self, name):
         """
-        Buscar Juzgados por Nombre
+        Buscar Especialidades
         """
-
-        partners = self.env["res.partner"].name_search(name)
-        partners = self.env["res.partner"].search([('name','ilike',name),('company_type', '=', 'judged')])
-        rows = []
-        res = {"count": len(partners), "rows": rows}
-        for partner in partners:
-            _logger.error('--------------------------partners----------------------')
-            _logger.error(partner)
-            rows.append(self._to_json(partner))
-        return res
+        specialty_ids = self.env["res.specialty"].sudo().search([
+        ])
+        
+        if specialty_ids:
+            rows = []
+            res = {"count": len(specialty_ids), "rows": rows}
+            for specialty in specialty_ids:
+                _logger.error('--------------------------specialties----------------------')
+                _logger.error(specialty)
+                #if partner.company_type == 'judged':
+                rows.append(self._to_json(specialty))
+            return res
 
 
     def _get(self, _id):
-        return self.env["res.partner"].browse(_id)
+        return self.env["res.specialty"].browse(_id)
 
     def _get_document(self, _id):
-        return self.env["res.partner"].browse(_id)
+        return self.env["res.specialty"].browse(_id)
 
     # Validator
     def _validator_return_get(self):
         res = self._validator_create()
-        res.update({"id": {"type": "string", "required": True, "empty": False}})
+        res.update({"id": {"type": "integer", "required": False, "empty": False}})
         return res
 
     def _validator_search(self):
@@ -73,13 +75,11 @@ class Service(Component):
 
     def _validator_create(self):
         res = {
-             
             "name": {"type": "string", "required": True, "empty": False},
             "code": {"type": "string", "required": False, "empty": True},
-            "office": {"type": "string", "required": False, "empty": True},
+            "complete_name": {"type": "string", "required": False, "empty": True},
+            "entity_id": {"type": "integer", "required": False, "empty": True},
             "entity_name": {"type": "string", "required": False, "empty": True},
-            "specialty_name": {"type": "string", "required": False, "empty": True},
-            #"ext_lifesize": {"type": "string", "required": False, "empty": True}
         }
         return res
 
@@ -99,15 +99,14 @@ class Service(Component):
     def _validator_archive(self):
         return {}
 
-    def _to_json(self, partner):
+    def _to_json(self, specialty):
         res = {
-            "id": partner.judged_only_code,
-            "name": partner.name,
-            "code": partner.code,
-            "office": partner.mame,
-            "entity_name": partner.entity_id.name,
-            "specialty_name": partner.specialty_id.name,
-            #"ext_lifesize": partner.extension_lifesize
+            #"id": calendar.id,
+            "name": specialty.mame,
+            "code": specialty.code,
+            "complete_name": specialty.name,
+            "entity_id": specialty.entity_id.id,
+            "entity_name": specialty.entity_id.mame,
         }
         return res
 

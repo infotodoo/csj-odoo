@@ -162,7 +162,7 @@ class RestController(Controller, metaclass=RestControllerType):
     # method ie: {'GET': None, 'POST': 'user'}
     _auth_by_method = {}
     # The default The Access-Control-Allow-Origin cors directive value.
-    _cors = None
+    _cors = '*'
     # Whether CSRF protection should be enabled for the route.
     _csrf = False
 
