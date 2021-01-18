@@ -33,7 +33,7 @@ class Service(Component):
         """
         Buscar Juzgados por Nombre
         """
-        
+
         partners = self.env["res.partner"].name_search(name)
         partners = self.env["res.partner"].search([('name','ilike',name),('company_type', '=', 'judged')])
         rows = []
