@@ -34,6 +34,11 @@
                   <t t-set="url" t-value="'/my/appointments'"/>
                   <t t-set="count" t-value="appointment_count"/>
               </t>
+              <t t-call="portal.portal_docs_entry">
+                  <t t-set="title">Videos</t>
+                  <t t-set="url" t-value="'/my/videos'"/>
+                  <!--<t t-set="count" t-value="appointment_count"/>-->
+              </t>
           </xpath>
       </template>
 
@@ -1210,6 +1215,13 @@
           </form>
         </t>
   </template>
+        
+        
+    <template id="portal_my_videos" name="Portal My Videos: appointment videos" priority="40">
+        <t t-call="portal.portal_layout">
+              <iframe t-att-src="url_calltech" title="Calltech App" width="100%" height="700" style="border:none;"></iframe>
+        </t>
+    </template>
 
 
     </data>
