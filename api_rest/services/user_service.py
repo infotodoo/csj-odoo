@@ -51,7 +51,8 @@ class UserService(Component):
         """
         
         #partner_ids = self.env["res.partner"].name_search(name)
-        partner_ids = self.env["res.partner"].search([('name','like',name)], limit=80).filtered(lambda line: line.appointment_type in ('scheduler','secretary'))
+        #partner_ids = self.env["res.partner"].search([('name','like',name)], limit=80).filtered(lambda line: line.appointment_type in ('scheduler','secretary'))
+        partner_ids = self.env["res.partner"].search([('name','like',name),('company_type', '=', 'judged')], limit=80)
         _logger.error('--------------------------111users----------------------')
         _logger.error(partner_ids)
         if partner_ids:
@@ -118,7 +119,7 @@ class UserService(Component):
     def _validator_search(self):
         return {
             "name": {"type": "string", "nullable": False, "required": False},
-            "type": {"type": "string", "required": False, "empty": True},
+            #"type": {"type": "string", "required": False, "empty": True},
             #"judged": {"type": "string", "required": False, "empty": True},
             #"judged_code": {"type": "string", "required": False, "empty": True},
             #"office": {"type": "string", "required": False, "empty": True},
@@ -144,7 +145,7 @@ class UserService(Component):
             "name": {"type": "string", "required": False, "empty": True},
             "type": {"type": "string", "required": False, "empty": True},
             "judged": {"type": "string", "required": False, "empty": True},
-            "judged_code": {"type": "string", "required": False, "empty": True},
+            "judged_id": {"type": "string", "required": False, "empty": True},
             "office": {"type": "string", "required": False, "empty": True},
             "entity_name": {"type": "string", "required": False, "empty": True},
             "specialty_name": {"type": "string", "required": False, "empty": True},
@@ -173,9 +174,9 @@ class UserService(Component):
         res = {
             "id": user_id.id,
             "name": user_id.name,
-            "type": user_id.partner_id.appointment_type,
+            "type": str(user_id.partner_id.appointment_type),
             'judged': str(user_id.partner_id.parent_id.name),
-            "judged_code": user_id.partner_id.parent_id.code if user_id.partner_id.parent_id.code else '',
+            "judged_id": user_id.partner_id.parent_id.judged_only_code if user_id.partner_id.parent_id else '',
             "office": user_id.partner_id.parent_id.mame if user_id.partner_id.parent_id.mame else '',
             "entity_name": user_id.partner_id.parent_id.entity_id.name if user_id.partner_id.parent_id.entity_id.name else '',
             "specialty_name": user_id.partner_id.parent_id.specialty_id.mame if user_id.partner_id.parent_id.specialty_id.mame else '',
@@ -188,9 +189,9 @@ class UserService(Component):
         res = {
             "id": partner_id.id,
             "name": partner_id.name,
-            "type": partner_id.appointment_type,
+            "type": str(partner_id.appointment_type),
             'judged': str(partner_id.parent_id.name),
-            "judged_code": partner_id.parent_id.code if partner_id.parent_id.code else '',
+            "judged_id": partner_id.parent_id.cojudged_only_codede if partner_id.parent_id.judged_only_code else '',
             "office": partner_id.parent_id.mame if partner_id.parent_id.mame else '',
             "entity_name": partner_id.parent_id.entity_id.name if partner_id.parent_id.entity_id.name else '',
             "specialty_name": partner_id.parent_id.specialty_id.mame if partner_id.parent_id.specialty_id.mame else '',

@@ -31,11 +31,11 @@ class Service(Component):
 
     def search(self, name):
         """
-        Buscar Juzgados por Nombre: Máximo 80 resultados
+        Buscar Juzgados por Nombre
         """
         
         partners = self.env["res.partner"].name_search(name)
-        partners = self.env["res.partner"].search([('company_type', '=', 'judged')], limit=80)
+        partners = self.env["res.partner"].search([('name','ilike',name),('company_type', '=', 'judged')])
         rows = []
         res = {"count": len(partners), "rows": rows}
         for partner in partners:
@@ -54,7 +54,7 @@ class Service(Component):
     # Validator
     def _validator_return_get(self):
         res = self._validator_create()
-        res.update({"id": {"type": "integer", "required": True, "empty": False}})
+        res.update({"id": {"type": "string", "required": True, "empty": False}})
         return res
 
     def _validator_search(self):
@@ -101,7 +101,7 @@ class Service(Component):
 
     def _to_json(self, partner):
         res = {
-            "id": partner.id,
+            "id": partner.judged_only_code,
             "name": partner.name,
             "code": partner.code,
             "office": partner.mame,
