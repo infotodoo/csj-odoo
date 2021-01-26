@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ir_mail_server_by_user,smtp_by_user.access_ir_mail_server_by_user,model_ir_mail_server,base.group_user,1,1,1,1
+access_ir_mail_server_users,smtp_by_user.access_ir_mail_server_users,model_res_users,base.group_user,1,1,0,0
