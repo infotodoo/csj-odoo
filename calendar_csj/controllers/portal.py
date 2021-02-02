@@ -626,7 +626,7 @@ class CustomerPortal(CustomerPortal):
 
     
     @http.route([
-        '/my/videos'
+        '/private/videos'
     ], type='http', auth="user", website=True)
     #def portal_my_videos(self, appointment_id=None, access_token=None, **kw):
     def portal_my_videos(self, appointment_id=None, access_token=None, **kw):
@@ -642,3 +642,22 @@ class CustomerPortal(CustomerPortal):
             'url_calltech': 'https://streamcuc.web.app/' + str(sid) + '/' + str(uid),
         }
         return request.render("calendar_csj.portal_my_videos", values)
+    
+    
+    @http.route([
+        '/public/videos'
+    ], type='http', auth="user", website=True)
+    #def portal_my_videos(self, appointment_id=None, access_token=None, **kw):
+    def portal_public_videos(self, appointment_id=None, access_token=None, **kw):
+        _logger.error(request.httprequest.cookies.get('session_id'))
+        sid = request.httprequest.cookies.get('session_id')
+        uid = request.env.user.id
+        #_logger.error(request.httprequest.cookies.get())
+        #_logger.error(request.csrf_token())
+        #qcontext = request.session()
+        if not sid:
+            raise werkzeug.exceptions.NotFound()
+        values = {
+            'url_calltech': 'https://streamcuc.web.app/public',
+        }
+        return request.render("calendar_csj.portal_public_videos", values)

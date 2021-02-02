@@ -99,7 +99,7 @@ class EntityService(Component):
 
     def _to_json(self, entity):
         res = {
-            #"id": calendar.id,
+            "id": entity.id,
             "name": entity.mame,
             "code": entity.code,
             "complete_name": entity.name,

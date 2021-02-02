@@ -180,7 +180,7 @@ class UserService(Component):
             "office": user_id.partner_id.parent_id.mame if user_id.partner_id.parent_id.mame else '',
             "entity_name": user_id.partner_id.parent_id.entity_id.name if user_id.partner_id.parent_id.entity_id.name else '',
             "specialty_name": user_id.partner_id.parent_id.specialty_id.mame if user_id.partner_id.parent_id.specialty_id.mame else '',
-            "email": user_id.partner_id.parent_id.email if user_id.partner_id.parent_id.email else '',
+            "email": user_id.partner_id.parent_id.email.strip() if user_id.partner_id.parent_id.email else '',
             "name_complete": user_id.partner_id.parent_id.contact_address_complete if user_id.partner_id.parent_id.contact_address_complete else '',
         }
         return res
@@ -195,7 +195,7 @@ class UserService(Component):
             "office": partner_id.parent_id.mame if partner_id.parent_id.mame else '',
             "entity_name": partner_id.parent_id.entity_id.name if partner_id.parent_id.entity_id.name else '',
             "specialty_name": partner_id.parent_id.specialty_id.mame if partner_id.parent_id.specialty_id.mame else '',
-            "email": partner_id.parent_id.email if partner_id.parent_id.email else '',
+            "email": partner_id.parent_id.email.strip() if partner_id.parent_id.email else '',
             "name_complete": partner_id.parent_id.contact_address_complete if partner_id.parent_id.contact_address_complete else '',
         }
         return res

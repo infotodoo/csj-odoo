@@ -63,7 +63,7 @@ class AppointmentService(Component):
     def _validator_search(self):
         return {"name": {"type": "string", "nullable": False, "required": True}}
     
-        
+    """
     def _validator_return_search(self):
         return {
             "count": {"type": "integer", "required": True},
@@ -73,6 +73,7 @@ class AppointmentService(Component):
                 "schema": {"type": "dict", "schema": self._validator_return_get()},
             },
         }
+    """
 
     def _validator_create(self):
         res = {
@@ -98,9 +99,19 @@ class AppointmentService(Component):
                 },
                 "required": False, "empty": True},
             
+            "country_state": {
+                "type": "dict", 
+                "schema": {
+                    "id": {"type": "integer", "coerce": to_int, "nullable": True},
+                    "name": {"type": "string"},
+                },
+                "required": False, "empty": True},
+            
+            "state": {"type": "string", "required": False, "empty": True},
             "request_date": {"type": "string", "required": False, "empty": True},
             "calendar_date": {"type": "string", "required": False, "empty": True},
             "calendar_time": {"type": "string", "required": False, "empty": True},
+            "calendar_datetime": {"type": "string", "required": False, "empty": True},
             "reception_detail": {"type": "string", "required": False, "empty": True},
             "appointment_close": {"type": "string", "required": False, "empty": True},
             "appointment_close_user_id": {"type": "integer", "required": False, "empty": True},
@@ -121,14 +132,53 @@ class AppointmentService(Component):
                 },
                 "required": False, "empty": True},
             
+            "entity": {
+                "type": "dict", 
+                "schema": {
+                    "id": {"type": "integer", "coerce": to_int, "nullable": True},
+                    "name": {"type": "string"},
+                },
+                "required": False, "empty": True},
+            
+            "specialty": {
+                "type": "dict", 
+                "schema": {
+                    "id": {"type": "integer", "coerce": to_int, "nullable": True},
+                    "name": {"type": "string"},
+                },
+                "required": False, "empty": True},
+            
+            "participants": {
+                "type": "dict", 
+                "schema": {
+                    "id": {"type": "integer", "coerce": to_int, "nullable": True},
+                    
+                },
+                "required": False, "empty": True},
+            
+            "recordings": {
+                "type": "dict", 
+                "schema": {
+                    "id": {"type": "integer", "coerce": to_int, "nullable": True},
+                    
+                },
+                "required": False, "empty": True},
+            
             "request_type": {"type": "string", "required": False, "empty": True},
             "process_number": {"type": "string", "required": False, "empty": True},
             "tag_number": {"type": "string", "required": False, "empty": True},
             "room_name": {"type": "string", "required": False, "empty": True},
             "reception_id": {"type": "string", "required": False, "empty": True},
             "observations": {"type": "string", "required": False, "empty": True},
+            "applicant_id": {"type": "string", "required": False, "empty": True},
+            "applicant_email": {"type": "string", "required": False, "empty": True},
             "applicant_domain": {"type": "string", "required": False, "empty": True},
             "applicant_mobile": {"type": "string", "required": False, "empty": True},
+            "record_data": {"type": "string", "required": False, "empty": True},
+            "lifesize_meeting_ext": {"type": "string", "required": False, "empty": True},
+            "lifesize_url": {"type": "string", "required": False, "empty": True},
+            "lifesize_owner": {"type": "string", "required": False, "empty": True},
+            "lifesize_moderator": {"type": "string", "required": False, "empty": True},
         }
         return res
 
@@ -159,7 +209,9 @@ class AppointmentService(Component):
             "partaker_type": appointment.partaker_type.name,
             "appointment_date": str(appointment.appointment_date),
             "request_date": str(appointment.request_date),
+            "calendar_datetime": str(appointment.calendar_datetime),
             "calendar_time": str(appointment.calendar_time),
+            "state": str(appointment.state),
             "reception_detail": appointment.reception_detail,
             "appointment_close_date": appointment.appointment_close_date,
             "appointment_close_user_id": appointment.appointment_close_user_id.id,
@@ -168,13 +220,20 @@ class AppointmentService(Component):
             "tag_number": appointment.tag_number,
             "reception_id": appointment.reception_id.name,
             "observations": appointment.observations,
+            "applicant_id": appointment.applicant_id.name,
+            "applicant_email": appointment.applicant_email,
             "applicant_domain": appointment.applicant_domain,
             "applicant_mobile": appointment.applicant_mobile,
+            "record_data": appointment.record_data,
+            "lifesize_meeting_ext": appointment.lifesize_meeting_ext,
+            "lifesize_url": appointment.lifesize_url,
+            "lifesize_owner": str(appointment.lifesize_owner),
+            "lifesize_moderator": str(appointment.lifesize_moderator),
             #"partners_ids": appointment.partners_ids,
         }
         if appointment.partner_id.id:
             res["judged"] = {
-                "id": appointment.partner_id.id,
+                "id": appointment.partner_id.judged_only_code,
                 "name": appointment.partner_id.name,
             }
             
@@ -189,6 +248,25 @@ class AppointmentService(Component):
                 "id": appointment.city_id.id,
                 "name": appointment.city_id.name,
             }
+            
+        if appointment.country_state_id.id:
+            res["country_state"] = {
+                "id": appointment.country_state_id.id,
+                "name": appointment.country_state_id.name,
+            }
+            
+        if appointment.partner_id.entity_id.id:
+            res["entity"] = {
+                "id": appointment.partner_id.entity_id.id,
+                "name": appointment.partner_id.entity_id.name,
+            }
+            
+        if appointment.partner_id.specialty_id.id:
+            res["specialty"] = {
+                "id": appointment.partner_id.specialty_id.id,
+                "name": appointment.partner_id.specialty_id.name,
+            }
+
         
         if appointment.applicant_id.id:
             res["applicant"] = {
@@ -196,6 +274,42 @@ class AppointmentService(Component):
                 "name": appointment.applicant_id.name,
             }
             
+        partner_list = []
+        partner_list.append({
+            'partner_id': appointment.applicant_id.id,
+            'partner_name': appointment.applicant_id.name,
+            'partner_email': appointment.applicant_id.email.strip(),
+            'partner_type': 'applicant',
+        })
+        if appointment.partners_ids:
+            for partner in appointment.partners_ids:
+                partner_list.append({
+                    'partner_id': partner.id,
+                    'partner_name': partner.name,
+                    'partner_email': partner.email.strip(),
+                    'partner_type': 'guest',
+                })
+        if appointment.destination_ids:
+            for partner in appointment.destination_ids:
+                partner_list.append({
+                    'partner_id': partner.id,
+                    'partner_name': partner.name,
+                    'partner_email': partner.email.strip(),
+                    'partner_type': 'destination',
+                })
+        
+        res["participants"] = partner_list
+        
+        recording_list = []
+        if appointment.recording_ids:
+            for recording in appointment.recording_ids:
+                recording_list.append({
+                    'name': recording.name,
+                    'url': recording.url,
+                    'active': str(recording.active),
+                    'create_date': str(recording.create_date),
+                    'create_user': str(recording.create_uid),
+                })
+                
+        res["recordings"] = recording_list
         return res
-
-
