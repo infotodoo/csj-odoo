@@ -521,7 +521,7 @@
                             <t t-foreach="appointments" t-as="appointment">
                                 <tr>
                                   <td>
-                                      <a t-attf-href="/my/appointment/#{appointment.id}?{{ keep_query() }}"><span t-field="appointment.appointment_code"/></a>
+                                      <span t-field="appointment.appointment_code"/>
                                   </td>
                                     <td>
                                         <span t-field="appointment.type_request_concatenated"/>
