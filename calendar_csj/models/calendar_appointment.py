@@ -49,6 +49,14 @@ class CalendarRecording(models.Model):
     active = fields.Boolean(default=True)
     url = fields.Char('URL Recording')
 
+class CalendarRecording(models.Model):
+    _name = 'calendar.recording'
+    _description = 'Calendar recording'
+
+    name = fields.Char('Name', required=True)
+    active = fields.Boolean(default=True)
+    url = fields.Char('URL Recording')
+
 class CalendarAppointment(models.Model):
     _name = 'calendar.appointment'
     _inherit = ["mail.thread"]
@@ -296,13 +304,13 @@ class CalendarAppointment(models.Model):
             else:
                 record.calendar_time = (record.calendar_datetime).hour + tz + \
                 record.calendar_datetime.minute/60.0 if \
-                record.calendar_datetime else False 
+                record.calendar_datetime else False
 
     # @api.depends('appointment_date')
     # def _get_date_today(self):
     #     for record in self:
     #         if record.appointment_date:
-    #             record.appointment_date = (record.appointment_date - datetime.timedelta(1)) 
+    #             record.appointment_date = (record.appointment_date - datetime.timedelta(1))
 
 
     @api.depends('applicant_id')
@@ -599,57 +607,57 @@ class CalendarAppointment(models.Model):
                     end_hour = float(res['datas'][index][fieldindex])
                     hour, minute = self.float_time_convert(end_hour)
                     res['datas'][index][fieldindex] = '{0:02d}:{1:02d}:00'.format(hour, minute)
-                    
+
                 if fields_name.get('request_type'):
                     fieldindex = fields_name.get('request_type')
                     request_type_value = str(res['datas'][index][fieldindex])
                     request_type_value = 'L' if request_type_value == 'Libre' else 'R'
                     res['datas'][index][fieldindex] = request_type_value
-                    
+
                 if fields_name.get('city_id'):
                     fieldindex = fields_name.get('city_id')
                     city_id = str(res['datas'][index][fieldindex])
                     city_id = city_id.upper()
                     res['datas'][index][fieldindex] = city_id
-                    
+
                 if fields_name.get('country_state_id'):
                     fieldindex = fields_name.get('country_state_id')
                     country_state_id = str(res['datas'][index][fieldindex])
                     country_state_id = country_state_id.upper()
                     res['datas'][index][fieldindex] = country_state_id
-                
+
                 if fields_name.get('reception_detail'):
                     fieldindex = fields_name.get('reception_detail')
                     reception_detail = str(res['datas'][index][fieldindex])
                     reception_detail = reception_detail.upper()
                     res['datas'][index][fieldindex] = reception_detail
-                    
+
                 if fields_name.get('observations'):
                     fieldindex = fields_name.get('observations')
                     observations = str(res['datas'][index][fieldindex])
                     observations = observations.upper()
                     res['datas'][index][fieldindex] = observations
-                    
+
                 if fields_name.get('aplicant_id'):
                     fieldindex = fields_name.get('aplicant_id')
                     aplicant_id = str(res['datas'][index][fieldindex])
                     aplicant_id = aplicant_id.upper()
                     res['datas'][index][fieldindex] = aplicant_id
-                    
+
                 if fields_name.get('room_id_mame'):
                     fieldindex = fields_name.get('room_id_mame')
                     room_id_mame = str(res['datas'][index][fieldindex])
                     room_id_mame = room_id_mame.upper()
                     res['datas'][index][fieldindex] = room_id_mame
-                    
+
                 if fields_name.get('class_id'):
                     fieldindex = fields_name.get('class_id')
                     class_id = str(res['datas'][index][fieldindex])
                     class_id = class_id.upper()
                     res['datas'][index][fieldindex] = class_id
-                    
 
-                    
+
+
         except Exception as e:
             raise UserError('It was not possible to convert the time format when exporting the file.')
         return res

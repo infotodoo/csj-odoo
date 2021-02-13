@@ -25,10 +25,10 @@ class MailMail(models.Model):
         # notification field: if not set, set if mail comes from an existing mail.message
         if 'notification' not in values and values.get('mail_message_id'):
             values['notification'] = True
-        
-        
+            
         user_server_id = self.env['res.users'].sudo().browse(self.env.uid)
         outgoing_obj = self.env['ir.mail_server'].sudo().browse(user_server_id.out_mail_server_id.id)
+
         if not outgoing_obj:
             outgoing_obj = self.env['ir.mail_server'].sudo().search([('is_default_server','=',True)],limit=1)
         if outgoing_obj:

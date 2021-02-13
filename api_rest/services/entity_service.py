@@ -21,7 +21,7 @@ class EntityService(Component):
         Access to the calendar appointment services is only allowed to authenticated calendars.
         If you are not authenticated go to <a href='/web/login'>Login</a>
     """
-    
+
     def get(self, _id):
         """
         Obtener Información de una Entidad
@@ -35,7 +35,7 @@ class EntityService(Component):
         """
         entity_ids = self.env["res.entity"].sudo().search([
         ])
-        
+
         if entity_ids:
             rows = []
             res = {"count": len(entity_ids), "rows": rows}
@@ -61,8 +61,7 @@ class EntityService(Component):
 
     def _validator_search(self):
         return {"name": {"type": "string", "nullable": False, "required": True}}
-    
-        
+
     def _validator_return_search(self):
         return {
             "count": {"type": "integer", "required": True},
@@ -105,5 +104,4 @@ class EntityService(Component):
             "complete_name": entity.name,
         }
         return res
-
 

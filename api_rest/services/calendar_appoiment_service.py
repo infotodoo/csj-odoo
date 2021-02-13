@@ -21,7 +21,7 @@ class AppointmentService(Component):
         Access to the calendar appointment services is only allowed to authenticated calendars.
         If you are not authenticated go to <a href='/web/login'>Login</a>
     """
-    
+
     def get(self, _id):
         """
         Obtener Información de un Agendamiento
@@ -62,7 +62,7 @@ class AppointmentService(Component):
 
     def _validator_search(self):
         return {"name": {"type": "string", "nullable": False, "required": True}}
-    
+
     """
     def _validator_return_search(self):
         return {
@@ -83,30 +83,34 @@ class AppointmentService(Component):
             "help_id": {"type": "string", "required": False, "empty": True},
             "partaker_type": {"type": "string", "required": False, "empty": True},
             "appointment_date": {"type": "string", "required": False, "empty": True},
-            
+
+
             "applicant": {
-                "type": "dict", 
+                "type": "dict",
+
                 "schema": {
                     "id": {"type": "integer", "coerce": to_int, "nullable": True},
                     "name": {"type": "string"},
                 },
                 "required": False, "empty": True},
             "city": {
-                "type": "dict", 
+
+                "type": "dict",
                 "schema": {
                     "id": {"type": "integer", "coerce": to_int, "nullable": True},
                     "name": {"type": "string"},
                 },
                 "required": False, "empty": True},
-            
+
+
             "country_state": {
-                "type": "dict", 
+                "type": "dict",
                 "schema": {
                     "id": {"type": "integer", "coerce": to_int, "nullable": True},
                     "name": {"type": "string"},
                 },
                 "required": False, "empty": True},
-            
+
             "state": {"type": "string", "required": False, "empty": True},
             "request_date": {"type": "string", "required": False, "empty": True},
             "calendar_date": {"type": "string", "required": False, "empty": True},
@@ -115,55 +119,64 @@ class AppointmentService(Component):
             "reception_detail": {"type": "string", "required": False, "empty": True},
             "appointment_close": {"type": "string", "required": False, "empty": True},
             "appointment_close_user_id": {"type": "integer", "required": False, "empty": True},
-            
+
+
             "judged": {
-                "type": "dict", 
+                "type": "dict",
+
                 "schema": {
                     "id": {"type": "integer", "coerce": to_int, "nullable": True},
                     "name": {"type": "string"},
                 },
                 "required": False, "empty": True},
-            
+
+
             "room": {
-                "type": "dict", 
+                "type": "dict",
+
                 "schema": {
                     "id": {"type": "integer", "coerce": to_int, "nullable": True},
                     "name": {"type": "string"},
                 },
                 "required": False, "empty": True},
-            
+
+
             "entity": {
-                "type": "dict", 
+                "type": "dict",
+
                 "schema": {
                     "id": {"type": "integer", "coerce": to_int, "nullable": True},
                     "name": {"type": "string"},
                 },
                 "required": False, "empty": True},
-            
+
+
             "specialty": {
-                "type": "dict", 
+                "type": "dict",
+
                 "schema": {
                     "id": {"type": "integer", "coerce": to_int, "nullable": True},
                     "name": {"type": "string"},
                 },
                 "required": False, "empty": True},
-            
+
+
             "participants": {
-                "type": "dict", 
+                "type": "dict",
                 "schema": {
                     "id": {"type": "integer", "coerce": to_int, "nullable": True},
-                    
+
                 },
                 "required": False, "empty": True},
-            
+
             "recordings": {
-                "type": "dict", 
+                "type": "dict",
                 "schema": {
                     "id": {"type": "integer", "coerce": to_int, "nullable": True},
-                    
+
                 },
                 "required": False, "empty": True},
-            
+
             "request_type": {"type": "string", "required": False, "empty": True},
             "process_number": {"type": "string", "required": False, "empty": True},
             "tag_number": {"type": "string", "required": False, "empty": True},
@@ -199,8 +212,7 @@ class AppointmentService(Component):
         return {}
 
     def _to_json(self, appointment):
-        
-        
+
         res = {
             "name": appointment.appointment_code,
             "type": appointment.type,
@@ -236,44 +248,44 @@ class AppointmentService(Component):
                 "id": appointment.partner_id.judged_only_code,
                 "name": appointment.partner_id.name,
             }
-            
+
         if appointment.room_id.id:
             res["room"] = {
                 "id": appointment.room_id.id,
                 "name": appointment.room_id.name,
             }
-        
+
         if appointment.city_id.id:
             res["city"] = {
                 "id": appointment.city_id.id,
                 "name": appointment.city_id.name,
             }
-            
+
         if appointment.country_state_id.id:
             res["country_state"] = {
                 "id": appointment.country_state_id.id,
                 "name": appointment.country_state_id.name,
             }
-            
+
         if appointment.partner_id.entity_id.id:
             res["entity"] = {
                 "id": appointment.partner_id.entity_id.id,
                 "name": appointment.partner_id.entity_id.name,
             }
-            
+
         if appointment.partner_id.specialty_id.id:
             res["specialty"] = {
                 "id": appointment.partner_id.specialty_id.id,
                 "name": appointment.partner_id.specialty_id.name,
             }
 
-        
+
         if appointment.applicant_id.id:
             res["applicant"] = {
                 "id": appointment.applicant_id.id,
                 "name": appointment.applicant_id.name,
             }
-            
+
         partner_list = []
         partner_list.append({
             'partner_id': appointment.applicant_id.id,
@@ -297,9 +309,10 @@ class AppointmentService(Component):
                     'partner_email': partner.email.strip(),
                     'partner_type': 'destination',
                 })
-        
+
+
         res["participants"] = partner_list
-        
+
         recording_list = []
         if appointment.recording_ids:
             for recording in appointment.recording_ids:
@@ -310,6 +323,6 @@ class AppointmentService(Component):
                     'create_date': str(recording.create_date),
                     'create_user': str(recording.create_uid),
                 })
-                
+
         res["recordings"] = recording_list
         return res

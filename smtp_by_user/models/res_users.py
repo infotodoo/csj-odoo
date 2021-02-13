@@ -6,4 +6,5 @@ class ResUsers(models.Model):
 
     #out_mail_server_ids = fields.Many2many('ir.mail_server', 'Outgoing mail servers')
     out_mail_server_id = fields.Many2one('ir.mail_server', 'Servidor de Correo de Salida')
+
     

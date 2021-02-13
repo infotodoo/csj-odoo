@@ -21,7 +21,7 @@ class JudgedRoomService(Component):
         Access to the Res Judged Room services is only allowed to authenticated calendars.
         If you are not authenticated go to <a href='/web/login'>Login</a>
     """
-    
+
     def get(self, _id):
         """
         Obtener Información de una Sala
@@ -37,7 +37,7 @@ class JudgedRoomService(Component):
             ('active','=',True),
             ('judged_id','!=',False),
         ])
-        
+
         if room_ids:
             rows = []
             res = {"count": len(room_ids), "rows": rows}
@@ -63,8 +63,7 @@ class JudgedRoomService(Component):
 
     def _validator_search(self):
         return {"name": {"type": "string", "nullable": False, "required": True}}
-    
-        
+
     def _validator_return_search(self):
         return {
             "count": {"type": "integer", "required": True},
@@ -117,5 +116,4 @@ class JudgedRoomService(Component):
             "city_name": room.city_id.name if room.city_id.name else '',
         }
         return res
-
 

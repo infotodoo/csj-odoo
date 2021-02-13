@@ -52,11 +52,11 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem 
-        id="calendar_recording_notification_menu" 
-        name="Calendar Recording Notification" 
+        <menuitem
+        id="calendar_recording_notification_menu"
+        name="Calendar Recording Notification"
         parent="calendar_csj.appointment_menu"
-        sequence="15" 
+        sequence="15"
         action="calendar_csj.calendar_recording_notification_action"/>
     </data>
     <!--parent="calendar_csj.appointment_menu" -->

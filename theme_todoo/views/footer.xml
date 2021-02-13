@@ -167,3 +167,4 @@
         <xpath expr="//div[hasclass('o_footer_copyright')]" position="replace"></xpath>
     </template>
 </odoo>
+

@@ -34,7 +34,7 @@ class ServiceAuth(Component):
         Access to the Judged Auth Services is only allowed to authenticated partners.
         If you are not authenticated go to <a href='/web/login'>Login</a>
     """
-    
+
     '''
     def get(self, _id):
         """
@@ -48,7 +48,7 @@ class ServiceAuth(Component):
         """
         Searh Token Session
         """
-        
+
         path = odoo.tools.config.session_dir
         _logger.error(path)
         
@@ -58,8 +58,7 @@ class ServiceAuth(Component):
         _logger.error(dir(result))
         _logger.error('----------------------validate key--------------')
         _logger.error(result.is_valid_key(name))
-        
- 
+
         if result.is_valid_key(name):
             res = {
                 "id": name,
@@ -91,8 +90,7 @@ class ServiceAuth(Component):
 
     def _validator_search(self):
         return {"name": {"type": "string", "nullable": False, "required": True}}
-    
-        
+
     def _validator_return_search(self):
         return {
             "count": {"type": "integer", "required": True},
@@ -133,5 +131,4 @@ class ServiceAuth(Component):
             "code": partner.code,
         }
         return res
-
 

@@ -243,6 +243,24 @@ class ResPartner(models.Model):
     
     
 
+    judged_only_code = fields.Char('Partner Only Code', compute="_compute_partner_separated_name", store=False)
+    judged_only_name = fields.Char('Partner Only Name', compute="_compute_partner_separated_name", store=True)
+
+
+    #@api.depends('partner_id')
+    def _compute_partner_separated_name(self):
+        for record in self:
+            code_entity = record.entity_id.code if record.entity_id else ''
+            code_specialty = record.specialty_id.code if record.specialty_id else ''
+            zipcode = record.city_id.zipcode if record.city_id else ''
+            code_city = zipcode or ''
+            code = record.code or ''
+            name = record.mame or ''
+            record.judged_only_code = code_city + code_entity + code_specialty + code
+            record.judged_only_name = name
+
+
+
     @api.onchange('code', 'mame', 'city_id', 'specialty_id', 'entity_id')
     def _onchange_mame(self):
         if self.company_type == 'judged':
