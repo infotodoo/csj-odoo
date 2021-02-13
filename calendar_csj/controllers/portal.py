@@ -639,14 +639,14 @@ class CustomerPortal(CustomerPortal):
         if not sid:
             raise werkzeug.exceptions.NotFound()
         values = {
-            'url_calltech': 'https://streamcuc.web.app/' + str(sid) + '/' + str(uid),
+            'url_calltech': 'https://apigestionaudiencias3.ramajudicial.gov.co/' + str(sid) + '/' + str(uid),
         }
         return request.render("calendar_csj.portal_my_videos", values)
     
     
     @http.route([
         '/public/videos'
-    ], type='http', auth="user", website=True)
+    ], type='http', auth="public", website=True)
     #def portal_my_videos(self, appointment_id=None, access_token=None, **kw):
     def portal_public_videos(self, appointment_id=None, access_token=None, **kw):
         _logger.error(request.httprequest.cookies.get('session_id'))
@@ -658,6 +658,7 @@ class CustomerPortal(CustomerPortal):
         if not sid:
             raise werkzeug.exceptions.NotFound()
         values = {
-            'url_calltech': 'https://streamcuc.web.app/public',
+            #'url_calltech': 'https://streamcuc.web.app/public',
+            'url_calltech': 'https://apigestionaudiencias3.ramajudicial.gov.co/public',
         }
         return request.render("calendar_csj.portal_public_videos", values)
