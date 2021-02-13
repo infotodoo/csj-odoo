@@ -662,3 +662,26 @@ class CustomerPortal(CustomerPortal):
             'url_calltech': 'https://apigestionaudiencias3.ramajudicial.gov.co/public',
         }
         return request.render("calendar_csj.portal_public_videos", values)
+
+
+    @http.route([
+        '/data/recordings'
+    ], type='http', auth="public", website=True)
+    #def portal_my_videos(self, appointment_id=None, access_token=None, **kw):
+    def portal_public_videos(self, appointment_id=None, access_token=None, **kw):
+        _logger.error(request.httprequest.cookies.get('session_id'))
+        sid = request.httprequest.cookies.get('session_id')
+        uid = request.env.user.id
+        if not sid:
+            raise werkzeug.exceptions.NotFound()
+
+        if uid and sid:
+            _logger.error('privado')
+            values = {
+                'url_calltech': 'https://apigestionaudiencias3.ramajudicial.gov.co/' + str(sid) + '/' + str(uid),
+            }
+        else:
+            values = {
+                'url_calltech': 'https://apigestionaudiencias3.ramajudicial.gov.co/public',
+            }
+        return request.render("calendar_csj.portal_public_videos", values)
