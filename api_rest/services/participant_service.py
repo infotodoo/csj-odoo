@@ -21,7 +21,7 @@ class ParticipantService(Component):
         Access to the participant services is only allowed to authenticated calendars.
         If you are not authenticated go to <a href='/web/login'>Login</a>
     """
-    
+
 
 
     def search(self, name):
@@ -31,14 +31,14 @@ class ParticipantService(Component):
         partner_ids = self.env["calendar.appointment"].sudo().search([
             ('appointment_code','=',name),
         ]).partners_ids
-        
+
         if not partner_ids:
             res = {
                 "name": 'No Existen Resultados',
                 "email": '',
             }
             return res
-        
+
         if partner_ids:
             rows = []
             res = {"count": len(partner_ids), "rows": rows}
@@ -63,8 +63,8 @@ class ParticipantService(Component):
 
     def _validator_search(self):
         return {"name": {"type": "string", "nullable": False, "required": True}}
-    
-        
+
+
     def _validator_return_search(self):
         return {
             "count": {"type": "integer", "required": True},
@@ -99,5 +99,3 @@ class ParticipantService(Component):
             "email": partner.email.strip(),
         }
         return res
-
-

@@ -21,7 +21,7 @@ class Service(Component):
         Access to the Judged services is only allowed to authenticated partners.
         If you are not authenticated go to <a href='/web/login'>Login</a>
     """
-    
+
     def get(self, _id):
         """
         Obtener Información de un Juzgado
@@ -59,8 +59,8 @@ class Service(Component):
 
     def _validator_search(self):
         return {"name": {"type": "string", "nullable": False, "required": True}}
-    
-        
+
+
     def _validator_return_search(self):
         return {
             "count": {"type": "integer", "required": True},
@@ -73,7 +73,7 @@ class Service(Component):
 
     def _validator_create(self):
         res = {
-             
+
             "name": {"type": "string", "required": True, "empty": False},
             "code": {"type": "string", "required": False, "empty": True},
             "office": {"type": "string", "required": False, "empty": True},
@@ -110,5 +110,3 @@ class Service(Component):
             #"ext_lifesize": partner.extension_lifesize
         }
         return res
-
-

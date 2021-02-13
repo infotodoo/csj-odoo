@@ -20,7 +20,7 @@ class UserService(Component):
         Access to the partner services is only allowed to authenticated partners.
         If you are not authenticated go to <a href='/web/login'>Login</a>
     """
-    
+
     def get(self, _id):
         """
         Obtener Información de un Usuario
@@ -43,13 +43,13 @@ class UserService(Component):
                     'name': 'Usuario No Existe!',
                     'judged': '',
                 }
-    
-    
+
+
     def search(self, name):
         """
         Buscar Usuarios por Nombre: busqueda limitada a 80 resultados
         """
-        
+
         #partner_ids = self.env["res.partner"].name_search(name)
         #partner_ids = self.env["res.partner"].search([('name','like',name)], limit=80).filtered(lambda line: line.appointment_type in ('scheduler','secretary'))
         partner_ids = self.env["res.partner"].search([('name','like',name),('company_type', '=', 'judged')], limit=80)
@@ -64,10 +64,10 @@ class UserService(Component):
                 #if partner.company_type == 'judged':
                 rows.append(self._to_json_partner(partner))
             return res
-        
-        
-    
-    
+
+
+
+
     def _get(self, _id):
         user_id = self.env["res.users"].browse(_id)
         if not user_id:
@@ -128,8 +128,8 @@ class UserService(Component):
             #"email": {"type": "string", "required": False, "empty": True},
             #"name_complete": {"type": "string", "required": False, "empty": True},
         }
-    
-        
+
+
     def _validator_return_search(self):
         return {
             "count": {"type": "integer", "required": True},
@@ -184,7 +184,7 @@ class UserService(Component):
             "name_complete": user_id.partner_id.parent_id.contact_address_complete if user_id.partner_id.parent_id.contact_address_complete else '',
         }
         return res
-    
+
     def _to_json_partner(self, partner_id):
         res = {
             "id": partner_id.id,

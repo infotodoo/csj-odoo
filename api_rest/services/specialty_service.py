@@ -21,7 +21,7 @@ class SpecialtyService(Component):
         Access to the Res Specialty services is only allowed to authenticated calendars.
         If you are not authenticated go to <a href='/web/login'>Login</a>
     """
-    
+
     def get(self, _id):
         """
         Obtener Información de una Especialidad
@@ -35,7 +35,7 @@ class SpecialtyService(Component):
         """
         specialty_ids = self.env["res.specialty"].sudo().search([
         ])
-        
+
         if specialty_ids:
             rows = []
             res = {"count": len(specialty_ids), "rows": rows}
@@ -61,8 +61,8 @@ class SpecialtyService(Component):
 
     def _validator_search(self):
         return {"name": {"type": "string", "nullable": False, "required": True}}
-    
-        
+
+
     def _validator_return_search(self):
         return {
             "count": {"type": "integer", "required": True},
@@ -109,5 +109,3 @@ class SpecialtyService(Component):
             "entity_name": specialty.entity_id.mame,
         }
         return res
-
-

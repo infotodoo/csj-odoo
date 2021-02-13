@@ -497,7 +497,7 @@ class CustomerPortal(CustomerPortal):
             'appointment_close_user_id': request.env.user.id,
         });
         return request.redirect('/my/appointment/' + str(appointment_id.id))
-    
+
     @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/state/open'], type='http', auth="user", website=True)
     def portal_my_appointment_assist_open(self, appointment_id=None, access_token=None, **kw):
         appointment_id.write({
@@ -506,7 +506,7 @@ class CustomerPortal(CustomerPortal):
             'appointment_close_user_id': request.env.user.id,
         });
         return request.redirect('/my/appointment/' + str(appointment_id.id))
-    
+
     @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/state/draft'], type='http', auth="user", website=True)
     def portal_my_appointment_assist_draft(self, appointment_id=None, access_token=None, **kw):
         appointment_id.write({
@@ -624,7 +624,7 @@ class CustomerPortal(CustomerPortal):
 
         return request.redirect('/my/appointment/' + str(appointment_id.id))
 
-    
+
     @http.route([
         '/private/videos'
     ], type='http', auth="user", website=True)
@@ -642,8 +642,8 @@ class CustomerPortal(CustomerPortal):
             'url_calltech': 'https://apigestionaudiencias3.ramajudicial.gov.co/' + str(sid) + '/' + str(uid),
         }
         return request.render("calendar_csj.portal_my_videos", values)
-    
-    
+
+
     @http.route([
         '/public/videos'
     ], type='http', auth="public", website=True)

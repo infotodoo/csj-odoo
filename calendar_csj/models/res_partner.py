@@ -224,11 +224,11 @@ class ResPartner(models.Model):
     appointment_bool = fields.Boolean('Appointment bool', compute='_compute_appointment_bool')
     permanent_room = fields.Boolean('Permanent room', default=False)
     lifesize_meeting_extension = fields.Char('Meeting extension Lifesize')
-    
+
     judged_only_code = fields.Char('Partner Only Code', compute="_compute_partner_separated_name", store=False)
     judged_only_name = fields.Char('Partner Only Name', compute="_compute_partner_separated_name", store=True)
-    
-    
+
+
     #@api.depends('partner_id')
     def _compute_partner_separated_name(self):
         for record in self:
@@ -240,8 +240,8 @@ class ResPartner(models.Model):
             name = record.mame or ''
             record.judged_only_code = code_city + code_entity + code_specialty + code
             record.judged_only_name = name
-    
-    
+
+
 
     @api.onchange('code', 'mame', 'city_id', 'specialty_id', 'entity_id')
     def _onchange_mame(self):
