@@ -432,7 +432,7 @@ class CustomerPortal(CustomerPortal):
         })
         return request.render("calendar_csj.portal_my_appointments", values)
 
-    @http.route(['/my/public', '/my/appointments/page/<int:page>'], type='http', auth="user", website=True)
+    @http.route(['/my/public', '/my/public/page/<int:page>'], type='http', auth="user", website=True)
     def portal_appointments_public(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):
         values = self._prepare_portal_layout_values()
 
@@ -577,7 +577,7 @@ class CustomerPortal(CustomerPortal):
 
         # pager
         pager = portal_pager(
-            url="/my/appointments",
+            url="/my/public",
             url_args={'date_begin': date_begin, 'date_end': date_end, 'search': search, 'sortby': sortby, 'filterby': filterby, 'search_in': search_in},
             total=appointment_count,
             page=page,
@@ -788,7 +788,7 @@ class CustomerPortal(CustomerPortal):
             'total': appointment_count,
             'page_name': 'appointment',
             'archive_groups': archive_groups,
-            'default_url': '/my/appointments',
+            'default_url': '/my/public',
             'pager': pager,
             'searchbar_sortings': searchbar_sortings,
             'searchbar_groupby': searchbar_groupby,
