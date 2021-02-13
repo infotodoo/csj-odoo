@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="productivity_loss_tree">
+            <field name="name">mrp.workcenter.productivity.loss.tree</field>
+            <field name="model">mrp.workcenter.productivity.loss</field>
+            <field name="arch" type="xml">
+                <tree string="Workcenter Productivity Loss" editable="bottom">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="code_tracking"/>
+                    <field name="loss_type" string="Category"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_view_productivity_loss" model="ir.actions.act_window">
+            <field name="name">Workcenter Productivity Loss</field>
+            <field name="res_model">mrp.workcenter.productivity.loss</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="productivity_loss_tree"/>
+        </record>
+        <menuitem
+            id="menu_productivity_loss"
+            name="Productive Loss"
+            action="action_view_productivity_loss"
+            parent="mrp.menu_mrp_configuration"
+            sequence="10"/>
+    </data>
+</odoo>
