@@ -492,7 +492,6 @@
                                 <th t-else="">Id solicitud
                                     <em class="font-weight-normal text-muted">Appointment for state:</em>
                                     <span t-field="appointments[0].state"/></th>
-                                <th class="text-center">Tipo de solicitud C</th>
                                 <th class="text-center">Tipo de solicitud</th>
                                 <th class="text-left">Tipo de Audiencia</th>
                                 <th class="text-left">Clase de videoconferencia</th>
@@ -527,10 +526,13 @@
                                         <span t-field="appointment.type_request_concatenated"/>
                                     </td>
                                     <td>
-                                        <span t-field="appointment.process_number"/>
+                                        <span t-field="appointment.type"/>
                                     </td>
                                     <td>
-                                        <span t-field="appointment.type"/>
+                                        <span t-esc="appointment.class_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.request_type"/>
                                     </td>
                                     <td>
                                         <span t-field="appointment.calendar_datetime"/>
@@ -538,9 +540,7 @@
                                     <td>
                                         <span t-field="appointment.appointment_date"/>
                                     </td>
-                                    <td>
-                                        <span t-field="appointment.request_type"/>
-                                    </td>
+
                                     <td>
                                         <!--<span class="badge badge-pill badge-info" t-esc="appointment.state"/>-->
                                         <span class="badge badge-pill badge-info" t-if="appointment.state == 'open'">AGENDADO</span>
@@ -569,9 +569,6 @@
                                     </td>
                                     <td>
                                         <span t-esc="appointment.city_id.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="appointment.class_id.name"/>
                                     </td>
                                     <td>
                                         <span t-esc="appointment.judged_only_code"/>
