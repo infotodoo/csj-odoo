@@ -505,7 +505,7 @@
                                 <th class="text-left">Destinos</th>
                                 <th class="text-left">Observaciones</th>
                                 <th class="text-left">Fecha de solicitud</th>
-                                <th class="text-left">Nombre de solicitante</th>
+                                <th class="text-left">Nombre del solicitante</th>
                                 <th class="text-left">Número de proceso</th>
                                 <th class="text-left">Fecha agendamiento</th>
                                 <th class="text-left">Creado por</th>
@@ -574,6 +574,9 @@
                                     </td>
                                     <td>
                                         <span t-field="appointment.create_uid"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.state_description"/>
                                     </td>
                                     <td>
                                         <!--<span class="badge badge-pill badge-info" t-esc="appointment.state"/>-->
