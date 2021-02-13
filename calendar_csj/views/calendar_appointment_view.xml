@@ -38,6 +38,7 @@
                 <tree string="Appointments">
                   <field name="appointment_code" string="ID SOLICITUD"/>
                     <field name="request_type_label" string="TIPO DE SOLICITUD"/>
+		    <field name="type_request_concatenated" string="CONCATENADO" invisible="True"/>
                     <field name="type" string="SOLICITUD"/>
                     <field name="calendar_date" string="FECHA DE REALIZACIÓN"/>
                     <field name="calendar_time" string="HORA DE INICIO"  widget="float_time"/>

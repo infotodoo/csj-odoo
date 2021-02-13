@@ -82,14 +82,14 @@
             <xpath expr="//ul[@id='top_menu']/li[hasclass('dropdown')]" position="attributes">
                 <attribute name="class">nav-item dropdown d-lg-none d-block</attribute>
             </xpath>
-            <xpath expr="//ul[@id='top_menu']/li[hasclass('dropdown')]" position="after">
+	    <!--<xpath expr="//ul[@id='top_menu']/li[hasclass('dropdown')]" position="after">
                 <li groups="base.group_public" class="nav-item d-lg-none d-block">
                     <a t-attf-href="/web/login" class="nav-link">
                         <b> Log In</b>
                     </a>
                 </li>
-            </xpath>
-            <xpath expr="//div[@id='top_menu_collapse']" position="after">
+	    </xpath>-->
+	    <!--<xpath expr="//div[@id='top_menu_collapse']" position="after">
                 <div class="t-header-account d-none d-lg-block">
 
                     <div class="dropdown" t-ignore="true" t-if="not user_id._is_public()">
@@ -111,7 +111,7 @@
                         </a>
                     </div>
                 </div>
-            </xpath>
+	    </xpath>-->
         </template>
 
         <template id="header_2" inherit_id="portal.frontend_layout" active="False" name="Header 2">

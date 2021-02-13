@@ -212,7 +212,7 @@
                                 <th t-else="">Agendamiento ID
                                     <em class="font-weight-normal text-muted">Appointment for state:</em>
                                     <span t-field="appointments[0].state"/></th>
-                                <th class="text-center">Número de Procesooo</th>
+                                <th class="text-center">Número de Proceso</th>
                                 <th class="text-left">Tipo</th>
                                 <th class="text-left">Fecha de Realización</th>
                                 <th class="text-left">Fecha de Agendamiento</th>
@@ -313,6 +313,292 @@
                                     <td>
                                         <span t-esc="appointment.tag_number"/>
                                     </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </t>
+                </t>
+            </t>
+          </t>
+      </template>
+        
+      <template id="portal_appointments_public" name="Appointments">
+          <t t-call="portal.portal_layout">
+              <t t-set="breadcrumbs_searchbar" t-value="False"/>
+              <!--<t t-call="portal.portal_searchbar">
+                  <t t-set="title">Agendamientos</t>
+              </t>-->
+              <nav t-attf-class="navbar navbar-light navbar-expand-lg border py-0 mb-2 o_portal_navbar {{classes if classes else ''}} {{'mt-3 rounded' if breadcrumbs_searchbar else 'border-top-0' }}">
+                  <!--  Navbar breadcrumb or title  -->
+                  <t t-if="breadcrumbs_searchbar">
+                      <t t-call="portal.portal_breadcrumbs"/>
+                  </t>
+                  <!--<span t-else="" class="navbar-brand mb-0 h1 mr-auto" t-esc="title or 'Filtros'"/>-->
+
+                  <!--  Collapse button -->
+                  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#o_portal_navbar_content" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle filters">
+                      <span class="navbar-toggler-icon small"/>
+                  </button>
+
+                  <!--  Collapsable content  -->
+
+                  <div class="collapse navbar-collapse" id="o_portal_navbar_content">
+                      <div style="width:100%;" class="col-12 row">
+                        <div class="col-4">
+                        <table style="width:100%;"><tr>
+                  <!--        <td style="width:20%;">
+                            <div t-if="searchbar_sortings" class="form-inline">
+                                <span class="small mr-1 navbar-text">Ordenar por:</span>
+                                <div class="btn-group">
+                                    <button id="portal_searchbar_sortby" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
+                                        <t t-esc="searchbar_sortings[sortby].get('label', 'Newest')"/>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="portal_searchbar_sortby">
+                                        <t t-foreach="searchbar_sortings" t-as="option">
+                                            <a t-att-href="request.httprequest.path + '?' + keep_query('*', sortby=option)"
+                                               t-attf-class="dropdown-item#{sortby == option and ' active' or ''}">
+                                                <span t-esc="searchbar_sortings[option].get('label')"/>
+                                            </a>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                          </td>-->
+                            <td style="width:20%;">
+                                <div t-if="searchbar_filters" class="form-inline ml-lg-2">
+                                    <span class="small mr-1 navbar-text">Filtrar por:</span>
+                                    <div class="btn-group">
+                                        <button id="portal_searchbar_filters" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
+                                            <t t-esc="searchbar_filters[filterby].get('label', 'All')"/>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="portal_searchbar_filters">
+                                            <t t-foreach="searchbar_filters" t-as="option">
+                                                <a t-att-href="default_url + '?' + keep_query('*', filterby=option)"
+                                                   t-attf-class="dropdown-item#{filterby == option and ' active' or ''}">
+                                                    <span t-esc="searchbar_filters[option].get('label')"/>
+                                                </a>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                          </tr></table>
+                        </div>
+                        <div class="col-8">
+
+
+                          <form t-if="searchbar_inputs" class="form-inline o_portal_search_panel_csj ml-lg-4">
+                            <table style="width:100%;"><tr>
+
+                            <td style="width:90%;">
+                              <div class="input-group input-group-sm w-45" style="padding-right:5px;">
+                                  <div class="input-group-prepend">
+                                      <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"/>
+                                      <div class="dropdown-menu" role="menu">
+                                          <t t-foreach='searchbar_inputs' t-as='input'>
+                                              <a t-att-href="'#' + searchbar_inputs[input]['input']"
+                                                  t-attf-class="dropdown-item#{search_in == searchbar_inputs[input]['input'] and ' active' or ''}">
+                                                  <span t-raw="searchbar_inputs[input]['label']"/>
+                                              </a>
+                                          </t>
+                                      </div>
+                                  </div>
+                                  <input type="text" class="form-control form-control-sm" placeholder="Search" t-att-value='search' name="search"/>
+                                  <span class="input-group-append">
+                                      <button class="btn btn-secondary search-submit-csj" type="button">
+                                          <span class="fa fa-search"/>
+                                      </button>
+                                  </span>
+                              </div>
+                            </td>
+
+                            <td style="width:10%;">
+                              <div class="input-group input-group-sm w-5" style="padding-left:15px;background-color:#00a09d;">
+                                <input type="checkbox" name="export"/><br/>
+                                <span class="fa fa-file-excel-o" style="font-size:20px;padding:15px;"/>
+                                <span class="fa fa-calendar" id="datetime_filter_icon" style="font-size:20px;padding:15px;"/>
+                              </div>
+
+                            </td>
+                            </tr><tr>
+
+
+                              <td colspan="2" style="text-align:right;width:100%;">
+                                <div class="input-group input-group-sm" style="padding-right:5px;" id="container_datetime_filter">
+                                  <!--<input type="text" class="form-control form-control-sm" placeholder="Desde" t-att-value='date_begin' name="date_begin" id="date_begin"/>-->
+                                  <div class='input-group date' id='datetimepicker_begin'>
+                                      <input type='datetime' class="form-control" name="date_begin" t-att-value="date_begin"/>
+                                      <!--<span class="input-group-addon">
+                                          <span class="fa fa-calendar"></span>
+                                      </span>-->
+                                  </div>
+                                  <!--<input type="text" class="form-control form-control-sm" placeholder="Hasta" t-att-value='date_end' name="date_end" id="date_end"/>-->
+                                  <div class='input-group date' id='datetimepicker_end'>
+                                      <input type='datetime' class="form-control" name="date_end" t-att-value="date_end"/>
+                                      <!--<span class="input-group-addon">
+                                          <span class="fa fa-calendar"></span>
+                                      </span>-->
+                                  </div>
+                                </div>
+                            </td>
+
+                          </tr></table>
+
+
+                        </form>
+                      </div>
+                        <table style="width:100%;"><tr>
+                      </tr><tr>
+                          <td colspan="2" style="text-align:left">
+                            <div aling="right" class="input-group input-group-sm w-5">
+                              <t t-set="total" t-value="total"/>
+                              <h1 aling="right" style="font-style:italic; padding-rigth:5px; font-size: 15px; -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoj';" >  Total agendamientos <t t-esc="total" aling="right" style="font-size: 15px; "/></h1>
+                              <t aling="right" t-set="i" t-value="1"/>
+                            </div>
+                          </td></tr></table>
+
+                         <!-- <div t-if="searchbar_groupby" class="form-inline ml-lg-2">
+                              <span class="small mr-1 navbar-text">Group By:</span>
+                              <div class="btn-group">
+                                  <button id="portal_searchbar_groupby" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
+                                      <t t-esc="searchbar_groupby[groupby].get('label', 'None')"/>
+                                  </button>
+                                  <div class="dropdown-menu" aria-labelledby="portal_searchbar_groupby">
+                                      <t t-foreach="searchbar_groupby" t-as="option">
+                                          <a t-att-href="default_url + '?' + keep_query('*', groupby=option)"
+                                             t-attf-class="dropdown-item#{groupby == option and ' active' or ''}">
+                                              <span t-esc="searchbar_groupby[option].get('label')"/>
+                                          </a>
+                                      </t>
+                                  </div>
+                              </div>
+                          </div>-->
+                          <t t-raw="0"/>
+                      </div>
+                    </div>
+
+              </nav>
+              <t t-if="not appointments">
+                  <div class="alert alert-warning mt8" role="alert">
+                      No hay agendamientos.
+                  </div>
+              </t>
+              <t t-if="grouped_appointments">
+                <t t-call="portal.portal_table">
+                    <t t-foreach="grouped_appointments" t-as="appointments">
+                        <thead>
+                            <tr t-attf-class="{{'thead-light' if not groupby == 'none' else ''}}">
+                                <th t-if="groupby == 'none'">Id solicitud</th>
+                                <th t-else="">Id solicitud
+                                    <em class="font-weight-normal text-muted">Appointment for state:</em>
+                                    <span t-field="appointments[0].state"/></th>
+                                <th class="text-center">Tipo de solicitud</th>
+                                <th class="text-left">Tipo de Audiencia</th>
+                                <th class="text-left">Clase de videoconferencia</th>
+                                <th class="text-left">Tipo de Audiencia</th>
+                                <th class="text-left">Fecha de realización</th>
+                                <th class="text-left">Hora de inicio</th>
+                                <th class="text-left">Código despacho solicitante</th>
+                                <th class="text-left">Despacho solicitante</th>
+                                <th class="text-left">Ciudad de origen</th>
+                                <th class="text-left">Departamento de origen</th>
+                                <th class="text-left">Destinos</th>
+                                <th class="text-left">Observaciones</th>
+                                <th class="text-left">Fecha de solicitud</th>
+                                <th class="text-left">Nombre del solicitante</th>
+                                <th class="text-left">Número de proceso</th>
+                                <th class="text-left">Fecha agendamiento</th>
+                                <th class="text-left">Creado por</th>
+                                <th class="text-left">Descripción</th>
+                                <th class="text-left">Estado</th>
+                                <th class="text-left">Etiqueta</th>
+                                <th class="text-left">Url de grabación</th>
+                                <th class="text-left">Nombre Sala Lifesize</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="appointments" t-as="appointment">
+                                <tr>
+                                  <td>
+                                      <span t-field="appointment.appointment_code"/>
+                                  </td>
+                                    <td>
+                                        <span t-field="appointment.type_request_concatenated"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.type"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.class_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.request_type"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.calendar_datetime"/>
+                                    </td>
+                                    
+                                    <td>
+                                        <span t-esc="'%02d:%02d' % (int(str(appointment.calendar_time).split('.')[0]), int(float(str('%.2f' % appointment.calendar_time).split('.')[1])/100*60))"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.judged_only_code"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.judged_only_name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.city_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.country_state_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.destination_ids_label"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.observations"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.request_date"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.applicant_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.process_number"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.appointment_date"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.create_uid"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.state_description"/>
+                                    </td>
+                                    <td>
+                                        <!--<span class="badge badge-pill badge-info" t-esc="appointment.state"/>-->
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'open'">AGENDADO</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'realized'">REALIZADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'unrealized'">NO REALIZADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'assist_postpone'">ASISTIDA Y APLAZADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'postpone'">APLAZADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'assist_cancel'">ASISTIDA Y CANCELADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'cancel'">CANCELADO</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'draft'">DUPLICADO</span>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.tag_number"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.link_download"/>
+                                    </td>  
+                                    <td>
+                                        <span t-esc="appointment.name"/>
+                                    </td>
+                                   
                                 </tr>
                             </t>
                         </tbody>
@@ -1215,6 +1501,21 @@
           </form>
         </t>
   </template>
+        
+        
+    <template id="portal_my_videos" name="Portal My Videos: appointment videos" priority="40">
+        <!--<t t-call="portal.portal_layout">-->
+        <t t-call="portal.frontend_layout">
+              <iframe t-att-src="url_calltech" title="Calltech App" width="100%" height="700" style="border:none;"></iframe>
+        </t>
+    </template>
+        
+    <template id="portal_public_videos" name="Portal Public Videos: appointment videos" priority="40">
+        <!--<t t-call="portal.portal_layout">-->
+        <t t-call="portal.frontend_layout">
+              <iframe t-att-src="url_calltech" title="Calltech App" width="100%" height="700" style="border:none;"></iframe>
+        </t>
+    </template>
 
 
     <template id="portal_my_videos" name="Portal My Videos: appointment videos" priority="40">

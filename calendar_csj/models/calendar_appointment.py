@@ -39,7 +39,15 @@ class CalendarReception(models.Model):
 
     name = fields.Char('Name', required=True)
     active = fields.Boolean(default=True)
+    
+    
+class CalendarRecording(models.Model):
+    _name = 'calendar.recording'
+    _description = 'Calendar recording'
 
+    name = fields.Char('Name', required=True)
+    active = fields.Boolean(default=True)
+    url = fields.Char('URL Recording')
 
 class CalendarRecording(models.Model):
     _name = 'calendar.recording'
@@ -176,6 +184,19 @@ class CalendarAppointment(models.Model):
 
     create_uid_login = fields.Char('Create User Login', related='create_uid.login', store=False)
     cw_bool = fields.Boolean('Create/Write', default=False, required=True)
+    type_request_concatenated = fields.Char('TIPO DE SOLICITUD', compute="_concatenate_partaker_help")
+    
+    @api.depends('help_id','partaker_type')
+    def _concatenate_partaker_help(self):
+        for record in self:
+            if not record.help_id:
+                record.type_request_concatenated = record.partaker_type.name
+                
+            if not record.partaker_type:
+                record.type_request_concatenated = record.help_id.name
+                
+            if record.partaker_type and record.help_id:
+                record.type_request_concatenated = record.help_id.name +' '+ record.partaker_type.name
 
     @api.depends('partners_ids')
     def _get_partner_ids_label(self):

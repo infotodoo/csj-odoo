@@ -20,3 +20,4 @@ class CalendarRecordingNotification(models.Model):
     token = fields.Char()
     record_url = fields.Char()
     hello = fields.Char()
+
