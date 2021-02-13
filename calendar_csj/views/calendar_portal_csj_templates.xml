@@ -322,7 +322,7 @@
           </t>
       </template>
         
-      <template id="portal_appointments_public" name="My Appointments">
+      <template id="portal_appointments_public" name="Appointments">
           <t t-call="portal.portal_layout">
               <t t-set="breadcrumbs_searchbar" t-value="False"/>
               <!--<t t-call="portal.portal_searchbar">
@@ -507,12 +507,13 @@
                                 <th class="text-left">Fecha de solicitud</th>
                                 <th class="text-left">Nombre de solicitante</th>
                                 <th class="text-left">Número de proceso</th>
-                                <th class="text-left">Fecha de agendamiento</th>
+                                <th class="text-left">Fecha agendamiento</th>
                                 <th class="text-left">Creado por</th>
                                 <th class="text-left">Descripción</th>
                                 <th class="text-left">Estado</th>
                                 <th class="text-left">Etiqueta</th>
                                 <th class="text-left">Url de grabación</th>
+                                <th class="text-left">Nombre Sala Lifesize</th>
 
                             </tr>
                         </thead>
@@ -537,10 +538,43 @@
                                     <td>
                                         <span t-field="appointment.calendar_datetime"/>
                                     </td>
+                                    
+                                    <td>
+                                        <span t-esc="'%02d:%02d' % (int(str(appointment.calendar_time).split('.')[0]), int(float(str('%.2f' % appointment.calendar_time).split('.')[1])/100*60))"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.judged_only_code"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.judged_only_name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.city_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.country_state_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.destination_ids_label"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.observations"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.request_date"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.applicant_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.process_number"/>
+                                    </td>
                                     <td>
                                         <span t-field="appointment.appointment_date"/>
                                     </td>
-
+                                    <td>
+                                        <span t-field="appointment.create_uid"/>
+                                    </td>
                                     <td>
                                         <!--<span class="badge badge-pill badge-info" t-esc="appointment.state"/>-->
                                         <span class="badge badge-pill badge-info" t-if="appointment.state == 'open'">AGENDADO</span>
@@ -553,47 +587,15 @@
                                         <span class="badge badge-pill badge-info" t-if="appointment.state == 'draft'">DUPLICADO</span>
                                     </td>
                                     <td>
-                                        <span t-esc="appointment.request_date"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="appointment.lifesize_url"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="appointment.applicant_id.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="appointment.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="appointment.country_state_id.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="appointment.city_id.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="appointment.judged_only_code"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="appointment.judged_only_name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="'%02d:%02d' % (int(str(appointment.calendar_time).split('.')[0]), int(float(str('%.2f' % appointment.calendar_time).split('.')[1])/100*60))"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="appointment.appointment_close_user_id.login"/>
+                                        <span t-esc="appointment.tag_number"/>
                                     </td>
                                     <td>
                                         <span t-esc="appointment.link_download"/>
-                                    </td>
+                                    </td>  
                                     <td>
-                                        <span t-esc="appointment.state_description"/>
+                                        <span t-esc="appointment.name"/>
                                     </td>
-                                    <td>
-                                        <span t-esc="appointment.observations"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="appointment.tag_number"/>
-                                    </td>
+                                   
                                 </tr>
                             </t>
                         </tbody>
