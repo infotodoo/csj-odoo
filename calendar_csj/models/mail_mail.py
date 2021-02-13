@@ -16,10 +16,12 @@ from odoo import tools
 from odoo.addons.base.models.ir_mail_server import MailDeliveryException
 from odoo.tools.safe_eval import safe_eval
 
+_logger = logging.getLogger(__name__)
 
 class MailMailInherit(models.Model):
 
-    inherit = 'mail.mail'
+    _name = 'mail.mail'
+    _inherit = 'mail.mail'
 
     @api.model
     def process_email_queue(self, ids=None):
@@ -36,21 +38,17 @@ class MailMailInherit(models.Model):
                                 messages to send (by default all 'outgoing'
                                 messages are sent).
         """
-        filters = ['&',
-                   ('state', '=', 'outgoing'),
-                   '|',
-                   ('scheduled_date', '<', datetime.datetime.now()),
-                   ('scheduled_date', '=', False)]
-        if 'filters' in self._context:
-            filters.extend(self._context['filters'])
-        # TODO: make limit configurable
-        filtered_ids = self.search(filters, limit=28).ids
-        if not ids:
-            ids = filtered_ids
-        else:
-            ids = list(set(filtered_ids) & set(ids))
-        ids.sort()
-
+        if not self.ids:
+            limit = self.env['ir.config_parameter'].sudo().get_param('mail.send_limit','28')
+            _logger.info("======= sending emails with limit=%s" % limit)
+            filters = ['&',
+                       ('state', '=', 'outgoing'),
+                       '|',
+                       ('scheduled_date', '<', datetime.datetime.now()),
+                       ('scheduled_date', '=', False)]
+            if 'filters' in self._context:
+                filters.extend(self._context['filters'])
+            ids = self.search(filters, limit=int(limit)).ids
         res = None
         try:
             # auto-commit except in testing mode
