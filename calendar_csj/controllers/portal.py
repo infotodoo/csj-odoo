@@ -36,10 +36,8 @@ class CustomerPortal(CustomerPortal):
         if partner.appointment_type != 'scheduler':
             domain += [('partner_id', '=', judged_id.id)]
 
-        if request.env.user.name != 'Public user':
-            values['appointment_count'] = request.env['calendar.appointment'].search_count(domain)
-        else:
-            values['appointment_count'] = request.env['calendar.appointment'].sudo().search_count(domain)
+        values['appointment_count'] = request.env['calendar.appointment'].sudo().search_count(domain)
+        
         return values
 
     # ------------------------------------------------------------
