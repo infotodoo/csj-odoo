@@ -9,7 +9,7 @@
             <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
             <field name="arch" type="xml">
                 <field name="signature" position="after">
-                    <field name="out_mail_server_ids" context="{'default_user_id': uid}"/>
+                    <field name="out_mail_server_id" readonly="True"/>
                 </field>
             </field>
         </record>
