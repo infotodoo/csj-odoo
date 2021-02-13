@@ -6,3 +6,4 @@ from . import entity_service
 from . import specialty_service
 from . import judged_room_service
 from . import participant_service
+from . import create_mail_service

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <odoo>
+        <template id="header_1" inherit_id="portal.frontend_layout" name="Header 1">
+            <xpath expr="//header" position="before">
+                <div class="top-bar-main" style="font-weight: bold;font-size:0.8rem !important;">
+                    <div class="top-bar bg-white py-0" id="top-bar">
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col-lg-12 ml-lg-auto col-md-12">
+                                    <table style="width: 100%;"><tr>
+                                        <td style="width:20%"><span>Consejo Superior de la Judicatura</span></td>
+                                        <td style="width:20%"><span>Corte Suprema de Justicia</span></td>
+                                        <td style="width:20%"><span>Consejo de Estado</span></td>
+                                        <td style="width:20%"><span>Corte Constitucional</span></td>
+                                        <td style="width:20%"><span>Sala Jurísdiccional Disciplinaria</span></td>
+                                    </tr></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="logo-bar d-none d-md-block d-lg-block bg-light">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-2">
+                                    <div class="logo d-none d-lg-block">
+                                        <t t-set="logo_show" t-value="request.website.viewref('website.layout_logo_show').active" />
+                                        <t t-if="logo_show">
+                                            <a href="/" class="navbar-brand logo">
+                                                <span t-field="website.logo" t-options="{'widget': 'image'}" role="img" t-att-aria-label="'Logo of %s' % website.name" t-att-title="website.name" />
+                                            </a>
+                                        </t>
+                                        <t t-else="">
+                                            <a class="navbar-brand" href="/" t-if="website" t-field="website.name">My Website
+                            </a>
+                                        </t>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-8 justify-content-lg-end ml-lg-auto d-flex col-12 col-md-12 justify-content-center ">
+                                    <div class="top-info-block d-inline-flex" t-if="res_company.phone">
+                                        <div class="icon-block">
+                                            <i class="ti-mobile"></i>
+                                        </div>
+                                        <div class="info-block">
+                                            <h5 class="font-weight-500" t-field="res_company.phone"></h5>
+                                            <p>Call Free</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="top-info-block d-inline-flex" t-if="res_company.email">
+                                        <div class="icon-block">
+                                            <i class="ti-email"></i>
+                                        </div>
+                                        <!--<div class="info-block">
+                                            <h5 class="font-weight-500" t-field="res_company.email"></h5>
+                                            <p>Email Us</p>
+                                        </div>-->
+                                    </div>
+                                    <!--                     <div class="top-info-block d-inline-flex">
+                        <div class="icon-block">
+                            <i class="ti-time"></i>
+                        </div>
+                        <div class="info-block">
+                            <h5 class="font-weight-500">Mon-Sat 9:00-12.00 </h5>
+                            <p>Sunday Closed</p>
+                        </div>
+                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+            <xpath expr="//nav[hasclass('navbar-expand-md')]" position="attributes">
+                <attribute name="class">navbar navbar-expand-lg navbar-dark bg-primary header-main-nav container rounded-radius
+                </attribute>
+            </xpath>
+            <xpath expr="//ul[@id='top_menu']" position="attributes">
+                <attribute name="class">nav navbar-nav mr-auto text-left</attribute>
+            </xpath>
+            <xpath expr="//ul[@id='top_menu']/li[hasclass('dropdown')]" position="attributes">
+                <attribute name="class">nav-item dropdown d-lg-none d-block</attribute>
+            </xpath>
+            <xpath expr="//ul[@id='top_menu']/li[hasclass('dropdown')]" position="after">
+                <li groups="base.group_public" class="nav-item d-lg-none d-block">
+                    <a t-attf-href="/web/login" class="nav-link">
+                        <b> Log In</b>
+                    </a>
+                </li>
+            </xpath>
+            <xpath expr="//div[@id='top_menu_collapse']" position="after">
+                <div class="t-header-account d-none d-lg-block">
+
+                    <div class="dropdown" t-ignore="true" t-if="not user_id._is_public()">
+                        <a href="#" class="dropdown-toggle btn btn-white btn-circled" data-toggle="dropdown">
+                            <b>
+                               <span t-esc="user_id.name[:23] + '...' if user_id.name and len(user_id.name) &gt; 25 else user_id.name"/></b>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right js_usermenu" role="menu">
+                            <a href="/my/home" role="menuitem" class="dropdown-item">My
+                                    Account
+                                </a>
+                            <a id="o_logout" class="dropdown-item" t-attf-href="/web/session/logout?redirect=/" role="menuitem">Logout
+                                </a>
+                        </div>
+                    </div>
+                    <div groups="base.group_public" class="t-login" t-if="request.website.viewref('portal.portal_show_sign_in').active">
+                        <a t-attf-href="/web/login" class="btn btn btn-white btn-circled">
+                            <b> Log In</b>
+                        </a>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+
+        <template id="header_2" inherit_id="portal.frontend_layout" active="False" name="Header 2">
+            <xpath expr="//nav[hasclass('navbar')]" position="attributes">
+                <attribute name="class">navbar navbar-expand-lg navbar-dark header-main-nav bg-dark</attribute>
+            </xpath>
+            <xpath expr="//ul[@id='top_menu']" position="attributes">
+                <attribute name="class">nav navbar-nav ml-auto text-lg-right text-left</attribute>
+            </xpath>
+            <xpath expr="//ul[@id='top_menu']/li[hasclass('divider')][last()]" position="replace">
+            </xpath>
+            <xpath expr="//ul[@id='top_menu']/li[hasclass('dropdown')]" position="after">
+                <li groups="base.group_public" class="nav-item">
+                    <a t-attf-href="/web/login" class="nav-link">
+                        <b> Log In</b>
+                    </a>
+                </li>
+            </xpath>
+        </template>
+        <template id="theme_portal_show_sign_in" inherit_id="portal.portal_show_sign_in" name="Show Sign In">
+            <xpath expr="//li[@groups='base.group_public']" position="replace">
+            </xpath>
+            <xpath expr="//li[@groups='base.group_public']" position="replace">
+            </xpath>
+        </template>
+    </odoo>
