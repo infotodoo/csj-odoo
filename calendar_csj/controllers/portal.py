@@ -35,7 +35,11 @@ class CustomerPortal(CustomerPortal):
         domain = []
         if partner.appointment_type != 'scheduler':
             domain += [('partner_id', '=', judged_id.id)]
-        values['appointment_count'] = request.env['calendar.appointment'].search_count(domain)
+
+        if request.env.user.name != 'Public user':
+            values['appointment_count'] = request.env['calendar.appointment'].search_count(domain)
+        else:
+            values['appointment_count'] = request.env['calendar.appointment'].sudo().search_count(domain)
         return values
 
     # ------------------------------------------------------------
@@ -87,20 +91,20 @@ class CustomerPortal(CustomerPortal):
         }
 
         searchbar_inputs = {
-            'appointment_code': {'input': 'appointment_code', 'label': _('Buscar <span class="nolabel"> (en Id Agendamiento)</span>')},
-            'process_number': {'input': 'process_number', 'label': _('Buscar por Número de Proceso')},
+            'appointment_code': {'input': 'appointment_code', 'label': _('Id Agendamiento')},
+            'process_number': {'input': 'process_number', 'label': _('Número de Proceso')},
             'city_id': {'input': 'city_id', 'label': _('Ciudad')},
             'create_uid': {'input': 'create_uid', 'label': _('Creado por')},
             'judged_only_name': {'input': 'judged_only_name', 'label': _('Despacho solicitante')},
-            'applicant_id': {'input': 'applicant_id', 'label': _('Buscar por Nombre Solicitante')},
-            'declarant_text': {'input': 'declarant_text', 'label': _('Buscar por Declarante')},
-            'tag_number': {'input': 'tag_number', 'label': _('Buscar Etiqueta')},
-            'indicted_text': {'input': 'indicted_text', 'label': _('Buscar por Procesado')},
-            'applicant_email': {'input': 'applicant_email', 'label': _('Buscar por Email del Aplicante')},
-            'lifesize_meeting_ext': {'input': 'lifesize_meeting_ext', 'label': _('Buscar por Ext reunión Lifesize')},
-            'name': {'input': 'name', 'label': _('Buscar por API Lifesize')},
-            'state': {'input': 'state', 'label': _('Buscar por Estado')},
-            'all': {'input': 'all', 'label': _('Buscar en Todos')},
+            'applicant_id': {'input': 'applicant_id', 'label': _('Nombre Solicitante')},
+            'declarant_text': {'input': 'declarant_text', 'label': _('Declarante')},
+            'tag_number': {'input': 'tag_number', 'label': _('Etiqueta')},
+            'indicted_text': {'input': 'indicted_text', 'label': _('Procesado')},
+            'applicant_email': {'input': 'applicant_email', 'label': _('Email del Aplicante')},
+            'lifesize_meeting_ext': {'input': 'lifesize_meeting_ext', 'label': _('Ext reunión Lifesize')},
+            'name': {'input': 'name', 'label': _('API Lifesize')},
+            'state': {'input': 'state', 'label': _('Estado')},
+            'all': {'input': 'all', 'label': _('Todos')},
         }
 
         searchbar_groupby = {
@@ -432,7 +436,7 @@ class CustomerPortal(CustomerPortal):
         })
         return request.render("calendar_csj.portal_my_appointments", values)
 
-    @http.route(['/my/public', '/my/public/page/<int:page>'], type='http', auth="user", website=True)
+    @http.route(['/public', '/public/page/<int:page>'], type='http', auth="public", website=True)
     def portal_appointments_public(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):
         values = self._prepare_portal_layout_values()
 
@@ -460,20 +464,18 @@ class CustomerPortal(CustomerPortal):
         }
 
         searchbar_inputs = {
-            'appointment_code': {'input': 'appointment_code', 'label': _('Buscar <span class="nolabel"> (en Id Agendamiento)</span>')},
-            'process_number': {'input': 'process_number', 'label': _('Buscar por Número de Proceso')},
+            'appointment_code': {'input': 'appointment_code', 'label': _('Id Agendamiento')},
+            'process_number': {'input': 'process_number', 'label': _('Número de Proceso')},
             'city_id': {'input': 'city_id', 'label': _('Ciudad')},
-            'create_uid': {'input': 'create_uid', 'label': _('Creado por')},
             'judged_only_name': {'input': 'judged_only_name', 'label': _('Despacho solicitante')},
-            'applicant_id': {'input': 'applicant_id', 'label': _('Buscar por Nombre Solicitante')},
-            'declarant_text': {'input': 'declarant_text', 'label': _('Buscar por Declarante')},
-            'tag_number': {'input': 'tag_number', 'label': _('Buscar Etiqueta')},
-            'indicted_text': {'input': 'indicted_text', 'label': _('Buscar por Procesado')},
-            'applicant_email': {'input': 'applicant_email', 'label': _('Buscar por Email del Aplicante')},
-            'lifesize_meeting_ext': {'input': 'lifesize_meeting_ext', 'label': _('Buscar por Ext reunión Lifesize')},
-            'name': {'input': 'name', 'label': _('Buscar por API Lifesize')},
-            'state': {'input': 'state', 'label': _('Buscar por Estado')},
-            'all': {'input': 'all', 'label': _('Buscar en Todos')},
+            'applicant_id': {'input': 'applicant_id', 'label': _('Nombre Solicitante')},
+            'declarant_text': {'input': 'declarant_text', 'label': _('Declarante')},
+            'tag_number': {'input': 'tag_number', 'label': _('Etiqueta')},
+            'indicted_text': {'input': 'indicted_text', 'label': _('Procesado')},
+            'lifesize_meeting_ext': {'input': 'lifesize_meeting_ext', 'label': _('Ext reunión Lifesize')},
+            'name': {'input': 'name', 'label': _('API Lifesize')},
+            'state': {'input': 'state', 'label': _('Estado')},
+            'all': {'input': 'all', 'label': _('Todos')},
         }
 
         searchbar_groupby = {
@@ -483,30 +485,6 @@ class CustomerPortal(CustomerPortal):
         }
 
 
-        """appointments = request.env['calendar.appointment'].search([])
-            for appointment in appointments:
-                searchbar_filters.update({
-                    str(appointment.id): {'label': appointment.name, 'domain': [('state', '=', 'open')]}
-                })
-        """
-
-        #for appointment in appointments:
-        #    searchbar_filters.update({
-        #        str(appointment.id): {'label': appointment.name, 'domain': [('appointment_id', '=', appointment.id)]}
-        #    })
-
-        # extends filterby criteria with project (criteria name is the project id)
-        # Note: portal users can't view projects they don't follow
-        #appointment_groups = request.env['calendar.appointment'].read_group([('project_id', 'not in', projects.ids)],
-        #                                                        ['project_id'], ['project_id'])
-        """
-        for group in appointment_groups:
-            proj_id = group['project_id'][0] if group['project_id'] else False
-            proj_name = group['project_id'][1] if group['project_id'] else _('Others')
-            searchbar_filters.update({
-                str(proj_id): {'label': proj_name, 'domain': [('project_id', '=', proj_id)]}
-            })
-        """
         # default sort by value
         if not sortby:
             sortby = 'appointment_code'
@@ -521,15 +499,11 @@ class CustomerPortal(CustomerPortal):
             sortby = 'date'
         order = searchbar_sortings[sortby]['order']
 
-        # archive groups - Default Group By 'create_date'
-        archive_groups = self._get_archive_groups('calendar.appointment', domain)
+        """
+        archive_groups = self._get_archive_groups('calendar.appointment')
         if date_begin and date_end:
-        #    date_begin = datetime.strptime(date_begin, '%Y-%m-%d %H:%M')
-        #    date_begin = date_begin + timedelta(hours=5)
             domain += [('calendar_datetime', '>', date_begin), ('calendar_datetime', '<=', date_end)]
-
-        # appointments count
-        #appointment_count = Appointment.search_count(domain)
+        """
 
         # search
         if search and search_in:
@@ -573,7 +547,7 @@ class CustomerPortal(CustomerPortal):
         if partner.appointment_type != 'scheduler':
             domain += [('partner_id', '=', judged_id.id)]
 
-        appointment_count = request.env['calendar.appointment'].search_count(domain)
+        appointment_count = request.env['calendar.appointment'].sudo().search_count(domain)
 
         # pager
         pager = portal_pager(
@@ -593,7 +567,7 @@ class CustomerPortal(CustomerPortal):
             grouped_appointments = [appointments]
 
         # content according to pager and archive selected
-        appointments = request.env['calendar.appointment'].search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+        appointments = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
         request.session['my_appointments_history'] = appointments.ids[:100]
 
 
@@ -787,8 +761,8 @@ class CustomerPortal(CustomerPortal):
             'grouped_appointments': grouped_appointments,
             'total': appointment_count,
             'page_name': 'appointment',
-            'archive_groups': archive_groups,
-            'default_url': '/my/public',
+            #'archive_groups': archive_groups,
+            'default_url': '/public',
             'pager': pager,
             'searchbar_sortings': searchbar_sortings,
             'searchbar_groupby': searchbar_groupby,
