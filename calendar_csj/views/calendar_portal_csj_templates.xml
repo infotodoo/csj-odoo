@@ -322,7 +322,7 @@
           </t>
       </template>
         
-      <template id="portal_my_appointments" name="My Appointments">
+      <template id="portal_appointments_public" name="Appointments">
           <t t-call="portal.portal_layout">
               <t t-set="breadcrumbs_searchbar" t-value="False"/>
               <!--<t t-call="portal.portal_searchbar">
