@@ -488,31 +488,31 @@
                     <t t-foreach="grouped_appointments" t-as="appointments">
                         <thead>
                             <tr t-attf-class="{{'thead-light' if not groupby == 'none' else ''}}">
-                                <th t-if="groupby == 'none'">Agendamiento ID</th>
-                                <th t-else="">Agendamiento ID
+                                <th t-if="groupby == 'none'">Id solicitud</th>
+                                <th t-else="">Id solicitud
                                     <em class="font-weight-normal text-muted">Appointment for state:</em>
                                     <span t-field="appointments[0].state"/></th>
-                                <th class="text-center">Número de Procesooo</th>
-                                <th class="text-left">Tipo</th>
-                                <th class="text-left">Fecha de Realización</th>
-                                <th class="text-left">Fecha de Agendamiento</th>
-                                <th class="text-left">Tipo de Solicitud</th>
-                                <th class="text-left">Estado</th>
-                                <th class="text-left">Fecha de Solicitud</th>
-                                <th class="text-left">Lifesize URL</th>
-                                <th class="text-left">Nombre del solicitante</th>
-                                <th class="text-left">Nombre de la Sala</th>
-                                <th class="text-left">Departamento de origen</th>
-                                <th class="text-left">Ciudad de origen</th>
+                                <th class="text-center">Tipo de solicitud</th>
+                                <th class="text-left">Tipo de Audiencia</th>
                                 <th class="text-left">Clase de videoconferencia</th>
-                                <th class="text-left">Codigo despacho solicitante</th>
-                                <th class="text-left">Despacho solicitante</th>
+                                <th class="text-left">Tipo de Audiencia</th>
+                                <th class="text-left">Fecha de realización</th>
                                 <th class="text-left">Hora de inicio</th>
-                                <th class="text-left">Usuario del cierre</th>
-                                <th class="text-left">Url de grabación</th>
-                                <th class="text-left">Descripciónn</th>
+                                <th class="text-left">Código despacho solicitante</th>
+                                <th class="text-left">Despacho solicitante</th>
+                                <th class="text-left">Ciudad de origen</th>
+                                <th class="text-left">Departamento de origen</th>
+                                <th class="text-left">Destinos</th>
                                 <th class="text-left">Observaciones</th>
+                                <th class="text-left">Fecha de solicitud</th>
+                                <th class="text-left">Nombre de solicitante</th>
+                                <th class="text-left">Número de proceso</th>
+                                <th class="text-left">Fecha de agendamiento</th>
+                                <th class="text-left">Creado por</th>
+                                <th class="text-left">Descripción</th>
+                                <th class="text-left">Estado<th>
                                 <th class="text-left">Etiqueta</th>
+                                <th class="text-left">Url de grabación</th>
 
                             </tr>
                         </thead>
