@@ -492,7 +492,7 @@
                                 <th t-else="">Id solicitud
                                     <em class="font-weight-normal text-muted">Appointment for state:</em>
                                     <span t-field="appointments[0].state"/></th>
-                                <th class="text-center">Tipo de solicitud</th>
+                                <th class="text-center">Tipo de solicitud C</th>
                                 <th class="text-center">Tipo de solicitud</th>
                                 <th class="text-left">Tipo de Audiencia</th>
                                 <th class="text-left">Clase de videoconferencia</th>
