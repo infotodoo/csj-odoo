@@ -187,7 +187,7 @@ class CalendarAppointment(models.Model):
             if not record.partaker_type:
                 record.type_request_concatenated = record.help_id.name
                 
-            if record.type_request_concatenated and record.help_id:
+            if record.partaker_type and record.help_id:
                 record.type_request_concatenated = record.help_id.name +' '+ record.partaker_type.name
 
     @api.depends('partners_ids')
