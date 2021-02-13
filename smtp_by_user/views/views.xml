@@ -6,7 +6,9 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='smtp_pass']" position="after">
               <field name="user_ids"/>
-              <!--<field name="is_default_server"/>-->
+            </xpath>
+            <xpath expr="//field[@name='sequence']" position="after">
+              <field name="is_default_server"/>
             </xpath>
         </field>
     </record>
