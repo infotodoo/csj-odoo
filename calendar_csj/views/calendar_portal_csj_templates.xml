@@ -212,7 +212,7 @@
                                 <th t-else="">Agendamiento ID
                                     <em class="font-weight-normal text-muted">Appointment for state:</em>
                                     <span t-field="appointments[0].state"/></th>
-                                <th class="text-center">Número de Procesooo</th>
+                                <th class="text-center">Número de Proceso</th>
                                 <th class="text-left">Tipo</th>
                                 <th class="text-left">Fecha de Realización</th>
                                 <th class="text-left">Fecha de Agendamiento</th>
@@ -493,6 +493,7 @@
                                     <em class="font-weight-normal text-muted">Appointment for state:</em>
                                     <span t-field="appointments[0].state"/></th>
                                 <th class="text-center">Tipo de solicitud</th>
+                                <th class="text-center">Tipo de solicitud</th>
                                 <th class="text-left">Tipo de Audiencia</th>
                                 <th class="text-left">Clase de videoconferencia</th>
                                 <th class="text-left">Tipo de Audiencia</th>
@@ -522,6 +523,9 @@
                                   <td>
                                       <a t-attf-href="/my/appointment/#{appointment.id}?{{ keep_query() }}"><span t-field="appointment.appointment_code"/></a>
                                   </td>
+                                    <td>
+                                        <span t-field="appointment.type_request_concatenated"/>
+                                    </td>
                                     <td>
                                         <span t-field="appointment.process_number"/>
                                     </td>
