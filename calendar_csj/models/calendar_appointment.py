@@ -181,7 +181,7 @@ class CalendarAppointment(models.Model):
     @api.depends('help_id','partaker_type')
     def _concatenate_partaker_help(self):
         for record in self:
-            record.type_request_concatenated = record.help_id.name +' '+ record.partaker_type
+            record.type_request_concatenated = record.help_id.name +' '+ record.partaker_type.name
 
     @api.depends('partners_ids')
     def _get_partner_ids_label(self):
