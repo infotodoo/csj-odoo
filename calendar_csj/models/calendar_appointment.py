@@ -176,6 +176,12 @@ class CalendarAppointment(models.Model):
 
     create_uid_login = fields.Char('Create User Login', related='create_uid.login', store=False)
     cw_bool = fields.Boolean('Create/Write', default=False, required=True)
+    type_request_concatenated = fields.Char('TIPO DE SOLICITUD', compute="_concatenate_partaker_help")
+    
+    @api.depends('help_id','partaker_type')
+    def _concatenate_partaker_help(self):
+        for record in self:
+            record.type_request_concatenated = record.help_id.name +' '+ record.partaker_type
 
     @api.depends('partners_ids')
     def _get_partner_ids_label(self):
