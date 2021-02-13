@@ -127,7 +127,7 @@ class IrMailServer(models.Model):
     _inherit = "ir.mail_server"
 
     #user_id = fields. Many2one('res.users','User')
-    user_ids = fields. Many2many('res.users', 'out_mail_server_user_id_rel','server_id', 'user_id', 'User')
+    user_ids = fields. Many2many('res.users', 'out_mail_server_user_id_rel','server_id', 'user_id', 'Usuarios')
     is_default_server = fields.Boolean('Is Default Server')
     smtp_user = fields.Char(groups='base.group_system,base.group_user')
     smtp_pass = fields.Char(groups='base.group_system,base.group_user')

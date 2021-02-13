@@ -4,8 +4,15 @@
         <field name="model">ir.mail_server</field>
         <field name="inherit_id" ref="base.ir_mail_server_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='smtp_pass']" position="after">
-              <field name="user_ids"/>
+            <xpath expr="//group[2]" position="after">
+                <group string="Usuarios">
+                  <field name="user_ids">
+                    <tree>
+                        <field name="login"/>
+                        <field name="name"/>
+                      </tree>
+                </field>
+                </group>
             </xpath>
             <xpath expr="//field[@name='sequence']" position="after">
               <field name="is_default_server"/>
