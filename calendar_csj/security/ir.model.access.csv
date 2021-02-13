@@ -22,3 +22,4 @@ access_ir_attachment,access.ir.attachment.portal,base.model_ir_attachment,base.g
 access_mail_mail,access.mail.mail.portal,mail.model_mail_mail,base.group_portal,1,1,1,0
 access_mail_template,access.mail.template.portal,mail.model_mail_template,base.group_portal,1,0,0,0
 access_mail_followers,access.mail.followers.portal,mail.model_mail_followers,base.group_portal,1,1,1,0
+acces_calendar_recording,access.calendar.recording,model_calendar_recording,base.group_user,1,1,1,1

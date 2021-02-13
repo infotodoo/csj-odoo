@@ -39,7 +39,15 @@ class CalendarReception(models.Model):
 
     name = fields.Char('Name', required=True)
     active = fields.Boolean(default=True)
+    
+    
+class CalendarRecording(models.Model):
+    _name = 'calendar.recording'
+    _description = 'Calendar recording'
 
+    name = fields.Char('Name', required=True)
+    active = fields.Boolean(default=True)
+    url = fields.Char('URL Recording')
 
 class CalendarAppointment(models.Model):
     _name = 'calendar.appointment'
@@ -146,7 +154,7 @@ class CalendarAppointment(models.Model):
     record_data = fields.Char('Record data', compute='_compute_record_data')
     reception_id = fields.Many2one('calendar.reception', 'Reception medium', ondelete='set null')
     reception_detail = fields.Char('Reception Detail')
-
+    recording_ids = fields.Many2many('calendar.recording', 'appointment_recording_rel', 'appointment_id', 'recording_id', string='Recordings')
     observations = fields.Text('Observations')
     state_description = fields.Text('State description')
     link_streaming = fields.Char('Streaming')
