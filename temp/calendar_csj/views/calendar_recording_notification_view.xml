@@ -1,0 +1,63 @@
+<odoo>
+    <data>
+        <record id="calendar_recording_notification_tree" model="ir.ui.view">
+            <field name="name">calendar.recording.notification.tree</field>
+            <field name="model">calendar.recording.notification</field>
+            <field name="arch" type="xml">
+                <tree string="Notifications">
+                  <field name="subject"/>
+                  <field name="token"/>
+                  <field name="destinations"/>
+                  <field name="record_name"/>
+                  <field name="user_id"/>
+                  <field name="template_id"/>
+                  <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="calendar_recording_notification_form" model="ir.ui.view">
+            <field name="name">calendar.recording.notification.form</field>
+            <field name="model">calendar.recording.notification</field>
+            <field name="arch" type="xml">
+                <form string="Notifications">
+                    <header>
+                        <field name="state" widget="statusbar" clickable="True"/>
+                    </header>
+                    <sheet>
+		                <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Name"/>
+                            <h1>
+                                <field name="subject" required="True"/>
+                            </h1>
+                        </div>
+                        <separator string="General" colspan="2"/>
+                        <group>
+                            <group>
+                                <field name="token"/>
+                                <field name="user_id"/>
+                                <field name="template_id"/>
+                                <field name="destinations"/>
+                                <field name="record_name"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="calendar_recording_notification_action">
+            <field name="name">Notifications</field>
+            <field name="res_model">calendar.recording.notification</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem
+        id="calendar_recording_notification_menu"
+        name="Calendar Recording Notification"
+        parent="calendar_csj.appointment_menu"
+        sequence="15"
+        action="calendar_csj.calendar_recording_notification_action"/>
+    </data>
+    <!--parent="calendar_csj.appointment_menu" -->
+</odoo>

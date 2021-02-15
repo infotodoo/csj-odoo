@@ -1,0 +1,35 @@
+<odoo>
+    <data>
+        <record id="res_company_form_csj" model="ir.ui.view">
+            <field name="name">res.company.form.csj</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='social_media']" position="before">
+                    <group string="Lifesize" groups="base.group_no_one">
+                        <field name="key_lifesize"/>
+                        <field name="owner_extension"/>
+                        <field name="lecturer_extension"/>
+                        <field name="moderator_extension"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="res_users_form_csj" model="ir.ui.view">
+            <field name="name">res.users.form.csj</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='preferences']" position="after">
+                    <group string="Lifesize" >
+                        <field name="extension_lifesize" readonly="True"/>
+                    </group>
+                    <group string="Notification Partner">
+                        <field name="notification_partner"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

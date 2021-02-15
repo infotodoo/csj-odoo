@@ -1,0 +1,35 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="res_judged_room_tree">
+            <field name="name">res.judged.room.tree</field>
+            <field name="model">res.judged.room</field>
+            <field name="priority" eval="16" />
+            <field name="arch" type="xml">
+                <tree string="Rooms" editable="bottom">
+                    <field name="name" invisible="True"/>
+                    <field name="code" />
+                    <field name="mame" />
+                    <field name="virtual_room" />
+                    <field name="country_id" invisible="True"/>
+                    <field name="city_id" required="True" options="{'no_create': True}" domain="[('country_id','=',country_id)]"/>
+                    <field name="judged_id" required="True" options="{'no_create': True}" domain="[('company_type','=','judged')]" />
+                    <field name="active" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="res_judged_room_action" model="ir.actions.act_window">
+            <field name="name">Rooms</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.judged.room</field>
+            <field name="view_id" ref="res_judged_room_tree"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new judged room
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="res_judged_room_menu" action="res_judged_room_action" name="Rooms" sequence="20" parent="res_judged_menu_menu" />
+    </data>
+</odoo>

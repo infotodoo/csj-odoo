@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- noupdate="1" -->
+    <data noupdate="1">
+        <!-- ir.sequence -->
+        <record id="calendar_appointment_sequence" model="ir.sequence">
+            <field name="name">Calendar appointment</field>
+            <field name="code">calendar.appointment</field>
+            <field name="prefix">%(year)s</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="calendar_event_sequence" model="ir.sequence">
+            <field name="name">Process number</field>
+            <field name="code">porcess.number</field>
+            <field name="prefix">%(year)s</field>
+            <field name="padding">6</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!--Type -->
+        <record id="calendar_appointment_type" model="calendar.appointment.type">
+            <field name="name">Calendar appointment</field>
+            <field name="reminder_ids" eval="[(6, 0, [ref('calendar.alarm_notif_1')])]"/>
+            <field name="is_published" eval="False"/>
+            <field name="appointment_tz">America/Bogota</field>
+        </record>
+
+        <record id="calendar_event_type" model="calendar.event.type">
+            <field name="name">Appointment</field>
+        </record>
+        
+    </data>
+</odoo>

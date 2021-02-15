@@ -1,0 +1,1537 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+      <template id="my_account_link" name="Link to frontend portal" inherit_id="portal.pager">
+        <xpath expr="//ul" position="inside">
+              <t t-set="total" t-value="0"/>
+                <t t-set="total" t-value="request.env['calendar.appointment'].search_count([('partner_id', '=', request.env.user.partner_id.parent_id.id)])"/>
+              <h1 align="right" style="font-style:italic; padding-top:12px; font-size: 15px; -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoj';" >  Total de agendamientos <t t-esc="total" style="font-size: 15px; "/></h1>
+        </xpath>
+      </template>
+
+      <template id="my_account_link" name="Link to frontend portal" inherit_id="portal.frontend_layout">
+        <xpath expr="//div/div/ul/li/div/a[1]" position="replace">
+            <a style="visibility: hidden;" href="/my/home" role="menuitem" class="dropdown-item"></a>
+        </xpath>
+      </template>
+
+      <template id="portal_layout_csj" name="Portal layout: appointment menu entry" inherit_id="portal.portal_breadcrumbs" priority="40">
+          <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+              <li t-if="page_name == 'appointment' or appointment" t-attf-class="breadcrumb-item #{'active ' if not appointment else ''}">
+                  <a t-if="appointment" t-attf-href="/my/appointments?{{ keep_query() }}">Agendamientos</a>
+                  <t t-else="">Agendamientos</t>
+              </li>
+              <li t-if="appointment" class="breadcrumb-item active">
+                  <t t-esc="appointment.name"/>
+              </li>
+          </xpath>
+      </template>
+
+      <template id="portal_my_home" name="Portal My Home: appointment entries" inherit_id="portal.portal_my_home" priority="40">
+          <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+              <t t-if="appointment_count" t-call="portal.portal_docs_entry">
+                  <t t-set="title">Agendamientos</t>
+                  <t t-set="url" t-value="'/my/appointments'"/>
+                  <t t-set="count" t-value="appointment_count"/>
+              </t>
+              <t t-call="portal.portal_docs_entry">
+                  <t t-set="title">Videos</t>
+                  <t t-set="url" t-value="'/my/videos'"/>
+                  <!--<t t-set="count" t-value="appointment_count"/>-->
+              </t>
+          </xpath>
+      </template>
+
+      <template id="portal_my_appointments" name="My Appointments">
+          <t t-call="portal.portal_layout">
+              <t t-set="breadcrumbs_searchbar" t-value="False"/>
+              <!--<t t-call="portal.portal_searchbar">
+                  <t t-set="title">Agendamientos</t>
+              </t>-->
+              <nav t-attf-class="navbar navbar-light navbar-expand-lg border py-0 mb-2 o_portal_navbar {{classes if classes else ''}} {{'mt-3 rounded' if breadcrumbs_searchbar else 'border-top-0' }}">
+                  <!--  Navbar breadcrumb or title  -->
+                  <t t-if="breadcrumbs_searchbar">
+                      <t t-call="portal.portal_breadcrumbs"/>
+                  </t>
+                  <!--<span t-else="" class="navbar-brand mb-0 h1 mr-auto" t-esc="title or 'Filtros'"/>-->
+
+                  <!--  Collapse button -->
+                  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#o_portal_navbar_content" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle filters">
+                      <span class="navbar-toggler-icon small"/>
+                  </button>
+
+                  <!--  Collapsable content  -->
+
+                  <div class="collapse navbar-collapse" id="o_portal_navbar_content">
+                      <div style="width:100%;" class="col-12 row">
+                        <div class="col-4">
+                        <table style="width:100%;"><tr>
+                  <!--        <td style="width:20%;">
+                            <div t-if="searchbar_sortings" class="form-inline">
+                                <span class="small mr-1 navbar-text">Ordenar por:</span>
+                                <div class="btn-group">
+                                    <button id="portal_searchbar_sortby" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
+                                        <t t-esc="searchbar_sortings[sortby].get('label', 'Newest')"/>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="portal_searchbar_sortby">
+                                        <t t-foreach="searchbar_sortings" t-as="option">
+                                            <a t-att-href="request.httprequest.path + '?' + keep_query('*', sortby=option)"
+                                               t-attf-class="dropdown-item#{sortby == option and ' active' or ''}">
+                                                <span t-esc="searchbar_sortings[option].get('label')"/>
+                                            </a>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                          </td>-->
+                            <td style="width:20%;">
+                                <div t-if="searchbar_filters" class="form-inline ml-lg-2">
+                                    <span class="small mr-1 navbar-text">Filtrar por:</span>
+                                    <div class="btn-group">
+                                        <button id="portal_searchbar_filters" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
+                                            <t t-esc="searchbar_filters[filterby].get('label', 'All')"/>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="portal_searchbar_filters">
+                                            <t t-foreach="searchbar_filters" t-as="option">
+                                                <a t-att-href="default_url + '?' + keep_query('*', filterby=option)"
+                                                   t-attf-class="dropdown-item#{filterby == option and ' active' or ''}">
+                                                    <span t-esc="searchbar_filters[option].get('label')"/>
+                                                </a>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                          </tr></table>
+                        </div>
+                        <div class="col-8">
+
+
+                          <form t-if="searchbar_inputs" class="form-inline o_portal_search_panel_csj ml-lg-4">
+                            <table style="width:100%;"><tr>
+
+                            <td style="width:90%;">
+                              <div class="input-group input-group-sm w-45" style="padding-right:5px;">
+                                  <div class="input-group-prepend">
+                                      <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"/>
+                                      <div class="dropdown-menu" role="menu">
+                                          <t t-foreach='searchbar_inputs' t-as='input'>
+                                              <a t-att-href="'#' + searchbar_inputs[input]['input']"
+                                                  t-attf-class="dropdown-item#{search_in == searchbar_inputs[input]['input'] and ' active' or ''}">
+                                                  <span t-raw="searchbar_inputs[input]['label']"/>
+                                              </a>
+                                          </t>
+                                      </div>
+                                  </div>
+                                  <input type="text" class="form-control form-control-sm" placeholder="Search" t-att-value='search' name="search"/>
+                                  <span class="input-group-append">
+                                      <button class="btn btn-secondary search-submit-csj" type="button">
+                                          <span class="fa fa-search"/>
+                                      </button>
+                                  </span>
+                              </div>
+                            </td>
+
+                            <td style="width:10%;">
+                              <div class="input-group input-group-sm w-5" style="padding-left:15px;background-color:#00a09d;">
+                                <input type="checkbox" name="export"/><br/>
+                                <span class="fa fa-file-excel-o" style="font-size:20px;padding:15px;"/>
+                                <span class="fa fa-calendar" id="datetime_filter_icon" style="font-size:20px;padding:15px;"/>
+                              </div>
+
+                            </td>
+                            </tr><tr>
+
+
+                              <td colspan="2" style="text-align:right;width:100%;">
+                                <div class="input-group input-group-sm" style="padding-right:5px;" id="container_datetime_filter">
+                                  <!--<input type="text" class="form-control form-control-sm" placeholder="Desde" t-att-value='date_begin' name="date_begin" id="date_begin"/>-->
+                                  <div class='input-group date' id='datetimepicker_begin'>
+                                      <input type='datetime' class="form-control" name="date_begin" t-att-value="date_begin"/>
+                                      <!--<span class="input-group-addon">
+                                          <span class="fa fa-calendar"></span>
+                                      </span>-->
+                                  </div>
+                                  <!--<input type="text" class="form-control form-control-sm" placeholder="Hasta" t-att-value='date_end' name="date_end" id="date_end"/>-->
+                                  <div class='input-group date' id='datetimepicker_end'>
+                                      <input type='datetime' class="form-control" name="date_end" t-att-value="date_end"/>
+                                      <!--<span class="input-group-addon">
+                                          <span class="fa fa-calendar"></span>
+                                      </span>-->
+                                  </div>
+                                </div>
+                            </td>
+
+                          </tr></table>
+
+
+                        </form>
+                      </div>
+                        <table style="width:100%;"><tr>
+                      </tr><tr>
+                          <td colspan="2" style="text-align:left">
+                            <div aling="right" class="input-group input-group-sm w-5">
+                              <t t-set="total" t-value="total"/>
+                              <h1 aling="right" style="font-style:italic; padding-rigth:5px; font-size: 15px; -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoj';" >  Total agendamientos <t t-esc="total" aling="right" style="font-size: 15px; "/></h1>
+                              <t aling="right" t-set="i" t-value="1"/>
+                            </div>
+                          </td></tr></table>
+
+                         <!-- <div t-if="searchbar_groupby" class="form-inline ml-lg-2">
+                              <span class="small mr-1 navbar-text">Group By:</span>
+                              <div class="btn-group">
+                                  <button id="portal_searchbar_groupby" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
+                                      <t t-esc="searchbar_groupby[groupby].get('label', 'None')"/>
+                                  </button>
+                                  <div class="dropdown-menu" aria-labelledby="portal_searchbar_groupby">
+                                      <t t-foreach="searchbar_groupby" t-as="option">
+                                          <a t-att-href="default_url + '?' + keep_query('*', groupby=option)"
+                                             t-attf-class="dropdown-item#{groupby == option and ' active' or ''}">
+                                              <span t-esc="searchbar_groupby[option].get('label')"/>
+                                          </a>
+                                      </t>
+                                  </div>
+                              </div>
+                          </div>-->
+                          <t t-raw="0"/>
+                      </div>
+                    </div>
+
+              </nav>
+              <t t-if="not appointments">
+                  <div class="alert alert-warning mt8" role="alert">
+                      No hay agendamientos.
+                  </div>
+              </t>
+              <t t-if="grouped_appointments">
+                <t t-call="portal.portal_table">
+                    <t t-foreach="grouped_appointments" t-as="appointments">
+                        <thead>
+                            <tr t-attf-class="{{'thead-light' if not groupby == 'none' else ''}}">
+                                <th t-if="groupby == 'none'">Agendamiento ID</th>
+                                <th t-else="">Agendamiento ID
+                                    <em class="font-weight-normal text-muted">Appointment for state:</em>
+                                    <span t-field="appointments[0].state"/></th>
+                                <th class="text-center">Número de Proceso</th>
+                                <th class="text-left">Tipo</th>
+                                <th class="text-left">Fecha de Realización</th>
+                                <th class="text-left">Fecha de Agendamiento</th>
+                                <th class="text-left">Tipo de Solicitud</th>
+                                <th class="text-left">Estado</th>
+                                <th class="text-left">Fecha de Solicitud</th>
+                                <th class="text-left">Lifesize URL</th>
+                                <th class="text-left">Nombre del solicitante</th>
+                                <th class="text-left">Nombre de la Sala</th>
+                                <th class="text-left">Departamento de origen</th>
+                                <th class="text-left">Ciudad de origen</th>
+                                <th class="text-left">Clase de videoconferencia</th>
+                                <th class="text-left">Codigo despacho solicitante</th>
+                                <th class="text-left">Despacho solicitante</th>
+                                <th class="text-left">Hora de inicio</th>
+                                <th class="text-left">Usuario del cierre</th>
+                                <th class="text-left">Url de grabación</th>
+                                <th class="text-left">Descripciónn</th>
+                                <th class="text-left">Observaciones</th>
+                                <th class="text-left">Etiqueta</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="appointments" t-as="appointment">
+                                <tr>
+                                  <td>
+                                      <a t-attf-href="/my/appointment/#{appointment.id}?{{ keep_query() }}"><span t-field="appointment.appointment_code"/></a>
+                                  </td>
+                                    <td>
+                                        <span t-field="appointment.process_number"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.type"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.calendar_datetime"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.appointment_date"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.request_type"/>
+                                    </td>
+                                    <td>
+                                        <!--<span class="badge badge-pill badge-info" t-esc="appointment.state"/>-->
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'open'">AGENDADO</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'realized'">REALIZADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'unrealized'">NO REALIZADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'assist_postpone'">ASISTIDA Y APLAZADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'postpone'">APLAZADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'assist_cancel'">ASISTIDA Y CANCELADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'cancel'">CANCELADO</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'draft'">DUPLICADO</span>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.request_date"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.lifesize_url"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.applicant_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.country_state_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.city_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.class_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.judged_only_code"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.judged_only_name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="'%02d:%02d' % (int(str(appointment.calendar_time).split('.')[0]), int(float(str('%.2f' % appointment.calendar_time).split('.')[1])/100*60))"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.appointment_close_user_id.login"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.link_download"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.state_description"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.observations"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.tag_number"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </t>
+                </t>
+            </t>
+          </t>
+      </template>
+        
+      <template id="portal_appointments_public" name="Appointments">
+          <t t-call="portal.portal_layout">
+              <t t-set="breadcrumbs_searchbar" t-value="False"/>
+              <!--<t t-call="portal.portal_searchbar">
+                  <t t-set="title">Agendamientos</t>
+              </t>-->
+              <nav t-attf-class="navbar navbar-light navbar-expand-lg border py-0 mb-2 o_portal_navbar {{classes if classes else ''}} {{'mt-3 rounded' if breadcrumbs_searchbar else 'border-top-0' }}">
+                  <!--  Navbar breadcrumb or title  -->
+                  <t t-if="breadcrumbs_searchbar">
+                      <t t-call="portal.portal_breadcrumbs"/>
+                  </t>
+                  <!--<span t-else="" class="navbar-brand mb-0 h1 mr-auto" t-esc="title or 'Filtros'"/>-->
+
+                  <!--  Collapse button -->
+                  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#o_portal_navbar_content" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle filters">
+                      <span class="navbar-toggler-icon small"/>
+                  </button>
+
+                  <!--  Collapsable content  -->
+
+                  <div class="collapse navbar-collapse" id="o_portal_navbar_content">
+                      <div style="width:100%;" class="col-12 row">
+                        <div class="col-4">
+                        <table style="width:100%;"><tr>
+                  <!--        <td style="width:20%;">
+                            <div t-if="searchbar_sortings" class="form-inline">
+                                <span class="small mr-1 navbar-text">Ordenar por:</span>
+                                <div class="btn-group">
+                                    <button id="portal_searchbar_sortby" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
+                                        <t t-esc="searchbar_sortings[sortby].get('label', 'Newest')"/>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="portal_searchbar_sortby">
+                                        <t t-foreach="searchbar_sortings" t-as="option">
+                                            <a t-att-href="request.httprequest.path + '?' + keep_query('*', sortby=option)"
+                                               t-attf-class="dropdown-item#{sortby == option and ' active' or ''}">
+                                                <span t-esc="searchbar_sortings[option].get('label')"/>
+                                            </a>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                          </td>-->
+                            <td style="width:20%;">
+                                <div t-if="searchbar_filters" class="form-inline ml-lg-2">
+                                    <span class="small mr-1 navbar-text">Filtrar por:</span>
+                                    <div class="btn-group">
+                                        <button id="portal_searchbar_filters" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
+                                            <t t-esc="searchbar_filters[filterby].get('label', 'All')"/>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="portal_searchbar_filters">
+                                            <t t-foreach="searchbar_filters" t-as="option">
+                                                <a t-att-href="default_url + '?' + keep_query('*', filterby=option)"
+                                                   t-attf-class="dropdown-item#{filterby == option and ' active' or ''}">
+                                                    <span t-esc="searchbar_filters[option].get('label')"/>
+                                                </a>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                          </tr></table>
+                        </div>
+                        <div class="col-8">
+
+
+                          <form t-if="searchbar_inputs" class="form-inline o_portal_search_panel_csj ml-lg-4">
+                            <table style="width:100%;"><tr>
+
+                            <td style="width:90%;">
+                              <div class="input-group input-group-sm w-45" style="padding-right:5px;">
+                                  <div class="input-group-prepend">
+                                      <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"/>
+                                      <div class="dropdown-menu" role="menu">
+                                          <t t-foreach='searchbar_inputs' t-as='input'>
+                                              <a t-att-href="'#' + searchbar_inputs[input]['input']"
+                                                  t-attf-class="dropdown-item#{search_in == searchbar_inputs[input]['input'] and ' active' or ''}">
+                                                  <span t-raw="searchbar_inputs[input]['label']"/>
+                                              </a>
+                                          </t>
+                                      </div>
+                                  </div>
+                                  <input type="text" class="form-control form-control-sm" placeholder="Search" t-att-value='search' name="search"/>
+                                  <span class="input-group-append">
+                                      <button class="btn btn-secondary search-submit-csj" type="button">
+                                          <span class="fa fa-search"/>
+                                      </button>
+                                  </span>
+                              </div>
+                            </td>
+
+                            <td style="width:10%;">
+                              <div class="input-group input-group-sm w-5" style="padding-left:15px;background-color:#00a09d;">
+                                <input type="checkbox" name="export"/><br/>
+                                <span class="fa fa-file-excel-o" style="font-size:20px;padding:15px;"/>
+                                <span class="fa fa-calendar" id="datetime_filter_icon" style="font-size:20px;padding:15px;"/>
+                              </div>
+
+                            </td>
+                            </tr><tr>
+
+
+                              <td colspan="2" style="text-align:right;width:100%;">
+                                <div class="input-group input-group-sm" style="padding-right:5px;" id="container_datetime_filter">
+                                  <!--<input type="text" class="form-control form-control-sm" placeholder="Desde" t-att-value='date_begin' name="date_begin" id="date_begin"/>-->
+                                  <div class='input-group date' id='datetimepicker_begin'>
+                                      <input type='datetime' class="form-control" name="date_begin" t-att-value="date_begin"/>
+                                      <!--<span class="input-group-addon">
+                                          <span class="fa fa-calendar"></span>
+                                      </span>-->
+                                  </div>
+                                  <!--<input type="text" class="form-control form-control-sm" placeholder="Hasta" t-att-value='date_end' name="date_end" id="date_end"/>-->
+                                  <div class='input-group date' id='datetimepicker_end'>
+                                      <input type='datetime' class="form-control" name="date_end" t-att-value="date_end"/>
+                                      <!--<span class="input-group-addon">
+                                          <span class="fa fa-calendar"></span>
+                                      </span>-->
+                                  </div>
+                                </div>
+                            </td>
+
+                          </tr></table>
+
+
+                        </form>
+                      </div>
+                        <table style="width:100%;"><tr>
+                      </tr><tr>
+                          <td colspan="2" style="text-align:left">
+                            <div aling="right" class="input-group input-group-sm w-5">
+                              <t t-set="total" t-value="total"/>
+                              <h1 aling="right" style="font-style:italic; padding-rigth:5px; font-size: 15px; -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoj';" >  Total agendamientos <t t-esc="total" aling="right" style="font-size: 15px; "/></h1>
+                              <t aling="right" t-set="i" t-value="1"/>
+                            </div>
+                          </td></tr></table>
+
+                         <!-- <div t-if="searchbar_groupby" class="form-inline ml-lg-2">
+                              <span class="small mr-1 navbar-text">Group By:</span>
+                              <div class="btn-group">
+                                  <button id="portal_searchbar_groupby" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
+                                      <t t-esc="searchbar_groupby[groupby].get('label', 'None')"/>
+                                  </button>
+                                  <div class="dropdown-menu" aria-labelledby="portal_searchbar_groupby">
+                                      <t t-foreach="searchbar_groupby" t-as="option">
+                                          <a t-att-href="default_url + '?' + keep_query('*', groupby=option)"
+                                             t-attf-class="dropdown-item#{groupby == option and ' active' or ''}">
+                                              <span t-esc="searchbar_groupby[option].get('label')"/>
+                                          </a>
+                                      </t>
+                                  </div>
+                              </div>
+                          </div>-->
+                          <t t-raw="0"/>
+                      </div>
+                    </div>
+
+              </nav>
+              <t t-if="not appointments">
+                  <div class="alert alert-warning mt8" role="alert">
+                      No hay agendamientos.
+                  </div>
+              </t>
+              <t t-if="grouped_appointments">
+                <t t-call="portal.portal_table">
+                    <t t-foreach="grouped_appointments" t-as="appointments">
+                        <thead>
+                            <tr t-attf-class="{{'thead-light' if not groupby == 'none' else ''}}">
+                                <th t-if="groupby == 'none'">Id solicitud</th>
+                                <th t-else="">Id solicitud
+                                    <em class="font-weight-normal text-muted">Appointment for state:</em>
+                                    <span t-field="appointments[0].state"/></th>
+                                <th class="text-center">Tipo de solicitud</th>
+                                <th class="text-left">Tipo de Audiencia</th>
+                                <th class="text-left">Clase de videoconferencia</th>
+                                <th class="text-left">Tipo de Audiencia</th>
+                                <th class="text-left">Fecha de realización</th>
+                                <th class="text-left">Hora de inicio</th>
+                                <th class="text-left">Código despacho solicitante</th>
+                                <th class="text-left">Despacho solicitante</th>
+                                <th class="text-left">Ciudad de origen</th>
+                                <th class="text-left">Departamento de origen</th>
+                                <th class="text-left">Destinos</th>
+                                <th class="text-left">Observaciones</th>
+                                <th class="text-left">Fecha de solicitud</th>
+                                <th class="text-left">Nombre del solicitante</th>
+                                <th class="text-left">Número de proceso</th>
+                                <th class="text-left">Fecha agendamiento</th>
+                                <th class="text-left">Creado por</th>
+                                <th class="text-left">Descripción</th>
+                                <th class="text-left">Estado</th>
+                                <th class="text-left">Etiqueta</th>
+                                <th class="text-left">Url de grabación</th>
+                                <th class="text-left">Nombre Sala Lifesize</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="appointments" t-as="appointment">
+                                <tr>
+                                  <td>
+                                      <span t-field="appointment.appointment_code"/>
+                                  </td>
+                                    <td>
+                                        <span t-field="appointment.type_request_concatenated"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.type"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.class_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.request_type"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.calendar_datetime"/>
+                                    </td>
+                                    
+                                    <td>
+                                        <span t-esc="'%02d:%02d' % (int(str(appointment.calendar_time).split('.')[0]), int(float(str('%.2f' % appointment.calendar_time).split('.')[1])/100*60))"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.judged_only_code"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.judged_only_name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.city_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.country_state_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.destination_ids_label"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.observations"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.request_date"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.applicant_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.process_number"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.appointment_date"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.create_uid"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.state_description"/>
+                                    </td>
+                                    <td>
+                                        <!--<span class="badge badge-pill badge-info" t-esc="appointment.state"/>-->
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'open'">AGENDADO</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'realized'">REALIZADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'unrealized'">NO REALIZADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'assist_postpone'">ASISTIDA Y APLAZADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'postpone'">APLAZADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'assist_cancel'">ASISTIDA Y CANCELADA</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'cancel'">CANCELADO</span>
+                                        <span class="badge badge-pill badge-info" t-if="appointment.state == 'draft'">DUPLICADO</span>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.tag_number"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.link_download"/>
+                                    </td>  
+                                    <td>
+                                        <span t-esc="appointment.name"/>
+                                    </td>
+                                   
+                                </tr>
+                            </t>
+                        </tbody>
+                    </t>
+                </t>
+            </t>
+          </t>
+      </template>
+
+      <template id="portal_my_appointment" name="My Appointment">
+          <t t-call="portal.portal_layout">
+              <t t-set="o_portal_fullwidth_alert" groups="calendar_csj.group_calendar_manager">
+                  <t t-call="portal.portal_back_in_edit_mode">
+                      <t t-set="backend_url" t-value="'/web#model=calendar.appointment&amp;id=%s&amp;view_type=form' % (appointment.id)"/>
+                  </t>
+              </t>
+              <t t-call="portal.portal_record_layout">
+                  <t t-set="card_header">
+                      <div class="row no-gutters">
+                          <div class="col-md">
+                              <h5 class="mb-1 mb-md-0">
+                                  <span>ID Agendamiento: </span>
+                                  <span t-field="appointment.appointment_code"/>
+                                  <small class="text-muted"> (#<span t-field="appointment.id"/>)</small>
+                              </h5>
+                          </div>
+                          <div class="col-md text-md-right">
+                              <small class="text-right">Estado:</small>
+                              <span t-field="appointment.state" class=" badge badge-pill badge-info" title="Estado actual del agendamiento"/>
+                          </div>
+                      </div>
+                        <div class="row no-gutters" style="padding-top:20px;">
+                            <div class="col-md">
+                              <div class="btn-group" role="group" aria-label="Appointment Edit Button">
+                                <button type="button" class="btn btn-secondary portal_appointment_edit" >
+                                  Editar
+                                </button>
+                              </div>
+                              <div class="btn-group" role="group" aria-label="Appointment Reschedule Button" t-if="appointment.state != 'cancel'">
+                                <button type="button" class="btn btn-secondary portal_appointment_reschedule" attrs="{'invisible':[('appointments.state','=','cancel')]}">
+                                  Reagendar
+                                </button>
+                              </div>
+                              <div class="btn-group" role="group" aria-label="Appointment Confirm Button" t-if="appointment.state != 'cancel'">
+                                <button type="button" class="btn btn-secondary portal_appointment_judged_change" attrs="{'invisible':[('grouped_appointments.state','=','cancel')]}">
+                                  Cambiar Juzgado
+                                </button>
+                              </div>
+                              <div class="btn-group" role="group" aria-label="Appointment Confirm Button Update" t-if="appointment.state != 'cancel'">
+                                <button type="button" class="btn btn-secondary portal_appointment_confirm_update" attrs="{'invisible':[('state','=','cancel')]}">
+                                  Actualizar
+                                </button>
+                              </div>
+                            </div>
+                            <div class="col-md text-md-right">
+                                <div class="appointment_statebar">
+                                  <span t-raw="appointment.state" id="appointment_state" invisible="1"/>
+                                  <!--<span t-raw="appointment.id" id="appointment_id" invisible="1"/>-->
+                                  <input type="hidden" id="appointment_id" t-att-value="appointment.id"/>
+                                  <ul class="nav nav-pills">
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_open_btn">Agendado</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_realized_btn">Realizada</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_unrealized_btn">No Realizada</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_postpone_btn">Aplazada</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_assist_postpone_btn">Asistida y Aplazada</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_assist_cancel_btn">Asistida y Cancelada</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_cancel_btn">Cancelado</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#" id="state_draft_btn">Duplicado</a>
+                                    </li>
+                                  </ul>
+                                </div>
+                            </div>
+                        </div>
+                  </t>
+
+                  <t t-set="card_body">
+
+                      <div class="mb-1" style="text-align:center;background-color: #00a09d;padding-top:15px;padding-bottom:15px;color:#FFF;">
+                          <strong>Despacho:</strong> <span t-field="appointment.partner_id.name"/><br/>
+                          <strong>Sala:</strong> <span t-field="appointment.room_id.name"/><br/>
+                          <strong>Ciudad:</strong> <span t-field="appointment.city_id.name"/> <br/>
+                          <strong>Departamento:</strong> <span t-field="appointment.country_state_id.name"/>
+                      </div>
+
+                      <div class="row col-12 mb-4" style="padding-top:20px;">
+                          <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;">
+                              <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos de Realización</div>
+                              <br/>
+                              <strong>Fecha y Hora de Realización:</strong> <span t-esc="appointment.calendar_datetime" t-options='{"widget": "datetime"}'/>
+                              <br/>
+                           <!--   <strong>Duración:</strong> <span t-field="appointment.calendar_duration" t-options='{"widget": "float_date"}'/> -->
+                              <br/>
+                              <strong>Fecha de Agendamiento:</strong> <span t-field="appointment.appointment_date" t-options='{"widget": "date"}'/>
+                              <br/>
+                              <strong>Fecha de Solicitud:</strong> <span t-field="appointment.request_date" t-options='{"widget": "float_date"}'/>
+                              <br/>
+                              <strong>Fecha de Cierre:</strong> <span t-field="appointment.appointment_close_date" t-options='{"widget": "float_date"}'/>
+                              <br/>
+                              <strong>Usuario del Cierre:</strong> <span t-field="appointment.appointment_close_user_id"/>
+                          </div>
+                          <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;" t-if="appointment.calendar_duration">
+                            <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Tipo de Agendamiento</div>
+                            <br/>
+                            <strong>Tipo de Solicitud:</strong> <span t-field="appointment.type"/>
+                            <br/>
+                            <strong>Clase de Solicitud:</strong> <span t-field="appointment.class_id.name"/>
+                            <br/>
+                            <strong>Apoyo en Sitio:</strong> <span t-field="appointment.help_id.name"/>
+                            <br/>
+                            <strong>Tipo de Participante:</strong> <span t-field="appointment.partaker_type"/>
+                            <br/>
+                            <!--<strong>Tipo de Conexión:</strong> <span t-field="appointment.connection_type"/>
+                            <br/>-->
+                            <strong>Medio de Recepción:</strong> <span t-field="appointment.reception_id.name"/>
+                            <br/>
+                            <strong>Detalles Medio de Recepción:</strong> <span t-field="appointment.reception_detail"/>
+                          </div>
+                      </div>
+
+                      <div class="row col-12 mb-4" style="padding-top:20px;">
+                          <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;">
+                              <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos del Proceso</div>
+                              <br/>
+                              <strong>Nombre Solicitante:</strong> <span t-field="appointment.applicant_id.name"/>
+                              <br/>
+                              <!--<strong>Declarante:</strong> <span t-field="appointment.declarant_text"/>
+                              <br/>-->
+                              <!--<strong>Procesado:</strong> <span t-field="appointment.indicted_text"/>
+                              <br/> -->
+                              <strong>Tipo de Audiencia:</strong> <span t-field="appointment.request_type"/>
+                              <br/>
+                              <strong>Número de Proceso:</strong> <span t-field="appointment.process_number"/>
+                              <br/>
+                              <strong>Etiqueta:</strong> <span t-field="appointment.tag_number"/>
+                          </div>
+                          <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;" t-if="appointment.calendar_duration">
+                            <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos de Reunión</div>
+                            <br/>
+                            <strong>Extensión Lifesize:</strong> <span t-field="appointment.lifesize_meeting_ext"/>
+                            <br/>
+                            <strong>URL Lifesize:</strong> <span t-field="appointment.lifesize_url"/>
+                            <br/>
+                            <strong>API Lifesize:</strong> <span t-field="appointment.name"/>
+                            <br/>
+                            <strong>Record Data:</strong> <span t-field="appointment.record_data"/>
+                            <br/>
+                            <strong>Fecha Final:</strong> <span t-field="appointment.end_date"/>
+                            <br/>
+                                <div t-if="appointment.state != 'draft'">
+                                     <strong>Hora Final:</strong> <span t-set="appointment.end_hour" value="0" /><span t-esc="'%s:%02d' % (str(appointment.end_hour).split('.')[0], int(float(str('%.2f' % appointment.end_hour).split('.')[1])/1))" />
+                                </div>
+                            <br/>
+                            <strong>Url de grabación:</strong> <span t-field="appointment.link_download"/>
+                            <!--<br/>
+                            <strng>Streaming:</strong> <span t-field="appointment.link_streaming"/>-->
+                          </div>
+                      </div>
+
+
+                      <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;" t-if="appointment.state != 'realized' and appointment.state != 'open'">
+                        <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Descripción</div>
+                        <br/>
+                        <br/>
+                        <span t-field="appointment.state_description" style="padding-top:15px;"/>
+                      </div>
+
+                      <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
+                        <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Observaciones</div>
+                        <br/>
+                        <br/>
+                        <span t-field="appointment.observations" style="padding-top:15px;"/>
+                      </div>
+
+                      <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
+                        <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos del solicitante</div>
+                        <br/>
+                        <table style="padding-top:15px;"><tr>
+                          <td><strong>Email:</strong> <span t-field="appointment.applicant_email"/></td>
+                        </tr><tr>
+                        <td>
+                          <strong>Dominio:</strong> <span t-field="appointment.applicant_domain"/>
+                        </td>
+                        </tr><tr>
+                        <td>
+                          <strong>Teléfono:</strong> <span t-field="appointment.applicant_mobile"/>
+                        </td>
+                        </tr></table>
+                      </div>
+
+                      <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
+                        <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Invitados</div>
+                        <br/>
+                        <table style="padding-top:15px;">
+                        <t t-foreach="appointment.partners_ids" t-as="partner">
+                          <tr>
+                          <td>
+                            <t t-esc='partner.email' />
+                          </td>
+                          </tr>
+                        </t>
+                        </table>
+                      </div>
+
+                      <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
+                        <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Destinos</div>
+                        <br/>
+                        <table style="padding-top:15px; width:100%;">
+                        <t t-foreach="appointment.destination_ids" t-as="destination">
+                          <tr>
+                          <td>
+                            <t t-esc='destination.name' />
+                          </td>
+                          <td>
+                            <t t-esc='destination.email' />
+                          </td>
+                          <td>
+                            <t t-esc='destination.company_type' />
+                          </td>
+                          </tr>
+                        </t>
+                        </table>
+                      </div>
+
+                      <!--<div class="row mb-4" t-if="task.user_id or task.partner_id">
+                          <div class="col-12 col-md-6 pb-2" t-if="task.user_id">
+                              <strong>Assigned to</strong>
+                              <div class="row">
+                                  <div class="col flex-grow-0 pr-3">
+                                      <img t-if="task.user_id.image_1024" class="rounded-circle mt-1 o_portal_contact_img" t-att-src="image_data_uri(task.user_id.image_1024)" alt="Contact"/>
+                                      <img t-else="" class="rounded-circle mt-1 o_portal_contact_img" src="/web/static/src/img/user_menu_avatar.png" alt="Contact"/>
+                                  </div>
+                                  <div class="col pl-md-0">
+                                      <div t-field="task.user_id" t-options='{"widget": "contact", "fields": ["name", "email", "phone"]}'/>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="coll-12 col-md-6 pb-2" t-if="task.partner_id">
+                              <strong>Reported by</strong>
+                              <div class="row">
+                                  <div class="col flex-grow-0 pr-3">
+                                      <img t-if="task.partner_id.image_1024" class="rounded-circle mt-1 o_portal_contact_img" t-att-src="image_data_uri(task.partner_id.image_1024)" alt="Contact"/>
+                                      <img t-else="" class="rounded-circle mt-1 o_portal_contact_img" src="/web/static/src/img/user_menu_avatar.png" alt="Contact"/>
+                                  </div>
+                                  <div class="col pl-md-0">
+                                      <div t-field="task.partner_id" t-options='{"widget": "contact", "fields": ["name", "email", "phone"]}'/>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row" t-if="task.description or task.attachment_ids">
+                          <div t-if="task.description" t-attf-class="col-12 col-lg-7 mb-4 mb-md-0 {{'col-lg-7' if task.attachment_ids else 'col-lg-12'}}">
+                              <hr class="mb-1"/>
+                              <strong class="d-block mb-2">Description</strong>
+                              <div class="py-1 px-2 bg-100 small" t-field="task.description"/>
+                          </div>
+                          <div t-if="task.attachment_ids" t-attf-class="col-12 col-lg-5 o_project_portal_attachments {{'col-lg-5' if task.description else 'col-lg-12'}}">
+                              <hr class="mb-1 d-none d-lg-block"/>
+                              <strong class="d-block mb-2">Attachments</strong>
+                              <div class="row">
+                                  <div t-attf-class="col {{'col-lg-6' if not task.description else 'col-lg-12'}}">
+                                      <ul class="list-group">
+                                          <a class="list-group-item list-group-item-action d-flex align-items-center oe_attachments py-1 px-2" t-foreach='task.attachment_ids' t-as='attachment' t-attf-href="/web/content/#{attachment.id}?download=true&amp;access_token=#{attachment.access_token}" target="_blank" data-no-post-process="">
+                                              <div class='oe_attachment_embedded o_image o_image_small mr-2 mr-lg-3' t-att-title="attachment.name" t-att-data-mimetype="attachment.mimetype" t-attf-data-src="/web/image/#{attachment.id}/50x40?access_token=#{attachment.access_token}"/>
+                                              <div class='oe_attachment_name text-truncate'><t t-esc='attachment.name'/></div>
+                                          </a>
+                                      </ul>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>-->
+                  </t>
+              </t>
+
+           <!--   <div class="mt32">
+                  <h4><strong>Historia de Mensajes y Comunicación sobre este Agendamiento</strong></h4>
+                  <t t-call="portal.message_thread">
+                      <t t-set="object" t-value="appointment"/>
+                      <t t-set="token" t-value="appointment.access_token"/>
+                      <t t-set="pid" t-value="pid"/>
+                      <t t-set="hash" t-value="hash"/>
+                  </t>
+              </div> -->
+          </t>
+      </template>
+
+
+
+
+
+      <template id="portal_my_appointment_editall" name="My Appointment Edit">
+          <t t-call="portal.portal_layout">
+              <t t-set="o_portal_fullwidth_alert" groups="calendar_csj.group_calendar_manager">
+                  <t t-call="portal.portal_back_in_edit_mode">
+                      <t t-set="backend_url" t-value="'/web#model=calendar.appointment&amp;id=%s&amp;view_type=form' % (appointment.id)"/>
+                  </t>
+              </t>
+
+              <form class="mt32 appointment_portal_edit_form" t-attf-action="/my/appointment/#{appointment.id}/update/all/submit" method="POST">
+                  <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                  <input type="hidden" name="appointment_state" t-att-value="appointment.state" />
+                  <input type="hidden" name="appointment_id" t-att-value="appointment.id" />
+                  <input type="hidden" name="appointment_type" t-att-value="appointment.appointment_type_id.id"/>
+                  <input type="hidden" name="calendar_duration" t-att-value="appointment.calendar_duration"/>
+              <t t-call="portal.portal_record_layout">
+                  <t t-set="card_header">
+                      <div class="row no-gutters">
+                          <div class="col-md">
+                              <h5 class="mb-1 mb-md-0">
+                                  <span>ID Agendamiento: </span>
+                                  <span t-field="appointment.appointment_code"/>
+                                  <small class="text-muted"> (#<span t-field="appointment.id"/>)</small>
+                              </h5>
+                          </div>
+                          <div class="col-md text-md-right">
+                              <small class="text-right">Estado:</small>
+                              <span t-field="appointment.state" class=" badge badge-pill badge-info" title="Estado actual del agendamiento"/>
+                          </div>
+                      </div>
+                      <div class="row no-gutters" style="padding-top:20px;">
+                          <div class="col-md">
+                            <div class="btn-group" role="group" aria-label="Appointment Save Button">
+                              <button type="button" class="btn btn-secondary portal_appointment_save" attrs="{'invisible':[('state','=','cancel')]}">
+                                Guardar
+                              </button>
+                            </div>
+                            <div class="btn-group" role="group" aria-label="Appointment Discart Button">
+                              <button type="button" class="btn btn-secondary portal_appointment_edit_cancel">
+                                Descartar
+                              </button>
+                            </div>
+                          </div>
+
+                      </div>
+                  </t>
+
+                  <t t-set="card_body">
+                    <!--
+                      <div class="mb-1" style="text-align:center;background-color: #00a09d;padding-top:15px;padding-bottom:15px;color:#FFF;">
+                        <div class="form-group row col-xl-12 col-md-12" style="padding-left:30px;">
+                            <div class="form-group row col-xl-6 col-md-6">
+                                  <label for="partner_name" class="col-md-12 col-form-label row">Despacho</label>
+                                  <div class="col-md-12 row">
+                                      <input type="char" class="form-control text-uppercase" name="partner_name" readonly="1" required="1" t-att-value="appointment.partner_id.name"/>
+                                      <span t-esc='appointment.partner_id.name' style="color:#FFF;"/>
+                                  </div>
+                            </div>
+                            <div class="form-group row col-xl-6 col-md-6">
+                              <label for="room_name" class="col-md-12 row col-form-label text-uppercase">Sala</label>
+                              <div class="col-md-12 row">
+                                  <input type="char" class="form-control" name="room_name" required="1" readonly="1" t-att-value="appointment.room_id.name"/>
+                                  <span t-esc='appointment.partner_id.name' style="color:#FFF;"/>
+                              </div>
+                            </div>
+                            <div class="form-group row col-xl-6 col-md-6" style="color:#FFF;">
+                                  <label for="city_name" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">Ciudad</label>
+                                  <div class="col-md-12 row">
+                                      <input type="char" class="form-control text-uppercase" name="city_name" readonly="1" required="1" t-att-value="appointment.city_id.name"/>
+                                      <span t-esc='appointment.city_id.name' style="color:#FFF;"/>
+                                  </div>
+                            </div>
+                            <div class="form-group row col-xl-6 col-md-6">
+                              <label for="country_state_name" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Departamento</label>
+                              <div class="col-md-12 row">
+                                  <input type="char" class="form-control" name="country_state_name" readonly="1" required="1" t-att-value="appointment.country_state_id.name"/>
+                                  <span t-esc='appointment.country_state_id.name' style="color:#FFF;"/>
+                              </div>
+                            </div>
+                        </div>
+                      </div>-->
+
+                      <div class="row col-12 mb-4" style="padding-top:20px;">
+                          <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;">
+                              <!--<div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos de Realización</div>
+                              <br/>
+
+                              <div class="form-group row col-xl-12 col-md-12">
+                                <label for="calendar_datetime" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha y Hora de Realización</label>
+                                <div class="col-md-12 row">
+                                    <input type="datetime" class="form-control" id="calendar_datetime" name="calendar_datetime" required="1" t-att-value="appointment.calendar_datetime   - datetime.timedelta(hours=5)"/>
+                                </div>
+                              </div>-->
+
+                              <!--<div class="form-group row col-xl-12 col-md-12">
+                                <label for="calendar_duration" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Duración</label>
+                                <div class="col-md-12 row">
+                                    <input type="char" class="form-control" name="calendar_duration" required="1" t-att-value="appointment.calendar_duration" readonly="1"/>
+                                </div>
+                              </div>
+
+                              <div class="form-group row col-xl-12 col-md-12">
+                                <label for="appointment_date" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha de Agendamiento</label>
+                                <div class="col-md-12 row">
+                                    <input type="text" class="form-control" id="appointment_date" name="appointment_date" required="1" t-att-value="appointment.appointment_date" readonly="1"/>
+                                </div>
+                              </div>
+
+                              <div class="form-group row col-xl-12 col-md-12">
+                                <label for="request_date" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha de Solicitud</label>
+                                <div class="col-md-12 row">
+                                    <input type="text" class="form-control" id="request_date" name="request_date" required="1" t-att-value="appointment.request_date" readonly="1"/>
+                                </div>
+                              </div>
+
+                              <div class="form-group row col-xl-12 col-md-12">
+                                <label for="appointment_close_date" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha de Cierre</label>
+                                <div class="col-md-12 row">
+                                    <input type="char" class="form-control" name="appointment_close_date" required="1" t-att-value="appointment.appointment_close_date" readonly="1"/>
+                                </div>
+                              </div>
+
+                              <div class="form-group row col-xl-12 col-md-12">
+                                <label for="appointment_close_user_id" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Usuario del Cierre</label>
+                                <div class="col-md-12 row">
+                                    <input type="char" class="form-control" name="appointment_close_user_id" required="1" t-att-value="appointment.appointment_close_user_id.name" readonly="1"/>
+                                </div>
+                              </div>-->
+
+                                  <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos del Proceso</div>
+                                  <br/>
+
+                                  <div class="form-group row col-xl-12 col-md-12">
+                                    <label for="applicant_name" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Nombre Solicitante</label>
+                                    <div class="col-md-12 row">
+                                        <input type="char" class="form-control" name="applicant_name" required="1" t-att-value="appointment.applicant_id.name"/>
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row col-xl-12 col-md-12" style="display: none">
+                                    <label for="declarant_text" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Declarante</label>
+                                    <div class="col-md-12 row">
+                                        <input type="char" class="form-control" name="declarant_text" required="1" t-att-value="appointment.declarant_text"/>
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row col-xl-12 col-md-12" style="display: none">
+                                    <label for="indicted_text" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Procesado</label>
+                                    <div class="col-md-12 row">
+                                        <input type="char" class="form-control" name="indicted_text" required="1" t-att-value="appointment.indicted_text"/>
+                                    </div>
+                                  </div>
+
+                                 <!-- <div class="form-group row col-xl-12 col-md-12">
+                                    <label for="request_type" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Tipo de Audiencia</label>
+                                    <div class="col-md-12 row">
+                                        <input type="hidden" class="form-control" name="hidden_request_type" required="1" t-att-value="appointment.request_type"/>
+                                        <select name="request_type" class="form-control" id="type">
+                                            <option t-att-value="r">Reservedo</option>
+                                            <option t-att-value="l">Libre</option>
+                                        </select>
+                                    </div>
+                                  </div>-->
+
+                                  <div class="form-group row col-xl-12 col-md-12">
+                                    <label for="process_number" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Número de Proceso</label>
+                                    <div class="col-md-12 row">
+                                        <input type="char" class="form-control" name="process_number" required="1" t-att-value="appointment.process_number"/>
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row col-xl-12 col-md-12">
+                                     <label for="tag_number" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Etiqueta</label>
+                                     <div class="col-md-12 row">
+                                         <input type="char" class="form-control" name="tag_number" required="1" t-att-value="appointment.tag_number"/>
+                                     </div>
+                                   </div>
+
+
+                                  <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
+                                    <label for="end_date" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha Final</label>
+                                    <div class="col-md-12 row">
+                                        <input type="char" class="form-control" name="end_date" required="1" t-att-value="appointment.end_date" t-options='{"widget": "float", "precision": 2}'/>
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
+                                    <label for="end_hour" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Hora Final</label>
+                                    <div class="col-md-12 row">
+                                        <input type="char" class="form-control" value="0" selected="true" name="end_hour" required="1"/>
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
+                                    <label for="link_download" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Url de grabación</label>
+                                    <div class="col-md-12 row">
+                                        <input type="char" class="form-control" name="link_download" required="1" t-att-value="appointment.link_download"/>
+                                    </div>
+                                  </div>
+
+
+                          </div>
+
+
+                          <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;" t-if="appointment.calendar_duration">
+                            <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Tipo de Agendamiento</div>
+                            <br/>
+
+                            <div class="form-group row col-xl-12 col-md-12">
+                              <label for="type" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Tipo de Solicitud</label>
+                              <div class="col-md-12 row">
+                                  <input type="hidden" class="form-control" name="hidden_type" required="1" t-att-value="appointment.type"/>
+
+                                  <select name="types" class="form-control" id="types" style="width:50%">
+                                      <option t-att-value="audiencia" t-att-selected="types">Audiencia</option>
+                                      <option t-att-value="video" t-att-selected="types">Video Conferencia</option>
+                                      <option t-att-value="streaming" t-att-selected="types">Streaming</option>
+                                  </select>
+                              </div>
+                            </div>
+
+                            <div class="form-group row col-xl-12 col-md-12">
+                              <label for="class_name" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Clase de Solicitud</label>
+                              <div class="col-md-12 row">
+                                  <input type="hidden" class="form-control" name="hidden_class_id" required="1" t-att-value="appointment.class_id.id" readonly="1"/>
+                                  <select class="form-control" name="class_id" id="class_id">
+                                        <t t-foreach="suggested_class" t-as="cal_class">
+                                          <option t-att-value="cal_class.id" t-esc="cal_class.name" />
+                                      </t>
+                                  </select>
+                              </div>
+                            </div>
+
+                            <div class="form-group row col-xl-12 col-md-12">
+                              <label for="help_name" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Apoyo en Sitio</label>
+                              <div class="col-md-12 row">
+                                  <input type="hidden" class="form-control" name="hidden_suggested_help1" required="1" t-att-value="appointment.help_id.id"/>
+                                  <select class="form-control" name="help_id" id="help_id">
+                                      <t t-foreach="suggested_help1" t-as="res">
+                                          <option t-att-value="res.id" t-esc="res.name" t-att-selected="res.name" />
+                                      </t>
+                                  </select>
+                              </div>
+                            </div>
+
+                            <div class="form-group row col-xl-12 col-md-12">
+                              <label for="partaker_type" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Tipo de Participante</label>
+                              <div class="col-md-12 row">
+                                  <input type="hidden" class="form-control" name="hidden_partaker_type" required="1" t-att-value="appointment.partaker_type.id"/>
+                                  <select class="form-control" name="partaker_type" id="partaker_type">
+                                      <t t-foreach="suggested_help2" t-as="res">
+                                          <option t-att-value="res.id" t-esc="res.name" t-att-selected="res.name" />
+                                      </t>
+                                  </select>
+                              </div>
+                            </div>
+
+                            <div class="form-group row col-xl-12 col-md-12" style="display: none">
+                              <label for="reception_name" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Tipo de Conexión</label>
+                              <div class="col-md-12 row">
+                                  <input type="char" class="form-control" name="reception_name" required="1" t-att-value="appointment.reception_id.name"/>
+                              </div>
+                            </div>
+
+                            <div class="form-group row col-xl-12 col-md-12">
+                              <label for="connection_type" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Medio de Recepción</label>
+                              <div class="col-md-12 row">
+                                  <input type="char" class="form-control" name="connection_type" required="1" t-att-value="appointment.reception_id.name"/>
+                              </div>
+                            </div>
+
+                            <div class="form-group row col-xl-12 col-md-12">
+                              <label for="reception_detail" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Detalles Medio de Recepción</label>
+                              <div class="col-md-12 row">
+                                  <input type="char" class="form-control" name="reception_detail" required="1" t-att-value="appointment.reception_detail"/>
+                              </div>
+                            </div>
+
+                          </div>
+                      </div>
+
+                      <!--<div class="row col-12 mb-4" style="padding-top:20px;">
+                                                    <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;" t-if="appointment.calendar_duration">
+                            <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos de Reunión</div>
+                            <br/>
+
+                            <div class="form-group row col-xl-12 col-md-12">
+                              <label for="lifesize_meeting_ext" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Extensión Lifesize</label>
+                              <div class="col-md-12 row">
+                                  <input type="char" class="form-control" name="lifesize_meeting_ext" required="1" t-att-value="appointment.lifesize_meeting_ext" readonly="0"/>
+                              </div>
+                            </div>
+
+                            <div class="form-group row col-xl-12 col-md-12">
+                              <label for="lifesize_url" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">URL Lifesize</label>
+                              <div class="col-md-12 row">
+                                  <input type="char" class="form-control" name="lifesize_url" required="1" t-att-value="appointment.lifesize_url" readonly="0"/>
+                              </div>
+                            </div>
+
+                            <div class="form-group row col-xl-12 col-md-12">
+                              <label for="name" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">API Lifesize</label>
+                              <div class="col-md-12 row">
+                                  <input type="char" class="form-control" name="name" required="1" t-att-value="appointment.name"/>
+                              </div>
+                            </div>
+
+                            <div class="form-group row col-xl-12 col-md-12">
+                              <label for="record_data" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Record Data</label>
+                              <div class="col-md-12 row">
+                                  <input type="char" class="form-control" name="record_data" required="1" t-att-value="appointment.record_data"/>
+                              </div>
+                            </div>
+
+                            <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
+                              <label for="end_date" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha Final</label>
+                              <div class="col-md-12 row">
+                                  <input type="char" class="form-control" name="end_date" required="1" t-att-value="appointment.end_date"/>
+                              </div>
+                            </div>
+
+                            <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
+                              <label for="link_download" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Url de Agendamiento</label>
+                              <div class="col-md-12 row">
+                                  <input type="char" class="form-control" name="link_download" required="1" t-att-value="appointment.link_download"/>
+                              </div>
+                            </div>
+
+                            <div class="form-group row col-xl-12 col-md-12" t-if="appointment.state == 'realized'">
+                              <label for="link_streaming" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Streaming</label>
+                              <div class="col-md-12 row">
+                                  <input type="char" class="form-control" name="link_streaming" required="1" t-att-value="appointment.link_streaming"/>
+                              </div>
+                            </div>
+
+                          </div>
+                      </div>-->
+
+                      <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;" t-if="appointment.state != 'realized' and appointment.state != 'open'">
+                        <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Descripción</div>
+                        <br/>
+                        <br/>
+                        <textarea class="form-control text-uppercase" rows="5" t-att-required="False" t-attf-name="state_description"><t t-esc="appointment.state_description"/></textarea>
+                      </div>
+
+                      <div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
+                        <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Observaciones</div>
+                        <br/>
+                        <br/>
+                        <textarea class="form-control text-uppercase" rows="5" t-att-required="False" t-attf-name="observations"><t t-esc="appointment.observations"/></textarea>
+                      </div>
+
+                      <!--<div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
+                        <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos del solicitante</div>
+                        <br/>
+                        <table style="padding-top:15px;"><tr>
+                          <td><strong>Email:</strong> <span t-field="appointment.applicant_email"/></td>
+                        </tr><tr>
+                        <td>
+                          <strong>Dominio:</strong> <span t-field="appointment.applicant_domain"/>
+                        </td>
+                        </tr><tr>
+                        <td>
+                          <strong>Teléfono:</strong> <span t-field="appointment.applicant_mobile"/>
+                        </td>
+                        </tr></table>
+                      </div>-->
+
+                      <!--<div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
+                        <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Invitados</div>
+                        <br/>
+                        <table style="padding-top:15px;">
+                        <t t-foreach="appointment.partners_ids" t-as="partner">
+                          <tr class="guest_remove_form">
+                          <td>
+                            <t t-esc='partner.email' />
+                          </td>
+                          <td>
+                            <button class="btn btn-danger fa fa-remove btn-guest_remove" onclick="remove_guest_fields('+ guest +');" type="button"></button>
+                          </td>
+                          </tr>
+                        </t>
+                        </table>
+
+                        <div class="form-group row col-xl-12">
+                          <div class="row guest_add_form" style="width:100%">
+                            <div class="col-md-5">
+                                <label for="nameguest0" class="col-md-5 col-form-label" style="color: rgba(0, 0, 0, 0.5);">NOMBRE</label>
+                                <input type="char" class="form-control text-uppercase" name="nameguest0" id="nameguest" />
+                            </div>
+                            <div class="col-md-5">
+                                <label for="emailguest0" class="col-md-5 col-form-label" style="color: rgba(0, 0, 0, 0.5);">CORREO</label>
+                                <input type="email" class="form-control text-uppercase" name="emailguest0" id="emailguest" />
+                            </div>
+                            <div class="col-md-2" style="padding-top:4vh;">
+                                <button class="btn btn-success fa fa-plus btn-guest_add" type="button"></button>
+                            </div>
+                          </div><br/>
+                          <div id="guest_fields" style="width:100%;padding-top:10px;">
+                         </div>
+                         <script type="text/javascript" >
+                           function remove_guest_fields(rid) {
+                             $('.guest_remove_form'+rid).remove();
+                             var guestSelectedCont = $(".appointment_submit_form input[name='guestcont']").val();
+                             $(".appointment_submit_form input[name='guestcont']").val(parseInt(guestSelectedCont)-1);
+                           }
+                         </script>
+                        </div>
+
+                      </div>-->
+
+                      <!--<div class="row col-12 mb-4" style="padding-top:20px;border: solid 1px #ccc;margin-left:0px;">
+                        <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Destinos</div>
+                        <br/>
+                        <table style="padding-top:15px; width:100%;">
+                        <t t-foreach="appointment.destination_ids" t-as="destination">
+                          <tr>
+                          <td>
+                            <t t-esc='destination.name' />
+                          </td>
+                          <td>
+                            <t t-esc='destination.email' />
+                          </td>
+                          <td>
+                            <t t-esc='destination.company_type' />
+                          </td>
+                          </tr>
+                        </t>
+                        </table>
+                      </div>-->
+                  </t>
+              </t>
+            </form>
+
+          </t>
+      </template>
+
+
+
+
+      <template id="portal_my_appointment_reschedule" name="My Appointment Reschedule">
+          <t t-call="portal.portal_layout">
+              <t t-set="o_portal_fullwidth_alert" groups="calendar_csj.group_calendar_manager">
+                  <t t-call="portal.portal_back_in_edit_mode">
+                      <t t-set="backend_url" t-value="'/web#model=calendar.appointment&amp;id=%s&amp;view_type=form' % (appointment.id)"/>
+                  </t>
+              </t>
+              <form class="mt32 appointment_portal_reschedule_form" t-attf-action="/my/appointment/#{appointment.id}/update/reschedule/submit?calendar_datetime=#{calendar_datetime}&amp;calendar_duration=#{calendar_duration}&amp;appointment_type=#{appointment_type}" method="POST">
+                  <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                  <input type="hidden" name="appointment_state" t-att-value="appointment.state" />
+                  <input type="hidden" name="appointment_id" t-att-value="appointment.id" />
+                  <input type="hidden" name="appointment_type" t-att-value="appointment.appointment_type_id.id"/>
+                  <input type="hidden" name="calendar_duration" t-att-value="appointment.calendar_duration"/>
+              <t t-call="portal.portal_record_layout">
+                <t t-set="card_header">
+                    <div class="row no-gutters">
+                        <div class="col-md">
+                            <h5 class="mb-1 mb-md-0">
+                                <span>ID Agendamiento: </span>
+                                <span t-field="appointment.appointment_code"/>
+                                <small class="text-muted"> (#<span t-field="appointment.id"/>)</small>
+                            </h5>
+                        </div>
+                        <div class="col-md text-md-right">
+                            <small class="text-right">Estado:</small>
+                            <span t-field="appointment.state" class=" badge badge-pill badge-info" title="Estado actual del agendamiento"/>
+                        </div>
+                    </div>
+                    <div class="row no-gutters" style="padding-top:20px;">
+                        <div class="col-md">
+                          <div class="btn-group" role="group" aria-label="Appointment Reschedule Save Button">
+                            <button type="button" class="btn btn-secondary portal_appointment_reschedule_save" attrs="{'invisible':[('state','=','cancel')]}">
+                              Confirmar
+                            </button>
+                          </div>
+                          <div class="btn-group" role="group" aria-label="Appointment Discart Button">
+                            <button type="button" class="btn btn-secondary portal_appointment_reschedule_cancel">
+                              Descartar
+                            </button>
+                          </div>
+                        </div>
+
+                    </div>
+                </t>
+                <t t-set="card_body">
+                    <div class="mb-1" style="text-align:center;background-color: #00a09d;padding-top:15px;padding-bottom:15px;color:#FFF;">
+                      <h3>Seleccione la nueva información de Agendamiento</h3>
+                    </div>
+                    <div class="row col-12 mb-4" style="padding-top:20px;">
+                        <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;">
+                            <!--<div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Cuando se llevará a cabo</div>
+                            <br/>-->
+                            <div class="form-group row col-xl-12 col-md-12">
+                              <label for="calendar_datetime" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Fecha y Hora de Realización</label>
+                              <div class="col-md-12 row">
+                                  <input type="datetime" class="form-control" id="calendar_datetime" name="calendar_datetime" required="1" t-att-value="appointment.calendar_datetime   - datetime.timedelta(hours=5)"/>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+
+                  </t>
+              </t>
+            </form>
+
+          </t>
+    </template>
+
+
+
+
+    <template id="portal_my_appointment_judged_change" name="My Appointment Judged Change">
+        <t t-call="portal.portal_layout">
+            <t t-set="o_portal_fullwidth_alert" groups="calendar_csj.group_calendar_manager">
+                <t t-call="portal.portal_back_in_edit_mode">
+                    <t t-set="backend_url" t-value="'/web#model=calendar.appointment&amp;id=%s&amp;view_type=form' % (appointment.id)"/>
+                </t>
+            </t>
+            <form class="mt32 appointment_portal_judged_change_form" t-attf-action="/my/appointment/#{appointment.id}/update/judged/submit" method="POST">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                <input type="hidden" name="appointment_state" t-att-value="appointment.state" />
+                <input type="hidden" name="appointment_id" t-att-value="appointment.id" />
+                <input type="hidden" name="appointment_type" t-att-value="appointment.appointment_type_id.id"/>
+                <input type="hidden" name="appointment_judged_type" t-att-value="appointment_judged_type"/>
+                <input type="hidden" name="calendar_duration" t-att-value="appointment.calendar_duration"/>
+                <input type="hidden" name="city_id" class="" t-att-value="appointment.city_id.id"/>
+            <t t-call="portal.portal_record_layout">
+              <t t-set="card_header">
+                  <div class="row no-gutters">
+                      <div class="col-md">
+                          <h5 class="mb-1 mb-md-0">
+                              <span>ID Agendamiento: </span>
+                              <span t-field="appointment.appointment_code"/>
+                              <small class="text-muted"> (#<span t-field="appointment.id"/>)</small>
+                          </h5>
+                      </div>
+                      <div class="col-md text-md-right">
+                          <small class="text-right">Estado:</small>
+                          <span t-field="appointment.state" class=" badge badge-pill badge-info" title="Estado actual del agendamiento"/>
+                      </div>
+                  </div>
+                  <div class="row no-gutters" style="padding-top:20px;">
+                      <div class="col-md">
+                        <div class="btn-group" role="group" aria-label="Appointment Reschedule Save Button">
+                          <button type="button" class="btn btn-secondary portal_appointment_judgedchange_save" attrs="{'invisible':[('state','=','cancel')]}">
+                            Confirmar
+                          </button>
+                        </div>
+                        <div class="btn-group" role="group" aria-label="Appointment Discart Button">
+                          <button type="button" class="btn btn-secondary portal_appointment_judged_change_cancel">
+                            Descartar
+                          </button>
+                        </div>
+                      </div>
+
+                  </div>
+              </t>
+              <t t-set="card_body">
+                  <div class="mb-1" style="text-align:center;background-color: #00a09d;padding-top:15px;padding-bottom:15px;color:#FFF;">
+                    <h2>Seleccione la nueva información de Despacho</h2>
+                  </div>
+                  <div class="row col-12 mb-4" style="padding-top:20px;">
+                      <div class="col-12 col-md-12 mb-1" style="border: solid 1px #ccc;margin-left:0px;">
+                          <!--<div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Cuando se llevará a cabo</div>
+                          <br/>-->
+                          <div class="form-group row col-xl-12 col-md-12">
+                            <label for="calendar_datetime" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Ciudad</label>
+                            <!--<div class="col-md-12 row">
+                                <input
+                                    type="text"
+                                    name="search_city"
+                                    class="search-portal-query-city form-control oe_search_box"
+                                    placeholder="Seleccione una Ciudad..."
+                                    data-limit="10"
+                                    t-att-value="search_city"/>
+                                <input type="text" name="city_id" class="search-query-city-id" t-att-value="appointment.city_id.id"/>
+                            </div>-->
+                            <div class="col-md-9">
+                              <input type="text" name="city_name" class="form-control" readonly="1" t-att-value="appointment.city_id.name"/>
+                            </div>
+                            <label for="calendar_datetime" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">Despacho</label>
+                            <div class="col-md-12 row">
+                                <input
+                                    type="text"
+                                    name="search_appointment"
+                                    class="search-portal-query-appointment form-control oe_search_box"
+                                    placeholder="Seleccione una Juzgado..."
+                                    data-limit="10"
+                                    t-att-value="search_appointment"/>
+                                <input type="hidden" name="judged_id" class="o_appointment_search_order_by"/>
+                            </div>
+                          </div>
+                      </div>
+                  </div>
+                </t>
+            </t>
+          </form>
+        </t>
+  </template>
+        
+        
+    <template id="portal_my_videos" name="Portal My Videos: appointment videos" priority="40">
+        <!--<t t-call="portal.portal_layout">-->
+        <t t-call="portal.frontend_layout">
+              <iframe t-att-src="url_calltech" title="Calltech App" width="100%" height="700" style="border:none;"></iframe>
+        </t>
+    </template>
+        
+    <template id="portal_public_videos" name="Portal Public Videos: appointment videos" priority="40">
+        <!--<t t-call="portal.portal_layout">-->
+        <t t-call="portal.frontend_layout">
+              <iframe t-att-src="url_calltech" title="Calltech App" width="100%" height="700" style="border:none;"></iframe>
+        </t>
+    </template>
+
+
+    <template id="portal_my_videos" name="Portal My Videos: appointment videos" priority="40">
+        <!--<t t-call="portal.portal_layout">-->
+        <t t-call="portal.frontend_layout">
+              <iframe t-att-src="url_calltech" title="Calltech App" width="100%" height="700" style="border:none;"></iframe>
+        </t>
+    </template>
+
+    <template id="portal_public_videos" name="Portal Public Videos: appointment videos" priority="40">
+        <!--<t t-call="portal.portal_layout">-->
+        <t t-call="portal.frontend_layout">
+              <iframe t-att-src="url_calltech" title="Calltech App" width="100%" height="700" style="border:none;"></iframe>
+        </t>
+    </template>
+
+
+    </data>
+</odoo>

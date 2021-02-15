@@ -1,0 +1,54 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="calendar_request_type_form">
+            <field name="name">calendar.request.type.form</field>
+            <field name="model">calendar.request.type</field>
+            <field name="priority" eval="16" />
+            <field name="arch" type="xml">
+                <form string="Request type">
+                    <sheet>
+                        <group col="4">
+                            <field name="name" />
+                            <field name="active" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="calendar_request_type_tree">
+            <field name="name">calendar.request.type.tree</field>
+            <field name="model">calendar.request.type</field>
+            <field name="priority" eval="16" />
+            <field name="arch" type="xml">
+                <tree string="Requests type">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="calendar_request_type_action" model="ir.actions.act_window">
+            <field name="name">Request type</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">calendar.request.type</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new request type
+                </p>
+            </field>
+        </record>
+
+        <menuitem
+            id="calendar_request_type_menu_config"
+            name="Configuration"
+            parent="calendar.mail_menu_calendar"
+            sequence="20"/>
+
+        <menuitem
+            id="calendar_request_type_menu"
+            action="calendar_request_type_action"
+            name="Requests type"
+            sequence="5"
+            parent="calendar_request_type_menu_config"/>
+    </data>
+</odoo>

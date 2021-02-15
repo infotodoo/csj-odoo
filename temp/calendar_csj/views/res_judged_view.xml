@@ -1,0 +1,71 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="res_judged_form">
+            <field name="name">res.judged.form</field>
+            <field name="model">res.judged</field>
+            <field name="priority" eval="16" />
+            <field name="arch" type="xml">
+                <form string="Judged">
+                    <sheet>
+                        <field name="name" readonly="True" />
+                        <group>
+                            <group>
+                                <field name="code" />
+                                <field name="mame" />
+                                <field name="entity_id" readonly="True" />
+                                <field name="specialty_id" />
+                            </group>
+                            <group>
+                                <field name="country_id" readonly="True" />
+                                <field name="state_id" />
+                                <field name="city_id" />
+                                <field name="judged_id" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Rooms">
+                                <field name="rooms_id">
+                                    <tree string="Rooms" editable="bottom">
+                                        <field name="name" />
+                                        <field name="code" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="res_judged_tree">
+            <field name="name">res.judged.tree</field>
+            <field name="model">res.judged</field>
+            <field name="priority" eval="16" />
+            <field name="arch" type="xml">
+                <tree string="Judgeds">
+                    <field name="name" />
+                    <field name="entity_id" />
+                    <field name="specialty_id" />
+                    <field name="city_id" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="res_judged_action" model="ir.actions.act_window">
+            <field name="name">Judgeds</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.judged</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new judged
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="res_judged_menu_menu" name="Judgeds" sequence="10" parent="contacts.res_partner_menu_config" />
+    </data>
+</odoo>

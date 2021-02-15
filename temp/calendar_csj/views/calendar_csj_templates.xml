@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <template id="appointment_form_csj" inherit_id="website_calendar.appointment_form" name="Website Appointment: Your Data CSJ">
+          <xpath expr="//div[1]/div[1]/form[1]" position="before">
+               <div t-if="message=='process_longer_failed'" class="alert alert-danger mt16" role="alert">
+                   <p>
+                       <strong>
+                         Longitud del Número de proceso no permitida!
+                       </strong><br/><br/>
+                       La longitud del proceso debe contener 23 caracteres.
+                   </p>
+               </div>
+               <div t-if="message=='process_email_failed'" class="alert alert-danger mt16" role="alert">
+                   <p>
+                       <strong>
+                         Dirección de Correo Invalida
+                       </strong><br/><br/>
+                       Por favor tenga en cuenta que los dominios autorizados son:
+                       <ul>
+                         <li>cendoj.ramajudicial.gov.co</li>
+                         <li>cortesuprema.ramajudicial.gov.co</li>
+                         <li>consejoestado.ramajudicial.gov.co</li>
+                         <li>consejosuperior.ramajudicial.gov.co</li>
+                         <li>deaj.ramajudicial.gov.co</li>
+                         <li>fiscalia.gov.co</li>
+                         <li>axede.com.co</li>
+                         <li>corteconstitucional.gov.co</li>
+                      </ul>
+                   </p>
+               </div>
+               <div t-if="message=='already_scheduling'" class="alert alert-danger mt16" role="alert">
+                   <p>
+                       <strong>
+                         Ya existe un agendamiento para este Juzgado que se cruza con la fecha y hora seleccionados!
+                       </strong><br/><br/>
+                       <strong>Juzgado: </strong><span t-esc="appointment_type.name"/><br/>
+                       <!--<strong>Fecha Inicial: </strong><span t-esc="date_start"/><br/>
+                       <strong>Fecha Final: </strong><span t-esc="date_end"/><br/>-->
+                       <strong>Tipo: </strong><span t-esc="types"/><br/><br/>
+                       Seleccione otra fecha u hora para realizar el agendamiento.
+                   </p>
+               </div>
+           </xpath>
+           <xpath expr="//div//div//p[1]" position="replace">
+             <p>
+                 Agendamiento de <span t-field="appointment_type.name"/> para el <strong t-esc="datetime_locale"/>
+             </p>
+           </xpath>
+
+            <xpath expr="//ul[@class='wizard mt32 float-right']//li[2]" position="replace"/>
+            <xpath expr="//div[1]/div[1]/form[1]" position="replace">
+                <form class="mt32 appointment_submit_form" t-attf-action="/website/calendar/#{ slug(appointment_type) }/submit?datetime=#{datetime}&amp;duration=#{duration}" method="POST">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                    <input type="hidden" name="datetime_str" t-att-value="datetime_str" />
+                    <input type="hidden" name="employee_id" t-att-value="employee_id" />
+                    <input type="hidden" name="types" t-att-value="types" />
+                    <input type="hidden" name="guestcont" t-att-value="1"/>
+                    <input type="hidden" name="destinationcont" t-att-value="1"/>
+                    <input type="hidden" name="duration" t-att-value="duration" readonly="1"/>
+                    <input type="hidden" name="datetime" t-att-value="datetime" readonly="1"/>
+                    <input type="hidden" name="appointment_type" t-att-value="appointment_type.id" readonly="1"/>
+                    <div class="form-group row col-xl-12 col-md-12">
+                      <div class="form-group row col-xl-6 col-md-6">
+                            <label for="room_id" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">SALA*</label>
+                            <div class="col-md-12 row">
+                                <select class="form-control" name="room_id" id="room_id">
+                                    <t t-foreach="suggested_rooms" t-as="room">
+                                        <option t-att-value="room.id" t-esc="room.virtual_room"/>
+                                    </t>
+                                </select>
+                            </div>
+                      </div>
+                      <div class="form-group row col-xl-6 col-md-6">
+                            <label for="class_id" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">CLASE DE VIDEOCONFERENCIA*</label>
+                            <div class="col-md-12 row">
+                                <select class="form-control" name="class_id" id="class_id">
+                                      <t t-foreach="suggested_class" t-as="cal_class">
+                                        <option t-att-value="cal_class.id" t-esc="cal_class.name" />
+                                    </t>
+                                </select>
+                            </div>
+                      </div>
+                    </div>
+                     <div class="form-group row col-xl-12 col-md-12">
+                        <div class="form-group row col-xl-12">
+                            <label class="col-md-12 col-form-label" style="width:100%;background-color:#00a09d; color:#FFF;">
+                              <span class="fa fa-hand-o-right" style="padding-right:3px;">SOLICITANTE:</span></label>
+                        </div>
+                        <div class="form-group row col-xl-6 col-md-6">
+                              <label for="name" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">NOMBRE*</label>
+                              <div class="col-md-12 row">
+                                  <input type="char" class="form-control text-uppercase" name="name" />
+                              </div>
+                        </div>
+                        <div class="form-group row col-xl-6 col-md-6">
+                          <label for="phone" class="col-md-12 row col-form-label text-uppercase" style="color: rgba(0, 0, 0, 0.5);">TELÉFONO*</label>
+                          <div class="col-md-12 row">
+                              <input type="char" class="form-control" name="phone"  min="0" onkeypress="return isNumber(event)" />
+                          </div>
+                        </div>
+                        <div class="form-group row col-xl-6 col-md-6">
+                              <label for="request_date" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">FECHA DE SOLICITUD*</label>
+                              <div class="col-md-12 row">
+                               <input type="text" data-date-format="YYYY-mm-dd" name="request_date" id="request_date" class="form-control request_date"/>
+                            </div>
+                        </div>
+                        <div class="form-group row col-xl-6 col-md-6">
+                          <label for="email" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">CORREO*</label>
+                          <div class="col-md-12 row">
+                              <input type="email" class="form-control text-uppercase" name="email" />
+                          </div>
+                        </div>
+                    </div>
+                    <div class="form-group row col-xl-12 col-md-12">
+                      <div class="form-group row col-xl-12">
+                          <label class="col-md-12 col-form-label" style="width:100%;background-color:#00a09d; color:#FFF;">
+                            <span class="fa fa-hand-o-right" style="padding-right:3px;">DATOS AGENDA:</span></label>
+                      </div>
+                        <div class="form-group row col-xl-6 col-md-6" style="display: none">
+                          <label for="indicted_text" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">PROCESADO*</label>
+                          <div class="col-md-12 row">
+                              <input type="char" class="form-control text-uppercase" name="indicted_text" />
+                          </div>
+                        </div>
+                      <div class="form-group row col-xl-6 col-md-6" style="display: none">
+                              <label for="declarant_text" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">DECLARANTE*</label>
+                              <div class="col-md-12 row">
+                                  <input type="char" class="form-control text-uppercase" name="declarant_text" />
+                              </div>
+                      </div>
+                      <div class="form-group row col-xl-6 col-md-6">
+                        <label for="request_type" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">TIPO DE AUDIENCIA*</label>
+                        <div class="col-md-12 row">
+                            <select name="request_type" class="form-control" id="request_type">
+                                <option t-att-value="r">Reserved</option>
+                                <option t-att-value="l">Free</option>
+                            </select>
+                        </div>
+                      </div>
+
+                      <div class="form-group row col-xl-6 col-md-6">
+                          <label for="process_number" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">NUMERO DE PROCESO*</label>
+                          <div class="col-md-12 row">
+                              <input type="char" class="form-control text-uppercase" name="process_number" required="1"/>
+                          </div>
+                      </div>
+                      <div class="form-group row col-xl-6 col-md-6">
+                          <label for="reception_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">MEDIO DE RECEPCIÓN*</label>
+                          <div class="col-md-12 row">
+                              <select class="form-control" name="reception_id" id="reception_id">
+                                  <t t-foreach="suggested_reception" t-as="res">
+                                      <option t-att-value="res.id" t-esc="res.name" t-att-selected="res.name" />
+                                  </t>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="form-group row col-xl-6 col-md-6">
+                            <label for="name" class="col-md-12 col-form-label row" style="color: rgba(0, 0, 0, 0.5);">DETALLES MEDIO DE RECEPCIÓN*</label>
+                            <div class="col-md-12 row eception_detail">
+                                <input type="char" class="form-control text-uppercase" name="reception_detail" id="reception_detail" required="0" />
+                            </div>
+                      </div>
+                      <div class="form-group row col-xl-6 col-md-6">
+                          <label for="help_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">APOYO EN SITIO*</label>
+                          <div class="col-md-12 row">
+                              <select class="form-control" name="help_id" id="help_id">
+                                  <t t-foreach="suggested_help1" t-as="res">
+                                      <option t-att-value="res.id" t-esc="res.name" t-att-selected="res.name" />
+                                  </t>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="form-group row col-xl-6 col-md-6">
+                          <label for="help_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">TIPO DE PARTICIPANTE*</label>
+                          <div class="col-md-12 row">
+                              <select class="form-control" name="partaker_type" id="partaker_type">
+                                  <t t-foreach="suggested_help2" t-as="res">
+                                      <option t-att-value="res.id" t-esc="res.name" t-att-selected="res.name" />
+                                  </t>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="form-group row col-xl-6 col-md-6" style="display: none">
+                          <label for="help_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5)">TIPO DE CONEXIÓN</label>
+                          <div class="col-md-12 row">
+                              <select class="form-control" name="connection_type" id="connection_type">
+                                  <t t-foreach="suggested_help3" t-as="res">
+                                      <option t-att-value="res.id" t-esc="res.name" t-att-selected="res.name" />
+                                  </t>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="form-group row col-xl-12 col-md-12">
+                          <label for="description" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">OBSERVACIONES</label>
+                          <div class="col-md-12 row">
+                              <textarea class="form-control text-uppercase" rows="8" t-att-required="False" t-attf-name="description" />
+                          </div>
+                      </div>
+                      <div class="form-group row col-xl-12">
+                          <label class="col-md-12 col-form-label" style="width:100%;background-color:#00a09d; color:#FFF;">
+                          <span class="fa fa-hand-o-right" style="padding-right:3px;">DESTINOS:</span></label>
+                      </div>
+                      <div class="form-group row col-xl-12 col-md-12">
+                        <!--<label for="destino" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">Destination</label>-->
+                        <div class="col-md-12 row">
+                            <input type="char" class="form-control search-destino text-uppercase" name="destino" id="destino" autocomplete="on"/>
+                        </div>
+                        <br/>
+                        <script type="text/javascript" >
+                          function remove_destination_fields(rid) {
+                            $('.destination_remove_form'+rid).remove();
+                            var destinationSelectedCont = $(".appointment_submit_form input[name='destinationcont']").val();
+                            $(".appointment_submit_form input[name='destinationcont']").val(parseInt(destinationSelectedCont)-1);
+                          }
+                        </script>
+                        <div class="form-group row col-md-8">
+                          <div class="col-md-4"/>
+                          <div id="destination_fields" class="col-md-8" style="width:100%;padding-top:10px;">
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-group row col-xl-12">
+                          <label class="col-md-12 col-form-label" style="width:100%;background-color:#00a09d; color:#FFF;">
+                          <span class="fa fa-hand-o-right" style="padding-right:3px;">INVITADOS:</span></label>
+                      </div>
+                      <div class="form-group row col-xl-12">
+
+                        <div class="row guest_add_form" style="width:100%">
+                          <div class="col-md-5">
+                              <label for="nameguest0" class="col-md-5 col-form-label" style="color: rgba(0, 0, 0, 0.5);">NOMBRE</label>
+                              <input type="char" class="form-control text-uppercase" name="nameguest0" id="nameguest" />
+                          </div>
+                          <div class="col-md-5">
+                              <label for="emailguest0" class="col-md-5 col-form-label" style="color: rgba(0, 0, 0, 0.5);">CORREO</label>
+                              <input type="email" class="form-control text-uppercase" name="emailguest0" id="emailguest" />
+                          </div>
+                          <div class="col-md-2" style="padding-top:4vh;">
+                              <button class="btn btn-success fa fa-plus btn-guest_add" type="button"></button>
+                          </div>
+                        </div><br/>
+                        <div id="guest_fields" style="width:100%;padding-top:10px;">
+                       </div>
+                       <script type="text/javascript" >
+                         function remove_guest_fields(rid) {
+                           $('.guest_remove_form'+rid).remove();
+                           var guestSelectedCont = $(".appointment_submit_form input[name='guestcont']").val();
+                           $(".appointment_submit_form input[name='guestcont']").val(parseInt(guestSelectedCont)-1);
+                         }
+                       </script>
+                      </div>
+                  </div>
+
+                  <t t-foreach="appointment_type.question_ids" t-as="question">
+                      <div class="form-group row col-xl-8" t-if="question.question_type!='text'">
+                          <label t-att-for="question_#{question.id}" class="col-md-4 col-form-label" t-esc="question.name" />
+                          <div class="col-md-8">
+                              <t t-if="question.question_type=='char'">
+                                  <input type="char" class="form-control" t-attf-name="question_#{question.id}" t-att-required="question.question_required or None" t-att-placeholder="question.placeholder" />
+                              </t>
+                              <t t-if="question.question_type=='select'">
+                                  <select t-attf-name="question_#{question.id}" class="form-control" t-att-required="question.question_required or None" t-att-placeholder="question.placeholder">
+                                      <t t-foreach="question.answer_ids or []" t-as="answer">
+                                          <option t-att-value="answer.name">
+                                              <t t-esc="answer.name" />
+                                          </option>
+                                      </t>
+                                  </select>
+                              </t>
+                              <t t-if="question.question_type=='radio'">
+                                  <div class="checkbox" t-foreach="question.answer_ids or []" t-as="answer">
+                                      <label>
+                                          <input type="radio" t-attf-name="question_#{question.id}" t-att-required="question.question_required or None" t-att-value="answer.name" />
+                                          <t t-esc="answer.name" />
+                                      </label>
+                                  </div>
+                              </t>
+                              <t t-if="question.question_type=='checkbox'">
+                                  <div class="checkbox" t-foreach="question.answer_ids or []" t-as="answer">
+                                      <label>
+                                          <input type="checkbox" t-attf-name="question_#{question.id}_answer_#{answer.id}" t-att-value="answer.name" />
+                                          <t t-esc="answer.name" />
+                                      </label>
+                                  </div>
+                              </t>
+                          </div>
+                      </div>
+                      <div class="form-group row col-xl-8" t-if="question.question_type=='text'">
+                          <label t-att-for="question_#{question.id}" class="col-md-4 col-form-label" t-esc="question.name" />
+                          <div class="col-md-8">
+                              <textarea class="form-control" rows="8" t-att-required="question.question_required or None" t-attf-name="question_#{question.id}" t-att-placeholder="question.placeholder" />
+                          </div>
+                      </div>
+                  </t>
+                  <div class="form-group row">
+                      <div class="offset-md-12 col-md-12">
+                          <button class="btn btn-primary" id="button_submit_confirm_appointment">
+                              CONFIRMAR AGENDA
+                              <span class="fa fa-arrow-right" />
+                          </button>
+                      </div>
+                  </div>
+                </form>
+            </xpath>
+        </template>
+
+        <template id="index_csj" inherit_id="website_calendar.index" name="Website Appointment: Appointment page CSJ">
+           <xpath expr="//div[1]/div[1]/form[1]" position="before">
+                <div t-if="message=='already_scheduling'" class="alert alert-danger mt16" role="alert">
+                    <p>
+                        <strong>
+                          Ya existe un agendamiento para este Juzgado que se cruza con la fecha y hora seleccionados!
+                        </strong><br/><br/>
+                        <strong>Juzgado: </strong><span t-esc="appointment_type.name"/><br/>
+                        <!--<strong>Fecha Inicial: </strong><span t-esc="date_start"/><br/>
+                        <strong>Fecha Final: </strong><span t-esc="date_end"/><br/>-->
+                        <strong>Tipo: </strong><span t-esc="types"/><br/><br/>
+                        Seleccione otra fecha u hora para realizar el agendamiento.
+                    </p>
+                </div>
+            </xpath>
+            <xpath expr="//ul[@class='wizard mt32 float-right']//li[2]" position="replace"/>
+            <xpath expr="//div[1]/div[1]/form[1]" position="replace">
+                <form class="o_website_appointment_form w-md-70" t-attf-action="/website/calendar/#{ slug(appointment_type) }/info?date_time=#{date_time}&amp;{duration}" type="post">
+                    <input type="hidden" name="calendar_appointment_type_id" t-att-value="appointment_type.id"/>
+                    <div id="appointment" class="form-group row o_hidden" style="display: none">
+                        <label for="calendarType" class="col-md-3 col-form-label">Appointment</label>
+                        <div class="col-md-9">
+                            <select class="form-control" id="calendarType" name="calendarType" t-att-disabled="len(suggested_appointment_types)==1 and '1' or None">
+                                <t t-foreach="suggested_appointment_types" t-as="cal">
+                                    <option t-att-value="cal.id" t-att-selected="cal.id == appointment_type.id and 'selected'">
+                                        <t t-esc="cal.name" />
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+                    </div>
+                    <style>
+                       .typeahead__cancel-button{padding: 0.5rem 1.5rem;}
+                    </style>
+                    <div t-attf-class="input-group row">
+                      <label for="city_id" class="col-md-3 col-form-label">Ciudad Origen*</label>
+                      <t t-if="calendar_appointment_type_id == 1">
+                        <div class="col-md-9">
+                          <input
+                              type="text"
+                              name="search_city"
+                              class="search-query-city form-control oe_search_box"
+                              placeholder="Seleccione una Ciudad..."
+                              data-limit="10"
+                              t-att-value="search_city"/>
+                          <input type="hidden" name="city_id" class="search-query-city-id"/>
+                        </div>
+                      </t>
+                      <t t-else="">
+                        <div class="col-md-9">
+                          <input type="text" name="city_name" class="form-control" readonly="1" t-att-value="city_name"/>
+                        </div>
+                      </t>
+                    </div>
+                    <div t-attf-class="input-group appointment-container row" style="margin-top:4vh;">
+                        <label for="search_appointment" class="col-md-3 col-form-label">Despacho Solicitante*</label>
+                        <t t-if="calendar_appointment_type_id == 1">
+                          <div class="col-md-9">
+                            <input
+                                type="text"
+                                name="search_appointment"
+                                id="search_appointmentID"
+                                class="search-query-appointment form-control oe_search_box"
+                                placeholder="Seleccione un Juzgado..."
+                                data-limit="10"
+                                t-att-value="search_appointment"/>
+                          </div>
+                          <input name="order" type="hidden" class="o_appointment_search_order_by" value=""/>
+                        </t>
+                        <t t-else="">
+                          <div class="col-md-9">
+                            <input type="text" name="judged_name" readonly="1" class="form-control" t-att-value="judged_name"/>
+                          </div>
+                        </t>
+                    </div>
+                    <div class="form-group row" style="margin-top:4vh;">
+                        <label for="date_time" class="col-md-3 col-form-label">Fecha y Hora de Realización*</label>
+                        <div class="col-md-9" style="padding-left:8px;">
+                          <div class="input-group date" id="appointment_csj_div" data-target-input="nearest" style="width:70%">
+                              <input type="text" min="2020-01-01" name="date_time" t-att-value="date_formatted" class="form-control date_time"/>
+                              <div class="input-group-append" data-target="#appointment_csj_div">
+                                  <span class="input-group-text">
+                                      <span class="fa fa-calendar" role="img" aria-label="Calendar"></span>
+                                  </span>
+                              </div>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="form-group row" style="display: none">
+                        <label for="duration" class="col-md-3 col-form-label">Duración del Evento*</label>
+                        <div class="col-md-9" style="padding-left:8px;">
+                            <select name="duration" class="form-control" id="duration" style="width:50%">
+                                <option t-att-value="0.083333333333333">00:05</option>
+                                <option t-att-value="0.166666666666667">00:10</option>
+                                <option t-att-value="0.25">00:15</option>
+                                <option t-att-value="0.5">00:30</option>
+                                <option t-att-value="0.75">00:45</option>
+                                <option t-att-value="1">01:00</option>
+                                <option t-att-value="1.25">01:15</option>
+                                <option t-att-value="1.5">01:30</option>
+                                <option t-att-value="1.75">01:45</option>
+                                <option t-att-value="2">02:00</option>
+                                <option t-att-value="2.25">02:15</option>
+                                <option t-att-value="2.5">2:30</option>
+                                <option t-att-value="2.75">2:45</option>
+                                <option t-att-value="3">3:00</option>
+                                <option t-att-value="3.25">3:15</option>
+                                <option t-att-value="3.5">3:30</option>
+                                <option t-att-value="3.75">3:45</option>
+                                <option t-att-value="4">4:00</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row" style="margin-top:4vh;">
+                        <label for="types" class="col-md-3 col-form-label">Solicitud*</label>
+                        <div class="col-md-9" style="padding-left:8px;">
+                            <select name="types" class="form-control" id="types" style="width:50%">
+                                <option t-att-value="audiencia" t-att-selected="types">Audiencia</option>
+                                <option t-att-value="video" t-att-selected="types">Video Conferencia</option>
+                                <option t-att-value="streaming" t-att-selected="types">Streaming</option>
+                            </select>
+                        </div>
+                    </div>
+                    <t t-call="website_calendar.employee_select" />
+                    <div class="form-group row">
+                        <div class="offset-md-6 col-md-6">
+                            <button class="btn btn-primary" id="button_submit_appointment">
+                                Ver Disponibilidad
+                                <span class="fa fa-arrow-right" />
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </xpath>
+        </template>
+
+        <template id="appointment_calendar_csj" inherit_id="website_calendar.appointment_calendar" name="Website Appointment: Appointment Calendars_csj">
+            <xpath expr="//div[1]/div[1]" position="replace">
+                <div t-foreach="slots" t-as="month" class="col-lg-6">
+                    <h3 t-esc="month['month']" />
+                    <table class="table">
+                        <tr class="active">
+                            <th class="text-center">Mon</th>
+                            <th class="text-center">Tue</th>
+                            <th class="text-center">Wed</th>
+                            <th class="text-center">Thu</th>
+                            <th class="text-center">Fri</th>
+                            <th class="text-center">Sat</th>
+                            <th class="text-center">Sun</th>
+                        </tr>
+                        <tr t-foreach="month['weeks']" t-as="weeks" class="o_calendar_days">
+                            <t t-foreach="weeks" t-as="day">
+                                <td t-attf-class="text-center#{day['slots'] and ' o_day dropdown' or ''} #{day['weekend_cls']} #{day['today_cls']}" t-attf-title="#{day['today_cls'] and 'Today' or ''}">
+                                    <t t-if="day['slots']">
+                                        <div class="dropdown-toggle o_slots_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <strong>
+                                                <span t-esc="day['day'].day" />
+                                            </strong>
+                                        </div>
+                                        <div class="dropdown-menu" role="menu">
+                                            <t t-foreach="day['slots']" t-as="slot">
+                                                <a t-if="slot" role="menuitem" class="dropdown-item" t-attf-href="/website/calendar/#{appointment_type.id}/info?employee_id=#{slot['employee_id']}&amp;date_time=#{slot['datetime']}&amp;types=#{types}" t-esc="slot['hours']" />
+                                            </t>
+                                        </div>
+                                    </t>
+                                    <t t-if="not day['slots']">
+                                        <div t-esc="day['day'].day" t-att-class="day['mute_cls']" />
+                                    </t>
+                                </td>
+                            </t>
+                        </tr>
+                        <!--to fix bootstrap md height add empty tr so now each month has 6 weeks row -->
+                        <tr t-if="len(month['weeks']) == 5" class="o_calendar_days" />
+                    </table>
+                </div>
+            </xpath>
+        </template>
+
+        <template id="setup_csj" inherit_id="website_calendar.setup" name="Website Appointment CSJ: Configure You Appointments">
+            <xpath expr="//h1[1]" position="replace">
+              <h1 t-if="message == 'unassigned_partner'" class="o_page_header" style="padding-top:5vh;">
+                El usuario no pertenece a ningún juzgado!
+              </h1>
+              <h1 t-if="message == 'unassigned_origin'" class="o_page_header" style="padding-top:5vh;">
+                Ningún origen asosiado a <span t-esc="judged"/>
+              </h1>
+            </xpath>
+        </template>
+
+        <template id="appointment_validated_csj" inherit_id="website_calendar.appointment_validated" name="Website Appointment: Appointment Confirmed">
+          <!--<xpath expr="//t[@t-if='event.description']" position="before">-->
+          <xpath expr="//div//div//div//div[4]" position="replace">
+            <div class="row">
+                <div class="col-md-2 text-right">
+                    <label>Attendees:</label>
+                </div>
+                <div class="col-md-10">
+                    <div t-foreach="event.attendee_ids" t-as="attendee">
+                        <t t-esc="attendee.email"/>
+                        <span t-if="attendee.state=='accepted'" class="fa fa-check text-success" title="Confirmed" role="img" aria-label="Confirmed"/>
+                        <span t-if="attendee.state=='declined'" class="fa fa-times text-danger" title="Declined" role="img" aria-label="Declined"/>
+                    </div>
+                </div>
+            </div>
+          </xpath>
+          <xpath expr="//div//div//div//div[5]" position="after">
+            <div t-if="event.appointment_code" class="row">
+              <div class="col-md-2 text-right">
+                  <label>Agendamiento ID:</label>
+              </div>
+              <div class="col-md-10">
+                  <div t-field="event.appointment_code"/>
+              </div>
+            </div>
+            <div t-if="event.appointment_id.lifesize_url" class="row">
+              <div class="col-md-2 text-right">
+                  <label>Lifesize URL:</label>
+              </div>
+              <div class="col-md-10">
+                  <a t-attr-href="event.appointment_id.lifesize_url" target='_black'><div t-field="event.appointment_id.lifesize_url"/></a>
+              </div>
+            </div>
+          </xpath>
+        </template>
+
+    </data>
+</odoo>
