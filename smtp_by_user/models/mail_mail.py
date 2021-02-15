@@ -25,7 +25,7 @@ class MailMail(models.Model):
         # notification field: if not set, set if mail comes from an existing mail.message
         if 'notification' not in values and values.get('mail_message_id'):
             values['notification'] = True
-        
+
         outgoing_obj = None
         #create_user = self.create_uid.id if self.create_uid else self.env.uid
         for server_id in self.env['ir.mail_server'].search([]):
@@ -35,14 +35,14 @@ class MailMail(models.Model):
                 _logger.error('**************************recorriendo usuarios*****************************')
                 _logger.error(user_id)
                 _logger.error(self.env.uid)
-                
+
                 if self.env.uid == user_id.id:
                     _logger.error('**************************asignando servidor*****************************')
                     outgoing_obj = server_id
-        
+
         if not outgoing_obj:
             outgoing_obj = self.env['ir.mail_server'].search([('is_default_server','=',True)],limit=1)
-        
+
         if outgoing_obj:
             values['mail_server_id'] = outgoing_obj.id
             values['email_from'] = outgoing_obj.smtp_user
@@ -81,7 +81,7 @@ class MailMail(models.Model):
 
                     if not outgoing_obj:
                         outgoing_obj = self.env['ir.mail_server'].search([('is_default_server','=',True)],limit=1)
-                        
+
                     server_id = outgoing_obj.id
                     smtp_session = self.env['ir.mail_server'].connect(mail_server_id=server_id)
                     _logger.error('server_id-------------------------------------------------------')

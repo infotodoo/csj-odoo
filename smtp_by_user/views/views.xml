@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-        
+
         <!-- res.users inherit form view -->
         <record id="view_users_form_simple_modif" model="ir.ui.view">
             <field name="name">res.users.inherit.view.form</field>
