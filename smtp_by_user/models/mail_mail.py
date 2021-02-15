@@ -29,15 +29,8 @@ class MailMail(models.Model):
         outgoing_obj = None
         #create_user = self.create_uid.id if self.create_uid else self.env.uid
         for server_id in self.env['ir.mail_server'].search([]):
-            _logger.error('**************************recorriendo servidores de correo*****************************')
-            _logger.error(server_id)
             for user_id in server_id.user_ids:
-                _logger.error('**************************recorriendo usuarios*****************************')
-                _logger.error(user_id)
-                _logger.error(self.env.uid)
-
                 if self.env.uid == user_id.id:
-                    _logger.error('**************************asignando servidor*****************************')
                     outgoing_obj = server_id
 
         if not outgoing_obj:
@@ -46,8 +39,6 @@ class MailMail(models.Model):
         if outgoing_obj:
             values['mail_server_id'] = outgoing_obj.id
             values['email_from'] = outgoing_obj.smtp_user
-
-        _logger.error(values)
 
         new_mail = super(MailMail, self).create(values)
         if values.get('attachment_ids'):
@@ -84,10 +75,6 @@ class MailMail(models.Model):
 
                     server_id = outgoing_obj.id
                     smtp_session = self.env['ir.mail_server'].connect(mail_server_id=server_id)
-                    _logger.error('server_id-------------------------------------------------------')
-                    _logger.error(server_id)
-                    _logger.error('create_uid-------------------------------------------------------')
-                    _logger.error(self.create_uid)
             except Exception as exc:
                 if raise_exception:
                     # To be consistent and backward compatible with mail_mail.send() raised
