@@ -29,8 +29,9 @@ class MailMail(models.Model):
         outgoing_obj = None
         #create_user = self.create_uid.id if self.create_uid else self.env.uid
         for server_id in self.env['ir.mail_server'].search([]):
-            if self.env.uid in server_id.user_ids:
-                outgoing_obj = server_id
+            for user_id in server_id.user_ids:
+                if self.env.uid == user_id.id:
+                    outgoing_obj = server_id
 
         if not outgoing_obj:
             outgoing_obj = self.env['ir.mail_server'].search([('is_default_server','=',True)],limit=1)
@@ -65,8 +66,9 @@ class MailMail(models.Model):
                 for rec in self:
                     outgoing_obj = None
                     for server_id in self.env['ir.mail_server'].search([]):
-                        if rec.create_uid.id in server_id.user_ids:
-                            outgoing_obj = server_id
+                        for user_id in server_id.user_ids:
+                            if rec.create_uid.id == user_id.id:
+                                outgoing_obj = server_id
 
                     if not outgoing_obj:
                         outgoing_obj = self.env['ir.mail_server'].search([('is_default_server','=',True)],limit=1)
