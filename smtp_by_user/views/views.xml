@@ -1,14 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
-  <data>
-    <record model="ir.ui.view" id="ir_mail_server_form_by_user">
-        <field name="model">ir.mail_server</field>
-        <field name="inherit_id" ref="base.ir_mail_server_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='sequence']" position="after">
-              <field name="user_id"/>
-              <field name="is_default_server"/>
-            </xpath>
-        </field>
-    </record>
-  </data>
+    <data>
+        
+        <!-- res.users inherit form view -->
+        <record id="view_users_form_simple_modif" model="ir.ui.view">
+            <field name="name">res.users.inherit.view.form</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+            <field name="arch" type="xml">
+                <field name="signature" position="after">
+                    <field name="out_mail_server_id" context="{'default_user_id': uid}"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
 </odoo>

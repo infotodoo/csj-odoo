@@ -25,10 +25,24 @@ class MailMail(models.Model):
         # notification field: if not set, set if mail comes from an existing mail.message
         if 'notification' not in values and values.get('mail_message_id'):
             values['notification'] = True
-
-        outgoing_obj = self.env['ir.mail_server'].sudo().search([('user_id','=',self.env.uid)],limit=1)
+        
+        outgoing_obj = None
+        #create_user = self.create_uid.id if self.create_uid else self.env.uid
+        for server_id in self.env['ir.mail_server'].search([]):
+            _logger.error('**************************recorriendo servidores de correo*****************************')
+            _logger.error(server_id)
+            for user_id in server_id.user_ids:
+                _logger.error('**************************recorriendo usuarios*****************************')
+                _logger.error(user_id)
+                _logger.error(self.env.uid)
+                
+                if self.env.uid == user_id.id:
+                    _logger.error('**************************asignando servidor*****************************')
+                    outgoing_obj = server_id
+        
         if not outgoing_obj:
-            outgoing_obj = self.env['ir.mail_server'].sudo().search([('is_default_server','=',True)],limit=1)
+            outgoing_obj = self.env['ir.mail_server'].search([('is_default_server','=',True)],limit=1)
+        
         if outgoing_obj:
             values['mail_server_id'] = outgoing_obj.id
             values['email_from'] = outgoing_obj.smtp_user
@@ -58,15 +72,22 @@ class MailMail(models.Model):
         for server_id, batch_ids in self._split_by_server():
             smtp_session = None
             try:
-                outgoing_obj = self.env['ir.mail_server'].search([('user_id','=',self.create_uid.id)],limit=1)
-                if not outgoing_obj:
-                    outgoing_obj = self.env['ir.mail_server'].search([('is_default_server','=',True)],limit=1)
-                server_id = outgoing_obj.id
-                smtp_session = self.env['ir.mail_server'].connect(mail_server_id=server_id)
-                _logger.error('server_id-------------------------------------------------------')
-                _logger.error(server_id)
-                _logger.error('create_uid-------------------------------------------------------')
-                _logger.error(self.create_uid)
+                for rec in self:
+                    outgoing_obj = None
+                    for server_id in self.env['ir.mail_server'].search([]):
+                        for user_id in server_id.user_ids:
+                            if rec.create_uid.id == user_id.id:
+                                outgoing_obj = server_id
+
+                    if not outgoing_obj:
+                        outgoing_obj = self.env['ir.mail_server'].search([('is_default_server','=',True)],limit=1)
+                        
+                    server_id = outgoing_obj.id
+                    smtp_session = self.env['ir.mail_server'].connect(mail_server_id=server_id)
+                    _logger.error('server_id-------------------------------------------------------')
+                    _logger.error(server_id)
+                    _logger.error('create_uid-------------------------------------------------------')
+                    _logger.error(self.create_uid)
             except Exception as exc:
                 if raise_exception:
                     # To be consistent and backward compatible with mail_mail.send() raised
