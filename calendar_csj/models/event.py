@@ -140,7 +140,7 @@ class Meeting(models.Model):
             else:
                 event.add('status').value = 'CONFIRMED'
             #event.add('uid').value = self.appointment_id.process_number + datetime.datetime.now().strftime("%Y%m%Y/%H:%M:%S")
-            event.add('uid').value = self.appointment_id.process_number + self.appointment_id.calendar_datetime.strftime("%Y%m%d %H%M%S"))
+            event.add('uid').value = self.appointment_id.process_number + self.appointment_id.calendar_datetime.strftime("%Y%m%d %H%M%S")
             
             event.add('sequence').value = str(self.appointment_id.sequence_icsfile_ctl)
             if meeting.description:
