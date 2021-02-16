@@ -43,7 +43,7 @@ class MailMail(models.Model):
         if values.get('attachment_ids'):
             new_mail.attachment_ids.check(mode='read')
         return new_mail
-    
+
 
     def send(self, auto_commit=False, raise_exception=False):
         """ Sends the selected emails immediately, ignoring their current
@@ -95,10 +95,10 @@ class MailMail(models.Model):
             finally:
                 if smtp_session:
                     smtp_session.quit()
-                    
-                    
-                    
-                    
+
+
+
+
     @api.model
     def process_email_queue(self, ids=None):
         """Send immediately queued messages, committing after each
@@ -138,7 +138,7 @@ class MailMail(models.Model):
                 ids.sort()
                 _logger.error('*********** PROCESANDO SERVER MAIL RECORDS ************')
                 _logger.error(ids)
-                
+
             try:
                 smtp_session = self.env['ir.mail_server'].connect(mail_server_id=server_id)
             except Exception as exc:
