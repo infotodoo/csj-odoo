@@ -117,6 +117,7 @@ class MailMail(models.Model):
         res = None
         for server_id in self.env['ir.mail_server'].search([]):
             smtp_session = None
+            raise_exception=False
             if not self.ids:
                 batch_total_max = 0
                 sys_params = self.env['ir.config_parameter'].sudo()
