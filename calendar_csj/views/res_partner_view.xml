@@ -7,13 +7,21 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='category_id']" position="after">
                     <field name="appointment_bool" invisible="True"/>
-                    <field name="appointment_type" attrs="{'invisible': [('company_type', 'in', ('company','judged'))]}"/>
+			    <!--<field name="appointment_type" attrs="{'invisible': [('company_type', 'in', ('company','judged'))]}"/>-->
                     <field name="appointment_user" groups="base.group_no_one" readonly='True'/>
                 </xpath>
                 <xpath expr="//sheet/notebook/page[1]/field[@name='child_ids']/form/sheet/group/group[2]/field[@name='mobile']" position="after">
                     <field name="appointment_bool" invisible="True"/>
-                    <field name="appointment_type" attrs="{'invisible': [('type', '!=', 'delivery')]}"/>
+		    <!--<field name="appointment_type" attrs="{'invisible': [('type', '!=', 'delivery')]}"/>-->
                     <field name="appointment_user" groups="base.group_no_one" readonly='True'/>
+                </xpath>
+		<xpath expr="//div[hasclass('oe_title')]" position="after">
+                    <div style="">
+                        <group string="Permisos" attrs="{'invisible': [('company_type', '!=', 'person')]}">
+                            <field name="appointment_type" attrs="{'invisible': [('company_type', '!=', 'person')]}" string="Audiencias Virtuales"/>
+                            <field name="recording_type" attrs="{'invisible': [('company_type', '!=', 'person')]}"/>
+                        </group>
+                    </div>
                 </xpath>
                 <xpath expr="//sheet/notebook/page[@name='sales_purchases']" position="attributes">
                     <attribute name="invisible">True</attribute>

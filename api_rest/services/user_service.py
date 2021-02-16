@@ -174,7 +174,7 @@ class UserService(Component):
         res = {
             "id": user_id.id,
             "name": user_id.name,
-            "type": str(user_id.partner_id.appointment_type),
+            "type": str(user_id.partner_id.recording_type),
             'judged': str(user_id.partner_id.parent_id.name),
             "judged_id": user_id.partner_id.parent_id.judged_only_code if user_id.partner_id.parent_id else '',
             "office": user_id.partner_id.parent_id.mame if user_id.partner_id.parent_id.mame else '',
@@ -189,7 +189,7 @@ class UserService(Component):
         res = {
             "id": partner_id.id,
             "name": partner_id.name,
-            "type": str(partner_id.appointment_type),
+            "type": str(partner_id.recording_type),
             'judged': str(partner_id.parent_id.name),
             "judged_id": partner_id.parent_id.cojudged_only_codede if partner_id.parent_id.judged_only_code else '',
             "office": partner_id.parent_id.mame if partner_id.parent_id.mame else '',

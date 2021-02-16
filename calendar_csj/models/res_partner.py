@@ -224,9 +224,9 @@ class ResPartner(models.Model):
     appointment_bool = fields.Boolean('Appointment bool', compute='_compute_appointment_bool')
     permanent_room = fields.Boolean('Permanent room', default=False)
     lifesize_meeting_extension = fields.Char('Meeting extension Lifesize')
-    
     judged_only_code = fields.Char('Partner Only Code', compute="_compute_partner_separated_name", store=False)
     judged_only_name = fields.Char('Partner Only Name', compute="_compute_partner_separated_name", store=True)
+    recording_type = fields.Selection([('public','Publico'),('scheduler','Administrador'),('secretary','Funcionario')], 'Grabación Audiencias')
     
     
     #@api.depends('partner_id')
