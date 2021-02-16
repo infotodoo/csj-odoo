@@ -1,4 +1,3 @@
-
 import base64
 import datetime
 import logging
@@ -44,6 +43,7 @@ class MailMail(models.Model):
         if values.get('attachment_ids'):
             new_mail.attachment_ids.check(mode='read')
         return new_mail
+    
 
     def send(self, auto_commit=False, raise_exception=False):
         """ Sends the selected emails immediately, ignoring their current
@@ -95,7 +95,10 @@ class MailMail(models.Model):
             finally:
                 if smtp_session:
                     smtp_session.quit()
-
+                    
+                    
+                    
+                    
     @api.model
     def process_email_queue(self, ids=None):
         """Send immediately queued messages, committing after each
@@ -111,27 +114,50 @@ class MailMail(models.Model):
                                 messages to send (by default all 'outgoing'
                                 messages are sent).
         """
-        if not self.ids:
-            # Determinando valor del lote de envios
-            batch_total_max = 0
-            limit = self.env['ir.config_parameter'].sudo().get_param('mail.send_limit','28')
-            ids = []
-            for server_id in self.env['ir.mail_server'].search([]):
+        res = None
+        for server_id in self.env['ir.mail_server'].search([]):
+            if not self.ids:
+                batch_total_max = 0
+                sys_params = self.env['ir.config_parameter'].sudo()
+                limit = int(sys_params.get_param('mail.session.batch.size', 28))
+                ids = []
                 _logger.info("======= sending emails with limit=%s" % limit)
-                filters = ['&',
-                       ('state', '=', 'outgoing'),
-                       '|',
-                       ('scheduled_date', '<', datetime.datetime.now()),
-                       ('scheduled_date', '=', False)]
+                filters = ['&','&',
+                           ('state', '=', 'outgoing'),
+                           ('mail_server_id', '=', server_id.id),
+                           '|',
+                           ('scheduled_date', '<', datetime.datetime.now()),
+                           ('scheduled_date', '=', False)]
                 if 'filters' in self._context:
                     filters.extend(self._context['filters'])
-                ids += self.search(filters, limit=int(limit)).ids
-        res = None
-        try:
-            # auto-commit except in testing mode
-            auto_commit = not getattr(threading.currentThread(), 'testing', False)
-            res = self.browse(ids).send(auto_commit=auto_commit)
-        except Exception:
-            _logger.exception("Failed processing mail queue")
-        return res
-
+                filtered_ids = self.search(filters, limit=int(limit)).ids
+                if not ids:
+                    ids = filtered_ids
+                else:
+                    ids = list(set(filtered_ids) & set(ids))
+                ids.sort()
+                _logger.error('*********** PROCESANDO SERVER MAIL RECORDS ************')
+                _logger.error(ids)
+                
+            try:
+                smtp_session = self.env['ir.mail_server'].connect(mail_server_id=server_id)
+            except Exception as exc:
+                if raise_exception:
+                    # To be consistent and backward compatible with mail_mail.send() raised
+                    # exceptions, it is encapsulated into an Odoo MailDeliveryException
+                    raise MailDeliveryException(_('Unable to connect to SMTP Server'), exc)
+                else:
+                    batch = self.browse(ids)
+                    batch.write({'state': 'exception', 'failure_reason': exc})
+                    batch._postprocess_sent_message(success_pids=[], failure_type="SMTP")
+            else:
+                self.browse(ids)._send(
+                    auto_commit=auto_commit,
+                    raise_exception=raise_exception,
+                    smtp_session=smtp_session)
+                _logger.info(
+                    'Sent batch %s emails via mail server ID #%s',
+                    len(ids), server_id)
+            finally:
+                if smtp_session:
+                    smtp_session.quit()
