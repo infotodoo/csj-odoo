@@ -30,13 +30,13 @@
       <template id="portal_my_home" name="Portal My Home: appointment entries" inherit_id="portal.portal_my_home" priority="40">
           <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
               <t t-if="appointment_count" t-call="portal.portal_docs_entry">
-                  <t t-set="title">Agendamientos</t>
+                  <t t-set="title">Agendamiento Virtual</t>
                   <t t-set="url" t-value="'/my/appointments'"/>
                   <t t-set="count" t-value="appointment_count"/>
               </t>
               <t t-call="portal.portal_docs_entry">
-                  <t t-set="title">Videos</t>
-                  <t t-set="url" t-value="'/my/videos'"/>
+                  <t t-set="title">Grabaciones Audiencias</t>
+		  <t t-set="url" t-value="'/data/recordings'"/>
                   <!--<t t-set="count" t-value="appointment_count"/>-->
               </t>
           </xpath>
