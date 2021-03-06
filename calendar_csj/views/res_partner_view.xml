@@ -53,6 +53,26 @@
                         </group>
                     </page>
                 </xpath>
+                
+                <xpath expr="//sheet/notebook/page[@name='sales_purchases']" position="after">
+                    <page string="Permisos" attrs="">
+                        <group>
+                            <field name="res_partner_permission_ids">
+                                <tree editable="bottom">
+                                    <field name="permission_state_ids" attrs="{'readonly': [('is_permission_state', '=', True)]}"/>
+                                    <field name="is_permission_state" widget="boolean_toggle"/>
+                                    <field name="permission_city_ids"/>
+                                    <field name="permission_entity_ids" attrs="{'readonly': [('is_permission_entity', '=', True)]}"/>
+                                    <field name="is_permission_entity" widget="boolean_toggle"/>
+                                    <field name="permission_specialty_ids" attrs="{'readonly': [('is_permission_specialty', '=', True)]}"/>
+                                    <field name="is_permission_specialty" widget="boolean_toggle"/>
+                                    <field name="permission_judged_id" domain="[('company_type', '=', 'judged')]"/>
+                                    <field name="is_permission_judged_id" widget="boolean_toggle"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </page>
+                </xpath>
             </field>
         </record>
     </data>

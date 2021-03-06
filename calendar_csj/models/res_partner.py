@@ -229,6 +229,16 @@ class ResPartner(models.Model):
     recording_type = fields.Selection([('public','Publico'),('scheduler','Administrador'),('secretary','Funcionario')], 'Grabación Audiencias')
     
     
+    permission_entity_ids = fields.Many2many('res.entity', 'res_partner_entities_rel', 'entity_id', 'partner_id', 'Entidades')
+    permission_specialty_ids = fields.Many2many('res.specialty', 'res_partner_specialties_rel', 'specialty_id', 'partner_id', 'Especialidades')
+    permission_city_ids = fields.Many2many('res.city', 'res_partner_cities_rel', 'city_id', 'partner_id', 'Ciudades')
+    permission_state_ids = fields.Many2many('res.country.state', 'res_partner_country_states_rel', 'state_id', 'partner_id', 'Departamentos')
+    res_partner_permission_ids = fields.One2many('res.partner.permission', 'partner_id', 'Permisos en Contactos')
+    key_code = fields.Char(string="Clave")
+    
+    
+    @api.depends('')
+    
     #@api.depends('partner_id')
     def _compute_partner_separated_name(self):
         for record in self:
@@ -369,7 +379,42 @@ class ResPartner(models.Model):
             return False
         return True
 
+    
+    
+    
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
     judged_id = fields.Many2one('res.partner', 'Judged')
+
+    
+    
+    
+class ResPartnerPermission(models.Model):
+    _name = 'res.partner.permission'
+    _description = 'Permisos en contactos'
+    
+    
+    permission_entity_ids = fields.Many2one('res.entity', 'Entidades')
+    permission_specialty_ids = fields.Many2one('res.specialty', 'Especialidades')
+    permission_city_ids = fields.Many2one('res.city', 'Ciudades')
+    permission_state_ids = fields.Many2one('res.country.state', 'Departamentos')
+    is_permission_state = fields.Boolean('Todos los Departamentos')
+    is_permission_entity = fields.Boolean('Todas las Entidades')
+    is_permission_specialty = fields.Boolean('Todas las Especialidades')
+    is_permission_city = fields.Boolean('Todas las Ciudades')
+    partner_id = fields.Many2one('res.partner')
+    permission_judged_id = fields.Many2one('res.partner', string="Despacho")
+    is_permission_judged_id = fields.Boolean(string="Todos los Despachos")
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
