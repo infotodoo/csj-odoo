@@ -228,14 +228,7 @@ class ResPartner(models.Model):
     judged_only_name = fields.Char('Partner Only Name', compute="_compute_partner_separated_name", store=True)
     recording_type = fields.Selection([('public','Publico'),('scheduler','Administrador'),('secretary','Funcionario')], 'Grabación Audiencias')
     
-    
-    permission_entity_ids = fields.Many2many('res.entity', 'res_partner_entities_rel', 'entity_id', 'partner_id', 'Entidades')
-    permission_specialty_ids = fields.Many2many('res.specialty', 'res_partner_specialties_rel', 'specialty_id', 'partner_id', 'Especialidades')
-    permission_city_ids = fields.Many2many('res.city', 'res_partner_cities_rel', 'city_id', 'partner_id', 'Ciudades')
-    permission_state_ids = fields.Many2many('res.country.state', 'res_partner_country_states_rel', 'state_id', 'partner_id', 'Departamentos')
-    res_partner_permission_ids = fields.One2many('res.partner.permission', 'partner_id', 'Permisos en Contactos')
-    key_code = fields.Char(string="Clave")
-    
+    permission_rol_id = fields.Many2one('res.partner.permission.group', string='Rol de Permisos')
     
     @api.depends('')
     
@@ -406,15 +399,15 @@ class ResPartnerPermission(models.Model):
     partner_id = fields.Many2one('res.partner')
     permission_judged_id = fields.Many2one('res.partner', string="Despacho")
     is_permission_judged_id = fields.Boolean(string="Todos los Despachos")
+    permission_rol_id = fields.Many2one('res.partner.permission.group', string='Permission Rol')
     
     
     
+class ResPartnerPermissionGroup(models.Model):
+    _name = 'res.partner.permission.group'
+    _description = 'Roles de Permisos en contactos'
     
     
-    
-    
-    
-    
-    
-
-    
+    name = fields.Char('Nombre del Rol de Permisos')
+    permission_ids = fields.One2many('res.partner.permission', 'permission_rol_id', 'Reglas de Permisos')
+    endpoint_key = fields.Char(string="Cadena Endpoint")
