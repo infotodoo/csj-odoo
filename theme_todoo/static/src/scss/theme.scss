@@ -33,3 +33,28 @@
     text-transform: uppercase;
     color: #FFF !important;
 }
+
+.form-control {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 0.68rem + 2px);
+    padding: 0.34rem 0.8rem;
+        padding-right: 0.8rem;
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.5;
+    color: #19325B;
+    background-color: #FFFFFF;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    color: #151515;
+    background-color: #FFFFFF;
+    border-color: #3469bf;
+    outline: 0;
+    box-shadow: none;
+}

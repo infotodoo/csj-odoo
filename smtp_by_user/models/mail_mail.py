@@ -132,8 +132,8 @@ class MailMail(models.Model):
                            ('scheduled_date', '=', False)]
                 if 'filters' in self._context:
                     filters.extend(self._context['filters'])
-                ids = self.search(filters, limit=int(limit)).ids
-                ids.sort()
+                ids = self.search(filters, order='scheduled_date asc', limit=int(limit)).ids
+                #ids.sort()
                 _logger.error('*********** PROCESANDO SERVER MAIL RECORDS ************')
                 _logger.error(ids)
 
