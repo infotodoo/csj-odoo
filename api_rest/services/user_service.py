@@ -147,10 +147,17 @@ class UserService(Component):
             "judged": {"type": "string", "required": False, "empty": True},
             "judged_id": {"type": "string", "required": False, "empty": True},
             "office": {"type": "string", "required": False, "empty": True},
-            "entity_name": {"type": "string", "required": False, "empty": True},
-            "specialty_name": {"type": "string", "required": False, "empty": True},
+
+            "entities": {"type": "string", "required": False, "empty": True},
+            "specialities": {"type": "string", "required": False, "empty": True},
+            "cities": {"type": "string", "required": False, "empty": True},
+            "states": {"type": "string", "required": False, "empty": True},
+            
+            #"entity_name": {"type": "string", "required": False, "empty": True},
+            #"specialty_name": {"type": "string", "required": False, "empty": True},
             "email": {"type": "string", "required": False, "empty": True},
             "name_complete": {"type": "string", "required": False, "empty": True},
+            "extra_permission": {"type": "string", "required": False, "empty": True},
         }
         return res
 
@@ -178,11 +185,55 @@ class UserService(Component):
             'judged': str(user_id.partner_id.parent_id.name),
             "judged_id": user_id.partner_id.parent_id.judged_only_code if user_id.partner_id.parent_id else '',
             "office": user_id.partner_id.parent_id.mame if user_id.partner_id.parent_id.mame else '',
-            "entity_name": user_id.partner_id.parent_id.entity_id.name if user_id.partner_id.parent_id.entity_id.name else '',
-            "specialty_name": user_id.partner_id.parent_id.specialty_id.mame if user_id.partner_id.parent_id.specialty_id.mame else '',
+            #"entity_name": user_id.partner_id.parent_id.entity_id.name if user_id.partner_id.parent_id.entity_id.name else '',
+            #"specialty_name": user_id.partner_id.parent_id.specialty_id.mame if user_id.partner_id.parent_id.specialty_id.mame else '',
             "email": user_id.partner_id.parent_id.email.strip() if user_id.partner_id.parent_id.email else '',
             "name_complete": user_id.partner_id.parent_id.contact_address_complete if user_id.partner_id.parent_id.contact_address_complete else '',
+            "extra_permission": user_id.partner_id.endpoint_key if user_id.partner_id.endpoint_key else '',
         }
+        """
+        if user_id.partner_id.permission_entity_ids:
+            ids_array = ''
+            cont = 0
+            for entity in user_id.partner_id.permission_entity_ids:
+                if cont:
+                    ids_array += ','
+                ids_array += str(entity.id)
+                cont = cont +1
+        res["entities"] = ids_array
+        
+        if user_id.partner_id.permission_specialty_ids:
+            ids_array = ''
+            cont = 0
+            for specialty in user_id.partner_id.permission_specialty_ids:
+                if cont:
+                    ids_array += ','
+                ids_array += str(specialty.id)
+                cont = cont +1
+        res["specialities"] = ids_array
+        
+        if user_id.partner_id.permission_city_ids:
+            ids_array = ''
+            cont = 0
+            for city in user_id.partner_id.permission_city_ids:
+                if cont:
+                    ids_array += ','
+                ids_array += str(city.id)
+                cont = cont +1
+        res["cities"] = ids_array
+        
+        if user_id.partner_id.permission_state_ids:
+            ids_array = ''
+            cont = 0
+            for state in user_id.partner_id.permission_state_ids:
+                if cont:
+                    ids_array += ','
+                ids_array += str(state.id)
+                cont = cont +1
+        res["states"] = ids_array
+        """
+        
+        
         return res
 
     def _to_json_partner(self, partner_id):
@@ -198,4 +249,6 @@ class UserService(Component):
             "email": partner_id.parent_id.email.strip() if partner_id.parent_id.email else '',
             "name_complete": partner_id.parent_id.contact_address_complete if partner_id.parent_id.contact_address_complete else '',
         }
+        
+
         return res

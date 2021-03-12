@@ -1,5 +1,91 @@
 <odoo>
     <data>
+        
+        <record id="res_partner_permission_form" model="ir.ui.view">
+            <field name="name">res.partner.permission.form</field>
+            <field name="model">res.partner.permission</field>
+            <field name="arch" type="xml">
+                <form string="Permisos">
+                    <label for="name" string="Clave Endpoint"/>
+                    <field name="endpoint_key" readonly="True"/>
+                    <group string="Departamentos">
+                        <field name="is_permission_state" widget="boolean_toggle"/>
+                        <field name="permission_state_id" domain="[('country_id', '=', 49)]"
+                               options="{'no_create': True, 'no_create_edit':True}"
+                               attrs="{
+                                      'readonly': [('permission_city_id', '>', 0)],
+                                      'invisible': [('is_permission_state', '=', True)],
+                                      }"/>
+                    </group>
+                    <group string="Ciudades" attrs="{
+                                      'invisible': [('is_permission_state', '=', True)]
+                                      }">
+                        <field name="permission_city_id" attrs="{
+                                      'readonly': [('permission_state_id', '>', 0)]
+                                      }"
+                               options="{'no_create': True, 'no_create_edit':True}"/>
+                    </group>
+                    <group string="Entidades">
+                        <field name="is_permission_entity" widget="boolean_toggle"/>
+                        <field name="permission_entity_id"
+                               options="{'no_create': True, 'no_create_edit':True}"
+                               attrs="{
+                                      'readonly': [('is_permission_entity', '=', True)],
+                                      'invisible': [('is_permission_entity', '=', True)],
+                                      'required': [('is_permission_entity', '=', False)]
+                                      }"/>
+                    </group>
+                    <group string="Especialidades">
+                        <field name="is_permission_specialty" widget="boolean_toggle"/>
+                        <field name="permission_specialty_id"
+                               options="{'no_create': True, 'no_create_edit':True}"
+                               attrs="{
+                                      'readonly': [('is_permission_specialty', '=', True)],
+                                      'invisible': [('is_permission_specialty', '=', True)],
+                                      'required': [('is_permission_specialty', '=', False)]
+                                      }"/>
+                    </group>
+                    <group string="Despacho" attrs="{
+                                      'invisible': ['|','|','|',
+                                                       ('permission_state_id', '>', 0),
+                                                       ('permission_city_id', '>', 0),
+                                                       ('permission_entity_id', '>', 0),
+                                                       ('permission_specialty_id', '>', 0)
+                                                   ],
+                                      }">
+                        <field name="is_permission_judged_id" widget="boolean_toggle"/>
+                        <field name="permission_judged_id"
+                               options="{'no_create': True, 'no_create_edit':True}"
+                               attrs="{
+                                      'readonly': [('is_permission_judged_id', '=', True)],
+                                      'invisible': [('is_permission_judged_id', '=', True)],
+                                      'required': [('is_permission_judged_id', '=', False)]
+                                      }" domain="[('company_type', '=', 'judged')]"/>
+                    </group>
+                    
+                </form>
+            </field>
+        </record>
+        
+        <record id="res_partner_permission_tree" model="ir.ui.view">
+            <field name="name">res.partner.permission.tree</field>
+            <field name="model">res.partner.permission</field>
+            <field name="arch" type="xml">
+                    <tree string="Permisos">
+                        <field name="endpoint_key"/>
+                        <field name="permission_state_id"/>
+                        <field name="is_permission_state"/>
+                        <field name="permission_city_id"/>
+                        <field name="permission_entity_id"/>
+                        <field name="is_permission_entity"/>
+                        <field name="permission_specialty_id"/>
+                        <field name="is_permission_specialty"/>
+                        <field name="permission_judged_id"/>
+                        <field name="is_permission_judged_id"/>
+                    </tree>
+            </field>
+        </record>
+        
         <record id="res_partner_form_csj" model="ir.ui.view">
             <field name="name">res.partner.form.csj</field>
             <field name="model">res.partner</field>
@@ -7,12 +93,12 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='category_id']" position="after">
                     <field name="appointment_bool" invisible="True"/>
-			    <!--<field name="appointment_type" attrs="{'invisible': [('company_type', 'in', ('company','judged'))]}"/>-->
+                    <!--<field name="appointment_type" attrs="{'invisible': [('company_type', 'in', ('company','judged'))]}"/>-->
                     <field name="appointment_user" groups="base.group_no_one" readonly='True'/>
                 </xpath>
                 <xpath expr="//sheet/notebook/page[1]/field[@name='child_ids']/form/sheet/group/group[2]/field[@name='mobile']" position="after">
                     <field name="appointment_bool" invisible="True"/>
-		    <!--<field name="appointment_type" attrs="{'invisible': [('type', '!=', 'delivery')]}"/>-->
+                    <!--<field name="appointment_type" attrs="{'invisible': [('type', '!=', 'delivery')]}"/>-->
                     <field name="appointment_user" groups="base.group_no_one" readonly='True'/>
                 </xpath>
 		<xpath expr="//div[hasclass('oe_title')]" position="after">
@@ -53,7 +139,22 @@
                         </group>
                     </page>
                 </xpath>
+                
+                <xpath expr="//sheet/notebook/page[@name='sales_purchases']" position="after">
+                    <page string="Permisos de Grabaciones" attrs="{
+                                                                  'invisible': ['|',('company_type', '!=', 'person'), 
+                                                                   
+                                                                  ('company_type', '==', 'person'),
+                                                                  ('recording_type', '!=', 'secretary')]
+                                                                  }">
+                        <group>
+                            <field name="endpoint_key" attrs="{'invisible': [('company_type', '=', 'person'),('appointment_type', '=', 'scheduler')]}"/>
+                            <field name="permission_ids" attrs="{'invisible': [('company_type', '=', 'person'),('appointment_type', '=', 'scheduler')]}"/>
+                        </group>
+                    </page>
+                </xpath>
             </field>
         </record>
+        
     </data>
 </odoo>
