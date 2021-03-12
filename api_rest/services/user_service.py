@@ -152,7 +152,7 @@ class UserService(Component):
             "specialities": {"type": "string", "required": False, "empty": True},
             "cities": {"type": "string", "required": False, "empty": True},
             "states": {"type": "string", "required": False, "empty": True},
-            
+
             #"entity_name": {"type": "string", "required": False, "empty": True},
             #"specialty_name": {"type": "string", "required": False, "empty": True},
             "email": {"type": "string", "required": False, "empty": True},
@@ -201,7 +201,7 @@ class UserService(Component):
                 ids_array += str(entity.id)
                 cont = cont +1
         res["entities"] = ids_array
-        
+
         if user_id.partner_id.permission_specialty_ids:
             ids_array = ''
             cont = 0
@@ -211,7 +211,7 @@ class UserService(Component):
                 ids_array += str(specialty.id)
                 cont = cont +1
         res["specialities"] = ids_array
-        
+
         if user_id.partner_id.permission_city_ids:
             ids_array = ''
             cont = 0
@@ -221,7 +221,7 @@ class UserService(Component):
                 ids_array += str(city.id)
                 cont = cont +1
         res["cities"] = ids_array
-        
+
         if user_id.partner_id.permission_state_ids:
             ids_array = ''
             cont = 0
@@ -232,8 +232,8 @@ class UserService(Component):
                 cont = cont +1
         res["states"] = ids_array
         """
-        
-        
+
+
         return res
 
     def _to_json_partner(self, partner_id):
@@ -249,6 +249,6 @@ class UserService(Component):
             "email": partner_id.parent_id.email.strip() if partner_id.parent_id.email else '',
             "name_complete": partner_id.parent_id.contact_address_complete if partner_id.parent_id.contact_address_complete else '',
         }
-        
+
 
         return res

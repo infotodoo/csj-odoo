@@ -227,10 +227,8 @@ class ResPartner(models.Model):
     judged_only_code = fields.Char('Partner Only Code', compute="_compute_partner_separated_name", store=False)
     judged_only_name = fields.Char('Partner Only Name', compute="_compute_partner_separated_name", store=True)
     recording_type = fields.Selection([('public','Publico'),('scheduler','Administrador'),('secretary','Funcionario')], 'Grabación Audiencias')
-    
-    #permission_rol_id = fields.Many2one('res.partner.permission.group', string='Rol de Permisos')
     permission_ids = fields.One2many('res.partner.permission', 'partner_id', 'Reglas de Permisos')
-    
+
     #@api.depends('partner_id')
     def _compute_partner_separated_name(self):
         for record in self:
@@ -245,9 +243,9 @@ class ResPartner(models.Model):
 
     judged_only_code = fields.Char('Partner Only Code', compute="_compute_partner_separated_name", store=False)
     judged_only_name = fields.Char('Partner Only Name', compute="_compute_partner_separated_name", store=True)
-    
+
     endpoint_key = fields.Char('Clave Endpoint', compute="_compute_endpoint_key")
-    
+
     def _compute_endpoint_key(self):
         cont = 0
         key = ''
@@ -271,8 +269,6 @@ class ResPartner(models.Model):
             record.judged_only_code = code_city + code_entity + code_specialty + code
             record.judged_only_name = name
 
-    
-
     @api.onchange('code', 'mame', 'city_id', 'specialty_id', 'entity_id')
     def _onchange_mame(self):
         if self.company_type == 'judged':
@@ -286,10 +282,6 @@ class ResPartner(models.Model):
             code = self.code or ''
             name = self.mame or ''
             self.name = code_city + code_entity + code_specialty + code + ' ' + name_entity + ' - ' + name_specialty + ' - ' + name
-            
-
- 
-        
 
     @api.model
     def create(self, vals):
@@ -385,21 +377,17 @@ class ResPartner(models.Model):
             return False
         return True
 
-    
-    
-    
+
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
     judged_id = fields.Many2one('res.partner', 'Judged')
 
-    
-    
-    
+
 class ResPartnerPermission(models.Model):
     _name = 'res.partner.permission'
     _description = 'Permisos en contactos'
-    
+
     permission_entity_id = fields.Many2one('res.entity', 'Entidades')
     permission_specialty_id = fields.Many2one('res.specialty.pure', 'Especialidades')
     permission_city_id = fields.Many2one('res.city', 'Ciudades')
@@ -413,7 +401,7 @@ class ResPartnerPermission(models.Model):
     is_permission_judged_id = fields.Boolean(string="Todos los Despachos", default="True")
     #permission_rol_id = fields.Many2one('res.partner.permission.group', string='Permission Rol')
     endpoint_key = fields.Char(string="Cadena Endpoint", compute="_compute_endpoint_key")
-    
+
 
     api.onchange(
         'permission_entity_id',
@@ -426,7 +414,6 @@ class ResPartnerPermission(models.Model):
         'is_permission_city'
     )
     def _compute_endpoint_key(self):
-        _logger.error('***************************** CONSTRUYENDO KEY ENDPOINT ******************************')
         for rec in self:
             key = ''
             if rec.is_permission_state:
@@ -445,34 +432,34 @@ class ResPartnerPermission(models.Model):
                 key += '-ALL'
             elif not rec.is_permission_specialty and rec.permission_specialty_id:
                 key += '-' + rec.permission_specialty_id.code
-                
+
             if rec.is_permission_judged_id:
                 key += '-ALL'
             elif not rec.is_permission_judged_id and rec.permission_judged_id:
                 key += '-' + rec.permission_judged_id.code
 
             rec.endpoint_key = key
-    
+
     @api.model
     def create(self, vals):
         if 'permission_state_id' in vals and 'permission_city_id' in vals and 'is_permission_state' in vals:
             if vals['permission_state_id'] and vals['permission_city_id'] and not vals['is_permission_state']:
-                raise UserError('Departamentos y Ciudades son excluyentes, debe dejar en blanco alguno de los dos')        
+                raise UserError('Departamentos y Ciudades son excluyentes, debe dejar en blanco alguno de los dos')
             if not vals['permission_state_id'] and not vals['permission_city_id'] and not vals['is_permission_state']:
                 raise UserError('Seleccione un departamento o una ciudad')
         res = super(ResPartnerPermission, self).create(vals)
         return res
-        
+
 
 class ResPartnerPermissionGroup(models.Model):
     _name = 'res.partner.permission.group'
     _description = 'Roles de Permisos en contactos'
-    
-    
+
+
     name = fields.Char('Nombre del Rol de Permisos')
     #permission_ids = fields.One2many('res.partner.permission', 'permission_rol_id', 'Reglas de Permisos')
 
-    
+
 class ResSpecialtyPure(models.Model):
     _name = 'res.specialty.pure'
     _description = 'Specialty Pure Model'
@@ -480,5 +467,3 @@ class ResSpecialtyPure(models.Model):
 
     code = fields.Char('Code', required=True, size=2)
     name = fields.Char('Display Name', required=True)
-
-    
