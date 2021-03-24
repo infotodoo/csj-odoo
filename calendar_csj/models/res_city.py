@@ -8,7 +8,7 @@ _logger = logging.getLogger(__name__)
 
 class ResCity(models.Model):
     _inherit = "res.city"
-    
+
     def name_get(self):
         result = []
         for rec in self:
@@ -18,5 +18,5 @@ class ResCity(models.Model):
 
 class ResCountryState(models.Model):
     _inherit = "res.country.state"
-    
+
     dane_code = fields.Char('Código Dane')
