@@ -27,7 +27,7 @@
         </record>
 
         <menuitem id="res_specialty_menu" action="res_specialty_action" name="Specialtys" sequence="10" parent="res_judged_menu_menu" />
-        
+
         <record model="ir.ui.view" id="res_specialty_pure_tree">
             <field name="name">res.specialty.pure.tree</field>
             <field name="model">res.specialty</field>
@@ -39,7 +39,7 @@
                 </tree>
             </field>
         </record>
-        
+
         <record id="res_specialty_pure_action" model="ir.actions.act_window">
             <field name="name">Especialidades Permisos</field>
             <field name="type">ir.actions.act_window</field>
@@ -51,7 +51,7 @@
                 </p>
             </field>
         </record>
-        
+
         <!--<menuitem id="res_partner_permission_group" action="res_partner_permission_tree" name="Permisos" sequence="5" parent="appointment_menu" />-->
         <menuitem id="res_specialty_pure" action="res_specialty_pure_action" name="Especialidades Permisos" sequence="10" parent="res_judged_menu_menu" />
     </data>
