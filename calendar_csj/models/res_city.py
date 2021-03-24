@@ -19,4 +19,4 @@ class ResCity(models.Model):
 class ResCountryState(models.Model):
     _inherit = "res.country.state"
 
-    dane_code = fields.Char('Código Dane')
+    dane_code = fields.Char('Código Dane', required="True")

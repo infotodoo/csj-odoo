@@ -1013,7 +1013,7 @@ class CustomerPortal(CustomerPortal):
             raise werkzeug.exceptions.NotFound()
         partner = request.env.user.partner_id
         judged_id = partner.parent_id
-        if partner.recording_type == 'public' or not uid or not sid:
+        if partner.recording_type == 'public' or not uid or not sid or uid == 4: #public user
             values = {'url_calltech': 'https://apigestionaudiencias3.ramajudicial.gov.co/public',}
         else:
             values = {'url_calltech': 'https://apigestionaudiencias3.ramajudicial.gov.co/' + str(sid) + '/' + str(uid),}
