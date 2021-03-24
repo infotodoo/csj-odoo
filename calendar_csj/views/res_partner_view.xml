@@ -1,6 +1,6 @@
 <odoo>
     <data>
-
+        
         <record id="res_partner_permission_form" model="ir.ui.view">
             <field name="name">res.partner.permission.form</field>
             <field name="model">res.partner.permission</field>
@@ -62,11 +62,11 @@
                                       'required': [('is_permission_judged_id', '=', False)]
                                       }" domain="[('company_type', '=', 'judged')]"/>
                     </group>
-
+                    
                 </form>
             </field>
         </record>
-
+        
         <record id="res_partner_permission_tree" model="ir.ui.view">
             <field name="name">res.partner.permission.tree</field>
             <field name="model">res.partner.permission</field>
@@ -85,7 +85,7 @@
                     </tree>
             </field>
         </record>
-
+        
         <record id="res_partner_form_csj" model="ir.ui.view">
             <field name="name">res.partner.form.csj</field>
             <field name="model">res.partner</field>
@@ -122,8 +122,8 @@
                                 <field name="specialty_id" attrs="{'required': [('company_type', '=', 'judged')]}" />
                                 <field name="extension_lifesize" attrs="{'required': [('company_type', '=', 'judged'), ('permanent_room', '=', False)], 'invisible': [('permanent_room', '=', True)]}"/>
                                 <field name="permanent_room" />
-                                <field name="lifesize_meeting_extension"
-                                    attrs="{'invisible': [('permanent_room', '=', False)],
+                                <field name="lifesize_meeting_extension" 
+                                    attrs="{'invisible': [('permanent_room', '=', False)], 
                                             'required': [('permanent_room', '=', True)]}" />
                             </group>
                             <group string="Rooms">
@@ -139,11 +139,11 @@
                         </group>
                     </page>
                 </xpath>
-
+                
                 <xpath expr="//sheet/notebook/page[@name='sales_purchases']" position="after">
                     <page string="Permisos de Grabaciones" attrs="{
-                                                                  'invisible': ['|',('company_type', '!=', 'person'),
-
+                                                                  'invisible': ['|',('company_type', '!=', 'person'), 
+                                                                   
                                                                   ('company_type', '==', 'person'),
                                                                   ('recording_type', '!=', 'secretary')]
                                                                   }">
@@ -155,6 +155,6 @@
                 </xpath>
             </field>
         </record>
-
+        
     </data>
 </odoo>
