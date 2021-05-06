@@ -147,6 +147,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         suggested_reception = request.env['calendar.reception'].sudo().search([])
         return request.render("website_calendar.appointment_form", {
             #'partner_data': partner_data,
+            'partner_data': [],
             'appointment_type': appointment_type,
             'suggested_class': suggested_class,
             'suggested_partners': suggested_partners,
