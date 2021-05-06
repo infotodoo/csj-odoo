@@ -145,8 +145,8 @@ class Meeting(models.Model):
             event.add('sequence').value = str(self.appointment_id.sequence_icsfile_ctl)
             if meeting.description:
                 event.add('description').value = meeting.description
-            if meeting.location:
-                event.add('location').value = meeting.location
+            #if meeting.location:
+            #    event.add('location').value = meeting.location
             if meeting.rrule:
                 event.add('rrule').value = meeting.rrule
 
