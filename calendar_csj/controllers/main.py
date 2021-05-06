@@ -105,7 +105,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         #timezone = self._context.get('tz') or self.env.user.partner_id.tz or 'UTC'
         #timezone = pytz.timezone(self.event_tz) if self.event_tz else pytz.timezone(self._context.get('tz') or 'UTC')
         request.session['timezone'] = appointment_type.appointment_tz or 'UTC'
-        # partner_data = {}
+        partner_data = {}
         # if request.env.user.partner_id != request.env.ref('base.public_partner'):
         #     partner_data = request.env.user.partner_id.read(fields=['name', 'mobile', 'email'])[0]
 
@@ -146,8 +146,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         #suggested_companies = request.env['res.partner'].sudo().search_company_type()
         suggested_reception = request.env['calendar.reception'].sudo().search([])
         return request.render("website_calendar.appointment_form", {
-            #'partner_data': partner_data,
-            'partner_data': [],
+            'partner_data': partner_data,
             'appointment_type': appointment_type,
             'suggested_class': suggested_class,
             'suggested_partners': suggested_partners,
