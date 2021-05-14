@@ -121,7 +121,7 @@ class MailMail(models.Model):
             if not self.ids:
                 batch_total_max = 0
                 sys_params = self.env['ir.config_parameter'].sudo()
-                limit = int(sys_params.get_param('mail.session.batch.size', 28))
+                limit = int(sys_params.get_param('mail.session.batch.size', 22))
                 ids = []
                 _logger.info("======= sending emails with limit=%s" % limit)
                 filters = ['&','&',
