@@ -477,11 +477,19 @@ class CalendarAppointment(models.Model):
                 description = ("Updated to: %s " % (
                     record.calendar_datetime.strftime("%Y%m%d %H%M%S"))
                     )
+
+                judged_extension_lifesize = False
+                partner = record.appointment_type_id.judged_id if record.appointment_type_id else False
+                if partner and partner.extension_lifesize:
+                    judged_extension_lifesize = partner.extension_lifesize
+
                 api = {
                     'method': 'update',
                     'description': description,
                     'ownerExtension': record.lifesize_owner,
                     'uuid': record.lifesize_uuid,
+                    'moderatorExtension': judged_extension_lifesize or \
+                        self.env.user.company_id.owner_extension,
                 }
                 resp = self.env['api.lifesize'].api_crud(api)
                 dic = self.env['api.lifesize'].resp2dict(resp)

@@ -115,7 +115,7 @@ class MailMail(models.Model):
                                 messages are sent).
         """
         res = None
-        for server_id in self.env['ir.mail_server'].search([]):
+        for server_id in self.env['ir.mail_server'].search([('active','=',True)]):
             smtp_session = None
             raise_exception=False
             if not self.ids:
@@ -137,26 +137,27 @@ class MailMail(models.Model):
                 _logger.error('*********** PROCESANDO SERVER MAIL RECORDS ************')
                 _logger.error(ids)
 
-            try:
-                smtp_session = self.env['ir.mail_server'].connect(mail_server_id=server_id.id)
-            except Exception as exc:
-                if raise_exception:
-                    # To be consistent and backward compatible with mail_mail.send() raised
-                    # exceptions, it is encapsulated into an Odoo MailDeliveryException
-                    raise MailDeliveryException(_('Unable to connect to SMTP Server'), exc)
+            if ids:
+                try:
+                    smtp_session = self.env['ir.mail_server'].connect(mail_server_id=server_id.id)
+                except Exception as exc:
+                    if raise_exception:
+                        # To be consistent and backward compatible with mail_mail.send() raised
+                        # exceptions, it is encapsulated into an Odoo MailDeliveryException
+                        raise MailDeliveryException(_('Unable to connect to SMTP Server'), exc)
+                    else:
+                        batch = self.browse(ids)
+                        batch.write({'state': 'exception', 'failure_reason': exc})
+                        batch._postprocess_sent_message(success_pids=[], failure_type="SMTP")
                 else:
-                    batch = self.browse(ids)
-                    batch.write({'state': 'exception', 'failure_reason': exc})
-                    batch._postprocess_sent_message(success_pids=[], failure_type="SMTP")
-            else:
-                auto_commit = not getattr(threading.currentThread(), 'testing', False)
-                self.browse(ids)._send(
-                    auto_commit=auto_commit,
-                    raise_exception=raise_exception,
-                    smtp_session=smtp_session)
-                _logger.info(
-                    'Sent batch %s emails via mail server ID #%s',
-                    len(ids), server_id)
-            finally:
-                if smtp_session:
-                    smtp_session.quit()
+                    auto_commit = not getattr(threading.currentThread(), 'testing', False)
+                    self.browse(ids)._send(
+                        auto_commit=auto_commit,
+                        raise_exception=raise_exception,
+                        smtp_session=smtp_session)
+                    _logger.info(
+                        'Sent batch %s emails via mail server ID #%s',
+                        len(ids), server_id)
+                finally:
+                    if smtp_session:
+                        smtp_session.quit()
