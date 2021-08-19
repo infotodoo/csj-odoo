@@ -15,8 +15,18 @@ import pytz
 import io
 from odoo.tools.misc import get_lang
 from babel.dates import format_datetime, format_date
+
+import werkzeug.contrib.sessions
+import werkzeug.datastructures
+import werkzeug.exceptions
+import werkzeug.local
+import werkzeug.routing
+import werkzeug.wrappers
+import werkzeug.wsgi
+from werkzeug import urls
+from werkzeug.wsgi import wrap_file
 from werkzeug.urls import url_encode
-from datetime import datetime
+from datetime import datetime, timedelta
 import xlsxwriter
 
 from odoo.osv.expression import OR
@@ -73,11 +83,16 @@ class CustomerPortal(CustomerPortal):
             'country_state_id': {'label': _('Departamento'), 'order': 'name'},
             'process_number': {'label': _('Número de Proceso'), 'order': 'process_number'},
         }
+        
+        today_date = datetime.now()
+        today_date = today_date.replace(hour=0, minute=0, second=0, microsecond=0) # Returns a copy
+        next_date = today_date + timedelta(days=1)
+        prev_date = today_date - timedelta(days=30)
 
         searchbar_filters = {
             'all': {'label': _('Todos'), 'domain': []},
-            'today': {'label': _('Hoy'), 'domain': [('calendar_datetime','<',datetime(2020,8,12,23,59,59)),('calendar_datetime','>',datetime(2020,8,12,0,0,1))]},
-            'month': {'label': _('Último Mes'), 'domain': [('calendar_datetime','>',datetime(2020,8,1,0,0,1)),('calendar_datetime','<',datetime(2020,8,31,23,59,59))]},
+            'today': {'label': _('Hoy'), 'domain': [('calendar_datetime','<',next_date),('calendar_datetime','>',today_date)]},
+            'month': {'label': _('Último Mes'), 'domain': [('calendar_datetime','>',prev_date),('calendar_datetime','<',next_date)]},
             'realized': {'label': _('Realizada'), 'domain': [('state','=','realized')]},
             'open': {'label': _('Agendado'), 'domain': [('state','=','open')]},
             'unrealized': {'label': _('No realizada'), 'domain': [('state','=','unrealized')]},
@@ -153,11 +168,18 @@ class CustomerPortal(CustomerPortal):
         # archive groups - Default Group By 'create_date'
         archive_groups = self._get_archive_groups('calendar.appointment', domain)
         if date_begin and date_end:
-            date_begin = datetime.strptime(date_begin, '%Y-%m-%d %H:%M')
-            date_begin = date_begin + timedelta(hours=5)
-            date_end = datetime.strptime(date_end, '%Y-%m-%d %H:%M')
-            date_end = date_end + timedelta(hours=5)
-            domain += [('calendar_datetime', '>=', date_begin), ('calendar_datetime', '<=', date_end)]
+            time = datetime.min.time()
+            datetime_begin = datetime.strptime(date_begin, '%Y-%m-%d')
+            datetime_begin = datetime.combine(datetime_begin, time)
+            datetime_end = datetime.strptime(date_end, '%Y-%m-%d')
+            datetime_end = datetime.combine(datetime_end, time)
+            #datetime_end = datetime(datetime_end.year, datetime_end.month, datetime_end.day)
+            #datetime_begin = datetime_begin - timedelta(hours=5)
+            #datetime_end = datetime_end - timedelta(hours=5)
+            domain += [
+                ('calendar_datetime', '>=', datetime_begin), 
+                ('calendar_datetime', '<', datetime_end + timedelta(hours=24))
+            ]
 
         # appointments count
         #appointment_count = Appointment.search_count(domain)
@@ -231,7 +253,7 @@ class CustomerPortal(CustomerPortal):
         # excel generation
         # Create a workbook and add a worksheet.
         #if export == 'on' and date_begin and date_end:
-        if export == 'on':
+        if export == 'true':
             appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=20000)
             response = request.make_response(
                 None,
@@ -358,8 +380,6 @@ class CustomerPortal(CustomerPortal):
                 if appointment.type == 'streaming':
                     type_label='STREAMING'
 
-
-
                 sheet.write('A'+str(row), appointment.appointment_code, cell_format)
                 sheet.write('B'+str(row), appointment.request_type_label, cell_format)
                 sheet.write('C'+str(row), type_label, cell_format)
@@ -446,18 +466,23 @@ class CustomerPortal(CustomerPortal):
             'country_state_id': {'label': _('Departamento'), 'order': 'name'},
             'process_number': {'label': _('Número de Proceso'), 'order': 'process_number'},
         }
+    
+        today_date = datetime.now()
+        today_date = today_date.replace(hour=0, minute=0, second=0, microsecond=0) # Returns a copy
+        next_date = today_date + timedelta(days=1)
+        prev_date = today_date - timedelta(days=30)
 
         searchbar_filters = {
             'all': {'label': _('Todos'), 'domain': []},
-            'today': {'label': _('Hoy'), 'domain': [('calendar_datetime','<',datetime(2020,8,12,23,59,59)),('calendar_datetime','>',datetime(2020,8,12,0,0,1))]},
-            'month': {'label': _('Último Mes'), 'domain': [('calendar_datetime','>',datetime(2020,8,1,0,0,1)),('calendar_datetime','<',datetime(2020,8,31,23,59,59))]},
+            'today': {'label': _('Hoy'), 'domain': [('calendar_datetime','<',next_date),('calendar_datetime','>',today_date)]},
+            'month': {'label': _('Último Mes'), 'domain': [('calendar_datetime','>',prev_date),('calendar_datetime','<',next_date)]},
             'realized': {'label': _('Realizada'), 'domain': [('state','=','realized')]},
             'open': {'label': _('Agendado'), 'domain': [('state','=','open')]},
             'unrealized': {'label': _('No realizada'), 'domain': [('state','=','unrealized')]},
             'postpone': {'label': _('Aplazado'), 'domain': [('state','=','postpone')]},
-            'assist_postpone': {'label': _('Asistida y aplazada'), 'domain': [('state','=','assist_postpone')]},
-            'assist_cancel': {'label': _('Asistida y Cancelada'), 'domain': [('state','=','assist_cancel')]},
-            'draft': {'label': _('Duplicado'), 'domain': [('state','=','draft')]},
+            #'assist_postpone': {'label': _('Asistida y aplazada'), 'domain': [('state','=','assist_postpone')]},
+            #'assist_cancel': {'label': _('Asistida y Cancelada'), 'domain': [('state','=','assist_cancel')]},
+            #'draft': {'label': _('Duplicado'), 'domain': [('state','=','draft')]},
             'cancel': {'label': _('Cancelado'), 'domain': [('state','=','cancel')]},
         }
 
@@ -467,14 +492,15 @@ class CustomerPortal(CustomerPortal):
             'city_id': {'input': 'city_id', 'label': _('Ciudad')},
             'judged_only_name': {'input': 'judged_only_name', 'label': _('Despacho solicitante')},
             'applicant_id': {'input': 'applicant_id', 'label': _('Nombre Solicitante')},
-            'declarant_text': {'input': 'declarant_text', 'label': _('Declarante')},
-            'tag_number': {'input': 'tag_number', 'label': _('Etiqueta')},
-            'indicted_text': {'input': 'indicted_text', 'label': _('Procesado')},
-            'lifesize_meeting_ext': {'input': 'lifesize_meeting_ext', 'label': _('Ext reunión Lifesize')},
-            'name': {'input': 'name', 'label': _('API Lifesize')},
+            #'declarant_text': {'input': 'declarant_text', 'label': _('Declarante')},
+            #'tag_number': {'input': 'tag_number', 'label': _('Etiqueta')},
+            #'indicted_text': {'input': 'indicted_text', 'label': _('Procesado')},
+            #'lifesize_meeting_ext': {'input': 'lifesize_meeting_ext', 'label': _('Ext reunión Lifesize')},
+            #'name': {'input': 'name', 'label': _('API Lifesize')},
             'state': {'input': 'state', 'label': _('Estado')},
             'all': {'input': 'all', 'label': _('Todos')},
         }
+        
 
         searchbar_groupby = {
             'none': {'input': 'none', 'label': _('None')},
@@ -485,23 +511,34 @@ class CustomerPortal(CustomerPortal):
 
         # default sort by value
         if not sortby:
-            sortby = 'appointment_code'
+            #sortby = 'appointment_code'
+            sortby = 'date'
         order = searchbar_sortings[sortby]['order']
         # default filter by value
         if not filterby:
             filterby = 'all'
         domain = searchbar_filters[filterby]['domain']
-
+        #domain += [('request_type', '=', 'l')]
 
         if not sortby:
             sortby = 'date'
         order = searchbar_sortings[sortby]['order']
 
-        """
-        archive_groups = self._get_archive_groups('calendar.appointment')
+        # archive groups - Default Group By 'create_date'
+        archive_groups = self._get_archive_groups('calendar.appointment', domain)
         if date_begin and date_end:
-            domain += [('calendar_datetime', '>', date_begin), ('calendar_datetime', '<=', date_end)]
-        """
+            time = datetime.min.time()
+            datetime_begin = datetime.strptime(date_begin, '%Y-%m-%d')
+            datetime_begin = datetime.combine(datetime_begin, time)
+            datetime_end = datetime.strptime(date_end, '%Y-%m-%d')
+            datetime_end = datetime.combine(datetime_end, time)
+            #datetime_end = datetime(datetime_end.year, datetime_end.month, datetime_end.day)
+            #datetime_begin = datetime_begin - timedelta(hours=5)
+            #datetime_end = datetime_end - timedelta(hours=5)
+            domain += [
+                ('calendar_datetime', '>=', datetime_begin), 
+                ('calendar_datetime', '<', datetime_end + timedelta(hours=24))
+            ]
 
         # search
         if search and search_in:
@@ -520,15 +557,15 @@ class CustomerPortal(CustomerPortal):
                 search_domain = OR([search_domain, [('applicant_id', 'ilike', search)]])
             if search_in in ('declarant_text', 'all'):
                 search_domain = OR([search_domain, [('declarant_text', 'ilike', search)]])
-            if search_in in ('tag_number', 'all'):
-                search_domain = OR([search_domain, [('tag_number', 'ilike', search)]])
+            #if search_in in ('tag_number', 'all'):
+            #    search_domain = OR([search_domain, [('tag_number', 'ilike', search)]])
             if search_in in ('indicted_text', 'all'):
                 search_domain = OR([search_domain, [('indicted_text', 'ilike', search)]])
             if search_in in ('applicant_email', 'all'):
                 search_domain = OR([search_domain, [('applicant_email', 'ilike', search)]])
             domain += search_domain
-            if search_in in ('lifesize_meeting_ext', 'all'):
-                search_domain = OR([search_domain, [('lifesize_meeting_ext', 'ilike', search)]])
+            #if search_in in ('lifesize_meeting_ext', 'all'):
+            #    search_domain = OR([search_domain, [('lifesize_meeting_ext', 'ilike', search)]])
             domain += search_domain
             if search_in in ('name', 'all'):
                 search_domain = OR([search_domain, [('name', 'ilike', search)]])
@@ -537,19 +574,20 @@ class CustomerPortal(CustomerPortal):
                 search_domain = OR([search_domain, [('state', 'ilike', search)]])
             domain += search_domain
 
-        _logger.error(domain)
+        
 
         # when partner is not scheduler they can only view their own
         partner = request.env.user.partner_id
         judged_id = partner.parent_id
-        if partner.appointment_type != 'scheduler':
+        if partner.appointment_type != 'scheduler' and judged_id.id:
             domain += [('partner_id', '=', judged_id.id)]
-
+        
         appointment_count = request.env['calendar.appointment'].sudo().search_count(domain)
+        
 
         # pager
         pager = portal_pager(
-            url="/my/public",
+            url="/public",
             url_args={'date_begin': date_begin, 'date_end': date_end, 'search': search, 'sortby': sortby, 'filterby': filterby, 'search_in': search_in},
             total=appointment_count,
             page=page,
@@ -558,21 +596,20 @@ class CustomerPortal(CustomerPortal):
 
         if groupby == 'state':
             order = "state, %s" % order
+    
         appointments = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
         if groupby == 'state':
             grouped_appointments = [request.env['calendar.appointment'].sudo().concat(*g) for k, g in groupbyelem(appointments, itemgetter('state'))]
         else:
             grouped_appointments = [appointments]
+            
 
         # content according to pager and archive selected
         appointments = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+        
         request.session['my_appointments_history'] = appointments.ids[:100]
 
-
-        # excel generation
-        # Create a workbook and add a worksheet.
-        #if export == 'on' and date_begin and date_end:
-        if export == 'on':
+        if export == 'true':
             appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=20000)
             response = request.make_response(
                 None,
@@ -750,8 +787,12 @@ class CustomerPortal(CustomerPortal):
             output.close()
 
             #response.set_cookie('fileToken', token)
+            #request.redirect('/public')
             return response
-
+             
+        _logger.error('--------------------------------------------------------------------------------------------------------')
+        _logger.error(date_begin)
+        _logger.error(date_end)
         values.update({
             'date_begin': date_begin,
             'date_end': date_end,
@@ -772,6 +813,8 @@ class CustomerPortal(CustomerPortal):
             'searchbar_filters': OrderedDict(sorted(searchbar_filters.items())),
             'filterby': filterby,
         })
+        _logger.error(appointments)
+        _logger.error(appointments)
         return request.render("calendar_csj.portal_appointments_public", values)
     
     @http.route([
@@ -1005,7 +1048,7 @@ class CustomerPortal(CustomerPortal):
     @http.route([
         '/data/recordings'
     ], type='http', auth="public", website=True)
-    def portal_public_videos(self, appointment_id=None, access_token=None, **kw):
+    def portal_public_recordings(self, appointment_id=None, access_token=None, **kw):
         _logger.error(request.httprequest.cookies.get('session_id'))
         sid = request.httprequest.cookies.get('session_id')
         uid = request.env.user.id
@@ -1018,3 +1061,132 @@ class CustomerPortal(CustomerPortal):
         else:
             values = {'url_calltech': 'https://apigestionaudiencias3.ramajudicial.gov.co/' + str(sid) + '/' + str(uid),}
         return request.render("calendar_csj.portal_public_videos", values)
+    
+    
+    
+    
+    
+    
+    @http.route([
+        '/data/recordings/add/content'
+    ], type='http', auth="public", website=True)
+    def portal_public_recordings_add_content(self, appointment_type=None, employee_id=None, message=None, types=None, **kwargs):
+        sid = request.httprequest.cookies.get('session_id')
+        uid = request.env.user.id
+        if not sid:
+            raise werkzeug.exceptions.NotFound()
+            
+        partner = request.env.user.partner_id
+        judged_id = None
+        if partner.appointment_type != 'scheduler':
+            judged_id = partner.parent_id
+            if judged_id:
+                suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search_calendar(judged_id.id)
+            else:
+                return request.render("website_calendar.setup", {'message':'unassigned_partner'})
+            if not suggested_appointment_types:
+                return request.render("website_calendar.setup", {'message': 'unassigned_origin', 'judged': judged_id.name})
+                #raise ValidationError('Ningún origen asosiado a %s.' % judged_id.name)
+            appointment_type = suggested_appointment_types[0]
+        else:
+
+            if not appointment_type:
+                country_code = request.session.geoip and request.session.geoip.get('country_code')
+                if country_code:
+                    suggested_appointment_types = request.env['calendar.appointment.type'].search([
+                        '|', ('country_ids', '=', False),
+                            ('country_ids.code', 'in', [country_code])])
+                else:
+                    suggested_appointment_types = request.env['calendar.appointment.type'].search([])
+
+                if not suggested_appointment_types:
+                    return request.render("website_calendar.setup", {})
+                appointment_type = suggested_appointment_types[0]
+            else:
+                suggested_appointment_types = appointment_type
+                
+
+        return request.render("calendar_csj.recording_add_content", {
+            'appointment_type': appointment_type,
+            'suggested_appointment_types': suggested_appointment_types,
+            'message': message,
+            'types': types,
+            'calendar_appointment_type_id': partner.id if partner.appointment_type != 'scheduler' else 1,
+            'city_name': partner.city,
+            'judged_name': judged_id.name if judged_id else '',
+            'process_number': True
+        })
+
+    
+    @http.route(['/website/recording/add/content'], type='http', auth="public", website=True)
+    def process_recording_add_content_form(self, **kwargs):
+        appointment_type_id = kwargs['calendar_appointment_type_id']
+        appointment_obj = request.env['calendar.appointment.type'].browse(int(appointment_type_id))
+        city_code = appointment_obj.judged_id.city_id
+        judge_id = kwargs['judge_id']
+        judge_name = kwargs['judge_name']
+        process_number = kwargs['process_number']
+        
+        if len(process_number) != 23:
+            return request.render("calendar_csj.recording_add_content_confirm", {
+                'process_number': process_number,
+                'message': 'process_longer_failed',
+            })
+        city = request.env['res.entity'].sudo().search_city(process_number[0:5])
+        entity = request.env['res.entity'].sudo().search_entity(process_number[5:7])
+        speciality = request.env['res.entity'].sudo().search_speciality(process_number[7:9])
+        rad_year = process_number[12:16]
+        year = datetime.now()
+        year_limit = int(year.strftime("%Y")) + 1
+        if city and entity and speciality:
+            if not int(rad_year) in range(1900,year_limit):
+                return request.render("calendar_csj.recording_add_content_confirm", {
+                    'process_number': process_number,
+                    'message': 'process_longer_failed',
+                })
+        else:
+            return request.render("calendar_csj.recording_add_content_confirm", {
+                'process_number': process_number,
+                'message': 'process_longer_failed',
+            })
+        
+        """Verificando si el número de proceso existe, sino se crea un nuevo proceso"""
+        process_obj = request.env['process.process'].sudo().search([('name', '=', process_number)])
+        #judge_obj = request.env['process.process'].sudo().browse(judge_id)
+        if not process_obj and process_number:
+            process_values = {
+                'name': process_number,
+                'active': True,
+                'state': 'Abierto',
+                'appointment_type_id': appointment_obj.id,
+                'city_id': city_code.id,
+                'judge_id': judge_id,
+                #'country_state_id': appointment.country_state_id.id,
+            }
+            new_process = request.env['process.process'].sudo().create(process_values)
+        
+        content_values = {
+            'name': process_number,
+            'appointment_type_id': appointment_obj.id,
+            'city_id': city_code.id,
+            'judge_id': judge_id,
+            'judge_name': judge_name,
+            'process_id': process_obj.id if process_obj else new_process.id,
+        }
+        recording_content_obj = request.env['recording.content'].sudo().create(content_values)
+        return request.render("calendar_csj.recording_add_content_confirm", {
+            'process_number': process_number,
+            'message': 'recording_content_add_sucessfull',
+        })
+    
+    
+    
+    
+    
+    @http.route(['/data/recordings/add/content/api'], type='http', auth="public", website=True)
+    def process_recording_add_content_api(self, **kwargs):
+        values = {
+            'process_number': kwargs['process_number'],
+            'prepare_file': kwargs['prepare_file'],
+        }
+        return request.render("calendar_csj.portal_recording_add_content", values)

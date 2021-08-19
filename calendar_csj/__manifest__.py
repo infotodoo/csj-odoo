@@ -41,6 +41,7 @@
         'views/calendar_portal_csj_templates.xml',
         'views/calendar_reception_view.xml',
         'views/calendar_event_view.xml',
+        'views/process_process_view.xml',
         'views/calendar_recording_notification_view.xml',
         'views/template.xml',
     ],

@@ -185,6 +185,7 @@ class CalendarAppointment(models.Model):
     create_uid_login = fields.Char('Create User Login', related='create_uid.login', store=False)
     cw_bool = fields.Boolean('Create/Write', default=False, required=True)
     type_request_concatenated = fields.Char('TIPO DE SOLICITUD', compute="_concatenate_partaker_help")
+    process_id = fields.Many2one('process.process', 'Proceso', ondelete='set null')
     
     @api.depends('help_id','partaker_type')
     def _concatenate_partaker_help(self):
@@ -740,11 +741,10 @@ class CalendarAppointmentType(models.Model):
     applicant_id = fields.Many2one('res.partner', 'Applicant', ondelete='set null')
     declarant_id = fields.Many2one('res.partner', 'Declarant', ondelete='set null')
     indicted_id = fields.Many2one('res.partner', 'Indicted', ondelete='set null')
-
     request_type = fields.Selection([('l', 'Free'), ('r', 'Reserved')], 'Request type', default='r')
     process_number = fields.Char('Process number')
     reception_id = fields.Many2one('calendar.reception', 'Reception medium', ondelete='set null')
-
+    
     def search_calendar(self, judged_id):
         res = self.env['calendar.appointment.type'].search([('judged_id','=',judged_id)])
         return res

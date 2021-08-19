@@ -133,8 +133,8 @@
                         <label for="request_type" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">TIPO DE AUDIENCIA*</label>
                         <div class="col-md-12 row">
                             <select name="request_type" class="form-control" id="request_type">
-                                <option t-att-value="r">Reserved</option>
-                                <option t-att-value="l">Free</option>
+                                <option t-att-value="r">Reservada</option>
+                                <option t-att-value="l">Libre</option>
                             </select>
                         </div>
                       </div>

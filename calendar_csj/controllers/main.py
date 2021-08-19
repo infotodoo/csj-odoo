@@ -439,6 +439,42 @@ class OdooWebsiteSearchAppointment(http.Controller):
         data['error'] = None,
         data['data'] = {'cita': cita}
         return json.dumps(data)
+    
+    
+    @http.route([
+        '/search/suggestion/recording/add_content',
+        '/search/suggestion/recording/add_content/<int:city_id>'], type='http', auth="public", website=True)
+    def search_suggestion_recording_add(self, city_id, **post):
+        cita = []
+        if post:
+            partner = request.env.user.partner_id
+            query = post.get('query').lower()
+            for suggestion in query.split(" "):
+                judged_id = partner.parent_id
+                if partner.appointment_type != 'scheduler':
+                    suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search_calendar(judged_id.id)
+                else:
+                    if city_id: #city selected
+                        suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search([('city_id','=',city_id),('name','!=',False)])
+                    else:
+                        suggested_appointment_types = request.env['calendar.appointment.type'].sudo().search([])
+                for appointment_type in suggested_appointment_types:
+                    if len(cita) > 0 and appointment_type.id in [line.get('id') for line in cita]:
+                        continue
+                    if not appointment_type.judged_id.recording_add_ok:
+                        continue
+                    city = appointment_type.judged_id.city_id.name if \
+                        appointment_type.judged_id and appointment_type.judged_id.city_id else '404'
+                    name = city + '-' + appointment_type.name
+                    cita.append({
+                        'cita': name,
+                        'id': appointment_type.id,
+                        })
+        data = {}
+        data['status'] = True,
+        data['error'] = None,
+        data['data'] = {'cita': cita}
+        return json.dumps(data)
 
 
 
@@ -462,7 +498,6 @@ class OdooWebsiteSearchCity(http.Controller):
         data['status'] = True,
         data['error'] = None,
         data['data'] = {'cities': cities}
-
         return json.dumps(data)
 
 
