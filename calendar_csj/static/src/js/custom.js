@@ -95,6 +95,7 @@ $("#button_submit_appointment").on('click', function(e){
   var duration = $(".o_website_appointment_form select[name='duration']").val();
   var search_city = $(".o_website_appointment_form input[name='search_city']").val();
   var calendar_appointment_type_id = $(".o_website_appointment_form input[name='calendar_appointment_type_id']").val();
+    
 
   if (search_city === '' || search_city === null || search_city === 'undefined'){
     Dialog.alert(this, 'Por favor selecione una ciudad!');
@@ -247,6 +248,7 @@ publicWidget.registry.websiteAppointmentSelect = publicWidget.Widget.extend({
         },
       });
       $(".o_website_appointment_form input[name='date_time']").attr('readonly', 'True');
+      $(".o_website_recording_add_content_form input[name='date_time']").attr('readonly', 'True');
     },
     _onCalendarIconClick: function (ev) {
       /*
@@ -313,6 +315,8 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
     },
     start: function () {
         var calendar_appointment_type_id = $(".appointment_submit_form input[name='calendar_appointment_type_id']").val();
+        // si esta process_number estamos en el formulario de anexo de grabaciones
+        
         $('.search-query-appointment').typeahead({source: []});
         var self = this;
         var previousSelectedCityID = $(".o_website_appointment_form input[name='city_id']").val();
@@ -344,6 +348,13 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
                 if (item.id){
                   var url = '/search/suggestion/'.concat(item.id);
                 }
+                let process_number = $(".o_website_recording_add_content_form input[name='process_number']").val();
+                if(process_number){
+                    var url = '/search/suggestion/recording/add_content';
+                    if (item.id){
+                        var url = '/search/suggestion/recording/add_content/'.concat(item.id);
+                    }
+                }
                 $('.search-query-appointment').typeahead({source: []});
                 $('.search-query-appointment').typeahead({
                     minLength: 1,
@@ -365,6 +376,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
                         var duration = $(".o_website_appoinment_form select[name='duration']").val();
                         var calendar_appointment_type_id = item['id'];
                         $(".o_website_appointment_form input[name='calendar_appointment_type_id']").val(calendar_appointment_type_id);
+                        $(".o_website_recording_add_content_form input[name='calendar_appointment_type_id']").val(calendar_appointment_type_id);
                         var postURL = '/website/calendar/' + calendar_appointment_type_id + '/info?date_time='+ date_time + '&amp;duration=' + duration;
                         $(".o_website_appointment_form").attr('action', postURL);
                       }
@@ -391,7 +403,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
         if (previousSelectedCityID){
           var url = '/search/suggestion/'.concat(previousSelectedCityID);
         }
-		    this.$target.attr("autocomplete","off");
+		this.$target.attr("autocomplete","off");
         this.$target.parent().addClass("typeahead__container");
         this.$target.typeahead({
         	minLength: 1,
@@ -416,6 +428,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
                 var duration = $(".o_website_appoinment_form select[name='duration']").val();
                 var calendar_appointment_type_id = item['id'];
                 $(".o_website_appoinment_form input[name='calendar_appointment_type_id']").val(calendar_appointment_type_id);
+                $(".o_website_recording_add_content_form input[name='calendar_appointment_type_id']").val(calendar_appointment_type_id);
                 var postURL = '/website/calendar/' + calendar_appointment_type_id + '/info?date_time='+ date_time + '&amp;duration=' + duration;
                 $(".o_website_appointment_form").attr('action', postURL);
               }

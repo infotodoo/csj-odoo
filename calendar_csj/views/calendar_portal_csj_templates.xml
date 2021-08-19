@@ -63,7 +63,7 @@
                   <!--  Collapsable content  -->
 
                   <div class="collapse navbar-collapse" id="o_portal_navbar_content">
-                      <div style="width:100%;" class="col-12 row">
+                      <div style="width:100%;" class="col-12 row mt-1">
                         <div class="col-4">
                         <table style="width:100%;"><tr>
                   <!--        <td style="width:20%;">
@@ -106,12 +106,42 @@
                         </div>
                         <div class="col-8">
 
-
+                        
                           <form t-if="searchbar_inputs" class="form-inline o_portal_search_panel_csj ml-lg-4">
+                            
+                            <input type="hidden" name="export" id="export" value=""/>
                             <table style="width:100%;"><tr>
+                                
+                            
 
-                            <td style="width:90%;">
-                              <div class="input-group input-group-sm w-45" style="padding-right:5px;">
+
+                              <td colspan="2" style="text-align:right;width:100%;">
+                                <div class="input-group" style="padding-right:5px;" id="container_datetime_filter">
+                                    <span class="small mr-1 navbar-text">Seleccionar Registros Desde: </span>
+                                  <div class='input-group date' id='datetimepicker_begin'>
+                                      <input type='text' class="form-control" name="date_begin" id="date_begin" t-att-value="date_begin"/>
+                                      <!--<span class="input-group-addon">
+                                          <span class="fa fa-calendar"></span>
+                                      </span>-->
+                                  </div>
+                                    <span class="small mr-1 navbar-text" style="padding-left:5px;"> Hasta: </span>
+                                  <!--<input type="text" class="form-control form-control-sm" placeholder="Hasta" t-att-value='date_end' name="date_end" id="date_end"/>-->
+                                  <div class='input-group date' id='datetimepicker_end'>
+                                      <input type='text' class="form-control" name="date_end" id="date_end" t-att-value="date_end"/>
+                                      <!--<span class="input-group-addon">
+                                          <span class="fa fa-calendar fa-2x" style="margin-left:-30px;margin-top:10px;z-index:999;"></span>
+                                      </span>-->
+                                  </div>
+                                    
+                                </div>
+                                  
+                            </td>
+                                
+                            </tr><tr>
+
+                            <td style="width:90%;padding-top:10px;">
+                              <div class="input-group" style="padding-right:5px;">
+                                  <span class="small mr-1 navbar-text">Buscar por:</span>
                                   <div class="input-group-prepend">
                                       <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"/>
                                       <div class="dropdown-menu" role="menu">
@@ -129,39 +159,19 @@
                                           <span class="fa fa-search"/>
                                       </button>
                                   </span>
+                                  <div class="input-group" style="padding-left:15px;background-color:#FFF;">
+                                    <span class="fa fa-file-excel-o" style="font-size:20px;padding-top:12px;padding-left:12px;padding-right:6px;padding-bottom:12px;"/>
+                                    <span style="font-size:14px;padding-top:16px;padding-left:0px;padding-right:6px;padding-bottom:10px;">
+                                        <a href="#" class="download_appointment_report">Descargar en Excel</a>
+                                    </span>
+                                    <!--<span class="fa fa-calendar" id="datetime_filter_icon" style="font-size:20px;padding:15px;"/>-->
+                                  </div>
                               </div>
                             </td>
 
                             <td style="width:10%;">
-                              <div class="input-group input-group-sm w-5" style="padding-left:15px;background-color:#00a09d;">
-                                <input type="checkbox" name="export"/><br/>
-                                <span class="fa fa-file-excel-o" style="font-size:20px;padding:15px;"/>
-                                <span class="fa fa-calendar" id="datetime_filter_icon" style="font-size:20px;padding:15px;"/>
-                              </div>
-
+                              
                             </td>
-                            </tr><tr>
-
-
-                              <td colspan="2" style="text-align:right;width:100%;">
-                                <div class="input-group input-group-sm" style="padding-right:5px;" id="container_datetime_filter">
-                                  <!--<input type="text" class="form-control form-control-sm" placeholder="Desde" t-att-value='date_begin' name="date_begin" id="date_begin"/>-->
-                                  <div class='input-group date' id='datetimepicker_begin'>
-                                      <input type='datetime' class="form-control" name="date_begin" t-att-value="date_begin"/>
-                                      <!--<span class="input-group-addon">
-                                          <span class="fa fa-calendar"></span>
-                                      </span>-->
-                                  </div>
-                                  <!--<input type="text" class="form-control form-control-sm" placeholder="Hasta" t-att-value='date_end' name="date_end" id="date_end"/>-->
-                                  <div class='input-group date' id='datetimepicker_end'>
-                                      <input type='datetime' class="form-control" name="date_end" t-att-value="date_end"/>
-                                      <!--<span class="input-group-addon">
-                                          <span class="fa fa-calendar"></span>
-                                      </span>-->
-                                  </div>
-                                </div>
-                            </td>
-
                           </tr></table>
 
 
@@ -322,7 +332,10 @@
           </t>
       </template>
         
-      <template id="portal_appointments_public" name="Appointments">
+        
+        
+    <!-- vista publica de grabaciones -->  
+    <template id="portal_appointments_public" name="Appointments">
           <t t-call="portal.portal_layout">
               <t t-set="breadcrumbs_searchbar" t-value="False"/>
               <!--<t t-call="portal.portal_searchbar">
@@ -343,7 +356,7 @@
                   <!--  Collapsable content  -->
 
                   <div class="collapse navbar-collapse" id="o_portal_navbar_content">
-                      <div style="width:100%;" class="col-12 row">
+                      <div style="width:100%;" class="col-12 row mt-1">
                         <div class="col-4">
                         <table style="width:100%;"><tr>
                   <!--        <td style="width:20%;">
@@ -368,7 +381,7 @@
                                 <div t-if="searchbar_filters" class="form-inline ml-lg-2">
                                     <span class="small mr-1 navbar-text">Filtrar por:</span>
                                     <div class="btn-group">
-                                        <button id="portal_searchbar_filters" data-toggle="dropdown" class="btn btn-secondary btn-sm dropdown-toggle">
+                                        <button id="portal_searchbar_filters" data-toggle="dropdown" class="btn btn-secondary dropdown-toggle">
                                             <t t-esc="searchbar_filters[filterby].get('label', 'All')"/>
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="portal_searchbar_filters">
@@ -386,12 +399,41 @@
                         </div>
                         <div class="col-8">
 
-
+                          
                           <form t-if="searchbar_inputs" class="form-inline o_portal_search_panel_csj ml-lg-4">
+                            <input type="hidden" name="export" id="export" value=""/>
                             <table style="width:100%;"><tr>
+                                
+                            
 
-                            <td style="width:90%;">
-                              <div class="input-group input-group-sm w-45" style="padding-right:5px;">
+
+                              <td colspan="2" style="text-align:right;width:100%;">
+                                <div class="input-group" style="padding-right:5px;" id="container_datetime_filter">
+                                    <span class="small mr-1 navbar-text">Seleccionar Registros Desde: </span>
+                                  <div class='input-group date' id='datetimepicker_begin'>
+                                      <input type='text' class="form-control" name="date_begin" id="date_begin" t-att-value="date_begin"/>
+                                      <!--<span class="input-group-addon">
+                                          <span class="fa fa-calendar"></span>
+                                      </span>-->
+                                  </div>
+                                    <span class="small mr-1 navbar-text" style="padding-left:5px;"> Hasta: </span>
+                                  <!--<input type="text" class="form-control form-control-sm" placeholder="Hasta" t-att-value='date_end' name="date_end" id="date_end"/>-->
+                                  <div class='input-group date' id='datetimepicker_end'>
+                                      <input type='text' class="form-control" name="date_end" id="date_end" t-att-value="date_end"/>
+                                      <!--<span class="input-group-addon">
+                                          <span class="fa fa-calendar fa-2x" style="margin-left:-30px;margin-top:10px;z-index:999;"></span>
+                                      </span>-->
+                                  </div>
+                                    
+                                </div>
+                                  
+                            </td>
+                                
+                            </tr><tr>
+
+                            <td style="width:90%;padding-top:10px;">
+                              <div class="input-group" style="padding-right:5px;">
+                                  <span class="small mr-1 navbar-text">Buscar por:</span>
                                   <div class="input-group-prepend">
                                       <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"/>
                                       <div class="dropdown-menu" role="menu">
@@ -409,38 +451,21 @@
                                           <span class="fa fa-search"/>
                                       </button>
                                   </span>
+                                  <div class="input-group" style="padding-left:15px;background-color:#FFF;">
+                                    <span class="fa fa-file-excel-o" style="font-size:20px;padding-top:12px;padding-left:12px;padding-right:6px;padding-bottom:12px;"/>
+                                    <span style="font-size:14px;padding-top:16px;padding-left:0px;padding-right:6px;padding-bottom:10px;">
+                                        <a href="#" class="download_appointment_report">Descargar en Excel</a>
+                                    </span>
+                                    <!--<span class="fa fa-calendar" id="datetime_filter_icon" style="font-size:20px;padding:15px;"/>-->
+                                  </div>
                               </div>
                             </td>
 
                             <td style="width:10%;">
-                              <div class="input-group input-group-sm w-5" style="padding-left:15px;background-color:#00a09d;">
-                                <input type="checkbox" name="export"/><br/>
-                                <span class="fa fa-file-excel-o" style="font-size:20px;padding:15px;"/>
-                                <span class="fa fa-calendar" id="datetime_filter_icon" style="font-size:20px;padding:15px;"/>
-                              </div>
+                              
 
                             </td>
-                            </tr><tr>
-
-
-                              <td colspan="2" style="text-align:right;width:100%;">
-                                <div class="input-group input-group-sm" style="padding-right:5px;" id="container_datetime_filter">
-                                  <!--<input type="text" class="form-control form-control-sm" placeholder="Desde" t-att-value='date_begin' name="date_begin" id="date_begin"/>-->
-                                  <div class='input-group date' id='datetimepicker_begin'>
-                                      <input type='datetime' class="form-control" name="date_begin" t-att-value="date_begin"/>
-                                      <!--<span class="input-group-addon">
-                                          <span class="fa fa-calendar"></span>
-                                      </span>-->
-                                  </div>
-                                  <!--<input type="text" class="form-control form-control-sm" placeholder="Hasta" t-att-value='date_end' name="date_end" id="date_end"/>-->
-                                  <div class='input-group date' id='datetimepicker_end'>
-                                      <input type='datetime' class="form-control" name="date_end" t-att-value="date_end"/>
-                                      <!--<span class="input-group-addon">
-                                          <span class="fa fa-calendar"></span>
-                                      </span>-->
-                                  </div>
-                                </div>
-                            </td>
+                            
 
                           </tr></table>
 
@@ -492,10 +517,12 @@
                                 <th t-else="">Id solicitud
                                     <em class="font-weight-normal text-muted">Appointment for state:</em>
                                     <span t-field="appointments[0].state"/></th>
-                                <th class="text-center">Tipo de solicitud</th>
+                                <th class="text-left">Tipo de Solicitud</th>
+                                
+                                <!--<th class="text-center">Tipo de solicitud</th>-->
                                 <th class="text-left">Tipo de Audiencia</th>
-                                <th class="text-left">Clase de videoconferencia</th>
-                                <th class="text-left">Tipo de Audiencia</th>
+                                <!--<th class="text-left">Clase de videoconferencia</th>-->
+                                <!--<th class="text-left">Tipo de Audiencia</th>-->
                                 <th class="text-left">Fecha de realización</th>
                                 <th class="text-left">Hora de inicio</th>
                                 <th class="text-left">Código despacho solicitante</th>
@@ -506,15 +533,21 @@
                                 <th class="text-left">Observaciones</th>
                                 <th class="text-left">Fecha de solicitud</th>
                                 <th class="text-left">Nombre del solicitante</th>
-                                <th class="text-left">Número de proceso</th>
-                                <th class="text-left">Fecha agendamiento</th>
-                                <th class="text-left">Creado por</th>
-                                <th class="text-left">Descripción</th>
                                 <th class="text-left">Estado</th>
+                                <th class="text-left">Número de proceso</th>
+                                <th class="text-left">Sala</th>
+                                <th class="text-left">Clase de Videoconferencia</th>
+                                <th class="text-left">Tipo de Audiencia</th>
+                                <th class="text-left">Fecha Agendamiento</th>
+                                <th class="text-left">Fecha Cierre</th>
+                                <th class="text-left">Fecha Final</th>
+                                <th class="text-left">Hora Final</th>
+                                <th class="text-left">Descripción</th>
                                 <th class="text-left">Etiqueta</th>
-                                <th class="text-left">Url de grabación</th>
-                                <th class="text-left">Nombre Sala Lifesize</th>
-
+                                <th class="text-left">Creado por</th>
+                                <th class="text-left">Url de Lifesize</th>
+                                <th class="text-left">Url de Grabación</th>
+                                <!--<th class="text-left">Nombre Sala Lifesize</th>-->
                             </tr>
                         </thead>
                         <tbody>
@@ -523,18 +556,22 @@
                                   <td>
                                       <span t-field="appointment.appointment_code"/>
                                   </td>
-                                    <td>
+                                  <td>
+                                      <span t-field="appointment.request_type_label"/>
+                                  </td>
+                                  
+                                    <!--<td>
                                         <span t-field="appointment.type_request_concatenated"/>
-                                    </td>
+                                    </td>-->
                                     <td>
                                         <span t-field="appointment.type"/>
                                     </td>
-                                    <td>
+                                    <!--<td>
                                         <span t-esc="appointment.class_id.name"/>
                                     </td>
                                     <td>
                                         <span t-field="appointment.request_type"/>
-                                    </td>
+                                    </td>-->
                                     <td>
                                         <span t-field="appointment.calendar_datetime"/>
                                     </td>
@@ -567,19 +604,6 @@
                                         <span t-esc="appointment.applicant_id.name"/>
                                     </td>
                                     <td>
-                                        <span t-esc="appointment.process_number"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="appointment.appointment_date"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="appointment.create_uid"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="appointment.state_description"/>
-                                    </td>
-                                    <td>
-                                        <!--<span class="badge badge-pill badge-info" t-esc="appointment.state"/>-->
                                         <span class="badge badge-pill badge-info" t-if="appointment.state == 'open'">AGENDADO</span>
                                         <span class="badge badge-pill badge-info" t-if="appointment.state == 'realized'">REALIZADA</span>
                                         <span class="badge badge-pill badge-info" t-if="appointment.state == 'unrealized'">NO REALIZADA</span>
@@ -590,14 +614,57 @@
                                         <span class="badge badge-pill badge-info" t-if="appointment.state == 'draft'">DUPLICADO</span>
                                     </td>
                                     <td>
+                                        <span t-esc="appointment.process_number"/>
+                                    </td>
+                                    
+                                    
+                                    <td>
+                                        <span t-esc="appointment.room_id_mame"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="appointment.class_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-if="appointment.request_type == 'l'">LIBRE</span>
+                                        <span t-if="appointment.request_type == 'r'">RESERVADO</span>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.appointment_date"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.appointment_close_date"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.end_date"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.end_hour"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.state_description"/>
+                                    </td>
+                                    
+                                    <td>
                                         <span t-esc="appointment.tag_number"/>
                                     </td>
                                     <td>
+                                        <span t-field="appointment.create_uid"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="appointment.lifesize_url"/>
+                                    </td>
+                                    <td>
+                                        <span t-if="appointment.request_type == 'l'"><span t-esc="appointment.link_download_text"/></span>
+                                    </td> 
+                                    <!--<td>
+                                        <span t-field="appointment.lifesize_url"/>
+                                    </td>-->
+                                    <!--<td>
                                         <span t-esc="appointment.link_download"/>
                                     </td>  
                                     <td>
                                         <span t-esc="appointment.name"/>
-                                    </td>
+                                    </td>-->
                                    
                                 </tr>
                             </t>
@@ -1456,7 +1523,6 @@
                           </button>
                         </div>
                       </div>
-
                   </div>
               </t>
               <t t-set="card_body">
@@ -1531,6 +1597,257 @@
               <iframe t-att-src="url_calltech" title="Calltech App" width="100%" height="700" style="border:none;"></iframe>
         </t>
     </template>
+    <template id="portal_recording_add_content" name="Portal Recording Add Content" priority="40">
+        <!--<t t-call="portal.portal_layout">-->
+        <t t-call="portal.frontend_layout">
+            <div class="o_page_header mt32" style="margin-left: 25%;margin-right: 25%">
+                <h5>En pocos segundos aparecerá una ventana emergente para realizar el cargue del archivo al número de proceso: <t t-esc="process_number"/></h5>
+                <h6>Sino haga click en <a id="add_content_url" href="#">este enlace...</a></h6>
+            </div>
+            <script type="text/javascript">
+                setTimeout(function () {
+                    let url = 'http://51.222.114.252:8027/index.php/s/eSWsegnHWncagpP'
+                    window.open(url, '_blank', 'location=no,height=570,width=520,scrollbars=no,status=no');
+                }, 3000);
+            </script>
+        </t>
+    </template>
+
+        
+    <template id="calendar_csj.recording_add_content" name="Website Recording Process: Appointment page add content">
+        <t t-call="website.layout">
+            <div id="wrap" class="o_website_calendar">
+                <div class="oe_structure container mb128 o_website_calendar_appointment" style="margin-top:20px;">
+                    
+                    <h1 class="o_page_header mt32">
+                        Cargar Grabación
+                    </h1>
+                    
+                    <div class="alert alert-success process_ok d-none" role="alert">
+                    <p>
+                        <strong>
+                          Ya existe un proceso registrado con este número. Puede editar la información.
+                        </strong><br/> 
+                    </p>
+                    </div>
+                    <div class="alert alert-info process_none d-none" role="alert">
+                    <p>
+                        <strong>
+                          No existe un proceso registrado con este número. Continue registrando la información.
+                        </strong><br/>
+                    </p>
+                    </div>
+                    <div class="alert alert-info process_void d-none" role="alert">
+                    <p>
+                        <strong>
+                          Digite un número de proceso.
+                        </strong><br/>
+                    </p>
+                    </div>
+                    
+                    <!--<form class="o_website_appointment_form w-md-70" t-attf-action="/website/calendar/#{ slug(appointment_type) }/info?date_time=#{date_time}" type="post">-->
+                    <!--<form class="o_website_recording_add_content_form w-md-70" t-attf-action="/website/recording/add/content" type="post">-->
+                    <form class="o_website_recording_add_content_form w-md-70">
+                        <input type="hidden" name="calendar_appointment_type_id" t-att-value="appointment_type.id"/>
+                        <input type="hidden" name="rest_form_ctl" value=""/>
+                        <!--<div id="appointment" class="form-group row o_hidden" style="display: none">
+                            <label for="calendarType" class="col-md-3 col-form-label">Appointment</label>
+                            <div class="col-md-9">
+                                <select class="form-control" id="calendarType" name="calendarType" t-att-disabled="len(suggested_appointment_types)==1 and '1' or None">
+                                    <t t-foreach="suggested_appointment_types" t-as="cal">
+                                        <option t-att-value="cal.id" t-att-selected="cal.id == appointment_type.id and 'selected'">
+                                            <t t-esc="cal.name" />
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                        </div>-->
+                        
+                        
+                        <div t-attf-class="input-group appointment-container row" style="margin-top:20px;">
+                          <label for="process_number" class="col-md-3 col-form-label">Código Único de Identificación (CUI)*</label>
+                          <div class="col-md-8">
+                              <input type="text" class="form-control text-uppercase" name="process_number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required="1"/>
+                              
+                          </div>
+                          <div class="col-md-1">
+                            <span class="input-group-append">
+                                      <button class="btn add-recording-process-number-btn btn-secondary" type="button">
+                                          <span class="fa fa-search"></span>
+                                      </button>
+                              </span>
+                          </div>
+                        </div>
+                        
+                        
+                        <div class="rest_form_ctl d-none">
+                            <style>
+                               .typeahead__cancel-button{padding: 0.5rem 1.5rem;}
+                            </style>
+                            <div t-attf-class="input-group city-container row">
+                              <label for="city_id" class="col-md-3 col-form-label">Ciudad Origen*</label>
+                              <t t-if="calendar_appointment_type_id == 1">
+                                <div class="col-md-9">
+                                  <input
+                                      type="text"
+                                      name="search_city"
+                                      class="search-query-city form-control oe_search_box"
+                                      placeholder="Seleccione una Ciudad..."
+                                      data-limit="10"
+                                      t-att-value="search_city"/>
+                                  <input type="hidden" name="city_id" class="search-query-city-id"/>
+                                </div>
+                              </t>
+                              <t t-else="">
+                                <div class="col-md-9">
+                                  <input type="text" name="city_name" class="form-control" readonly="1" t-att-value="city_name" required="1"/>
+                                  <input type="hidden" name="city_id" class="search-query-city-id"/>
+                                </div>
+                              </t>
+                            </div>
+                            <div t-attf-class="input-group appointment-container row" style="margin-top:4vh;">
+                                <label for="search_appointment" class="col-md-3 col-form-label">Despacho Solicitante*</label>
+                                <t t-if="calendar_appointment_type_id == 1">
+                                  <div class="col-md-9">
+                                    <input
+                                        type="text"
+                                        name="search_appointment"
+                                        id="search_appointmentID"
+                                        class="search-query-appointment form-control oe_search_box"
+                                        placeholder="Seleccione un Juzgado..."
+                                        data-limit="10"
+                                        t-att-value="search_appointment"/>
+                                  </div>
+                                  <input name="order" type="hidden" class="o_appointment_search_order_by" value=""/>
+                                </t>
+                                <t t-else="">
+                                  <div class="col-md-9">
+                                    <input type="text" name="judged_name" readonly="1" class="form-control" t-att-value="judged_name" required="1"/>
+                                  </div>
+                                </t>
+                            </div>
+
+                            <!--<div t-attf-class="input-group judge-container row">
+                              <label for="judge_name" class="col-md-3 col-form-label">Nombre del Juez*</label>
+                              <t t-if="calendar_appointment_type_id == 1">
+                                <div class="col-md-9">
+                                  <input
+                                      type="text"
+                                      name="search_judge"
+                                      class="search-query-judge form-control oe_search_box"
+                                      placeholder="Seleccione un Juez..."
+                                      data-limit="10"
+                                      t-att-value="search_judge"/>
+                                  <input type="hidden" name="judge_id" class="search-query-judge-id"/>
+                                </div>
+                              </t>
+                              <t t-else="">
+                                <div class="col-md-9">
+                                  <input type="text" name="judge_name" class="form-control" readonly="1" t-att-value="judge_name"/>
+                                </div>
+                              </t>-->
+                            
+                            <div t-attf-class="input-group judge-container row">
+                              <label for="judge_name" class="col-md-3 col-form-label">Nombre del Juez*</label>
+                              <div class="col-md-9">
+                                  <input type="text" class="form-control text-uppercase" name="judge_name" required="1"/>
+                              </div>
+                            </div>
+                            
+                            
+
+                            <div class="form-group row" style="margin-top:4vh;">
+                                <label for="date_time_content" class="col-md-3 col-form-label">Fecha y Hora de Realización*</label>
+                                <div class="col-md-9" style="padding-left:8px;">
+                                  <div class="input-group date" id="appointment_csj_div" data-target-input="nearest" style="width:70%">
+                                      <input type="text" min="2020-01-01" name="date_time_content" t-att-value="date_formatted" class="form-control date_time_content"/>
+                                      <div class="input-group-append" data-target="#appointment_csj_div">
+                                          <span class="input-group-text">
+                                              <span class="fa fa-calendar" role="img" aria-label="Calendar"></span>
+                                          </span>
+                                      </div>
+                                  </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group row" style="margin-top:4vh;">
+                                <label for="request_type" class="col-md-3 col-form-label">Tipo de Audiencia*</label>
+                                <div class="col-md-9" style="padding-left:8px;">
+                                    <select name="request_type" class="form-control" id="request_type">
+                                        <option t-att-value="r">Reservado</option>
+                                        <option t-att-value="l">Libre</option>
+                                    </select>
+                                </div>
+                              </div>
+                            
+                            
+
+                            <div t-attf-class="input-group row" style="margin-top:20px;">
+                              <label for="recording_file" class="col-md-3 col-form-label">Etiqueta</label>
+                              <div class="col-md-9">
+                                  <input type="text" name="tag_number" class="form-control text-uppercase" required="1" readonly="1"/>
+                              </div>
+                            </div>
+                            
+                            
+                            <div t-attf-class="input-group prepareFile-container row">
+                              <label for="judge_name" class="col-md-3 col-form-label">Preparar Archivo*</label>
+                              <div class="col-md-9">
+                                  <input type="file" 
+                                         class="form-control" 
+                                         name="prepareFile" 
+                                         required="1" 
+                                         accept="*.avi,*.mp4,*.mkv,*.flv,*.mov,*.wmv,*.divx,*.h.264"/>
+                              </div>
+                            </div>
+                            
+
+                            <div class="form-group row" style="margin-top:20px;">
+                                <div class="offset-md-6 col-md-6">
+                                    <button class="btn btn-primary button_submit_recording_add_content">
+                                        Continuar
+                                        <span class="fa fa-arrow-right"/>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <!--<div class="invisible mycloud_todoo_co_frame">
+                    <iframe src="https://mycloud.todoo.co/index.php/s/8NT9HFtiffejB5b" title="mycloud todoo API" width="70%" height="400" style="border:none;"></iframe>
+                </div>-->
+            </div>
+        </t>
+        </template>
+
+
+        <template id="calendar_csj.recording_add_content_confirm" name="Website Recording Process: Confirmation">
+        <t t-call="website.layout">
+            <div id="wrap" class="o_website_calendar">
+                <div class="oe_structure container mb128 o_website_calendar_recording_add_content_confirm" style="margin-top:20px;">
+                    <div t-if="message=='process_longer_failed'" class="alert alert-danger mt16" role="alert">
+                    <p>
+                        <strong>
+                          Ya existe un agendamiento para este Juzgado que se cruza con la fecha y hora seleccionados!
+                        </strong><br/><br/>
+                        <strong>Número de proceso no valido: </strong><span t-esc="process_number"/><br/>
+                    </p>
+                    </div>
+                    
+                    
+                    <div t-if="message=='recording_content_add_sucessfull'" class="alert alert-danger mt16" role="alert">
+                    <p>
+                        <strong>
+                          Se ha creado el contenido correctamente
+                        </strong><br/><br/>
+                        <strong>Número de proceso: </strong><span t-esc="process_number"/><br/>
+                    </p>
+                    </div>
+                </div>
+            </div>
+        </t>
+        </template>
 
 
     </data>

@@ -26,3 +26,5 @@ acces_calendar_recording,access.calendar.recording,model_calendar_recording,base
 access_res_partner_permission,access.res.partner.permission,model_res_partner_permission,base.group_user,1,1,1,1
 access_res_partner_permission_group,access.res.partner.permission.group,model_res_partner_permission_group,base.group_user,1,1,1,1
 access_res_specialty_pure,access.res.specialty.pure,model_res_specialty_pure,base.group_user,1,1,1,1
+access_process_process,access.process.process,model_process_process,base.group_user,1,1,1,1
+access_recording_content,access.recording.content,model_recording_content,base.group_user,1,1,1,1

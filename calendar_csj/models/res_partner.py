@@ -230,6 +230,7 @@ class ResPartner(models.Model):
 
     #permission_rol_id = fields.Many2one('res.partner.permission.group', string='Rol de Permisos')
     permission_ids = fields.One2many('res.partner.permission', 'partner_id', 'Reglas de Permisos')
+    recording_add_ok = fields.Boolean('Mostrar en resultados de Anexar Grabación')
 
     #@api.depends('partner_id')
     def _compute_partner_separated_name(self):
