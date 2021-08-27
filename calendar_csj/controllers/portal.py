@@ -72,7 +72,7 @@ class CustomerPortal(CustomerPortal):
 
 
     @http.route(['/my/appointments', '/my/appointments/page/<int:page>'], type='http', auth="user", website=True)
-    def portal_my_appointments(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):
+    def portal_my_appointments(self, page=1, date_begin=None, time_begin=None, date_end=None, time_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):
         values = self._prepare_portal_layout_values()
 
         searchbar_sortings = {
@@ -168,18 +168,31 @@ class CustomerPortal(CustomerPortal):
         # archive groups - Default Group By 'create_date'
         archive_groups = self._get_archive_groups('calendar.appointment', domain)
         if date_begin and date_end:
-            time = datetime.min.time()
-            datetime_begin = datetime.strptime(date_begin, '%Y-%m-%d')
-            datetime_begin = datetime.combine(datetime_begin, time)
-            datetime_end = datetime.strptime(date_end, '%Y-%m-%d')
-            datetime_end = datetime.combine(datetime_end, time)
+            if not time_begin:
+                time_begin = '00:00:00'
+            
+            _logger.error(time_begin)
+            
+            if not time_end:
+                time_end = '00:00:00'
+                
+            _logger.error(time_end)
+            
+            datetime_begin = datetime.strptime(date_begin + ' ' + time_begin.split(':')[0] + ':' + time_begin.split(':')[1], '%Y-%m-%d %H:%M')
+            #datetime_begin = datetime.combine(datetime_begin, time_begin)
+            datetime_end = datetime.strptime(date_end + ' ' + time_end.split(':')[0] + ':' + time_begin.split(':')[1], '%Y-%m-%d %H:%M')
+            #datetime_end = datetime.combine(datetime_end, time_end)
             #datetime_end = datetime(datetime_end.year, datetime_end.month, datetime_end.day)
             #datetime_begin = datetime_begin - timedelta(hours=5)
             #datetime_end = datetime_end - timedelta(hours=5)
             domain += [
                 ('calendar_datetime', '>=', datetime_begin), 
-                ('calendar_datetime', '<', datetime_end + timedelta(hours=24))
+                #('calendar_datetime', '<', datetime_end + timedelta(hours=24))
+                ('calendar_datetime', '<', datetime_end)
             ]
+            
+            
+            _logger.error('----------------------------------------------------------------------------------------------------------999')
 
         # appointments count
         #appointment_count = Appointment.search_count(domain)
@@ -231,7 +244,7 @@ class CustomerPortal(CustomerPortal):
         # pager
         pager = portal_pager(
             url="/my/appointments",
-            url_args={'date_begin': date_begin, 'date_end': date_end, 'search': search, 'sortby': sortby, 'filterby': filterby, 'search_in': search_in},
+            url_args={'date_begin': date_begin, 'time_begin': time_begin, 'date_end': date_end, 'time_end': time_end, 'search': search, 'sortby': sortby, 'filterby': filterby, 'search_in': search_in},
             total=appointment_count,
             page=page,
             step=self._items_per_page
@@ -434,7 +447,9 @@ class CustomerPortal(CustomerPortal):
 
         values.update({
             'date_begin': date_begin,
+            'time_begin': time_begin,
             'date_end': date_end,
+            'time_end': time_end,
             'appointments': appointments,
             'grouped_appointments': grouped_appointments,
             'total': appointment_count,
@@ -455,11 +470,11 @@ class CustomerPortal(CustomerPortal):
         return request.render("calendar_csj.portal_my_appointments", values)
 
     @http.route(['/public', '/public/page/<int:page>'], type='http', auth="public", website=True)
-    def portal_appointments_public(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):
+    def portal_appointments_public(self, page=1, date_begin=None, date_end=None, time_begin=None, time_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):
         values = self._prepare_portal_layout_values()
 
         searchbar_sortings = {
-            'date': {'label': _('Fecha de Realización'), 'order': 'calendar_datetime desc'},
+            'date': {'label': _('Fecha de Realización'), 'order': 'calendar_datetime asc'},
             'appointment_code': {'label': _('Agendamiento ID'), 'order': 'appointment_code desc'},
             'state': {'label': _('Estado'), 'order': 'state'},
             'city_id': {'label': _('Ciudad'), 'order': 'name'},
@@ -527,17 +542,27 @@ class CustomerPortal(CustomerPortal):
         # archive groups - Default Group By 'create_date'
         archive_groups = self._get_archive_groups('calendar.appointment', domain)
         if date_begin and date_end:
-            time = datetime.min.time()
-            datetime_begin = datetime.strptime(date_begin, '%Y-%m-%d')
-            datetime_begin = datetime.combine(datetime_begin, time)
-            datetime_end = datetime.strptime(date_end, '%Y-%m-%d')
-            datetime_end = datetime.combine(datetime_end, time)
+            if not time_begin:
+                time_begin = '00:00:00'
+            
+            _logger.error(time_begin)
+            
+            if not time_end:
+                time_end = '00:00:00'
+                
+            _logger.error(time_end)
+            
+            datetime_begin = datetime.strptime(date_begin + ' ' + time_begin.split(':')[0] + ':' + time_begin.split(':')[1], '%Y-%m-%d %H:%M')
+            #datetime_begin = datetime.combine(datetime_begin, time_begin)
+            datetime_end = datetime.strptime(date_end + ' ' + time_end.split(':')[0] + ':' + time_begin.split(':')[1], '%Y-%m-%d %H:%M')
+            #datetime_end = datetime.combine(datetime_end, time_end)
             #datetime_end = datetime(datetime_end.year, datetime_end.month, datetime_end.day)
             #datetime_begin = datetime_begin - timedelta(hours=5)
             #datetime_end = datetime_end - timedelta(hours=5)
             domain += [
                 ('calendar_datetime', '>=', datetime_begin), 
-                ('calendar_datetime', '<', datetime_end + timedelta(hours=24))
+                #('calendar_datetime', '<', datetime_end + timedelta(hours=24))
+                ('calendar_datetime', '<', datetime_end)
             ]
 
         # search
@@ -588,7 +613,7 @@ class CustomerPortal(CustomerPortal):
         # pager
         pager = portal_pager(
             url="/public",
-            url_args={'date_begin': date_begin, 'date_end': date_end, 'search': search, 'sortby': sortby, 'filterby': filterby, 'search_in': search_in},
+            url_args={'date_begin': date_begin, 'date_end': date_end, 'time_begin': time_begin, 'time_end': time_end, 'search': search, 'sortby': sortby, 'filterby': filterby, 'search_in': search_in},
             total=appointment_count,
             page=page,
             step=self._items_per_page
@@ -795,7 +820,9 @@ class CustomerPortal(CustomerPortal):
         _logger.error(date_end)
         values.update({
             'date_begin': date_begin,
+            'time_begin': time_begin,
             'date_end': date_end,
+            'time_end': time_end,
             'appointments': appointments,
             'grouped_appointments': grouped_appointments,
             'total': appointment_count,
