@@ -47,7 +47,7 @@ class CustomerPortal(CustomerPortal):
             domain += [('partner_id', '=', judged_id.id)]
 
         values['appointment_count'] = request.env['calendar.appointment'].sudo().search_count(domain)
-        
+
         return values
 
     # ------------------------------------------------------------
@@ -83,7 +83,7 @@ class CustomerPortal(CustomerPortal):
             'country_state_id': {'label': _('Departamento'), 'order': 'name'},
             'process_number': {'label': _('Número de Proceso'), 'order': 'process_number'},
         }
-        
+
         today_date = datetime.now()
         today_date = today_date.replace(hour=0, minute=0, second=0, microsecond=0) # Returns a copy
         next_date = today_date + timedelta(days=1)
@@ -170,14 +170,14 @@ class CustomerPortal(CustomerPortal):
         if date_begin and date_end:
             if not time_begin:
                 time_begin = '00:00:00'
-            
+
             _logger.error(time_begin)
-            
+
             if not time_end:
                 time_end = '00:00:00'
-                
+
             _logger.error(time_end)
-            
+
             datetime_begin = datetime.strptime(date_begin + ' ' + time_begin.split(':')[0] + ':' + time_begin.split(':')[1], '%Y-%m-%d %H:%M')
             #datetime_begin = datetime.combine(datetime_begin, time_begin)
             datetime_end = datetime.strptime(date_end + ' ' + time_end.split(':')[0] + ':' + time_begin.split(':')[1], '%Y-%m-%d %H:%M')
@@ -186,12 +186,12 @@ class CustomerPortal(CustomerPortal):
             #datetime_begin = datetime_begin - timedelta(hours=5)
             #datetime_end = datetime_end - timedelta(hours=5)
             domain += [
-                ('calendar_datetime', '>=', datetime_begin), 
+                ('calendar_datetime', '>=', datetime_begin),
                 #('calendar_datetime', '<', datetime_end + timedelta(hours=24))
                 ('calendar_datetime', '<', datetime_end)
             ]
-            
-            
+
+
             _logger.error('----------------------------------------------------------------------------------------------------------999')
 
         # appointments count
@@ -481,7 +481,7 @@ class CustomerPortal(CustomerPortal):
             'country_state_id': {'label': _('Departamento'), 'order': 'name'},
             'process_number': {'label': _('Número de Proceso'), 'order': 'process_number'},
         }
-    
+
         today_date = datetime.now()
         today_date = today_date.replace(hour=0, minute=0, second=0, microsecond=0) # Returns a copy
         next_date = today_date + timedelta(days=1)
@@ -515,7 +515,7 @@ class CustomerPortal(CustomerPortal):
             'state': {'input': 'state', 'label': _('Estado')},
             'all': {'input': 'all', 'label': _('Todos')},
         }
-        
+
 
         searchbar_groupby = {
             'none': {'input': 'none', 'label': _('None')},
@@ -544,14 +544,14 @@ class CustomerPortal(CustomerPortal):
         if date_begin and date_end:
             if not time_begin:
                 time_begin = '00:00:00'
-            
+
             _logger.error(time_begin)
-            
+
             if not time_end:
                 time_end = '00:00:00'
-                
+
             _logger.error(time_end)
-            
+
             datetime_begin = datetime.strptime(date_begin + ' ' + time_begin.split(':')[0] + ':' + time_begin.split(':')[1], '%Y-%m-%d %H:%M')
             #datetime_begin = datetime.combine(datetime_begin, time_begin)
             datetime_end = datetime.strptime(date_end + ' ' + time_end.split(':')[0] + ':' + time_begin.split(':')[1], '%Y-%m-%d %H:%M')
@@ -560,7 +560,7 @@ class CustomerPortal(CustomerPortal):
             #datetime_begin = datetime_begin - timedelta(hours=5)
             #datetime_end = datetime_end - timedelta(hours=5)
             domain += [
-                ('calendar_datetime', '>=', datetime_begin), 
+                ('calendar_datetime', '>=', datetime_begin),
                 #('calendar_datetime', '<', datetime_end + timedelta(hours=24))
                 ('calendar_datetime', '<', datetime_end)
             ]
@@ -599,16 +599,16 @@ class CustomerPortal(CustomerPortal):
                 search_domain = OR([search_domain, [('state', 'ilike', search)]])
             domain += search_domain
 
-        
+
 
         # when partner is not scheduler they can only view their own
         partner = request.env.user.partner_id
         judged_id = partner.parent_id
         if partner.appointment_type != 'scheduler' and judged_id.id:
             domain += [('partner_id', '=', judged_id.id)]
-        
+
         appointment_count = request.env['calendar.appointment'].sudo().search_count(domain)
-        
+
 
         # pager
         pager = portal_pager(
@@ -621,17 +621,17 @@ class CustomerPortal(CustomerPortal):
 
         if groupby == 'state':
             order = "state, %s" % order
-    
+
         appointments = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
         if groupby == 'state':
             grouped_appointments = [request.env['calendar.appointment'].sudo().concat(*g) for k, g in groupbyelem(appointments, itemgetter('state'))]
         else:
             grouped_appointments = [appointments]
-            
+
 
         # content according to pager and archive selected
         appointments = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
-        
+
         request.session['my_appointments_history'] = appointments.ids[:100]
 
         if export == 'true':
@@ -814,7 +814,7 @@ class CustomerPortal(CustomerPortal):
             #response.set_cookie('fileToken', token)
             #request.redirect('/public')
             return response
-             
+
         _logger.error('--------------------------------------------------------------------------------------------------------')
         _logger.error(date_begin)
         _logger.error(date_end)
@@ -843,7 +843,7 @@ class CustomerPortal(CustomerPortal):
         _logger.error(appointments)
         _logger.error(appointments)
         return request.render("calendar_csj.portal_appointments_public", values)
-    
+
     @http.route([
         '/my/appointment/<int:appointment_id>'
     ], type='http', auth="user", website=True)
@@ -1088,12 +1088,12 @@ class CustomerPortal(CustomerPortal):
         else:
             values = {'url_calltech': 'https://apigestionaudiencias3.ramajudicial.gov.co/' + str(sid) + '/' + str(uid),}
         return request.render("calendar_csj.portal_public_videos", values)
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
     @http.route([
         '/data/recordings/add/content'
     ], type='http', auth="public", website=True)
@@ -1102,7 +1102,7 @@ class CustomerPortal(CustomerPortal):
         uid = request.env.user.id
         if not sid:
             raise werkzeug.exceptions.NotFound()
-            
+
         partner = request.env.user.partner_id
         judged_id = None
         if partner.appointment_type != 'scheduler':
@@ -1131,7 +1131,7 @@ class CustomerPortal(CustomerPortal):
                 appointment_type = suggested_appointment_types[0]
             else:
                 suggested_appointment_types = appointment_type
-                
+
 
         return request.render("calendar_csj.recording_add_content", {
             'appointment_type': appointment_type,
@@ -1144,7 +1144,7 @@ class CustomerPortal(CustomerPortal):
             'process_number': True
         })
 
-    
+
     @http.route(['/website/recording/add/content'], type='http', auth="public", website=True)
     def process_recording_add_content_form(self, **kwargs):
         appointment_type_id = kwargs['calendar_appointment_type_id']
@@ -1153,7 +1153,7 @@ class CustomerPortal(CustomerPortal):
         judge_id = kwargs['judge_id']
         judge_name = kwargs['judge_name']
         process_number = kwargs['process_number']
-        
+
         if len(process_number) != 23:
             return request.render("calendar_csj.recording_add_content_confirm", {
                 'process_number': process_number,
@@ -1176,7 +1176,7 @@ class CustomerPortal(CustomerPortal):
                 'process_number': process_number,
                 'message': 'process_longer_failed',
             })
-        
+
         """Verificando si el número de proceso existe, sino se crea un nuevo proceso"""
         process_obj = request.env['process.process'].sudo().search([('name', '=', process_number)])
         #judge_obj = request.env['process.process'].sudo().browse(judge_id)
@@ -1191,7 +1191,7 @@ class CustomerPortal(CustomerPortal):
                 #'country_state_id': appointment.country_state_id.id,
             }
             new_process = request.env['process.process'].sudo().create(process_values)
-        
+
         content_values = {
             'name': process_number,
             'appointment_type_id': appointment_obj.id,
@@ -1205,11 +1205,11 @@ class CustomerPortal(CustomerPortal):
             'process_number': process_number,
             'message': 'recording_content_add_sucessfull',
         })
-    
-    
-    
-    
-    
+
+
+
+
+
     @http.route(['/data/recordings/add/content/api'], type='http', auth="public", website=True)
     def process_recording_add_content_api(self, **kwargs):
         values = {

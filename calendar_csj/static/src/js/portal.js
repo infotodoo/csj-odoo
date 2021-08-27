@@ -43,13 +43,9 @@ $(function () {
       dropdown: true,
       scrollbar: true
   });
-    
+
   var dateNow = new Date();
-  
- 
-    
-    
-    $(".o_portal_search_panel_csj input[name='date_begin']").datepicker({
+  $(".o_portal_search_panel_csj input[name='date_begin']").datepicker({
     //inline: true,
     //format : 'YYYY-MM-DD',
     dateFormat : 'yy-mm-dd',
@@ -57,10 +53,6 @@ $(function () {
     //defaultDate:moment(dateNow).hours(23).minutes(59),
     //sideBySide: false
   });
-    
-    
-    
-    
     
   $(".o_portal_search_panel_csj input[name='date_end']").datepicker({
     //inline: true,
@@ -70,14 +62,14 @@ $(function () {
     //defaultDate:moment(dateNow).hours(23).minutes(59),
     //sideBySide: false
   });
-    
+
     let url = window.location.href;
     var url_words = ["/public", "/my/appointments"];
     var url_public = new RegExp(url_words.join('|')).test(url);
     if (url_public == true) {
         $(".container").css('max-width', '1920px');
     }
-    
+
     var rest_form_ctl = $(".o_website_recording_add_content_form input[name='rest_form_ctl']").val();
     if (rest_form_ctl === ''){
         $('.rest_form_ctl').hide();
@@ -144,15 +136,15 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
                 /*
                 Dialog.confirm(this, 'Máximo se descargarán 20.000 registros', {
                     confirm_callback: function() {
-                      
+
                       //var url = '/public';
                       //window.location.href = url;
-                       
+
                       },
                       title: _t('Descargar Reporte en Excel'),
                   });
                 */
-              
+
         },
     });
 
@@ -298,7 +290,7 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
           title: _t('Confirmación para posponer el Agendamiento'),
       });
     });
-	
+
     $("#state_draft_btn").on('click', function(e){
       Dialog.confirm(this, 'El agendamiento será marcado como Duplicado', {
           confirm_callback: function() {
@@ -308,7 +300,7 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
           title: _t('Confirmación para posponer el Agendamiento'),
       });
     });
-    
+
     $(".portal_appointment_edit").on('click', function(e){
       var url = '/my/appointment/' + appointment_id + '/update/all';
       window.location.href = url;
@@ -342,12 +334,12 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
       var url = '/my/appointment/' + appointment_id;
       window.location.href = url;
     });
-	
+
     $(".portal_appointment_confirm_update").on('click', function(e){
       var url = '/my/appointment/' + appointment_id + '/update/state/open';
       window.location.href = url;
     });
-	
+
     $(".portal_appointment_save").on('click', function(e){
       var calendar_datetime = $(".appointment_portal_edit_form input[name='calendar_datetime']").val();
       if (calendar_datetime === '' || calendar_datetime === null || calendar_datetime === 'undefined'){
@@ -374,8 +366,8 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
       };
       $(".appointment_portal_judged_change_form").submit();
     });
-    
-    
+
+
     $(".treescroll2").scroll(function(){
         $(".treescroll1")
             .scrollLeft($(".treescroll2").scrollLeft());
@@ -447,13 +439,13 @@ odoo.define('calendar_csj.calendar_portal_csj_edit_judged', function(require) {
 
 odoo.define('calendar_csj.calendar_portal_csj_recording_add_content', function(require) {
     "use strict";
-    
+
     var ajax = require('web.ajax');
 	var core = require('web.core');
     var recordingJudgeAnimation = require('website.content.snippets.animation');
 
-    
-    
+
+
     /*
     $("#button_submit_recording_add_content").on('click', function(e){
         var core = require('web.core');
@@ -477,16 +469,16 @@ odoo.define('calendar_csj.calendar_portal_csj_recording_add_content', function(r
         return false;
     });
     */
-    
-    
-    
-    
+
+
+
+
     $(".add-recording-process-number-btn").on('click', function(e){
         var core = require('web.core');
         var rpc = require('web.rpc');
         var Dialog = require('web.Dialog');
         var process_number = $(".o_website_recording_add_content_form input[name='process_number']").val();
-        
+
         function hide_process_void_alert(){
             $('.process_void').addClass('d-none');
             $('.process_void').removeClass('d-print-inline');
@@ -535,7 +527,7 @@ odoo.define('calendar_csj.calendar_portal_csj_recording_add_content', function(r
             $('.rest_form_ctl').show();
             hide_process_void_alert();
         }
-        
+
         if (process_number === '' || process_number === null || process_number === 'undefined'){
             //Dialog.alert(this, 'Digite un número de proceso!');
             show_process_void_alert();
@@ -565,7 +557,7 @@ odoo.define('calendar_csj.calendar_portal_csj_recording_add_content', function(r
                 if (data[3] !== false){
                     $(".o_website_recording_add_content_form input[name='search_judge']").val(data[3]);
                     $(".judge-container .typeahead__container").addClass('cancel');
-                }*/      
+                }*/
               hide_process_none_alert();
               show_process_ok_alert();
               show_rest_form();
@@ -605,9 +597,9 @@ odoo.define('calendar_csj.calendar_portal_csj_recording_add_content', function(r
 
                 });
             }
-        }); 
+        });
     });
-    
+
     $(".o_website_recording_add_content_form input[name='prepareFile']").on('change', function(e){
         let Dialog = require('web.Dialog');
         var fileInput = $(".o_website_recording_add_content_form input[name='prepareFile']");
@@ -617,9 +609,9 @@ odoo.define('calendar_csj.calendar_portal_csj_recording_add_content', function(r
             Dialog.alert(this, 'Extensión de archivo no valido!, por favor seleccione un video');
             fileInput.val('');
             return false;
-        } 
+        }
     });
-    
+
     $(".button_submit_recording_add_content").on('click', function(e){
         let core = require('web.core');
         let rpc = require('web.rpc');
@@ -634,16 +626,16 @@ odoo.define('calendar_csj.calendar_portal_csj_recording_add_content', function(r
         let tag_number = $(".o_website_recording_add_content_form input[name='tag_number']").val();
         let request_type = $(".o_website_recording_add_content_form select[name='request_type'] option:selected").text();
         let judged_name = $(".o_website_recording_add_content_form input[name='judged_name']").val();
-        
+
         //prepare_file = prepare_file.substring(8);
-        
-    
-        
+
+
+
         if (process_number === '' || process_number === null || process_number === 'undefined'){
              Dialog.alert(this, 'Por favor registre un número de proceso!');
             return false;
         }
-        
+
         if (city_id === '' || city_id === null || city_id === undefined){
             Dialog.alert(this, 'Por favor selecione una ciudad!');
             return false;
@@ -652,27 +644,27 @@ odoo.define('calendar_csj.calendar_portal_csj_recording_add_content', function(r
             Dialog.alert(this, 'Por favor seleccione un Juzgado!');
             return false;
         };
-        
+
         if (process_datetime === '' || process_datetime === null || process_datetime === undefined){
             Dialog.alert(this, 'Por favor registre una fecha y hora de realización!');
             return false;
         };
-        
+
         if (judge_name === '' || judge_name === null || judge_name === undefined){
             Dialog.alert(this, 'Por favor registre el nombre del Juez!');
             return false;
         };
-        
+
         if (prepare_file === '' || prepare_file === null || prepare_file === undefined){
             Dialog.alert(this, 'Por favor selecione un archivo!');
             return false;
         };
-        
+
         //$(".o_website_recording_add_content_form").submit();
-        
+
         //alert('sdsdsds');
         //tag_number = 'asdasd';
-        
+
         rpc.query({
             model: 'process.process',
             method: 'process_create_from_add_content',
@@ -701,29 +693,29 @@ odoo.define('calendar_csj.calendar_portal_csj_recording_add_content', function(r
         });
         return false;
     });
-    
-    
+
+
     $("#add_content_url").on('click', function(e){
         let url = 'http://51.222.114.252:8027/index.php/s/eSWsegnHWncagpP'
         window.open(url, '_blank', 'height=570,width=520,directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no');
     });
-    
+
     /*
     var calendar_appointment_type_id = $(".o_website_recording_add_content_form input[name='calendar_appointment_type_id']").val();
     //val .search-query-judge
     //alert(calendar_appointment_type_id);
-    
-        
+
+
     $('.search-query-judge').typeahead({source: []});
-    
-    
-    
+
+
+
     $(".search-query-judge ul.typeahead.dropdown-menu").find('li.active').data(29179);
-    
+
     */
-    
+
     //$('.search-query-judge').val('sadfsdfsdf');
-    
+
 
 
 });
