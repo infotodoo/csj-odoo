@@ -45,20 +45,28 @@ $(function () {
   });
     
   var dateNow = new Date();
-  $(".o_portal_search_panel_csj input[name='date_begin']").datepicker({
-    //inline: false,
-    //format : 'YYYY-MM-DD',
-    dateFormat : 'yy-mm-dd',
-    //formatTime:'H:i',
-    //defaultDate:moment(dateNow).hours(0).minutes(0),
-    //sideBySide: true,
-  });
+  
  
-  $(".o_portal_search_panel_csj input[name='date_end']").datepicker({
+    
+    
+    $(".o_portal_search_panel_csj input[name='date_begin']").datepicker({
     //inline: true,
     //format : 'YYYY-MM-DD',
     dateFormat : 'yy-mm-dd',
     //formatTime:'H:i',
+    //defaultDate:moment(dateNow).hours(23).minutes(59),
+    //sideBySide: false
+  });
+    
+    
+    
+    
+    
+  $(".o_portal_search_panel_csj input[name='date_end']").datepicker({
+    //inline: true,
+    //format : 'YYYY-MM-DD',
+    dateFormat : 'yy-mm-dd',
+    formatTime:'H:i',
     //defaultDate:moment(dateNow).hours(23).minutes(59),
     //sideBySide: false
   });
@@ -105,7 +113,9 @@ odoo.define('calendar_csj.calendar_portal_csj', function(require) {
             search['search_in'] = this.$('.dropdown-item.active').attr('href').replace('#', '');
             search['search'] = this.$('input[name="search"]').val();
             search['date_begin'] = this.$('input[name="date_begin"]').val();
+            search['time_begin'] = this.$('input[name="time_begin"]').val();
             search['date_end'] = this.$('input[name="date_end"]').val();
+            search['time_end'] = this.$('input[name="time_end"]').val();
             search['export'] = this.$('input[name="export"]').val();
             window.location.search = $.param(search);
         },
@@ -602,7 +612,7 @@ odoo.define('calendar_csj.calendar_portal_csj_recording_add_content', function(r
         let Dialog = require('web.Dialog');
         var fileInput = $(".o_website_recording_add_content_form input[name='prepareFile']");
         var filePath = fileInput.val();
-        var allowedExtensions = /(\.avi|\.mp4|\.mkv|\.flv|\.mov|\.wmv|\.divx|\.h.264)$/i;
+        var allowedExtensions = /(\.avi|\.mp3|\.mp4|\.mkv|\.flv|\.mov|\.wmv|\.divx|\.h.264)$/i;
         if (!allowedExtensions.exec(filePath)) {
             Dialog.alert(this, 'Extensión de archivo no valido!, por favor seleccione un video');
             fileInput.val('');
@@ -623,6 +633,7 @@ odoo.define('calendar_csj.calendar_portal_csj_recording_add_content', function(r
         let prepare_file = $(".o_website_recording_add_content_form input[name='prepareFile']").val();
         let tag_number = $(".o_website_recording_add_content_form input[name='tag_number']").val();
         let request_type = $(".o_website_recording_add_content_form select[name='request_type'] option:selected").text();
+        let judged_name = $(".o_website_recording_add_content_form input[name='judged_name']").val();
         
         //prepare_file = prepare_file.substring(8);
         
@@ -694,7 +705,7 @@ odoo.define('calendar_csj.calendar_portal_csj_recording_add_content', function(r
     
     $("#add_content_url").on('click', function(e){
         let url = 'http://51.222.114.252:8027/index.php/s/eSWsegnHWncagpP'
-        window.open(url, '_blank', 'location=no,height=570,width=520,scrollbars=no,status=no');
+        window.open(url, '_blank', 'height=570,width=520,directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no');
     });
     
     /*
