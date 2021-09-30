@@ -239,7 +239,7 @@ class CustomerPortal(CustomerPortal):
         if partner.appointment_type != 'scheduler':
             domain += [('partner_id', '=', judged_id.id)]
 
-        appointment_count = request.env['calendar.appointment'].search_count(domain)
+        appointment_count = request.env['calendar.appointment'].sudo().search_count(domain)
 
         # pager
         pager = portal_pager(
@@ -259,7 +259,7 @@ class CustomerPortal(CustomerPortal):
             grouped_appointments = [appointments]
 
         # content according to pager and archive selected
-        appointments = request.env['calendar.appointment'].search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+        appointments = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
         request.session['my_appointments_history'] = appointments.ids[:100]
 
 
@@ -267,7 +267,7 @@ class CustomerPortal(CustomerPortal):
         # Create a workbook and add a worksheet.
         #if export == 'on' and date_begin and date_end:
         if export == 'true':
-            appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=20000)
+            appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=30000)
             response = request.make_response(
                 None,
                 headers=[('Content-Type', 'application/vnd.ms-excel'), ('Content-Disposition', content_disposition('Reporte_Agendamientos.xlsx'))
@@ -635,7 +635,7 @@ class CustomerPortal(CustomerPortal):
         request.session['my_appointments_history'] = appointments.ids[:100]
 
         if export == 'true':
-            appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=20000)
+            appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=30000)
             response = request.make_response(
                 None,
                 headers=[('Content-Type', 'application/vnd.ms-excel'), ('Content-Disposition', content_disposition('Reporte_Agendamientos.xlsx'))
@@ -1007,7 +1007,7 @@ class CustomerPortal(CustomerPortal):
     def appointment_portal_judgededit_form_submit(self, appointment_id=None, **kwargs):
         appointment_type_obj = request.env['calendar.appointment.type'].search([ ('id','=',kwargs['appointment_type']) ])
 
-        appointment_obj = request.env['calendar.appointment'].browse(appointment_id.id)
+        appointment_obj = request.env['calendar.appointment'].sudo().browse(appointment_id.id)
         appointment_obj.write({
             'appointment_type_id': appointment_type_obj.id,
         })
