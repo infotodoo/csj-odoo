@@ -604,7 +604,7 @@ odoo.define('calendar_csj.calendar_portal_csj_recording_add_content', function(r
         let Dialog = require('web.Dialog');
         var fileInput = $(".o_website_recording_add_content_form input[name='prepareFile']");
         var filePath = fileInput.val();
-        var allowedExtensions = /(\.avi|\.mp3|\.mp4|\.mkv|\.flv|\.mov|\.wmv|\.divx|\.h.264|\.wma|\.mpg|\.ASF|\.asf)$/i;
+        var allowedExtensions = /(\.avi|\.mp3|\.mp4|\.mkv|\.flv|\.mov|\.wmv|\.divx|\.h.264|\.wma|\.mpg|\.ASF|\.asf|\.wav)$/i;
         if (!allowedExtensions.exec(filePath)) {
             Dialog.alert(this, 'Extensión de archivo no valido!, por favor seleccione un video');
             fileInput.val('');
