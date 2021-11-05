@@ -140,11 +140,13 @@ $("#button_submit_confirm_appointment").on('click', function(e){
   var phone = $(".appointment_submit_form input[name='phone']").val();
   var email = $(".appointment_submit_form input[name='email']").val();
   var types = $(".appointment_submit_form input[name='types']").val();
+  var request_type = $(".appointment_submit_form select[name='request_type']").val();
   var appointment_type = $(".appointment_submit_form input[name='appointment_type']").val();
   var datetime = $(".appointment_submit_form input[name='datetime']").val();
   var duration = $(".appointment_submit_form input[name='duration']").val();
   var request_date = $(".appointment_submit_form input[name='request_date']").val();
   var process_number = $(".appointment_submit_form input[name='process_number']").val();
+  var description = $(".appointment_submit_form textarea[name='description']").val();
   var destinationcont = $(".appointment_submit_form input[name='destinationcont']").val();
   var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   var res = email.split("@");
@@ -173,8 +175,16 @@ $("#button_submit_confirm_appointment").on('click', function(e){
     Dialog.alert(this, "Por favor registre un correo valido. Estos son los dominios autorizados:\ncendoj.ramajudicial.gov.co\ncortesuprema.ramajudicial.gov.co\nconsejoestado.ramajudicial.gov.co\nconsejosuperior.ramajudicial.gov.co\ndeaj.ramajudicial.gov.co\nfiscalia.gov.co\naxede.com.co\ncorteconstitucional.gov.co");
     return false;
   };
+  if (request_type === '' || request_type === null || request_type === 'undefined'){
+    Dialog.alert(this, 'Por favor seleccione un Tipo de Audiencia, entre Libre o Reservada!');
+    return false;
+  };
   if (destinationcont < 2){
     Dialog.alert(this, 'Por favor seleccione al menos un Destino!');
+    return false;
+  };
+  if (description.length > 250){
+    Dialog.alert(this, 'Las observaciones no pueden contener más de 250 caracteres!');
     return false;
   };
   if (types == 'Audiencia' && process_number.length != 23){

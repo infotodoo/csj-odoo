@@ -45,6 +45,7 @@ class CalendarEvent(models.Model):
         vals.update(self.create_appointment(vals))
         vals.pop('types', None)
         vals.pop('room_id', None)
+        vals.pop('applicant_raw_name', None)
         res = super(CalendarEvent, self).create(vals)
         res.appointment_id.write({'event_id': res.id})
         return res
@@ -95,6 +96,7 @@ class CalendarEvent(models.Model):
             'reception_detail' : vals.get('reception_detail'),
             'partaker_type': vals.get('partaker_type'),
             'connection_type': vals.get('connection_type'),
+            'applicant_raw_name': vals.get('applicant_raw_name'),
         })
         dic.update(appointment_id=appointment.id)
         return dic

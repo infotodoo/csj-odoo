@@ -38,7 +38,7 @@ class ProcessProcess(models.Model):
     applicant_mobile = fields.Char('Solicitante Celular', track_visibility='onchange')
     city_id = fields.Many2one('res.city', 'City', related='partner_id.city_id', store=True, track_visibility='onchange')
     country_state_id = fields.Many2one('res.country.state', 'Country State', related='city_id.state_id', track_visibility='onchange')
-    #judge_id = fields.Many2one('res.partner', 'Juez', domain="[('type', '=', 'invoice')]")    
+    #judge_id = fields.Many2one('res.partner', 'Juez', domain="[('type', '=', 'invoice')]")
     judge_name = fields.Char('Nombre del Juez', required=True, track_visibility='onchange')
     tag_number = fields.Char('Etiqueta', compute='_compute_tag_number', store=True)
     request_type = fields.Selection([('l', 'Libre'), ('r', 'Reservado')], 'Tipo de Audiencia', default='r')
@@ -51,8 +51,8 @@ class ProcessProcess(models.Model):
             rec.partner_ids.unlink()
             for appointment in rec.appointment_ids:
                 rec.partner_ids += appointment.partners_ids
-    
-    
+
+
     @api.depends('city_id', 'appointment_ids', 'name', 'partner_id', 'appointment_type_id', 'process_datetime')
     def _compute_tag_number(self):
         for record in self:
@@ -73,17 +73,8 @@ class ProcessProcess(models.Model):
                                             room_obj.mame)
                 tz_offset = self.env.user.tz_offset if self.env.user.tz_offset else False
                 tz = int(tz_offset)/100 if tz_offset else 0
-                
-                #date = record.process_datetime + timedelta(hours=tz) if \
-                #record.process_datetime else False
-                
                 date = record.process_datetime
-                
-                _logger.error('222222222222222222222222222222')
-                _logger.error(date)
-                
                 date_txt = date.strftime("%Y%m%d_%H%M%S")
-                _logger.error(date)
                 cont = 1
                 for c in record.recording_content_ids:
                     cont+=1
@@ -91,12 +82,12 @@ class ProcessProcess(models.Model):
                     cont = '0' + str(cont)
                 else:
                     cont = str(cont)
-                
+
                 record_data = cont + '_' + date_txt + '_V'
                 if record_data:
                     res += '_' + record_data
                 record.tag_number = res
-            
+
 
     @api.model
     def fetch_process_exist(self, process_number):
@@ -116,14 +107,14 @@ class ProcessProcess(models.Model):
             rad_year = process_number[12:16]
             year = datetime.now()
             year_limit = int(year.strftime("%Y")) + 1
-            
+
             if not city or not entity or not speciality:
                 return False, 'failed composition'
             if not int(rad_year) in range(1900,year_limit):
                 return False, 'failed composition'
             else:
                 return False
-    
+
     @api.model
     def fetch_scheduler_default_data(self):
         partner = self.env.user.partner_id
@@ -138,13 +129,13 @@ class ProcessProcess(models.Model):
                 return False
         else:
             return False
-        
+
 
     @api.model
     def process_create_from_add_content(self, process_number, city_id, calendar_appointment_type_id, judge_name, process_datetime, tag_number, request_type, prepare_file):
         if len(process_number) != 23:
             return False, 'La longitud del proceso no es correcta!.'
-        
+
         appointment_obj = self.env['calendar.appointment.type'].browse(int(calendar_appointment_type_id))
         city = self.env['res.entity'].sudo().search_city(process_number[0:5])
         entity = self.env['res.entity'].sudo().search_entity(process_number[5:7])
@@ -157,16 +148,12 @@ class ProcessProcess(models.Model):
                 return False, 'La estructura del número del proceso no es correcta!.'
         else:
             return False, 'La estructura del número del proceso no es correcta!.'
-        
-        
+
         if request_type == 'Libre':
             request_type = 'l'
         else:
             request_type = 'r'
-            
-        _logger.error('...............................................................................................................')
-        _logger.error(process_datetime)
-        
+
         process_obj = self.env['process.process'].search([('name', '=', process_number)])
         if not process_obj:
             """Creando un nuevo proceso"""
@@ -184,7 +171,6 @@ class ProcessProcess(models.Model):
                 }
                 new_process = self.env['process.process'].sudo().create(process_values)
                 if new_process:
-                    _logger.error(new_process.process_datetime)
                     recording_content_ids = {
                         'name': prepare_file,
                         'process_id': new_process.id,
@@ -213,7 +199,6 @@ class ProcessProcess(models.Model):
                     'request_type': request_type,
                 }
                 process_obj.sudo().write(process_values)
-                _logger.error(process_obj.process_datetime)
                 recording_content_ids = {
                     'name': prepare_file,
                     'process_id': process_obj.id,
