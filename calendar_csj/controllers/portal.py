@@ -15,7 +15,6 @@ import pytz
 import io
 from odoo.tools.misc import get_lang
 from babel.dates import format_datetime, format_date
-
 import werkzeug.contrib.sessions
 import werkzeug.datastructures
 import werkzeug.exceptions
@@ -28,10 +27,9 @@ from werkzeug.wsgi import wrap_file
 from werkzeug.urls import url_encode
 from datetime import datetime, timedelta
 import xlsxwriter
-
 from odoo.osv.expression import OR
-
 import logging
+
 _logger = logging.getLogger(__name__)
 
 
@@ -109,7 +107,7 @@ class CustomerPortal(CustomerPortal):
             'city_id': {'input': 'city_id', 'label': _('Ciudad')},
             'create_uid': {'input': 'create_uid', 'label': _('Creado por')},
             'judged_only_name': {'input': 'judged_only_name', 'label': _('Despacho solicitante')},
-            'applicant_id': {'input': 'applicant_id', 'label': _('Nombre Solicitante')},
+            'applicant_raw_name': {'input': 'applicant_raw_name', 'label': _('Nombre Solicitante')},
             'declarant_text': {'input': 'declarant_text', 'label': _('Declarante')},
             'tag_number': {'input': 'tag_number', 'label': _('Etiqueta')},
             'indicted_text': {'input': 'indicted_text', 'label': _('Procesado')},
@@ -159,8 +157,6 @@ class CustomerPortal(CustomerPortal):
         if not filterby:
             filterby = 'all'
         domain = searchbar_filters[filterby]['domain']
-
-
         if not sortby:
             sortby = 'date'
         order = searchbar_sortings[sortby]['order']
@@ -170,32 +166,16 @@ class CustomerPortal(CustomerPortal):
         if date_begin and date_end:
             if not time_begin:
                 time_begin = '00:00:00'
-
-            _logger.error(time_begin)
-
             if not time_end:
                 time_end = '00:00:00'
 
-            _logger.error(time_end)
-
             datetime_begin = datetime.strptime(date_begin + ' ' + time_begin.split(':')[0] + ':' + time_begin.split(':')[1], '%Y-%m-%d %H:%M')
-            #datetime_begin = datetime.combine(datetime_begin, time_begin)
             datetime_end = datetime.strptime(date_end + ' ' + time_end.split(':')[0] + ':' + time_begin.split(':')[1], '%Y-%m-%d %H:%M')
-            #datetime_end = datetime.combine(datetime_end, time_end)
-            #datetime_end = datetime(datetime_end.year, datetime_end.month, datetime_end.day)
-            #datetime_begin = datetime_begin - timedelta(hours=5)
-            #datetime_end = datetime_end - timedelta(hours=5)
             domain += [
                 ('calendar_datetime', '>=', datetime_begin),
                 #('calendar_datetime', '<', datetime_end + timedelta(hours=24))
                 ('calendar_datetime', '<', datetime_end)
             ]
-
-
-            _logger.error('----------------------------------------------------------------------------------------------------------999')
-
-        # appointments count
-        #appointment_count = Appointment.search_count(domain)
 
         # search
         if search and search_in:
@@ -210,8 +190,8 @@ class CustomerPortal(CustomerPortal):
                 search_domain = OR([search_domain, [('judged_only_name', 'ilike', search)]])
             if search_in in ('process_number', 'all'):
                 search_domain = OR([search_domain, [('process_number', 'ilike', search)]])
-            if search_in in ('applicant_id', 'all'):
-                search_domain = OR([search_domain, [('applicant_id', 'ilike', search)]])
+            if search_in in ('applicant_raw_name', 'all'):
+                search_domain = OR([search_domain, [('applicant_raw_name', 'ilike', search)]])
             if search_in in ('declarant_text', 'all'):
                 search_domain = OR([search_domain, [('declarant_text', 'ilike', search)]])
             if search_in in ('tag_number', 'all'):
@@ -230,8 +210,6 @@ class CustomerPortal(CustomerPortal):
             if search_in in ('state', 'all'):
                 search_domain = OR([search_domain, [('state', 'ilike', search)]])
             domain += search_domain
-
-        _logger.error(domain)
 
         # when partner is not scheduler they can only view their own
         partner = request.env.user.partner_id
@@ -282,7 +260,7 @@ class CustomerPortal(CustomerPortal):
             dateformat = workbook.add_format()
             timeformat = workbook.add_format()
             datetimeformat = workbook.add_format()
-
+            workbook.formats[0].set_font_size(8)
             sheet.set_column('A:A', 20)
             sheet.set_column('B:B', 40)
             sheet.set_column('C:C', 20)
@@ -323,7 +301,6 @@ class CustomerPortal(CustomerPortal):
             sheet.set_column('AK:AK', 40)
             sheet.set_column('AL:AL', 20)
             sheet.set_column('AM:AM', 40, datetimeformat)
-
             #sheet.merge_range('B2:I3', 'REPORTE DE AGENDAMIENTOS', head)
             sheet.write('A1', 'ID SOLICITUD', head)
             sheet.write('B1', 'TIPO DE SOLICITUD', head)
@@ -365,7 +342,6 @@ class CustomerPortal(CustomerPortal):
             sheet.write('AJ1', 'URL LIFESIZE', head)
             sheet.write('AK1', 'FECHA Y HORA DE REALIZACIÓN', head)
             row = 2
-
             for appointment in appointments_total:
     ########## ##TRADUCCION ESTADOS ###################
                 if appointment.state == 'open':
@@ -408,7 +384,8 @@ class CustomerPortal(CustomerPortal):
                 sheet.write('L'+str(row), appointment.reception_detail.upper(), cell_format)
                 sheet.write('M'+str(row), appointment.observations.upper(), cell_format)
                 sheet.write('N'+str(row), str(appointment.request_date), dateformat)
-                sheet.write('O'+str(row), appointment.applicant_id.name.upper(), cell_format)
+                #sheet.write('O'+str(row), appointment.applicant_id.name.upper(), cell_format)
+                sheet.write('O'+str(row), appointment.applicant_raw_name.upper() if appointment.applicant_raw_name else '', cell_format)
                 sheet.write('P'+str(row), state_label, cell_format)
                 sheet.write('Q'+str(row), appointment.applicant_email, cell_format)
                 sheet.write('R'+str(row), appointment.process_number, cell_format)
@@ -506,7 +483,7 @@ class CustomerPortal(CustomerPortal):
             'process_number': {'input': 'process_number', 'label': _('Número de Proceso')},
             'city_id': {'input': 'city_id', 'label': _('Ciudad')},
             'judged_only_name': {'input': 'judged_only_name', 'label': _('Despacho solicitante')},
-            'applicant_id': {'input': 'applicant_id', 'label': _('Nombre Solicitante')},
+            'applicant_raw_name': {'input': 'applicant_raw_name', 'label': _('Nombre Solicitante')},
             #'declarant_text': {'input': 'declarant_text', 'label': _('Declarante')},
             #'tag_number': {'input': 'tag_number', 'label': _('Etiqueta')},
             #'indicted_text': {'input': 'indicted_text', 'label': _('Procesado')},
@@ -516,13 +493,11 @@ class CustomerPortal(CustomerPortal):
             'all': {'input': 'all', 'label': _('Todos')},
         }
 
-
         searchbar_groupby = {
             'none': {'input': 'none', 'label': _('None')},
             #'appointment': {'input': 'appointment_code', 'label': _('Appointment')},
             'state': {'input': 'state', 'label': _('State')},
         }
-
 
         # default sort by value
         if not sortby:
@@ -544,21 +519,13 @@ class CustomerPortal(CustomerPortal):
         if date_begin and date_end:
             if not time_begin:
                 time_begin = '00:00:00'
-
-            _logger.error(time_begin)
-
             if not time_end:
                 time_end = '00:00:00'
 
-            _logger.error(time_end)
-
             datetime_begin = datetime.strptime(date_begin + ' ' + time_begin.split(':')[0] + ':' + time_begin.split(':')[1], '%Y-%m-%d %H:%M')
-            #datetime_begin = datetime.combine(datetime_begin, time_begin)
+            datetime_begin += timedelta(minutes=300)
             datetime_end = datetime.strptime(date_end + ' ' + time_end.split(':')[0] + ':' + time_begin.split(':')[1], '%Y-%m-%d %H:%M')
-            #datetime_end = datetime.combine(datetime_end, time_end)
-            #datetime_end = datetime(datetime_end.year, datetime_end.month, datetime_end.day)
-            #datetime_begin = datetime_begin - timedelta(hours=5)
-            #datetime_end = datetime_end - timedelta(hours=5)
+            datetime_end += timedelta(minutes=300)
             domain += [
                 ('calendar_datetime', '>=', datetime_begin),
                 #('calendar_datetime', '<', datetime_end + timedelta(hours=24))
@@ -578,8 +545,8 @@ class CustomerPortal(CustomerPortal):
                 search_domain = OR([search_domain, [('judged_only_name', 'ilike', search)]])
             if search_in in ('process_number', 'all'):
                 search_domain = OR([search_domain, [('process_number', 'ilike', search)]])
-            if search_in in ('applicant_id', 'all'):
-                search_domain = OR([search_domain, [('applicant_id', 'ilike', search)]])
+            if search_in in ('applicant_raw_name', 'all'):
+                search_domain = OR([search_domain, [('applicant_raw_name', 'ilike', search)]])
             if search_in in ('declarant_text', 'all'):
                 search_domain = OR([search_domain, [('declarant_text', 'ilike', search)]])
             #if search_in in ('tag_number', 'all'):
@@ -608,7 +575,6 @@ class CustomerPortal(CustomerPortal):
             domain += [('partner_id', '=', judged_id.id)]
 
         appointment_count = request.env['calendar.appointment'].sudo().search_count(domain)
-
 
         # pager
         pager = portal_pager(
@@ -645,12 +611,14 @@ class CustomerPortal(CustomerPortal):
             workbook = xlsxwriter.Workbook(output, {'in_memory': True, 'default_date_format': 'yyyy/mm/dd'})
             sheet = workbook.add_worksheet('Agendamientos')
             cell_format = workbook.add_format()
+            cell_format.set_font_name('Calibri')
+            cell_format.set_font_size(8)
             head = workbook.add_format()
             txt = workbook.add_format()
             dateformat = workbook.add_format()
             timeformat = workbook.add_format()
             datetimeformat = workbook.add_format()
-
+            workbook.formats[0].set_font_size(8)
             sheet.set_column('A:A', 20)
             sheet.set_column('B:B', 40)
             sheet.set_column('C:C', 20)
@@ -662,35 +630,35 @@ class CustomerPortal(CustomerPortal):
             sheet.set_column('H:H', 20)
             sheet.set_column('I:I', 20)
             sheet.set_column('J:J', 20)
-            sheet.set_column('K:K', 20)
-            sheet.set_column('L:L', 50)
-            sheet.set_column('M:M', 50)
-            sheet.set_column('N:N', 20, dateformat)
-            sheet.set_column('O:O', 40)
-            sheet.set_column('P:P', 20)
-            sheet.set_column('Q:Q', 50)
-            sheet.set_column('R:R', 30)
+            #sheet.set_column('K:K', 20)
+            #sheet.set_column('L:L', 50)
+            sheet.set_column('K:K', 50)
+            sheet.set_column('L:L', 20, dateformat)
+            sheet.set_column('M:M', 60)
+            sheet.set_column('N:N', 20)
+            #sheet.set_column('Q:Q', 50)
+            sheet.set_column('O:O', 30)
+            sheet.set_column('P:P', 30)
+            #sheet.set_column('T:T', 40)
+            #sheet.set_column('U:U', 20)
+            sheet.set_column('Q:Q', 20)
+            sheet.set_column('R:R', 20)
+            #sheet.set_column('X:X', 20)
+            #sheet.set_column('Y:Y', 40, dateformat)
             sheet.set_column('S:S', 20)
-            sheet.set_column('T:T', 40)
+            #sheet.set_column('AA:AA', 50)
+            sheet.set_column('T:T', 20)
+            #sheet.set_column('AC:AC', 20)
             sheet.set_column('U:U', 20)
+            #sheet.set_column('AE:AE', 20, timeformat)
             sheet.set_column('V:V', 20)
-            sheet.set_column('W:W', 20)
-            sheet.set_column('X:X', 20)
-            sheet.set_column('Y:Y', 40, dateformat)
-            sheet.set_column('Z:Z', 20)
-            sheet.set_column('AA:AA', 50)
-            sheet.set_column('AB:AB', 20, dateformat)
-            sheet.set_column('AC:AC', 20)
-            sheet.set_column('AD:AD', 20, dateformat)
-            sheet.set_column('AE:AE', 20, timeformat)
-            sheet.set_column('AF:AF', 20)
-            sheet.set_column('AG:AG', 20)
-            sheet.set_column('AH:AH', 60)
-            sheet.set_column('AI:AI', 60)
-            sheet.set_column('AJ:AJ', 20)
-            sheet.set_column('AK:AK', 40)
-            sheet.set_column('AL:AL', 20)
-            sheet.set_column('AM:AM', 40, datetimeformat)
+            sheet.set_column('W:W', 60)
+            sheet.set_column('X:X', 60)
+            sheet.set_column('Y:Y', 60)
+            sheet.set_column('Z:Z', 50)
+            sheet.set_column('AA:AA', 40)
+            sheet.set_column('AB:AB', 40)
+            sheet.set_column('AC:AC', 30, datetimeformat)
 
             #sheet.merge_range('B2:I3', 'REPORTE DE AGENDAMIENTOS', head)
             sheet.write('A1', 'ID SOLICITUD', head)
@@ -703,35 +671,35 @@ class CustomerPortal(CustomerPortal):
             sheet.write('H1', 'CIUDAD ORIGEN', head)
             sheet.write('I1', 'DEPARTAMENTO ORIGEN', head)
             sheet.write('J1', 'DESTINOS', head)
-            sheet.write('K1', 'MEDIO DE RECEPCIÓN', head)
-            sheet.write('L1', 'DETALLES MEDIO DE RECEPCIÓN', head)
-            sheet.write('M1', 'OBSERVACIONES', head)
-            sheet.write('N1', 'FECHA DE SOLICITUD', head)
-            sheet.write('O1', 'NOMBRE DEL SOLICITANTE', head)
-            sheet.write('P1', 'ESTADO', head)
-            sheet.write('Q1', 'CORREO SALIENTE', head)
-            sheet.write('R1', 'NÚMERO DE PROCESO', head)
-            sheet.write('S1', 'SALA', head)
-            sheet.write('T1', 'CORREO PARTICIPANTES', head)
-            sheet.write('U1', 'CELULAR', head)
-            sheet.write('V1', 'CLASE DE VIDEOCONFERENCIA', head)
-            sheet.write('W1', 'TIPO DE AUDIENCIA', head)
-            sheet.write('X1', 'DECLARANTE', head)
-            sheet.write('Y1', 'PROCESADO', head)
-            sheet.write('Z1', 'FECHA AGENDAMIENTO', head)
-            sheet.write('AA1', 'USUARIO AGENDAMIENTO', head)
-            sheet.write('AB1', 'FECHA CIERRE', head)
-            sheet.write('AC1', 'USUARIO DE CIERRE', head)
-            sheet.write('AD1', 'FECHA FINAL', head)
-            sheet.write('AE1', 'HORA FINAL', head)
-            sheet.write('AF1', 'DESCRIPCION', head)
-            sheet.write('AG1', 'ETIQUETA', head)
-            sheet.write('AH1', 'URL DE AGENDAMIENTO', head)
-            sheet.write('AI1', 'DESCARGA DE GRABACIÓN', head)
-            sheet.write('AJ1', 'CREADO POR', head)
-            sheet.write('AK1', 'NOMBRE SALA LIFESIZE', head)
-            sheet.write('AL1', 'URL LIFESIZE', head)
-            sheet.write('AM1', 'FECHA Y HORA DE REALIZACIÓN', head)
+            #sheet.write('K1', 'MEDIO DE RECEPCIÓN', head)
+            #sheet.write('L1', 'DETALLES MEDIO DE RECEPCIÓN', head)
+            sheet.write('K1', 'OBSERVACIONES', head)
+            sheet.write('L1', 'FECHA DE SOLICITUD', head)
+            sheet.write('M1', 'NOMBRE DEL SOLICITANTE', head)
+            sheet.write('N1', 'ESTADO', head)
+            #sheet.write('Q1', 'CORREO SALIENTE', head)
+            sheet.write('O1', 'NÚMERO DE PROCESO', head)
+            sheet.write('P1', 'SALA', head)
+            #sheet.write('T1', 'CORREO PARTICIPANTES', head)
+            #sheet.write('U1', 'CELULAR', head)
+            sheet.write('Q1', 'CLASE DE VIDEOCONFERENCIA', head)
+            sheet.write('R1', 'TIPO DE AUDIENCIA', head)
+            #sheet.write('X1', 'DECLARANTE', head)
+            #sheet.write('Y1', 'PROCESADO', head)
+            sheet.write('S1', 'FECHA AGENDAMIENTO', head)
+            #sheet.write('AA1', 'USUARIO AGENDAMIENTO', head)
+            sheet.write('T1', 'FECHA CIERRE', head)
+            #sheet.write('AC1', 'USUARIO DE CIERRE', head)
+            sheet.write('U1', 'FECHA FINAL', head)
+            #sheet.write('AE1', 'HORA FINAL', head)
+            sheet.write('V1', 'DESCRIPCION', head)
+            sheet.write('W1', 'ETIQUETA', head)
+            sheet.write('X1', 'URL DE AGENDAMIENTO', head)
+            sheet.write('Y1', 'DESCARGA DE GRABACIÓN', head)
+            sheet.write('Z1', 'CREADO POR', head)
+            sheet.write('AA1', 'NOMBRE SALA LIFESIZE', head)
+            sheet.write('AB1', 'URL LIFESIZE', head)
+            sheet.write('AC1', 'FECHA Y HORA DE REALIZACIÓN', head)
             row = 2
 
             for appointment in appointments_total:
@@ -761,8 +729,6 @@ class CustomerPortal(CustomerPortal):
                 if appointment.type == 'streaming':
                     type_label='STREAMING'
 
-
-
                 sheet.write('A'+str(row), appointment.appointment_code, cell_format)
                 sheet.write('B'+str(row), appointment.request_type_label, cell_format)
                 sheet.write('C'+str(row), type_label, cell_format)
@@ -771,39 +737,39 @@ class CustomerPortal(CustomerPortal):
                 sheet.write('E'+str(row), newstrtime, cell_format)
                 sheet.write('F'+str(row), appointment.judged_only_code, cell_format)
                 sheet.write('G'+str(row), appointment.judged_only_name, cell_format)
-                sheet.write('H'+str(row), appointment.city_id.name, cell_format)
-                sheet.write('I'+str(row), appointment.country_state_id.name, cell_format)
+                sheet.write('H'+str(row), appointment.city_id.name.upper(), cell_format)
+                sheet.write('I'+str(row), appointment.country_state_id.name.upper(), cell_format)
                 sheet.write('J'+str(row), appointment.destination_ids_label, cell_format)
-                sheet.write('K'+str(row), appointment.reception_id.name, cell_format)
-                sheet.write('L'+str(row), appointment.reception_detail, cell_format)
-                sheet.write('M'+str(row), appointment.observations, cell_format)
-                sheet.write('N'+str(row), str(appointment.request_date), dateformat)
-                sheet.write('O'+str(row), appointment.applicant_id.name, cell_format)
-                sheet.write('P'+str(row), state_label, cell_format)
-                sheet.write('Q'+str(row), appointment.applicant_email, cell_format)
-                sheet.write('R'+str(row), appointment.process_number, cell_format)
-                sheet.write('S'+str(row), appointment.room_id_mame, cell_format)
-                sheet.write('T'+str(row), appointment.partner_ids_label, cell_format)
-                sheet.write('U'+str(row), appointment.applicant_mobile, cell_format)
-                sheet.write('V'+str(row), appointment.class_id.name, cell_format)
-                sheet.write('W'+str(row), appointment.request_type, cell_format)
-                sheet.write('X'+str(row), appointment.declarant_text, cell_format)
-                sheet.write('Y'+str(row), appointment.indicted_text, cell_format)
-                sheet.write('Z'+str(row), str(appointment.appointment_date), cell_format)
-                sheet.write('AA'+str(row), appointment.create_uid_login, cell_format)
-                sheet.write('AB'+str(row), str(appointment.appointment_close_date) if appointment.appointment_close_date else '', cell_format)
-                sheet.write('AC'+str(row), appointment.appointment_close_user_login if appointment.appointment_close_user_login else '', cell_format)
-                sheet.write('AD'+str(row), str(appointment.end_date) if appointment.end_date else '', cell_format)
-                sheet.write('AE'+str(row), str(appointment.end_hour) if appointment.end_hour else '', cell_format)
-                sheet.write('AF'+str(row), appointment.state_description if appointment.state_description else '', cell_format)
-                sheet.write('AG'+str(row), appointment.tag_number, cell_format)
-                sheet.write('AH'+str(row), appointment.link_download if appointment.link_download else '', cell_format)
-                sheet.write('AI'+str(row), appointment.link_download_text if appointment.link_download_text else '', cell_format)
-                sheet.write('AJ'+str(row), appointment.create_uid.login, cell_format)
-                sheet.write('AK'+str(row), appointment.name, cell_format)
-                sheet.write('AL'+str(row), appointment.lifesize_url, cell_format)
-                sheet.write('AM'+str(row), str(appointment.calendar_datetime - relativedelta(hours=5)), cell_format)
-
+                #sheet.write('K'+str(row), appointment.reception_id.name, cell_format)
+                #sheet.write('L'+str(row), appointment.reception_detail, cell_format)
+                sheet.write('K'+str(row), appointment.observations.upper(), cell_format)
+                sheet.write('L'+str(row), str(appointment.request_date), cell_format)
+                #sheet.write('M'+str(row), appointment.applicant_id.name.upper(), cell_format)
+                sheet.write('M'+str(row), appointment.applicant_raw_name.upper() if appointment.applicant_raw_name else '', cell_format)
+                sheet.write('N'+str(row), state_label, cell_format)
+                #sheet.write('Q'+str(row), appointment.applicant_email, cell_format)
+                sheet.write('O'+str(row), appointment.process_number, cell_format)
+                sheet.write('P'+str(row), appointment.room_id_mame.upper(), cell_format)
+                #sheet.write('T'+str(row), appointment.partner_ids_label, cell_format)
+                #sheet.write('U'+str(row), appointment.applicant_mobile, cell_format)
+                sheet.write('Q'+str(row), appointment.class_id.name.upper(), cell_format)
+                sheet.write('R'+str(row), appointment.request_type.upper(), cell_format)
+                #sheet.write('X'+str(row), appointment.declarant_text, cell_format)
+                #sheet.write('Y'+str(row), appointment.indicted_text, cell_format)
+                sheet.write('S'+str(row), str(appointment.appointment_date), cell_format)
+                #sheet.write('AA'+str(row), appointment.create_uid_login, cell_format)
+                sheet.write('T'+str(row), str(appointment.appointment_close_date) if appointment.appointment_close_date else '', cell_format)
+                #sheet.write('AC'+str(row), appointment.appointment_close_user_login if appointment.appointment_close_user_login else '', cell_format)
+                sheet.write('U'+str(row), str(appointment.end_date) if appointment.end_date else '', cell_format)
+                #sheet.write('AE'+str(row), str(appointment.end_hour) if appointment.end_hour else '', cell_format)
+                sheet.write('V'+str(row), appointment.state_description.upper() if appointment.state_description else '', cell_format)
+                sheet.write('W'+str(row), appointment.tag_number, cell_format)
+                sheet.write('X'+str(row), appointment.link_download if appointment.link_download else '', cell_format)
+                sheet.write('Y'+str(row), appointment.link_download_text if appointment.link_download_text else '', cell_format)
+                sheet.write('Z'+str(row), appointment.create_uid.name.upper(), cell_format)
+                sheet.write('AA'+str(row), appointment.name, cell_format)
+                sheet.write('AB'+str(row), appointment.lifesize_url, cell_format)
+                sheet.write('AC'+str(row), str(appointment.calendar_datetime - relativedelta(hours=5)), cell_format)
                 row+=1
 
             workbook.close()
@@ -815,9 +781,6 @@ class CustomerPortal(CustomerPortal):
             #request.redirect('/public')
             return response
 
-        _logger.error('--------------------------------------------------------------------------------------------------------')
-        _logger.error(date_begin)
-        _logger.error(date_end)
         values.update({
             'date_begin': date_begin,
             'time_begin': time_begin,
@@ -840,8 +803,7 @@ class CustomerPortal(CustomerPortal):
             'searchbar_filters': OrderedDict(sorted(searchbar_filters.items())),
             'filterby': filterby,
         })
-        _logger.error(appointments)
-        _logger.error(appointments)
+
         return request.render("calendar_csj.portal_appointments_public", values)
 
     @http.route([
@@ -965,8 +927,6 @@ class CustomerPortal(CustomerPortal):
         return request.render("calendar_csj.portal_my_appointment_reschedule", values)
 
 
-
-
     @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/reschedule/submit'], type='http', auth="public", website=True, method=["POST"])
     def appointment_portal_reschedule_form_submit(self, calendar_datetime, calendar_duration, appointment_type, **kwargs):
         request.session['timezone'] = 'America/Bogota'
@@ -1040,12 +1000,8 @@ class CustomerPortal(CustomerPortal):
     ], type='http', auth="user", website=True)
     #def portal_my_videos(self, appointment_id=None, access_token=None, **kw):
     def portal_my_videos(self, appointment_id=None, access_token=None, **kw):
-        _logger.error(request.httprequest.cookies.get('session_id'))
         sid = request.httprequest.cookies.get('session_id')
         uid = request.env.user.id
-        #_logger.error(request.httprequest.cookies.get())
-        #_logger.error(request.csrf_token())
-        #qcontext = request.session()
         if not sid:
             raise werkzeug.exceptions.NotFound()
         values = {
@@ -1058,12 +1014,8 @@ class CustomerPortal(CustomerPortal):
     ], type='http', auth="public", website=True)
     #def portal_my_videos(self, appointment_id=None, access_token=None, **kw):
     def portal_public_videos(self, appointment_id=None, access_token=None, **kw):
-        _logger.error(request.httprequest.cookies.get('session_id'))
         sid = request.httprequest.cookies.get('session_id')
         uid = request.env.user.id
-        #_logger.error(request.httprequest.cookies.get())
-        #_logger.error(request.csrf_token())
-        #qcontext = request.session()
         if not sid:
             raise werkzeug.exceptions.NotFound()
         values = {
@@ -1076,7 +1028,6 @@ class CustomerPortal(CustomerPortal):
         '/data/recordings'
     ], type='http', auth="public", website=True)
     def portal_public_recordings(self, appointment_id=None, access_token=None, **kw):
-        _logger.error(request.httprequest.cookies.get('session_id'))
         sid = request.httprequest.cookies.get('session_id')
         uid = request.env.user.id
         if not sid:
@@ -1088,10 +1039,6 @@ class CustomerPortal(CustomerPortal):
         else:
             values = {'url_calltech': 'https://apigestionaudiencias3.ramajudicial.gov.co/' + str(sid) + '/' + str(uid),}
         return request.render("calendar_csj.portal_public_videos", values)
-
-
-
-
 
 
     @http.route([
@@ -1205,9 +1152,6 @@ class CustomerPortal(CustomerPortal):
             'process_number': process_number,
             'message': 'recording_content_add_sucessfull',
         })
-
-
-
 
 
     @http.route(['/data/recordings/add/content/api'], type='http', auth="public", website=True)

@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import pytz
 from babel.dates import format_datetime, format_date
-
 from werkzeug.urls import url_encode
 from datetime import datetime
-
 from odoo import http, fields, _
 from odoo.http import request
 from odoo.tools import html2plaintext, DEFAULT_SERVER_DATETIME_FORMAT as dtf
 from odoo.tools.misc import get_lang
 from odoo.addons.website_calendar.controllers.main import WebsiteCalendar
 from odoo.exceptions import ValidationError
-
 import json
 from odoo import SUPERUSER_ID
 import logging
@@ -354,7 +350,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         partner_ids = [(6,False,partner_ids)]
 
         # Descripcion
-        description = description
+        description = description.replace('\r', '').replace('\n', '')
         for question in appointment_type.question_ids:
             key = 'question_' + str(question.id)
             if question.question_type == 'checkbox':
@@ -400,6 +396,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'help_id': help_id,
             'partaker_type': partaker_type,
             'connection_type': connection_type,
+            'applicant_raw_name': name,
         })
         event.attendee_ids.write({'state': 'accepted'})
         return request.redirect('/website/calendar/view/' + event.access_token + '?message=new')
@@ -439,8 +436,8 @@ class OdooWebsiteSearchAppointment(http.Controller):
         data['error'] = None,
         data['data'] = {'cita': cita}
         return json.dumps(data)
-    
-    
+
+
     @http.route([
         '/search/suggestion/recording/add_content',
         '/search/suggestion/recording/add_content/<int:city_id>'], type='http', auth="public", website=True)
@@ -531,6 +528,7 @@ class OdooWebsiteSearchDestino(http.Controller):
         if post:
             for suggestion in post.get('query').split(" "):
                 suggested_partners = request.env['res.partner'].sudo().search([('company_type','=','company')])
+                #suggested_partners = request.env['res.partner'].sudo().search([('company_type','in',['company','judged'])])
                 read_partners = suggested_partners.read(['name', 'id', 'code'])
                 suggestion_list += read_partners
 

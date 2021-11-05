@@ -136,6 +136,7 @@ class CalendarAppointment(models.Model):
     indicted_id = fields.Many2one('res.partner', 'Indicted', ondelete='set null')  # Procesado
     indicted_text = fields.Text('Indicted input')
     applicant_id_label = fields.Char('Applicant Label', compute='_get_applicant_id_label', store=True)
+    applicant_raw_name = fields.Char('Nombre del Solicitante')
 
     # Solicitante
     applicant_email = fields.Char('Applicant email', compute='_compute_applicant_id', inverse='_inverse_applicant_id')
