@@ -15,6 +15,7 @@ import pytz
 import io
 from odoo.tools.misc import get_lang
 from babel.dates import format_datetime, format_date
+
 import werkzeug.contrib.sessions
 import werkzeug.datastructures
 import werkzeug.exceptions
@@ -27,9 +28,10 @@ from werkzeug.wsgi import wrap_file
 from werkzeug.urls import url_encode
 from datetime import datetime, timedelta
 import xlsxwriter
-from odoo.osv.expression import OR
-import logging
 
+from odoo.osv.expression import OR
+
+import logging
 _logger = logging.getLogger(__name__)
 
 
@@ -124,31 +126,6 @@ class CustomerPortal(CustomerPortal):
             'state': {'input': 'state', 'label': _('State')},
         }
 
-
-        """appointments = request.env['calendar.appointment'].search([])
-            for appointment in appointments:
-                searchbar_filters.update({
-                    str(appointment.id): {'label': appointment.name, 'domain': [('state', '=', 'open')]}
-                })
-        """
-
-        #for appointment in appointments:
-        #    searchbar_filters.update({
-        #        str(appointment.id): {'label': appointment.name, 'domain': [('appointment_id', '=', appointment.id)]}
-        #    })
-
-        # extends filterby criteria with project (criteria name is the project id)
-        # Note: portal users can't view projects they don't follow
-        #appointment_groups = request.env['calendar.appointment'].read_group([('project_id', 'not in', projects.ids)],
-        #                                                        ['project_id'], ['project_id'])
-        """
-        for group in appointment_groups:
-            proj_id = group['project_id'][0] if group['project_id'] else False
-            proj_name = group['project_id'][1] if group['project_id'] else _('Others')
-            searchbar_filters.update({
-                str(proj_id): {'label': proj_name, 'domain': [('project_id', '=', proj_id)]}
-            })
-        """
         # default sort by value
         if not sortby:
             sortby = 'appointment_code'
@@ -157,6 +134,8 @@ class CustomerPortal(CustomerPortal):
         if not filterby:
             filterby = 'all'
         domain = searchbar_filters[filterby]['domain']
+
+
         if not sortby:
             sortby = 'date'
         order = searchbar_sortings[sortby]['order']
@@ -240,7 +219,6 @@ class CustomerPortal(CustomerPortal):
         appointments = request.env['calendar.appointment'].search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
         request.session['my_appointments_history'] = appointments.ids[:100]
 
-
         # excel generation
         # Create a workbook and add a worksheet.
         #if export == 'on' and date_begin and date_end:
@@ -260,7 +238,9 @@ class CustomerPortal(CustomerPortal):
             dateformat = workbook.add_format()
             timeformat = workbook.add_format()
             datetimeformat = workbook.add_format()
+
             workbook.formats[0].set_font_size(8)
+
             sheet.set_column('A:A', 20)
             sheet.set_column('B:B', 40)
             sheet.set_column('C:C', 20)
@@ -293,14 +273,15 @@ class CustomerPortal(CustomerPortal):
             sheet.set_column('AC:AC', 20)
             sheet.set_column('AD:AD', 20, dateformat)
             sheet.set_column('AE:AE', 20, timeformat)
+            #sheet.set_column('AF:AF', 20)
             sheet.set_column('AF:AF', 20)
-            sheet.set_column('AG:AG', 20)
+            sheet.set_column('AG:AG', 60)
             sheet.set_column('AH:AH', 60)
-            sheet.set_column('AI:AI', 60)
-            sheet.set_column('AJ:AJ', 20)
-            sheet.set_column('AK:AK', 40)
-            sheet.set_column('AL:AL', 20)
-            sheet.set_column('AM:AM', 40, datetimeformat)
+            sheet.set_column('AI:AI', 20)
+            sheet.set_column('AJ:AJ', 40)
+            sheet.set_column('AK:AK', 20)
+            sheet.set_column('AL:AL', 40, datetimeformat)
+
             #sheet.merge_range('B2:I3', 'REPORTE DE AGENDAMIENTOS', head)
             sheet.write('A1', 'ID SOLICITUD', head)
             sheet.write('B1', 'TIPO DE SOLICITUD', head)
@@ -335,13 +316,14 @@ class CustomerPortal(CustomerPortal):
             sheet.write('AC1', 'HORA FINAL', head)
             sheet.write('AD1', 'DESCRIPCION', head)
             sheet.write('AE1', 'ETIQUETA', head)
-            sheet.write('AF1', 'URL DE GRABACIÓN', head)
-            sheet.write('AG1', 'DESCARGA DE GRABACIÓN', head)
-            sheet.write('AH1', 'CREADO POR', head)
-            sheet.write('AI1', 'NOMBRE SALA LIFESIZE', head)
-            sheet.write('AJ1', 'URL LIFESIZE', head)
-            sheet.write('AK1', 'FECHA Y HORA DE REALIZACIÓN', head)
+            #sheet.write('AF1', 'LINK DE GRABACIÓN', head)
+            sheet.write('AF1', 'LINK DE GRABACIÓN', head)
+            sheet.write('AG1', 'CREADO POR', head)
+            sheet.write('AH1', 'NOMBRE SALA LIFESIZE', head)
+            sheet.write('AI1', 'URL LIFESIZE', head)
+            sheet.write('AJ1', 'FECHA Y HORA DE REALIZACIÓN', head)
             row = 2
+
             for appointment in appointments_total:
     ########## ##TRADUCCION ESTADOS ###################
                 if appointment.state == 'open':
@@ -405,12 +387,12 @@ class CustomerPortal(CustomerPortal):
                 sheet.write('AC'+str(row), str(newstrtime_end_hour) if newstrtime_end_hour else '', cell_format)
                 sheet.write('AD'+str(row), appointment.state_description.upper() if appointment.state_description else '', cell_format)
                 sheet.write('AE'+str(row), appointment.tag_number, cell_format)
-                sheet.write('AF'+str(row), appointment.link_download if appointment.link_download else '', cell_format)
-                sheet.write('AG'+str(row), appointment.link_download_text if appointment.link_download_text else '', cell_format)
-                sheet.write('AH'+str(row), appointment.create_uid.login, cell_format)
-                sheet.write('AI'+str(row), appointment.name, cell_format)
-                sheet.write('AJ'+str(row), appointment.lifesize_url, cell_format)
-                sheet.write('AK'+str(row), str(appointment.calendar_datetime - relativedelta(hours=5)), cell_format)
+                #sheet.write('AF'+str(row), appointment.link_download if appointment.link_download and  else '', cell_format)
+                sheet.write('AF'+str(row), appointment.link_download_text if appointment.link_download_text else '', cell_format)
+                sheet.write('AG'+str(row), appointment.create_uid.login, cell_format)
+                sheet.write('AH'+str(row), appointment.name, cell_format)
+                sheet.write('AI'+str(row), appointment.lifesize_url, cell_format)
+                sheet.write('AJ'+str(row), str(appointment.calendar_datetime - relativedelta(hours=5)), cell_format)
 
                 row+=1
 
@@ -493,11 +475,13 @@ class CustomerPortal(CustomerPortal):
             'all': {'input': 'all', 'label': _('Todos')},
         }
 
+
         searchbar_groupby = {
             'none': {'input': 'none', 'label': _('None')},
             #'appointment': {'input': 'appointment_code', 'label': _('Appointment')},
             'state': {'input': 'state', 'label': _('State')},
         }
+
 
         # default sort by value
         if not sortby:
@@ -566,8 +550,6 @@ class CustomerPortal(CustomerPortal):
                 search_domain = OR([search_domain, [('state', 'ilike', search)]])
             domain += search_domain
 
-
-
         # when partner is not scheduler they can only view their own
         partner = request.env.user.partner_id
         judged_id = partner.parent_id
@@ -618,7 +600,9 @@ class CustomerPortal(CustomerPortal):
             dateformat = workbook.add_format()
             timeformat = workbook.add_format()
             datetimeformat = workbook.add_format()
+
             workbook.formats[0].set_font_size(8)
+
             sheet.set_column('A:A', 20)
             sheet.set_column('B:B', 40)
             sheet.set_column('C:C', 20)
@@ -652,13 +636,13 @@ class CustomerPortal(CustomerPortal):
             sheet.set_column('U:U', 20)
             #sheet.set_column('AE:AE', 20, timeformat)
             sheet.set_column('V:V', 20)
-            sheet.set_column('W:W', 60)
+            sheet.set_column('W:W', 70)
+            #sheet.set_column('X:X', 60)
             sheet.set_column('X:X', 60)
-            sheet.set_column('Y:Y', 60)
-            sheet.set_column('Z:Z', 50)
+            sheet.set_column('Y:Y', 50)
+            sheet.set_column('Z:Z', 40)
             sheet.set_column('AA:AA', 40)
-            sheet.set_column('AB:AB', 40)
-            sheet.set_column('AC:AC', 30, datetimeformat)
+            sheet.set_column('AB:AB', 30, datetimeformat)
 
             #sheet.merge_range('B2:I3', 'REPORTE DE AGENDAMIENTOS', head)
             sheet.write('A1', 'ID SOLICITUD', head)
@@ -694,12 +678,12 @@ class CustomerPortal(CustomerPortal):
             #sheet.write('AE1', 'HORA FINAL', head)
             sheet.write('V1', 'DESCRIPCION', head)
             sheet.write('W1', 'ETIQUETA', head)
-            sheet.write('X1', 'URL DE AGENDAMIENTO', head)
-            sheet.write('Y1', 'DESCARGA DE GRABACIÓN', head)
-            sheet.write('Z1', 'CREADO POR', head)
-            sheet.write('AA1', 'NOMBRE SALA LIFESIZE', head)
-            sheet.write('AB1', 'URL LIFESIZE', head)
-            sheet.write('AC1', 'FECHA Y HORA DE REALIZACIÓN', head)
+            #sheet.write('X1', 'URL DE AGENDAMIENTO', head)
+            sheet.write('X1', 'LINK DE GRABACIÓN', head)
+            sheet.write('Y1', 'CREADO POR', head)
+            sheet.write('Z1', 'NOMBRE SALA LIFESIZE', head)
+            sheet.write('AA1', 'URL LIFESIZE', head)
+            sheet.write('AB1', 'FECHA Y HORA DE REALIZACIÓN', head)
             row = 2
 
             for appointment in appointments_total:
@@ -764,12 +748,13 @@ class CustomerPortal(CustomerPortal):
                 #sheet.write('AE'+str(row), str(appointment.end_hour) if appointment.end_hour else '', cell_format)
                 sheet.write('V'+str(row), appointment.state_description.upper() if appointment.state_description else '', cell_format)
                 sheet.write('W'+str(row), appointment.tag_number, cell_format)
-                sheet.write('X'+str(row), appointment.link_download if appointment.link_download else '', cell_format)
-                sheet.write('Y'+str(row), appointment.link_download_text if appointment.link_download_text else '', cell_format)
-                sheet.write('Z'+str(row), appointment.create_uid.name.upper(), cell_format)
-                sheet.write('AA'+str(row), appointment.name, cell_format)
-                sheet.write('AB'+str(row), appointment.lifesize_url, cell_format)
-                sheet.write('AC'+str(row), str(appointment.calendar_datetime - relativedelta(hours=5)), cell_format)
+                #sheet.write('X'+str(row), appointment.link_download if appointment.link_download else '', cell_format)
+                sheet.write('X'+str(row), appointment.link_download_text if appointment.link_download_text and appointment.request_type == 'r' else '', cell_format)
+                sheet.write('Y'+str(row), appointment.create_uid.name.upper(), cell_format)
+                sheet.write('Z'+str(row), appointment.name, cell_format)
+                sheet.write('AA'+str(row), appointment.lifesize_url, cell_format)
+                sheet.write('AB'+str(row), str(appointment.calendar_datetime - relativedelta(hours=5)), cell_format)
+
                 row+=1
 
             workbook.close()
