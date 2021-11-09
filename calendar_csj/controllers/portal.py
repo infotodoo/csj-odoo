@@ -749,7 +749,7 @@ class CustomerPortal(CustomerPortal):
                 sheet.write('V'+str(row), appointment.state_description.upper() if appointment.state_description else '', cell_format)
                 sheet.write('W'+str(row), appointment.tag_number, cell_format)
                 #sheet.write('X'+str(row), appointment.link_download if appointment.link_download else '', cell_format)
-                sheet.write('X'+str(row), appointment.link_download_text if appointment.link_download_text and appointment.request_type == 'r' else '', cell_format)
+                sheet.write('X'+str(row), appointment.link_download_text if appointment.link_download_text and appointment.request_type == 'l' else '', cell_format)
                 sheet.write('Y'+str(row), appointment.create_uid.name.upper(), cell_format)
                 sheet.write('Z'+str(row), appointment.name, cell_format)
                 sheet.write('AA'+str(row), appointment.lifesize_url, cell_format)
