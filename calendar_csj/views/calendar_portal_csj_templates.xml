@@ -737,28 +737,28 @@
                                   <!--<span t-raw="appointment.id" id="appointment_id" invisible="1"/>-->
                                   <input type="hidden" id="appointment_id" t-att-value="appointment.id"/>
                                   <ul class="nav nav-pills">
-                                    <li class="nav-item btn-secondary">
+                                    <li class="nav-item btn-secondary" t-if="appointment.state != 'open' and appointment.appointment_close_date == False">
                                       <a class="nav-link" href="#" id="state_open_btn">Agendado</a>
                                     </li>
-                                    <li class="nav-item btn-secondary">
+                                    <li class="nav-item btn-secondary" t-if="appointment.state != 'realized' and appointment.appointment_close_date == False">
                                       <a class="nav-link" href="#" id="state_realized_btn">Realizada</a>
                                     </li>
-                                    <li class="nav-item btn-secondary">
+                                    <li class="nav-item btn-secondary" t-if="appointment.state != 'unrealized'and appointment.appointment_close_date == False">
                                       <a class="nav-link" href="#" id="state_unrealized_btn">No Realizada</a>
                                     </li>
-                                    <li class="nav-item btn-secondary">
+                                    <li class="nav-item btn-secondary" t-if="appointment.state != 'postpone' and appointment.appointment_close_date == False">
                                       <a class="nav-link" href="#" id="state_postpone_btn">Aplazada</a>
                                     </li>
-                                    <li class="nav-item btn-secondary">
+                                    <li class="nav-item btn-secondary" t-if="appointment.state != 'assist_postpone' and appointment.appointment_close_date == False">
                                       <a class="nav-link" href="#" id="state_assist_postpone_btn">Asistida y Aplazada</a>
                                     </li>
-                                    <li class="nav-item btn-secondary">
+                                    <li class="nav-item btn-secondary" t-if="appointment.state != 'assist_cancel' and appointment.appointment_close_date == False">
                                       <a class="nav-link" href="#" id="state_assist_cancel_btn">Asistida y Cancelada</a>
                                     </li>
-                                    <li class="nav-item btn-secondary">
+                                    <li class="nav-item btn-secondary" t-if="appointment.state != 'cancel' and appointment.appointment_close_date == False">
                                       <a class="nav-link" href="#" id="state_cancel_btn">Cancelado</a>
                                     </li>
-                                    <li class="nav-item btn-secondary">
+                                    <li class="nav-item btn-secondary" t-if="appointment.state != 'draft' and appointment.appointment_close_date == False">
                                       <a class="nav-link" href="#" id="state_draft_btn">Duplicado</a>
                                     </li>
                                   </ul>
