@@ -704,7 +704,7 @@ odoo.define('calendar_csj.calendar_portal_csj_recording_add_content', function(r
     
     
     $("#add_content_url").on('click', function(e){
-        let url = 'http://51.222.114.252:8027/index.php/s/eSWsegnHWncagpP'
+        let url = 'http://51.222.114.252:8027/index.php/s/kK28szyyPRr8JMa'
         window.open(url, '_blank', 'height=570,width=520,directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no');
     });
     
