@@ -654,6 +654,12 @@ class CalendarAppointment(models.Model):
                     aplicant_id = aplicant_id.upper()
                     res['datas'][index][fieldindex] = aplicant_id
 
+                if fields_name.get('applicant_raw_name'):
+                    fieldindex = fields_name.get('applicant_raw_name')
+                    applicant_raw_name = str(res['datas'][index][fieldindex])
+                    applicant_raw_name = applicant_raw_name.upper()
+                    res['datas'][index][fieldindex] = applicant_raw_name
+
                 if fields_name.get('room_id_mame'):
                     fieldindex = fields_name.get('room_id_mame')
                     room_id_mame = str(res['datas'][index][fieldindex])
