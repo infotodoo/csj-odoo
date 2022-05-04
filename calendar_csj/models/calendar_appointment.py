@@ -387,6 +387,36 @@ class CalendarAppointment(models.Model):
             if online_appointment_type and online_appointment_type.judged_id
             else False
         )
+
+        if partner.city_id and partner.city_id.zipcode \
+                and vals.get('process_number') and partner \
+                    and partner.entity_id and vals.get('room_id') \
+                        and partner.specialty_id \
+                            and partner.code:
+
+            room_id = self.env['res.judged.room'].browse(int(vals.get('room_id')))
+            room_code = room_id.mame if room_id else _(None)
+            tag = '%s_%s%s%s%s%s%s' % (vals.get('process_number'),
+                                        str(vals.get('request_type')).upper(),
+                                        partner.city_id.zipcode,
+                                        partner.entity_id.code,
+                                        partner.specialty_id.code,
+                                        partner.code,
+                                        room_code)
+
+            tz_offset = self.env.user.tz_offset if self.env.user.tz_offset else False
+            tz = int(tz_offset)/100 if tz_offset else 0
+            calendar_datetime = fields.Datetime.from_string(vals.get('calendar_datetime'))
+            date = calendar_datetime + datetime.timedelta(hours=tz) if calendar_datetime else False
+            record_date = date.strftime("%Y%m%d_%H%M%S")
+            vals['record_data'] = '01_' + record_date + '_V'
+            if vals.get('record_data'):
+                tag += '_' + vals.get('record_data')
+            vals['name'] = tag
+
+        if not vals.get('name'):
+            raise UserError('No fue posible definir un nombre para la Sala de Lifesize. Consulte al Administrador')
+
         # ERROR REPORT THIS JUDGED :C res.partner(11307,), False
         if partner and partner.permanent_room:
             extension = (
