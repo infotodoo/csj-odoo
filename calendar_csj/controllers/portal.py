@@ -223,7 +223,7 @@ class CustomerPortal(CustomerPortal):
         # Create a workbook and add a worksheet.
         #if export == 'on' and date_begin and date_end:
         if export == 'true':
-            appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=30000)
+            appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=5000)
             response = request.make_response(
                 None,
                 headers=[('Content-Type', 'application/vnd.ms-excel'), ('Content-Disposition', content_disposition('Reporte_Agendamientos.xlsx'))
@@ -583,7 +583,7 @@ class CustomerPortal(CustomerPortal):
         request.session['my_appointments_history'] = appointments.ids[:100]
 
         if export == 'true':
-            appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=30000)
+            appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=5000)
             response = request.make_response(
                 None,
                 headers=[('Content-Type', 'application/vnd.ms-excel'), ('Content-Disposition', content_disposition('Reporte_Agendamientos.xlsx'))
