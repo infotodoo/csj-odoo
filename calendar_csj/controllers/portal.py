@@ -72,7 +72,9 @@ class CustomerPortal(CustomerPortal):
 
 
     @http.route(['/my/appointments', '/my/appointments/page/<int:page>'], type='http', auth="user", website=True)
-    def portal_my_appointments(self, page=1, date_begin=None, time_begin=None, date_end=None, time_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):
+    def portal_my_appointments(self, page=1, date_begin=None, time_begin=None, date_end=None, time_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):    
+        return request.redirect('/')
+
         values = self._prepare_portal_layout_values()
 
         searchbar_sortings = {
@@ -430,6 +432,8 @@ class CustomerPortal(CustomerPortal):
 
     @http.route(['/public', '/public/page/<int:page>'], type='http', auth="public", website=True)
     def portal_appointments_public(self, page=1, date_begin=None, date_end=None, time_begin=None, time_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):
+        return request.redirect('/')
+
         values = self._prepare_portal_layout_values()
 
         searchbar_sortings = {
