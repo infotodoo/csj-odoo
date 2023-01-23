@@ -10,3 +10,4 @@ from . import calendar_event
 from . import calendar_recording_notification
 from . import event
 from . import res_city
+from . import res_users
