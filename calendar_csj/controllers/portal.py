@@ -428,7 +428,7 @@ class CustomerPortal(CustomerPortal):
         })
         return request.render("calendar_csj.portal_my_appointments", values)
 
-    @http.route(['/public', '/public/page/<int:page>'], type='http', auth="public", website=True)
+    @http.route(['/public', '/public/page/<int:page>'], type='http', auth="user", website=True)
     def portal_appointments_public(self, page=1, date_begin=None, date_end=None, time_begin=None, time_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):
         values = self._prepare_portal_layout_values()
 
@@ -886,7 +886,7 @@ class CustomerPortal(CustomerPortal):
         return request.render("calendar_csj.portal_my_appointment_editall", values)
 
 
-    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/all/submit'], type='http', auth="public", website=True, method=["POST"])
+    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/all/submit'], type='http', auth="user", website=True, method=["POST"])
     def appointment_portal_edit_form_submit(self, **kwargs):
         kwargs['appointment_id'].sudo().write({
             'end_date': kwargs['end_date'] if 'end_date' in kwargs else '',
@@ -912,7 +912,7 @@ class CustomerPortal(CustomerPortal):
         return request.render("calendar_csj.portal_my_appointment_reschedule", values)
 
 
-    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/reschedule/submit'], type='http', auth="public", website=True, method=["POST"])
+    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/reschedule/submit'], type='http', auth="user", website=True, method=["POST"])
     def appointment_portal_reschedule_form_submit(self, calendar_datetime, calendar_duration, appointment_type, **kwargs):
         request.session['timezone'] = 'America/Bogota'
         day_name = format_datetime(datetime.strptime(calendar_datetime, "%Y-%m-%d %H:%M"), 'EEE', locale=get_lang(request.env).code)
@@ -948,7 +948,7 @@ class CustomerPortal(CustomerPortal):
         return request.render("calendar_csj.portal_my_appointment_judged_change", values)
 
 
-    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/judged/submit'], type='http', auth="public", website=True, method=["POST"])
+    @http.route(['/my/appointment/<model("calendar.appointment"):appointment_id>/update/judged/submit'], type='http', auth="user", website=True, method=["POST"])
     def appointment_portal_judgededit_form_submit(self, appointment_id=None, **kwargs):
         appointment_type_obj = request.env['calendar.appointment.type'].search([ ('id','=',kwargs['appointment_type']) ])
 
@@ -996,7 +996,7 @@ class CustomerPortal(CustomerPortal):
 
     @http.route([
         '/public/videos'
-    ], type='http', auth="public", website=True)
+    ], type='http', auth="user", website=True)
     #def portal_my_videos(self, appointment_id=None, access_token=None, **kw):
     def portal_public_videos(self, appointment_id=None, access_token=None, **kw):
         sid = request.httprequest.cookies.get('session_id')
@@ -1011,7 +1011,7 @@ class CustomerPortal(CustomerPortal):
 
     @http.route([
         '/data/recordings'
-    ], type='http', auth="public", website=True)
+    ], type='http', auth="user", website=True)
     def portal_public_recordings(self, appointment_id=None, access_token=None, **kw):
         sid = request.httprequest.cookies.get('session_id')
         uid = request.env.user.id
@@ -1028,7 +1028,7 @@ class CustomerPortal(CustomerPortal):
 
     @http.route([
         '/data/recordings/add/content'
-    ], type='http', auth="public", website=True)
+    ], type='http', auth="user", website=True)
     def portal_public_recordings_add_content(self, appointment_type=None, employee_id=None, message=None, types=None, **kwargs):
         sid = request.httprequest.cookies.get('session_id')
         uid = request.env.user.id
@@ -1077,7 +1077,7 @@ class CustomerPortal(CustomerPortal):
         })
 
 
-    @http.route(['/website/recording/add/content'], type='http', auth="public", website=True)
+    @http.route(['/website/recording/add/content'], type='http', auth="user", website=True)
     def process_recording_add_content_form(self, **kwargs):
         appointment_type_id = kwargs['calendar_appointment_type_id']
         appointment_obj = request.env['calendar.appointment.type'].browse(int(appointment_type_id))
@@ -1139,7 +1139,7 @@ class CustomerPortal(CustomerPortal):
         })
 
 
-    @http.route(['/data/recordings/add/content/api'], type='http', auth="public", website=True)
+    @http.route(['/data/recordings/add/content/api'], type='http', auth="user", website=True)
     def process_recording_add_content_api(self, **kwargs):
         values = {
             'process_number': kwargs['process_number'],
