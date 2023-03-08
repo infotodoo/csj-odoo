@@ -22,7 +22,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
     @http.route([
         '/website/calendar',
         '/website/calendar/<model("calendar.appointment.type"):appointment_type>',
-    ], type='http', auth="public", website=True)
+    ], type='http', auth="user", website=True)
     def calendar_appointment_choice(self, appointment_type=None, employee_id=None, message=None, types=None, **kwargs):
         partner = request.env.user.partner_id
         judged_id = None
@@ -62,7 +62,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'judged_name': judged_id.name if judged_id else '',
         })
 
-    @http.route(['/website/calendar/get_appointment_info'], type='json', auth="public", methods=['POST'], website=True)
+    @http.route(['/website/calendar/get_appointment_info'], type='json', auth="user", methods=['POST'], website=True)
     def get_appointment_info(self, appointment_id, prev_emp=False, types=False, **kwargs):
         Appt = request.env['calendar.appointment.type'].browse(int(appointment_id)).sudo()
         result = {
@@ -95,7 +95,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
     #         'types': types
     #     })
 
-    @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/info'], type='http', auth="public", website=True)
+    @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/info'], type='http', auth="user", website=True)
     #def calendar_appointment_form(self, appointment_type, employee_id, date_time, types=False, **kwargs):
     def calendar_appointment_form(self, appointment_type, date_time, duration, types=False, **kwargs):
         #timezone = self._context.get('tz') or self.env.user.partner_id.tz or 'UTC'
@@ -163,7 +163,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'countries': request.env['res.country'].search([]),
         })
 
-    @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/submit'], type='http', auth="public", website=True, method=["POST"])
+    @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/submit'], type='http', auth="user", website=True, method=["POST"])
     def calendar_appointment_submit(self, appointment_type, datetime_str, employee_id, types, class_id, reception_detail,
                                     reception_id, process_number, request_type, duration, request_date, connection_type,
                                     room_id, help_id, name, email, phone, guestcont, destinationcont, partaker_type,
@@ -406,7 +406,7 @@ class OdooWebsiteSearchAppointment(http.Controller):
 
     @http.route([
         '/search/suggestion',
-        '/search/suggestion/<int:city_id>'], type='http', auth="public", website=True)
+        '/search/suggestion/<int:city_id>'], type='http', auth="user", website=True)
     def search_suggestion(self, city_id, **post):
         cita = []
         if post:
@@ -440,7 +440,7 @@ class OdooWebsiteSearchAppointment(http.Controller):
 
     @http.route([
         '/search/suggestion/recording/add_content',
-        '/search/suggestion/recording/add_content/<int:city_id>'], type='http', auth="public", website=True)
+        '/search/suggestion/recording/add_content/<int:city_id>'], type='http', auth="user", website=True)
     def search_suggestion_recording_add(self, city_id, **post):
         cita = []
         if post:
@@ -477,7 +477,7 @@ class OdooWebsiteSearchAppointment(http.Controller):
 
 class OdooWebsiteSearchCity(http.Controller):
 
-    @http.route(['/search/suggestion_city'], type='http', auth="public", website=True)
+    @http.route(['/search/suggestion_city'], type='http', auth="user", website=True)
     def search_suggestion(self, city_id=None, **post):
         cities = []
         if post:
@@ -500,7 +500,7 @@ class OdooWebsiteSearchCity(http.Controller):
 
 class OdooWebsiteSearchSolicitante(http.Controller):
 
-    @http.route(['/search/suggestion2'], type='http', auth="public", website=True)
+    @http.route(['/search/suggestion2'], type='http', auth="user", website=True)
     def search_suggestion(self, **post):
         cita = []
         if post:
@@ -521,7 +521,7 @@ class OdooWebsiteSearchSolicitante(http.Controller):
 
 class OdooWebsiteSearchDestino(http.Controller):
 
-    @http.route(['/search/destino'], type='http', auth="public", website=True)
+    @http.route(['/search/destino'], type='http', auth="user", website=True)
     def search_suggestion(self, **post):
         suggestion_list = []
         destino = []
