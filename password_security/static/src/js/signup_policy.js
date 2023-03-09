@@ -34,8 +34,8 @@ odoo.define("password_security.signup.policy", function(require) {
             policy.recommendations
         );
         meter.insertAfter($password);
-        $password.on("input", function() {
+        /*$password.on("input", function() {
             meter.update($password.val());
-        });
+        });*/
     });
 });
