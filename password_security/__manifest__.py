@@ -18,7 +18,7 @@
     "external_dependencies": {"python": ["zxcvbn"]},
     "license": "LGPL-3",
     "data": [
-        "views/password_security.xml",
+        #"views/password_security.xml",
         "views/res_config_settings_views.xml",
         "security/ir.model.access.csv",
         "security/res_users_pass_history.xml",
