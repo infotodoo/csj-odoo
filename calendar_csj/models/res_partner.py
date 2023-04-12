@@ -227,10 +227,9 @@ class ResPartner(models.Model):
     judged_only_code = fields.Char('Partner Only Code', compute="_compute_partner_separated_name", store=False)
     judged_only_name = fields.Char('Partner Only Name', compute="_compute_partner_separated_name", store=True)
     recording_type = fields.Selection([('public','Publico'),('scheduler','Administrador'),('secretary','Funcionario')], 'Grabación Audiencias')
-
-    #permission_rol_id = fields.Many2one('res.partner.permission.group', string='Rol de Permisos')
     permission_ids = fields.One2many('res.partner.permission', 'partner_id', 'Reglas de Permisos')
     recording_add_ok = fields.Boolean('Mostrar en resultados de Anexar Grabación')
+    teams_api_ok = fields.Boolean('Agendamiento usando el API de Microsoft Teams')
 
     #@api.depends('partner_id')
     def _compute_partner_separated_name(self):

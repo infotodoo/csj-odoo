@@ -13,6 +13,28 @@
                         <field name="moderator_extension"/>
                     </group>
                 </xpath>
+                <notebook colspan="4" position="inside">
+                    <page string="MS Teams Credentials">
+                    <group>
+                        <field name="supported_account_types"/>
+                    </group>
+                    <group>
+                        <group>
+                        <field name="redirect_url"/>
+                        <field name="client_code" required='1'/>
+                        <field name="client_email" required='1'/>
+                        </group>
+                        <group>
+                        <field name="secret_code" password='1' required='1'/>
+                        <field name="tenant_code"
+                                attrs="{
+                                'invisible': [('supported_account_types', '=', 'multitenant')],
+                                'required': [('supported_account_types', '=', 'single_tenant')]
+                                }"/>
+                        </group>
+                    </group>
+                    </page>
+                </notebook>
             </field>
         </record>
 
@@ -31,5 +53,6 @@
                 </xpath>
             </field>
         </record>
+
     </data>
 </odoo>

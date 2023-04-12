@@ -76,6 +76,7 @@
                     <field name="create_uid" string="CREADOR POR"/>
                     <field name="name" string="NOMBRE DE LA SALA LIFESIZE"/>
                     <field name="lifesize_url" string="URL LIFESIZE"/>
+                    <field name="teams_url" string="URL TEAMS"/>
                     <field name="calendar_datetime" string="FECHA Y HORA DE REALIZACIÓN"/>
                 </tree>
             </field>
@@ -178,6 +179,11 @@
                                 <field name="lifesize_moderator" readonly="True" />
                                 <field name="lifesize_modified" readonly="True" />
                             </group>
+                            <group groups="base.group_no_one" string="Teams">
+                                <field name="teams_url" readonly="True" />
+                                <field name="teams_uuid" readonly="True" />
+                                <field name="teams_moderator" readonly="True" />
+                            </group>
                         </group>
                         <notebook>
                             <page string="Observations">
@@ -185,6 +191,9 @@
                             </page>
                             <page string="State description">
                                 <field name="state_description" nolabel="1"/>
+                            </page>
+                            <page string="Teams Invitación">
+                                <field name="teams_description" nolabel="1"/>
                             </page>
                             <page string="Applicant" attrs="{'invisible': [('applicant_id', '=', False)]}">
                                 <group>

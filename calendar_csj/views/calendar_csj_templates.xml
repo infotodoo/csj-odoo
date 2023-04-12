@@ -57,6 +57,8 @@
                     <input type="hidden" name="types" t-att-value="types" />
                     <input type="hidden" name="guestcont" t-att-value="1"/>
                     <input type="hidden" name="destinationcont" t-att-value="1"/>
+                    <input type="hidden" name="platform" t-att-value="platform" readonly="1"/>
+                    <input type="hidden" name="room" t-att-value="suggested_rooms" readonly="1"/>
                     <input type="hidden" name="duration" t-att-value="duration" readonly="1"/>
                     <input type="hidden" name="datetime" t-att-value="datetime" readonly="1"/>
                     <input type="hidden" name="appointment_type" t-att-value="appointment_type.id" readonly="1"/>
@@ -419,6 +421,25 @@
                             </select>
                         </div>
                     </div>
+                    
+                    <div class="form-group row" style="margin-top:4vh;" t-if="teams_ok" id="teams_ok">
+                        <label for="platform" class="col-md-3 col-form-label">Plataforma*</label>
+                        <div class="col-md-9" style="padding-left:8px;">
+                            <select name="platform" class="form-control" id="platform" style="width:50%" onchange='change_platform(this.value)'>
+                                <option t-att-value="Lifesize" t-att-selected="types">Lifesize</option>
+                                <option t-att-value="Teams" t-att-selected="types">Teams</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row" style="margin-top:4vh;" t-if="not teams_ok" id="teams_ok">
+                        <label for="platform" class="col-md-3 col-form-label">Plataforma*</label>
+                        <div class="col-md-9" style="padding-left:8px;">
+                            <select name="platform" class="form-control" id="platform" style="width:50%"  onchange='change_platform(this.value)'>
+                                <option t-att-value="Lifesize" t-att-selected="types">Lifesize</option>
+                            </select>
+                        </div>
+                    </div>
+                    
                     <div class="form-group row" style="margin-top:4vh;">
                         <label for="types" class="col-md-3 col-form-label">Solicitud*</label>
                         <div class="col-md-9" style="padding-left:8px;">
@@ -429,6 +450,7 @@
                             </select>
                         </div>
                     </div>
+                    
                     <t t-call="website_calendar.employee_select" />
                     <div class="form-group row">
                         <div class="offset-md-6 col-md-6">
@@ -526,6 +548,16 @@
               </div>
               <div class="col-md-10">
                   <a t-attr-href="event.appointment_id.lifesize_url" target='_black'><div t-field="event.appointment_id.lifesize_url"/></a>
+              </div>
+            </div>
+            <span t-esc="event.id"/>
+            <span t-esc="event.appointment_id.id"/>
+            <div t-if="event.appointment_id.teams_url" class="row">
+              <div class="col-md-2 text-right">
+                  <label>Teams URL:</label>
+              </div>
+              <div class="col-md-10">
+                  <a t-attr-href="event.appointment_id.teams_url" target='_black'><div t-field="event.appointment_id.teams_url"/></a>
               </div>
             </div>
           </xpath>

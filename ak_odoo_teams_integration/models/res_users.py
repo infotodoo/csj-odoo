@@ -73,6 +73,12 @@ class Users(models.Model):
             "client_secret": self.company_id.secret_code
             }
         try:
+            
+            
+            _logger.error('#############################################################################################################')
+            _logger.error(token_url)
+            _logger.error(client_body)
+            _logger.error('#############################################################################################################')
             acc_token = requests.post(token_url, data=client_body)
 
         except requests.exceptions.ConnectionError:
@@ -123,6 +129,11 @@ class Users(models.Model):
         """Post a request to get an access token
         with a refresh token without authentication.
         """
+        
+        
+        
+        
+        
         redirect_uri = self.sudo().company_id.redirect_url
         scope = "https://graph.microsoft.com/Calendars.ReadWrite " + \
                 "https://graph.microsoft.com/OnlineMeetings.ReadWrite " + \
@@ -166,7 +177,11 @@ class Users(models.Model):
                         )
                     )
             if acc_token.status_code == 200:
+                _logger.error('-.-.-.-..-.-....-.-.-.-..-.-..-.-.-.-..')
+                
                 expires_in = acc_token.json().get("ext_expires_in")
+                _logger.error(expires_in)
+                _logger.error('-.-.-.-..-.-....-.-.-.-..-.-..-.-.-.-..')
                 self.write({
                     "teams_access_token": acc_token.json().get("access_token"),
                     "teams_refresh_token": acc_token.json().get(
@@ -174,6 +189,8 @@ class Users(models.Model):
                     "token_expire": datetime.now() + timedelta(
                         seconds=expires_in - 10)})
             else:
+                _logger.error('2-.-.-.-..-.-....-.-.-.-..-.-..-.-.-.-..')
+                _logger.error('2-.-.-.-..-.-....-.-.-.-..-.-..-.-.-.-..')
                 response_error = acc_token.json()
                 error_body = response_error.get('error')
                 if isinstance(error_body, str):

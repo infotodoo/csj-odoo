@@ -222,7 +222,7 @@ class CustomerPortal(CustomerPortal):
         # excel generation
         # Create a workbook and add a worksheet.
         #if export == 'on' and date_begin and date_end:
-        if export == 'true' and request.env.user.has_permission_download_report:
+        if export == 'true':
             appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=5000)
             response = request.make_response(
                 None,
@@ -582,7 +582,7 @@ class CustomerPortal(CustomerPortal):
 
         request.session['my_appointments_history'] = appointments.ids[:100]
 
-        if export == 'true' and request.env.user.has_permission_download_report:
+        if export == 'true':
             appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=5000)
             response = request.make_response(
                 None,
@@ -965,18 +965,31 @@ class CustomerPortal(CustomerPortal):
         description = ("Updated to: %s " % (
             appointment_obj.calendar_datetime.strftime("%Y%m%d %H%M%S"))
             )
-        api = {
-            'method': 'update',
-            'uuid': appointment_obj.lifesize_uuid,
-            'description': description,
-            'ownerExtension': judged_extension_lifesize or \
-                request.env.user.company_id.owner_extension,
-            'moderatorExtension': judged_extension_lifesize or \
-                request.env.user.company_id.owner_extension,
-        }
-
-        resp = request.env['api.lifesize'].api_crud(api)
-        dic = request.env['api.lifesize'].resp2dict(resp)
+        
+        
+        if appointment_obj.teams_ok:
+            api = {
+                'method': 'update',
+                'description': appointment_obj.observations,
+                'name': appointment_obj.name,
+                #'ownerExtension': record.lifesize_owner,
+                'teams_uuid': appointment_obj.teams_uuid,
+            }
+            
+            resp = request.env['api.teams'].api_crud(api)
+            #dic = request.env['api.teams'].resp2dict(resp)
+        else:
+            api = {
+                'method': 'update',
+                'uuid': appointment_obj.lifesize_uuid,
+                'description': description,
+                'ownerExtension': judged_extension_lifesize or \
+                    request.env.user.company_id.owner_extension,
+                'moderatorExtension': judged_extension_lifesize or \
+                    request.env.user.company_id.owner_extension,
+            }
+            resp = request.env['api.lifesize'].api_crud(api)
+            dic = request.env['api.lifesize'].resp2dict(resp)
 
         return request.redirect('/my/appointment/' + str(appointment_id.id))
 

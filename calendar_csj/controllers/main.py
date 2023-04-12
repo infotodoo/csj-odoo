@@ -37,7 +37,13 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                 #raise ValidationError('Ningún origen asosiado a %s.' % judged_id.name)
             appointment_type = suggested_appointment_types[0]
         else:
+            
+            _logger.error('----------------------------------------------------------------------')
+            
+            
             if not appointment_type:
+                _logger.error('ingresando sin appointment_type')
+                
                 country_code = request.session.geoip and request.session.geoip.get('country_code')
                 if country_code:
                     suggested_appointment_types = request.env['calendar.appointment.type'].search([
@@ -48,10 +54,24 @@ class WebsiteCalendarInherit(WebsiteCalendar):
 
                 if not suggested_appointment_types:
                     return request.render("website_calendar.setup", {})
+                
+                _logger.error(suggested_appointment_types)
                 appointment_type = suggested_appointment_types[0]
+                _logger.error('----------------------------------------------------------------------')
             else:
+                _logger.error('2----------------------------------------------------------------------')
+                _logger.error(appointment_type)
                 suggested_appointment_types = appointment_type
-
+        
+        
+        _logger.error('*******************************')
+        _logger.error(appointment_type)
+        _logger.error(suggested_appointment_types)
+        _logger.error(judged_id)
+        _logger.error('*******************************')
+        teams_ok = False
+        if judged_id:
+            teams_ok = judged_id.teams_api_ok
         return request.render("website_calendar.index", {
             'appointment_type': appointment_type,
             'suggested_appointment_types': suggested_appointment_types,
@@ -60,6 +80,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'calendar_appointment_type_id': partner.id if partner.appointment_type != 'scheduler' else 1,
             'city_name': partner.city,
             'judged_name': judged_id.name if judged_id else '',
+            'teams_ok': teams_ok,
         })
 
     @http.route(['/website/calendar/get_appointment_info'], type='json', auth="user", methods=['POST'], website=True)
@@ -79,7 +100,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             })
         return result
 
-    # @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/appointment'], type='http', auth="public", website=True)
+    # @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/appointment'], type='http', auth="user", website=True)
     # def calendar_appointment(self, appointment_type=None, employee_id=None, timezone=None, failed=False, types=False, **kwargs):
     #     #### TYPESSS 4 robot
     #     request.session['timezone'] = timezone or appointment_type.appointment_tz
@@ -96,19 +117,11 @@ class WebsiteCalendarInherit(WebsiteCalendar):
     #     })
 
     @http.route(['/website/calendar/<model("calendar.appointment.type"):appointment_type>/info'], type='http', auth="user", website=True)
-    #def calendar_appointment_form(self, appointment_type, employee_id, date_time, types=False, **kwargs):
-    def calendar_appointment_form(self, appointment_type, date_time, duration, types=False, **kwargs):
-        #timezone = self._context.get('tz') or self.env.user.partner_id.tz or 'UTC'
-        #timezone = pytz.timezone(self.event_tz) if self.event_tz else pytz.timezone(self._context.get('tz') or 'UTC')
+    def calendar_appointment_form(self, appointment_type, date_time, duration, types=False, platform=False, **kwargs):
         request.session['timezone'] = appointment_type.appointment_tz or 'UTC'
         partner_data = {}
-        # if request.env.user.partner_id != request.env.ref('base.public_partner'):
-        #     partner_data = request.env.user.partner_id.read(fields=['name', 'mobile', 'email'])[0]
-
         request.session['timezone'] = appointment_type.appointment_tz
-        #day_name = format_datetime(datetime.strptime(date_time, dtf), 'EEE', locale=get_lang(request.env).code)
         day_name = format_datetime(datetime.strptime(date_time, "%Y-%m-%d %H:%M"), 'EEE', locale=get_lang(request.env).code)
-        #date_formated = format_datetime(datetime.strptime(date_time, dtf), locale=get_lang(request.env).code)
         date_formated = format_datetime(datetime.strptime(date_time, "%Y-%m-%d %H:%M"), locale=get_lang(request.env).code)
         city_code = appointment_type.judged_id.city_id.id
         employee_id = appointment_type.judged_id.hr_employee_id.id
@@ -139,21 +152,19 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         suggested_help3 = request.env['calendar.help'].sudo().search([('type','=','type_c')])
         suggested_rooms = request.env['res.judged.room'].sudo().search_city(city_code)
         suggested_partners = request.env['res.partner'].sudo().search([])
-        #suggested_companies = request.env['res.partner'].sudo().search_company_type()
         suggested_reception = request.env['calendar.reception'].sudo().search([])
-        #return request.render("website_calendar.appointment_form", {
         return request.render("calendar_csj.appointment_form_csj", {
             'partner_data': partner_data,
             'appointment_type': appointment_type,
             'suggested_class': suggested_class,
             'suggested_partners': suggested_partners,
-            #'suggested_companies': suggested_companies,
             'suggested_reception': suggested_reception,
             'suggested_rooms': suggested_rooms,
             'suggested_help1': suggested_help1,
             'suggested_help2': suggested_help2,
             'suggested_help3': suggested_help3,
             'types': types,
+            'platform': platform,
             'duration': duration,
             'datetime': date_time,
             'datetime_locale': day_name + ' ' + date_time,
@@ -168,8 +179,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                                     reception_id, process_number, request_type, duration, request_date, connection_type,
                                     room_id, help_id, name, email, phone, guestcont, destinationcont, partaker_type,
                                     declarant_text=False, indicted_text=False, description=False,
-                                    country_id=False, **kwargs):
-
+                                    country_id=False, platform=False, **kwargs):
 
         timezone = request.session['timezone']
         tz_session = pytz.timezone(timezone)
@@ -197,7 +207,6 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                 'duration': duration,
                 'types': types,
             })
-            #return ValidationError('Dominio @%s no permitido.' % email.split('@')[-1] )
 
         # check availability of the employee again (in case someone else booked while the client was entering the form)
         Employee = request.env['hr.employee'].sudo().browse(int(employee_id))
@@ -221,14 +230,6 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         if types:
             if types[0] == 'A':
                 if len(process_number) != 23:
-                    # return {
-                    #         'type': 'ir.actions.client',
-                    #         'tag': 'display_notification',
-                    #         'params': {
-                    #             'title': _('Success'),
-                    #             'message': _('Longitud del Número de proceso no permitida.'),
-                    #             'sticky': False,
-                    #             }}
                     return request.render("website_calendar.appointment_form", {
                         'appointment_type': appointment_type,
                         'message': 'process_longer_failed',
@@ -236,7 +237,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                         'duration': duration,
                         'types': types,
                     })
-                    #raise ValidationError('Longitud del Número de proceso no permitida.')
+
                 city = request.env['res.entity'].sudo().search_city(process_number[0:5])
                 entity = request.env['res.entity'].sudo().search_entity(process_number[5:7])
                 speciality = request.env['res.entity'].sudo().search_speciality(process_number[7:9])
@@ -244,16 +245,6 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                 rad_year = process_number[12:16]
                 year = datetime.now()
                 year_limit = int(year.strftime("%Y")) + 1
-                # logger.info("\ncity:{}{}\nentity:{}{}\nspeciality:{}{}\njudged:{}{}\nyear:{}\n".format(
-                """
-                logger.info("\ncity:{}{}\nentity:{}{}\nspeciality:{}{}\nyear:{}\n".format(
-                    process_number[0:5], city,
-                    process_number[5:7], entity,
-                    process_number[7:9], speciality,
-                    # process_number[9:12], judged,
-                    int(rad_year) in range(year_limit))
-                )
-                """
                 # if city and entity and speciality and judged:
                 if city and entity and speciality:
                     if not int(rad_year) in range(1900,year_limit):
@@ -264,7 +255,6 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                             'duration': duration,
                             'types': types,
                         })
-                        #raise ValidationError('Número de proceso ERRONEO.')
                 else:
                     return request.render("website_calendar.appointment_form", {
                         'appointment_type': appointment_type,
@@ -273,7 +263,6 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                         'duration': duration,
                         'types': types,
                     })
-                    #raise ValidationError('Número de proceso ERRONEO.')
         else:
             raise ValidationError('Tipo de agendamiento de la cita no encontrado.')
         country_id = int(country_id) if country_id else None
@@ -330,7 +319,6 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         class_id = int(class_id)
         reception_id = int(reception_id)
         applicant_id = appointment_type.judged_id.id if appointment_type.judged_id else False
-        #destination_id = int(destination_id)
         destination_id = None
         partner_ids.append(Partner.id)
         request_type = 'r' if request_type[0] == 'R' else 'l'
@@ -397,6 +385,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'partaker_type': partaker_type,
             'connection_type': connection_type,
             'applicant_raw_name': name,
+            'platform': platform,
         })
         event.attendee_ids.write({'state': 'accepted'})
         return request.redirect('/website/calendar/view/' + event.access_token + '?message=new')
