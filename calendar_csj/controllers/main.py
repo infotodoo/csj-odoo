@@ -37,13 +37,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                 #raise ValidationError('Ningún origen asosiado a %s.' % judged_id.name)
             appointment_type = suggested_appointment_types[0]
         else:
-            
-            _logger.error('----------------------------------------------------------------------')
-            
-            
             if not appointment_type:
-                _logger.error('ingresando sin appointment_type')
-                
                 country_code = request.session.geoip and request.session.geoip.get('country_code')
                 if country_code:
                     suggested_appointment_types = request.env['calendar.appointment.type'].search([
@@ -54,21 +48,10 @@ class WebsiteCalendarInherit(WebsiteCalendar):
 
                 if not suggested_appointment_types:
                     return request.render("website_calendar.setup", {})
-                
-                _logger.error(suggested_appointment_types)
                 appointment_type = suggested_appointment_types[0]
-                _logger.error('----------------------------------------------------------------------')
             else:
-                _logger.error('2----------------------------------------------------------------------')
-                _logger.error(appointment_type)
                 suggested_appointment_types = appointment_type
-        
-        
-        _logger.error('*******************************')
-        _logger.error(appointment_type)
-        _logger.error(suggested_appointment_types)
-        _logger.error(judged_id)
-        _logger.error('*******************************')
+
         teams_ok = False
         if judged_id:
             teams_ok = judged_id.teams_api_ok
