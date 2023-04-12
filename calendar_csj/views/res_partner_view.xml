@@ -137,6 +137,9 @@
                                     </tree>
                                 </field>
                             </group>
+                            <group string="Teams">
+                                <field name="teams_api_ok"/>
+                            </group>
                         </group>
                     </page>
                 </xpath>

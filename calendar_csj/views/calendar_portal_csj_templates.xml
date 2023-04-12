@@ -831,11 +831,16 @@
                           <div class="col-6 col-md-6 mb-1" style="border: solid 1px #ccc;margin-left:0px;" t-if="appointment.calendar_duration">
                             <div style="font-weight:bold;border-left: solid 4px #875a7b;width:100%;text-align:center;color:#00A09D;">Datos de Reunión</div>
                             <br/>
-                            <strong>Extensión Lifesize:</strong> <span t-field="appointment.lifesize_meeting_ext"/>
-                            <br/>
-                            <strong>URL Lifesize:</strong> <span t-field="appointment.lifesize_url"/>
-                            <br/>
-                            <strong>API Lifesize:</strong> <span t-field="appointment.name"/>
+                            <t t-if="appointment.teams_ok">
+                                <strong>URL Teams:</strong> <span t-field="appointment.teams_url"/>
+                                <br/>
+                                <strong>ID Teams:</strong> <span t-field="appointment.teams_uuid"/>
+                            </t>
+                            <t t-if="not appointment.teams_ok">
+                                <strong>URL Lifesize:</strong> <span t-field="appointment.lifesize_url"/>
+                                <br/>
+                                <strong>API Teams:</strong> <span t-field="appointment.name"/>
+                            </t>
                             <br/>
                             <strong>Record Data:</strong> <span t-field="appointment.record_data"/>
                             <br/>

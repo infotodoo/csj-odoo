@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+  <!-- Inherit Smart Button to redirect meeting URL and boolean field to enable Teams Meeting Link -->
+  <record id="view_calendar_teams_link" model="ir.ui.view">
+    <field name="name">calendar.teams_link.form</field>
+    <field name="model">calendar.event</field>
+    <field name='inherit_id' ref='calendar.view_calendar_event_form'/>
+    <field name="arch" type="xml">
+
+      <!--<xpath expr="//div[@name='button_box']" position="inside">
+        <button string="Join Meeting" icon="fa-external-link" type="object"
+                name="action_redirect_link"
+                attrs="{'invisible': [('videocall_location', '=', False)]}"/>
+      </xpath>
+
+      <xpath expr="//page[@name='page_details']//field[@name='videocall_location']" position="attributes">
+        <attribute name="widget">url</attribute>
+      </xpath>-->
+
+      <xpath expr="//page[@name='page_details']//group" position="after">
+          <h1>Microsoft Teams</h1>
+          <group name="page_teams_link">
+            <field name="teams_link_check"/>
+            <field name="warning_check" attrs="{'invisible': True}"/>
+          </group>
+            <span style="color: red;" attrs="{'invisible': [('warning_check', '!=', True)]}">* Teams Meeting will be deleted by disabling it.</span>
+      </xpath>
+
+    </field>
+  </record>
+
+</data>
+</odoo>

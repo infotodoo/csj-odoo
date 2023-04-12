@@ -8,19 +8,35 @@ function isNumber(evt) {
 }
 
 $( function() {
-  $( "#request_date" ).datepicker({
-    dateFormat : 'yy-mm-dd',
-    maxDate: new Date(),
-  });
-//  $('#room_id option[name="Sala Audiencia Virtual"]').attr('selected','selected');
+    $( "#request_date" ).datepicker({
+        dateFormat : 'yy-mm-dd',
+        maxDate: new Date(),
+    });
+    //  $('#room_id option[name="Sala Audiencia Virtual"]').attr('selected','selected');
 
-var $select = $('#room_id');
-$select.children().filter(function(){ 
-  return this.text == "Sala Audiencia Virtual";
-  }).prop('selected', true);
-
+    var $select = $('#room_id');
+    var platform = $(".appointment_submit_form input[name='platform']").val();    
+    if (platform == 'Lifesize'){
+        $select.children().filter(function(){ 
+          return this.text == "Sala Audiencia Virtual";
+          }).prop('selected', true);
+    } else if (platform == 'Teams'){
+        $select.children().filter(function(){ 
+          return this.text == "Sala Audiencia Virtual Teams";
+          }).prop('selected', true);
+    }
 });
 
+
+function change_platform(value) {
+    if (value == 'Teams') {
+        let html = "<select name='types' class='form-control' id='types' style='width:50%'>\
+                        <option t-att-value='audiencia' t-att-selected='types'>Audiencia</option>\
+                    </select>\
+        "
+        $("#types").replaceWith(html);
+    }
+}
 
 function convertNumToTime(number) {
     // Check sign of given number
@@ -388,6 +404,28 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
                         $(".o_website_appointment_form input[name='calendar_appointment_type_id']").val(calendar_appointment_type_id);
                         $(".o_website_recording_add_content_form input[name='calendar_appointment_type_id']").val(calendar_appointment_type_id);
                         var postURL = '/website/calendar/' + calendar_appointment_type_id + '/info?date_time='+ date_time + '&amp;duration=' + duration;
+                        var rpc = require('web.rpc');
+                        rpc.query({
+                            model: 'calendar.appointment.type',
+                            method: 'fetch_teams_ok',
+                            args: ["", calendar_appointment_type_id],
+                        }).then(function (data)
+                        {
+                            if (data === true){
+                              let html = "<div class='form-group row' style='margin-top:4vh;' t-if='teams_ok' id='teams_ok'>\
+                                    <label for='platform' class='col-md-3 col-form-label'>Plataforma*</label>\
+                                    <div class='col-md-9' style='padding-left:8px;'>\
+                                        <select name='platform' class='form-control' id='platform' style='width:50%' onchange='change_platform(this.value)'>\
+                                            <option t-att-value='Lifesize' t-att-selected='types'>Lifesize</option>\
+                                            <option t-att-value='Teams' t-att-selected='types'>Teams</option>\
+                                        </select>\
+                                    </div>\
+                                </div>\
+                              "
+                              $("#teams_ok").replaceWith(html);
+                            }
+                        });
+                          
                         $(".o_website_appointment_form").attr('action', postURL);
                       }
                     }
@@ -440,6 +478,9 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
                 $(".o_website_appoinment_form input[name='calendar_appointment_type_id']").val(calendar_appointment_type_id);
                 $(".o_website_recording_add_content_form input[name='calendar_appointment_type_id']").val(calendar_appointment_type_id);
                 var postURL = '/website/calendar/' + calendar_appointment_type_id + '/info?date_time='+ date_time + '&amp;duration=' + duration;
+                  
+                
+                  
                 $(".o_website_appointment_form").attr('action', postURL);
               }
             }

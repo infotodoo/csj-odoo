@@ -187,16 +187,22 @@ class CalendarAppointment(models.Model):
     cw_bool = fields.Boolean('Create/Write', default=False, required=True)
     type_request_concatenated = fields.Char('TIPO DE SOLICITUD', compute="_concatenate_partaker_help")
     process_id = fields.Many2one('process.process', 'Proceso', ondelete='set null')
-    
+
+    # Teams Field
+    teams_ok = fields.Char('Agendamiento usando Teams')
+    teams_url = fields.Char('URL Teams')
+    teams_uuid = fields.Char('UUID Teams')
+    teams_description = fields.Html('Teams Invitiación')
+    teams_moderator = fields.Char('Moderador Teams')
+    platform = fields.Char('Plataforma')
+
     @api.depends('help_id','partaker_type')
     def _concatenate_partaker_help(self):
         for record in self:
             if not record.help_id:
                 record.type_request_concatenated = record.partaker_type.name
-                
             if not record.partaker_type:
                 record.type_request_concatenated = record.help_id.name
-                
             if record.partaker_type and record.help_id:
                 record.type_request_concatenated = record.help_id.name +' '+ record.partaker_type.name
 
@@ -283,6 +289,7 @@ class CalendarAppointment(models.Model):
                 if record.record_data:
                     res += '_' + record.record_data
                 record.tag_number = res
+                record.name = res
             else:
                 record.tag_number = 'Configurar los valores'
 
@@ -343,31 +350,6 @@ class CalendarAppointment(models.Model):
             else:
                 continue
 
-   # @api.model
-   # def create(self, vals):
-        # vals['name'] = vals.get('process_number')[0:23] + 's' + \
-        #     self.env['ir.sequence'].next_by_code('calendar.appointment').replace('s','') or _('None')
-        # vals['partner_id'] = vals.get('appointment_id')
-        # vals['sequence_icsfile_ctl'] = 1
-        # vals['appointment_code'] = self.env['ir.sequence'].next_by_code('calendar.appointment.document.number')
-        # online_appointment_type = self.env['calendar.appointment.type'].search(
-        #     [('id', '=', vals.get('appointment_type_id'))])[0]
-        # partner = online_appointment_type.judged_id if online_appointment_type \
-        #     and online_appointment_type.judged_id else False
-        # # ERROR REPORT THIS JUDGED :C res.partner(11307,), False
-        # if partner and partner.permanent_room:
-        #     extension = partner.lifesize_meeting_extension if \
-        #             partner.lifesize_meeting_extension else False
-        #     vals.update({
-        #         'lifesize_meeting_ext': extension,
-        #         'lifesize_url': 'https://call.lifesizecloud.com/{}'.format(extension) if extension else False,
-        #     })
-        #     _logger.error('\nSTATUS: NO CREADA EN LIFESIZE {}'.format(vals))
-        # else:
-        #     vals.update(self.create_lifesize(vals))
-        #     _logger.error('\nSTATUS: CREADA EN LIFESIZE {}'.format(vals))
-        # res = super(CalendarAppointment, self).create(vals)
-        # return res
 
     @api.model
     def create(self, vals):
@@ -419,37 +401,104 @@ class CalendarAppointment(models.Model):
 
         # ERROR REPORT THIS JUDGED :C res.partner(11307,), False
         if partner and partner.permanent_room:
-            extension = (
-                partner.lifesize_meeting_extension
-                if partner.lifesize_meeting_extension
-                else False
-            )
-            vals.update(
-                {
-                    "lifesize_meeting_ext": extension,
-                    "lifesize_url": "https://call.lifesizecloud.com/{}".format(
-                        extension
-                    )
-                    if extension
-                    else False,
-                }
-            )
-            _logger.error("\nSTATUS: NO CREADA EN LIFESIZE {}".format(vals))
+            #if not partner.teams_api_ok:
+            if vals.get('platform') == 'Teams':
+                extension = (
+                    partner.lifesize_meeting_extension
+                    if partner.lifesize_meeting_extension
+                    else False
+                )
+                vals.update(
+                    {
+                        "lifesize_meeting_ext": extension,
+                        "lifesize_url": "https://call.lifesizecloud.com/{}".format(
+                            extension
+                        )
+                        if extension
+                        else False,
+                    }
+                )
+                _logger.error("\nSTATUS: NO CREADA EN LIFESIZE {}".format(vals))
         else:
-            vals.update(self.create_lifesize(vals))
-            _logger.error("\nSTATUS: CREADA EN LIFESIZE {}".format(vals))
+            #if partner.teams_api_ok:
+            if vals.get('platform') == 'Teams':
+                tz_offset = self.env.user.tz_offset if self.env.user.tz_offset else False
+                tz = int(tz_offset)/100 if tz_offset else 0
+                calendar_datetime = fields.Datetime.from_string(vals.get('calendar_datetime'))
+                date_end = calendar_datetime + relativedelta(hours=float(vals.get('calendar_duration'))) if calendar_datetime else False
+                vals.update({
+                    'start': calendar_datetime,
+                    'stop': date_end,
+                    'teams_ok': True if vals.get('platform') == 'Teams' else False,
+                    'judged_id': online_appointment_type.judged_id.id,
+                })
+                vals.update(self.create_teams(vals))
+                if 'start' in vals:
+                    vals.pop('start')
+                if 'stop' in vals:
+                    vals.pop('stop')
+                if 'judged_id' in vals:
+                    vals.pop('judged_id')
+            else:
+                vals.update(self.create_lifesize(vals))
+            _logger.error("\nSTATUS: CREADA EN TEAMS {}".format(vals))
         res = super(CalendarAppointment, self).create(vals)
         return res
 
     def write(self, vals):
+        res = super(CalendarAppointment, self).write(vals)
         if vals.get('calendar_datetime'):
-            vals.update(self.write_lifesize(vals))
+            if self.teams_ok:
+                
+                tag_number = self.name
+                if self.city_id and self.city_id.zipcode \
+                    and (self.room_id or self.type != 'audience') \
+                        and self.process_number and self.partner_id \
+                            and self.partner_id.entity_id \
+                                and self.partner_id.specialty_id \
+                                    and self.partner_id.code:
+                    room_code = self.room_id.mame if self.room_id else _(None)
+                    res = '%s_%s%s%s%s%s%s' % (self.process_number,
+                                                str(self.request_type).upper(),
+                                                self.city_id.zipcode,
+                                                self.partner_id.entity_id.code,
+                                                self.partner_id.specialty_id.code,
+                                                self.partner_id.code,
+                                                room_code)
+                    if self.record_data:
+                        res += '_' + self.record_data
+                    tag_number = res
+
+                tz_offset = self.env.user.tz_offset if self.env.user.tz_offset else False
+                tz = int(tz_offset)/100 if tz_offset else 0
+                calendar_datetime = fields.Datetime.from_string(vals.get('calendar_datetime'))
+                date_end = calendar_datetime + relativedelta(hours=float(self.calendar_duration)) if calendar_datetime else False
+
+                vals.update({
+                    'start': calendar_datetime,
+                    'stop': date_end,
+                    'teams_ok': True,
+                    'name': tag_number,
+                    #'judged_id': online_appointment_type.judged_id.id,
+                })
+                vals.update(self.write_teams(vals))
+                if 'start' in vals:
+                    vals.pop('start')
+                if 'stop' in vals:
+                    vals.pop('stop')
+                if 'judged_id' in vals:
+                    vals.pop('judged_id')
+            else:
+                vals.update(self.write_lifesize(vals))
             vals['sequence_icsfile_ctl'] = self.sequence_icsfile_ctl + 1 if int(self.sequence_icsfile_ctl) else 1
             self.write_event(vals)
-        return super(CalendarAppointment, self).write(vals)
+        return res
 
     def unlink(self):
-        self.unlink_lifesize()
+        if self.teams_ok:
+            self.unlink_teams()
+        else:
+            self.unlink_lifesize()
         return super(CalendarAppointment, self).unlink()
 
     def create_lifesize(self, vals):
@@ -501,6 +550,54 @@ class CalendarAppointment(models.Model):
         dic = self.env['api.lifesize'].resp2dict(resp)
         return dic
 
+    def create_teams(self, vals):
+        api = {
+            'method': 'create',
+            'displayName': vals.get('name'),
+            'start': str(datetime.datetime.strptime(str(vals.get('start')), '%Y-%m-%d %H:%M:%S')),
+            'stop': str(datetime.datetime.strptime(str(vals.get('stop')), '%Y-%m-%d %H:%M:%S')),
+            'partner_ids': vals.get('partners_ids'),
+            'judged_id': vals.get('judged_id'),
+        }
+            
+        judged_extension_lifesize = False
+        if vals.get('appointment_type_id'):
+            online_appointment_type = self.env['calendar.appointment.type'].search(
+                [('id', '=', vals.get('appointment_type_id'))])[0]
+            partner = online_appointment_type.judged_id if online_appointment_type \
+                and online_appointment_type.judged_id else False
+            if partner and partner.extension_lifesize:
+                judged_extension_lifesize = partner.extension_lifesize
+
+        ### moderator and owner rules.
+        appointment_type = self.env.user.partner_id.appointment_type
+        if appointment_type and appointment_type == 'scheduler':
+            api.update({
+                'ownerExtension': judged_extension_lifesize or \
+                    self.env.user.extension_lifesize or \
+                    self.env.user.company_id.owner_extension,
+                'moderatorExtension': judged_extension_lifesize or \
+                    self.env.user.extension_lifesize or \
+                    self.env.user.company_id.owner_extension,
+            })
+        else:
+            api.update({
+                #'ownerExtension': self.env.user.company_id.owner_extension,
+                'ownerExtension': judged_extension_lifesize or \
+                                self.env.user.company_id.owner_extension,
+                'moderatorExtension': judged_extension_lifesize or \
+                    self.env.user.extension_lifesize or \
+                        self.env.user.company_id.owner_extension,
+            })
+        if vals.get('observations'):
+            api.update(description=vals.get('observations'))
+        if self.env.user.company_id.lecturer_extension:
+            api.update(lecturerExtension=self.env.user.company_id.lecturer_extension)
+
+        resp = self.env['api.teams'].api_crud(api)
+        dic = self.env['api.teams'].resp2dict(resp)
+        return dic
+
     def write_lifesize(self, vals):
         for record in self:
             partner = record.partner_id
@@ -514,9 +611,30 @@ class CalendarAppointment(models.Model):
                 partner = record.appointment_type_id.judged_id if record.appointment_type_id else False
                 if partner and partner.extension_lifesize:
                     judged_extension_lifesize = partner.extension_lifesize
+                
+                
+                tag_number = record.name
+                if record.city_id and record.city_id.zipcode \
+                    and (record.room_id or record.type != 'audience') \
+                        and record.process_number and self.partner_id \
+                            and record.partner_id.entity_id \
+                                and record.partner_id.specialty_id \
+                                    and record.partner_id.code:
+                    room_code = record.room_id.mame if record.room_id else _(None)
+                    res = '%s_%s%s%s%s%s%s' % (record.process_number,
+                                                str(record.request_type).upper(),
+                                                record.city_id.zipcode,
+                                                record.partner_id.entity_id.code,
+                                                record.partner_id.specialty_id.code,
+                                                record.partner_id.code,
+                                                room_code)
+                    if record.record_data:
+                        res += '_' + record.record_data
+                    tag_number = res
 
                 api = {
                     'method': 'update',
+                    'displayName': tag_number,
                     'description': description,
                     'ownerExtension': record.lifesize_owner,
                     'uuid': record.lifesize_uuid,
@@ -541,6 +659,68 @@ class CalendarAppointment(models.Model):
                     'uuid': record.lifesize_uuid,
                 }
                 self.env['api.lifesize'].api_crud(api)
+            else:
+                _logger.error('\nSTATUS: NO CANCELADA EN LIFESIZE')
+
+    def write_teams(self, vals):
+        for record in self:
+            partner = record.partner_id
+            _logger.error('\n{}, {}'.format(partner,partner.permanent_room))
+            description = ("Updated to: %s " % (
+                record.calendar_datetime.strftime("%Y%m%d %H%M%S"))
+            )
+            description = record.observations
+            judged_extension_lifesize = False
+            partner = record.appointment_type_id.judged_id if record.appointment_type_id else False
+            tag_number = record.name
+            if record.city_id and record.city_id.zipcode \
+                and (record.room_id or record.type != 'audience') \
+                    and record.process_number and self.partner_id \
+                        and record.partner_id.entity_id \
+                            and record.partner_id.specialty_id \
+                                and record.partner_id.code:
+                room_code = record.room_id.mame if record.room_id else _(None)
+                res = '%s_%s%s%s%s%s%s' % (record.process_number,
+                                            str(record.request_type).upper(),
+                                            record.city_id.zipcode,
+                                            record.partner_id.entity_id.code,
+                                            record.partner_id.specialty_id.code,
+                                            record.partner_id.code,
+                                            room_code)
+                if record.record_data:
+                    res += '_' + record.record_data
+                tag_number = res
+
+            vals.update({
+                'name':tag_number
+            })
+            api = {
+                'method': 'update',
+                'description': description,
+                'name': tag_number,
+                #'ownerExtension': record.lifesize_owner,
+                'teams_uuid': record.teams_uuid,
+                'start': str(datetime.datetime.strptime(str(vals.get('start')), '%Y-%m-%d %H:%M:%S')),
+                'stop': str(datetime.datetime.strptime(str(vals.get('stop')), '%Y-%m-%d %H:%M:%S')),
+            }
+            resp = self.env['api.teams'].api_crud(api)
+            #dic = self.env['api.teams'].resp2dict(resp)
+            #dic.pop('start')
+            #dic.pop('stop')
+            dic = {'state':'postpone'}
+
+        return dic
+
+    def unlink_teams(self):
+        for record in self:
+            partner = record.partner_id
+            _logger.error('\n{}, {}'.format(partner,partner.permanent_room))
+            if partner and record.teams_ok:
+                api = {
+                    'method': 'delete',
+                    'teams_uuid': record.teams_uuid,
+                }
+                self.env['api.teams'].api_crud(api)
             else:
                 _logger.error('\nSTATUS: NO CANCELADA EN LIFESIZE')
 
@@ -596,8 +776,6 @@ class CalendarAppointment(models.Model):
         return dic
 
     def write_event(self, vals):
-        # flag = vals.get('cw_bool') or False
-        # if not flag:
         for record in self:
             if record.event_id and vals.get('calendar_datetime'):
                 start_datetime = fields.Datetime.from_string(vals.get('calendar_datetime'))
@@ -618,9 +796,12 @@ class CalendarAppointment(models.Model):
         self.event_id.write(dic)
         self.event_id.cancel_calendar_event()
         self.state = 'cancel'
-        self.write_lifesize(dic)
-        #self.write(dic)
-        self.unlink_lifesize()
+        if self.teams_ok:
+            #self.write_teams(dic)
+            self.unlink_teams()
+        else:
+            self.write_lifesize(dic)
+            self.unlink_lifesize()
 
     def action_postpone(self):
         self.write({'state': 'postpone'})
@@ -785,3 +966,9 @@ class CalendarAppointmentType(models.Model):
     def search_calendar(self, judged_id):
         res = self.env['calendar.appointment.type'].search([('judged_id','=',judged_id)])
         return res
+
+    def fetch_teams_ok(self, calendar_appointment_type_id=False):
+        if calendar_appointment_type_id:
+            return True if self.env['calendar.appointment.type'].browse(calendar_appointment_type_id).judged_id.teams_api_ok else False
+        else:
+            return False

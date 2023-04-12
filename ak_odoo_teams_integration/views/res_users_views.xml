@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Add Generate token Button and fields for Access token
+  and Refresh token in User Preferences Page -->
+  <record model="ir.ui.view" id="get_token_form">
+    <field name="name">user form: add ms teams token</field>
+    <field name="model">res.users</field>
+    <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+    <field name="arch" type="xml">
+      <xpath expr="//group[@name='preference_contact']" position="inside">
+        <notebook>
+          <page name="microsoft_teams_page" string="Microsoft Teams Token">
+            <div>
+              <group>
+                <button string="Generar Token" icon="fa-globe" type="object"
+                        name="authorize_teams_credentials" class="btn-primary"/>
+              </group>
+              <group>
+                <field name="teams_access_token" attrs="{
+                  'invisible': [('teams_access_token', '=', False)], 'readonly': 1}"/>
+                <field name="teams_refresh_token" attrs="{
+                  'invisible': [('teams_refresh_token', '=', False)], 'readonly': 1}"/>
+              </group>
+            </div>
+          </page>
+        </notebook>
+      </xpath>
+    </field>
+  </record>
+
+</odoo>
