@@ -51,12 +51,6 @@ class ServiceAuth(Component):
         path = odoo.tools.config.session_dir
         _logger.error(path)
 
-        res = {
-                "id": name,
-                "name": 'Token NO Valido',
-                "code": 'False',
-            }
-        return res
 
         result = werkzeug.contrib.sessions.FilesystemSessionStore(
             path, session_class=name, renew_missing=False)
