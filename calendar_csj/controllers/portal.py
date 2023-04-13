@@ -217,13 +217,13 @@ class CustomerPortal(CustomerPortal):
 
         # content according to pager and archive selected
         appointments = request.env['calendar.appointment'].search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
-        request.session['my_appointments_history'] = appointments.ids[:100]
+        #request.session['my_appointments_history'] = appointments.ids[:100]
 
         # excel generation
         # Create a workbook and add a worksheet.
         #if export == 'on' and date_begin and date_end:
         if export == 'true':
-            appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=1000)
+            appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=500)
             response = request.make_response(
                 None,
                 headers=[('Content-Type', 'application/vnd.ms-excel'), ('Content-Disposition', content_disposition('Reporte_Agendamientos.xlsx'))
@@ -580,10 +580,10 @@ class CustomerPortal(CustomerPortal):
         # content according to pager and archive selected
         appointments = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
 
-        request.session['my_appointments_history'] = appointments.ids[:100]
+        #request.session['my_appointments_history'] = appointments.ids[:100]
 
         if export == 'true':
-            appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=1000)
+            appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=500)
             response = request.make_response(
                 None,
                 headers=[('Content-Type', 'application/vnd.ms-excel'), ('Content-Disposition', content_disposition('Reporte_Agendamientos.xlsx'))
