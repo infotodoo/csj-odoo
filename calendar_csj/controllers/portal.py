@@ -74,7 +74,7 @@ class CustomerPortal(CustomerPortal):
     @http.route(['/my/appointments', '/my/appointments/page/<int:page>'], type='http', auth="user", website=True)
     def portal_my_appointments(self, page=1, date_begin=None, time_begin=None, date_end=None, time_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):
         values = self._prepare_portal_layout_values()
-        return request.render("calendar_csj.portal_my_appointments", values)
+
         searchbar_sortings = {
             'date': {'label': _('Fecha de Realización'), 'order': 'calendar_datetime desc'},
             'appointment_code': {'label': _('Agendamiento ID'), 'order': 'appointment_code desc'},
@@ -196,7 +196,8 @@ class CustomerPortal(CustomerPortal):
         if partner.appointment_type != 'scheduler':
             domain += [('partner_id', '=', judged_id.id)]
 
-        appointment_count = request.env['calendar.appointment'].search_count(domain)
+        #appointment_count = request.env['calendar.appointment'].search_count(domain)
+        appointment_count = 20
 
         # pager
         pager = portal_pager(
