@@ -20,6 +20,7 @@ class Users(models.Model):
     teams_refresh_token = fields.Char()
     token_expire = fields.Datetime(string="Expires In")
     code = fields.Char(readonly=True)
+    has_permission_download_report = fields.Boolean(string='Tiene permiso para descargar el reporte?')
 
     def authorize_teams_credentials(self):
         """Redirects to Azure Authorization Url with all required perameters.
