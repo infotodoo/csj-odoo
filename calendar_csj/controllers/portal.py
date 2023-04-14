@@ -222,7 +222,7 @@ class CustomerPortal(CustomerPortal):
         # excel generation
         # Create a workbook and add a worksheet.
         #if export == 'on' and date_begin and date_end:
-        if export == 'true':
+        if export == 'true' and request.env.user.has_permission_download_report:
             appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=500)
             response = request.make_response(
                 None,
@@ -582,7 +582,7 @@ class CustomerPortal(CustomerPortal):
 
         #request.session['my_appointments_history'] = appointments.ids[:100]
 
-        if export == 'true':
+        if export == 'true' and request.env.user.has_permission_download_report:
             appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=500)
             response = request.make_response(
                 None,
