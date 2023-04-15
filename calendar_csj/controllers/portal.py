@@ -46,7 +46,7 @@ class CustomerPortal(CustomerPortal):
         if partner.appointment_type != 'scheduler':
             domain += [('partner_id', '=', judged_id.id)]
 
-        values['appointment_count'] = request.env['calendar.appointment'].sudo().search_count(domain)
+        #values['appointment_count'] = request.env['calendar.appointment'].sudo().search_count(domain)
 
         return values
 
@@ -74,7 +74,7 @@ class CustomerPortal(CustomerPortal):
     @http.route(['/my/appointments', '/my/appointments/page/<int:page>'], type='http', auth="user", website=True)
     def portal_my_appointments(self, page=1, date_begin=None, time_begin=None, date_end=None, time_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):
         values = self._prepare_portal_layout_values()
-        return request.render("calendar_csj.portal_my_appointments", values)
+        #return request.render("calendar_csj.portal_my_appointments", values)
         searchbar_sortings = {
             'date': {'label': _('Fecha de Realización'), 'order': 'calendar_datetime desc'},
             'appointment_code': {'label': _('Agendamiento ID'), 'order': 'appointment_code desc'},
@@ -141,7 +141,8 @@ class CustomerPortal(CustomerPortal):
         order = searchbar_sortings[sortby]['order']
 
         # archive groups - Default Group By 'create_date'
-        archive_groups = self._get_archive_groups('calendar.appointment', domain)
+        #archive_groups = self._get_archive_groups('calendar.appointment', domain)
+        archive_groups = []
         if date_begin and date_end:
             if not time_begin:
                 time_begin = '00:00:00'
@@ -196,10 +197,11 @@ class CustomerPortal(CustomerPortal):
         if partner.appointment_type != 'scheduler':
             domain += [('partner_id', '=', judged_id.id)]
 
-        #appointment_count = request.env['calendar.appointment'].search_count(domain)
-        appointment_count = 20
+        appointment_count = request.env['calendar.appointment'].search_count(domain)
+        #appointment_count = 20
 
         # pager
+        """
         pager = portal_pager(
             url="/my/appointments",
             url_args={'date_begin': date_begin, 'time_begin': time_begin, 'date_end': date_end, 'time_end': time_end, 'search': search, 'sortby': sortby, 'filterby': filterby, 'search_in': search_in},
@@ -207,17 +209,17 @@ class CustomerPortal(CustomerPortal):
             page=page,
             step=self._items_per_page
         )
-
+        """
         if groupby == 'state':
             order = "state, %s" % order
-        appointments = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+        appointments = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=20)
         if groupby == 'state':
             grouped_appointments = [request.env['calendar.appointment'].sudo().concat(*g) for k, g in groupbyelem(appointments, itemgetter('state'))]
         else:
             grouped_appointments = [appointments]
 
         # content according to pager and archive selected
-        appointments = request.env['calendar.appointment'].search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+        appointments = request.env['calendar.appointment'].search(domain, order=order, limit=20)
         #request.session['my_appointments_history'] = appointments.ids[:100]
 
         # excel generation
@@ -416,7 +418,7 @@ class CustomerPortal(CustomerPortal):
             'page_name': 'appointment',
             'archive_groups': archive_groups,
             'default_url': '/my/appointments',
-            'pager': pager,
+            #'pager': pager,
             'searchbar_sortings': searchbar_sortings,
             'searchbar_groupby': searchbar_groupby,
             'searchbar_inputs': searchbar_inputs,
