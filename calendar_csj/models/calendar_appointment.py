@@ -289,7 +289,7 @@ class CalendarAppointment(models.Model):
                 if record.record_data:
                     res += '_' + record.record_data
                 record.tag_number = res
-                #record.name = res
+                record.name = res
             else:
                 record.tag_number = 'Configurar los valores'
 
@@ -402,7 +402,7 @@ class CalendarAppointment(models.Model):
         # ERROR REPORT THIS JUDGED :C res.partner(11307,), False
         if partner and partner.permanent_room:
             #if not partner.teams_api_ok:
-            if vals.get('platform') == 'Teams':
+            if vals.get('platform') != 'Teams':
                 extension = (
                     partner.lifesize_meeting_extension
                     if partner.lifesize_meeting_extension
@@ -446,11 +446,6 @@ class CalendarAppointment(models.Model):
         return res
 
     def write(self, vals):
-        if vals.get('calendar_datetime'):
-            vals.update(self.write_lifesize(vals))
-            vals['sequence_icsfile_ctl'] = self.sequence_icsfile_ctl + 1 if int(self.sequence_icsfile_ctl) else 1
-            self.write_event(vals)
-        return super(CalendarAppointment, self).write(vals)
         res = super(CalendarAppointment, self).write(vals)
         if vals.get('calendar_datetime'):
             if self.teams_ok:
