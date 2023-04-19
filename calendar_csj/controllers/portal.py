@@ -431,7 +431,7 @@ class CustomerPortal(CustomerPortal):
         })
         return request.render("calendar_csj.portal_my_appointments", values)
 
-    @http.route(['/public', '/public/page/<int:page>'], type='http', auth="public", website=True)
+    @http.route(['/public', '/public/page/<int:page>'], type='http', auth="user", website=True)
     def portal_appointments_public(self, page=1, date_begin=None, date_end=None, time_begin=None, time_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):
         values = self._prepare_portal_layout_values()
 
@@ -1012,7 +1012,7 @@ class CustomerPortal(CustomerPortal):
 
     @http.route([
         '/public/videos'
-    ], type='http', auth="user", website=True)
+    ], type='http', auth="public", website=True)
     #def portal_my_videos(self, appointment_id=None, access_token=None, **kw):
     def portal_public_videos(self, appointment_id=None, access_token=None, **kw):
         sid = request.httprequest.cookies.get('session_id')
