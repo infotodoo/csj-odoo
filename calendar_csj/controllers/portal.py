@@ -1027,7 +1027,7 @@ class CustomerPortal(CustomerPortal):
 
     @http.route([
         '/data/recordings'
-    ], type='http', auth="user", website=True)
+    ], type='http', auth="public", website=True)
     def portal_public_recordings(self, appointment_id=None, access_token=None, **kw):
         sid = request.httprequest.cookies.get('session_id')
         uid = request.env.user.id
