@@ -289,7 +289,7 @@ class CalendarAppointment(models.Model):
                 if record.record_data:
                     res += '_' + record.record_data
                 record.tag_number = res
-                record.name = res
+                #record.name = res
             else:
                 record.tag_number = 'Configurar los valores'
 
@@ -394,7 +394,8 @@ class CalendarAppointment(models.Model):
             vals['record_data'] = '01_' + record_date + '_V'
             if vals.get('record_data'):
                 tag += '_' + vals.get('record_data')
-            vals['name'] = tag
+            if tag:
+                vals['name'] = tag
 
         if not vals.get('name'):
             raise UserError('No fue posible definir un nombre para la Sala de Lifesize. Consulte al Administrador')
@@ -652,7 +653,6 @@ class CalendarAppointment(models.Model):
     def unlink_lifesize(self):
         for record in self:
             partner = record.partner_id
-            _logger.error('\n{}, {}'.format(partner,partner.permanent_room))
             if partner and not partner.permanent_room:
                 api = {
                     'method': 'delete',
@@ -665,7 +665,6 @@ class CalendarAppointment(models.Model):
     def write_teams(self, vals):
         for record in self:
             partner = record.partner_id
-            _logger.error('\n{}, {}'.format(partner,partner.permanent_room))
             description = ("Updated to: %s " % (
                 record.calendar_datetime.strftime("%Y%m%d %H%M%S"))
             )
@@ -698,15 +697,11 @@ class CalendarAppointment(models.Model):
                 'method': 'update',
                 'description': description,
                 'name': tag_number,
-                #'ownerExtension': record.lifesize_owner,
                 'teams_uuid': record.teams_uuid,
                 'start': str(datetime.datetime.strptime(str(vals.get('start')), '%Y-%m-%d %H:%M:%S')),
                 'stop': str(datetime.datetime.strptime(str(vals.get('stop')), '%Y-%m-%d %H:%M:%S')),
             }
             resp = self.env['api.teams'].api_crud(api)
-            #dic = self.env['api.teams'].resp2dict(resp)
-            #dic.pop('start')
-            #dic.pop('stop')
             dic = {'state':'postpone'}
 
         return dic
@@ -789,7 +784,6 @@ class CalendarAppointment(models.Model):
 
     def action_confirm(self):
         self.write({'state': 'open'})
-        # self.event_id.write({'state': 'open'})
 
     def action_cancel(self):
         dic = {'state': 'cancel'}
@@ -797,7 +791,6 @@ class CalendarAppointment(models.Model):
         self.event_id.cancel_calendar_event()
         self.state = 'cancel'
         if self.teams_ok:
-            #self.write_teams(dic)
             self.unlink_teams()
         else:
             self.write_lifesize(dic)
