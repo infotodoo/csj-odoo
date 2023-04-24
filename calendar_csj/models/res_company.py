@@ -27,7 +27,7 @@ class ResCompany(models.Model):
     tenant_code = fields.Char(string="Tenant ID",
                               help="Azure Application's Directory ID")
     redirect_url = fields.Char(string="Redirect URI",
-                               compute="_compute_redirect_url",
+                               #compute="_compute_redirect_url",
                                help="[ODOO-URL]/azure/auth_success")
 
     def _compute_redirect_url(self):
