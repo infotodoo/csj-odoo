@@ -75,6 +75,8 @@ class CustomerPortal(CustomerPortal):
     def portal_my_appointments(self, page=1, date_begin=None, time_begin=None, date_end=None, time_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):
         values = self._prepare_portal_layout_values()
         #return request.render("calendar_csj.portal_my_appointments", values)
+        if not request.env.user:
+            return request.redirect('/public')
         searchbar_sortings = {
             'date': {'label': _('Fecha de Realización'), 'order': 'calendar_datetime desc'},
             'appointment_code': {'label': _('Agendamiento ID'), 'order': 'appointment_code desc'},
@@ -804,9 +806,6 @@ class CustomerPortal(CustomerPortal):
             appointment_sudo = request.env['calendar.appointment'].sudo().browse(appointment_id)
         except (AccessError, MissingError):
             return request.redirect('/my')
-
-        if not request.env.user:
-            return request.redirect('/public')
 
         values = self._appointment_get_page_view_values(appointment_sudo, access_token, **kw)
         return request.render("calendar_csj.portal_my_appointment", values)
