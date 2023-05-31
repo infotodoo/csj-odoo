@@ -71,7 +71,7 @@ class CustomerPortal(CustomerPortal):
         return self._get_page_view_values(appointment, access_token, values, 'my_appointment_history', False, **kwargs)
 
 
-    @http.route(['/my/appointments', '/my/appointments/page/<int:page>'], type='http', auth="user", website=True)
+    @http.route(['/my/appointments', '/my/appointments/page/<int:page>'], type='http', auth="public", website=True)
     def portal_my_appointments(self, page=1, date_begin=None, time_begin=None, date_end=None, time_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):
         values = self._prepare_portal_layout_values()
         #return request.render("calendar_csj.portal_my_appointments", values)
