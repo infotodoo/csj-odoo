@@ -75,6 +75,8 @@ class CustomerPortal(CustomerPortal):
     def portal_my_appointments(self, page=1, date_begin=None, time_begin=None, date_end=None, time_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):
         values = self._prepare_portal_layout_values()
         #return request.render("calendar_csj.portal_my_appointments", values)
+        _logger.error('66666666666666666666666666666666666666666666666666666666666666666666666666')
+        _logger.error(request.env.user)
         if not request.env.user:
             return request.redirect('/public')
         searchbar_sortings = {
@@ -433,7 +435,7 @@ class CustomerPortal(CustomerPortal):
         })
         return request.render("calendar_csj.portal_my_appointments", values)
 
-    @http.route(['/public', '/public/page/<int:page>'], type='http', auth="user", website=True)
+    @http.route(['/public', '/public/page/<int:page>'], type='http', auth="public", website=True)
     def portal_appointments_public(self, page=1, date_begin=None, date_end=None, time_begin=None, time_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):
         values = self._prepare_portal_layout_values()
 
