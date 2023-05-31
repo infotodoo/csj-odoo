@@ -79,6 +79,7 @@ class ApiTeams(models.TransientModel):
                         'location') in [False, None] else vals.get('location')
                     },
                 "attendees": attendees,
+                "hideAttendees": True,
                 "organizer": {
                     "emailAddress": {
                         "name": judged_id.name,
