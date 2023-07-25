@@ -71,7 +71,7 @@ class CustomerPortal(CustomerPortal):
         return self._get_page_view_values(appointment, access_token, values, 'my_appointment_history', False, **kwargs)
 
 
-    @http.route(['/my/appointments', '/my/appointments/page/<int:page>'], type='http', auth="public", website=True)
+    @http.route(['/my/appointments', '/my/appointments/page/<int:page>'], type='http', auth="user", website=True)
     def portal_my_appointments(self, page=1, date_begin=None, time_begin=None, date_end=None, time_end=None, sortby=None, filterby=None, search=None, search_in='appointment_code', groupby='none', export='none', **kw):
         values = self._prepare_portal_layout_values()
         #return request.render("calendar_csj.portal_my_appointments", values)
@@ -798,7 +798,7 @@ class CustomerPortal(CustomerPortal):
 
     @http.route([
         '/my/appointment/<int:appointment_id>'
-    ], type='http', auth="public", website=True)
+    ], type='http', auth="user", website=True)
     def portal_my_appointment(self, appointment_id=None, access_token=None, **kw):
         try:
             #appointment_sudo = self._document_check_access('calendar.appointment', appointment_id, access_token)
@@ -1014,7 +1014,7 @@ class CustomerPortal(CustomerPortal):
 
     @http.route([
         '/public/videos'
-    ], type='http', auth="public", website=True)
+    ], type='http', auth="user", website=True)
     #def portal_my_videos(self, appointment_id=None, access_token=None, **kw):
     def portal_public_videos(self, appointment_id=None, access_token=None, **kw):
         sid = request.httprequest.cookies.get('session_id')
@@ -1029,7 +1029,7 @@ class CustomerPortal(CustomerPortal):
 
     @http.route([
         '/data/recordings'
-    ], type='http', auth="public", website=True)
+    ], type='http', auth="user", website=True)
     def portal_public_recordings(self, appointment_id=None, access_token=None, **kw):
         sid = request.httprequest.cookies.get('session_id')
         uid = request.env.user.id
