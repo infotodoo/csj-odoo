@@ -228,7 +228,7 @@ class CustomerPortal(CustomerPortal):
         # Create a workbook and add a worksheet.
         #if export == 'on' and date_begin and date_end:
         if export == 'true' and request.env.user.has_permission_download_report:
-            appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=500)
+            appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=20)
             response = request.make_response(
                 None,
                 headers=[('Content-Type', 'application/vnd.ms-excel'), ('Content-Disposition', content_disposition('Reporte_Agendamientos.xlsx'))
@@ -562,7 +562,7 @@ class CustomerPortal(CustomerPortal):
             domain += [('partner_id', '=', judged_id.id)]
 
         appointment_count = request.env['calendar.appointment'].sudo().search_count(domain)
-
+        self._items_per_page = 20
         # pager
         pager = portal_pager(
             url="/public",
@@ -588,7 +588,7 @@ class CustomerPortal(CustomerPortal):
         #request.session['my_appointments_history'] = appointments.ids[:100]
 
         if export == 'true' and request.env.user.has_permission_download_report:
-            appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=500)
+            appointments_total = request.env['calendar.appointment'].sudo().search(domain, order=order, limit=20)
             response = request.make_response(
                 None,
                 headers=[('Content-Type', 'application/vnd.ms-excel'), ('Content-Disposition', content_disposition('Reporte_Agendamientos.xlsx'))
@@ -803,7 +803,8 @@ class CustomerPortal(CustomerPortal):
         try:
             #appointment_sudo = self._document_check_access('calendar.appointment', appointment_id, access_token)
             # Don't work with _document_check_access for compute tag_number field
-            appointment_sudo = request.env['calendar.appointment'].sudo().browse(appointment_id)
+            if len(appointment_id) == 1:
+                appointment_sudo = request.env['calendar.appointment'].sudo().browse(appointment_id)
         except (AccessError, MissingError):
             return request.redirect('/my')
 
