@@ -803,8 +803,7 @@ class CustomerPortal(CustomerPortal):
         try:
             #appointment_sudo = self._document_check_access('calendar.appointment', appointment_id, access_token)
             # Don't work with _document_check_access for compute tag_number field
-            if len(appointment_id) == 1:
-                appointment_sudo = request.env['calendar.appointment'].sudo().browse(appointment_id)
+            appointment_sudo = request.env['calendar.appointment'].sudo().browse(appointment_id)
         except (AccessError, MissingError):
             return request.redirect('/my')
 
