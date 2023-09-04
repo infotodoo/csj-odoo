@@ -45,6 +45,7 @@
         'views/process_process_view.xml',
         'views/calendar_recording_notification_view.xml',
         'views/template.xml',
+        'report/calendar_appointment.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
