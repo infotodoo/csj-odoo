@@ -1,12 +1,4 @@
 <odoo>
-    <record id="action_calendar_appointment_report_view" model="ir.actions.act_window">
-            <field name="type">ir.actions.act_window</field>
-            <field name="name">Calendar Appointment</field>
-            <field name="res_model">calendar.appointment.report</field>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="action_calendar_appointment_report_tree"/>
-            <!--<field name="view_type">tree</field>-->
-        </record>
  
         <record model="ir.ui.view" id="action_calendar_appointment_report_tree">
             <field name="name">Calendar Appointment</field>
@@ -55,7 +47,16 @@
                 </tree>
             </field>
         </record>
-    
+
+        <record id="action_calendar_appointment_report_view" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Calendar Appointment</field>
+            <field name="res_model">calendar.appointment.report</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="action_calendar_appointment_report_tree"/>
+            <!--<field name="view_type">tree</field>-->
+        </record>
+
      <menuitem name="Calendar Appointment"
                action="action_calendar_appointment_report_view"
                id="menu_calendar_appointment_report_act"
