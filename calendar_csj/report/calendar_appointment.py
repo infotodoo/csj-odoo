@@ -187,7 +187,6 @@ class CalendarAppointmentReport(models.Model):
                 LEFT JOIN calendar_class class on ca.class_id = class.id
 
                 where 1=1
-
             """
         tools.drop_view_if_exists(self.env.cr, self._table)
         self.env.cr.execute("""CREATE or REPLACE VIEW %s as (%s)""" % (self._table, query))
