@@ -151,13 +151,16 @@ class Meeting(models.Model):
                 event.add('rrule').value = meeting.rrule
 
             organizer_add = event.add('organizer')
-            
+
             cn_value = "csj@agendamiento.co"
+            mail_servers = self.env['ir.mail_server'].search([('user_ids', 'in', self.env.uid)])
+            cn_value = [server.smtp_user for server in mail_servers if self.env.uid in server.user_ids.ids]
+            """
             for server_id in self.env['ir.mail_server'].search([]):
                 for user_id in server_id.user_ids:
                     if self.env.uid == user_id.id:
                         cn_value = server_id.smtp_user
-            
+            """
 
             organizer_add.params['CN'] = ["sistemaaudiencias.ramajudicial.gov.co"]
             organizer_add.params['ROLE'] = ["CHAIR"]
