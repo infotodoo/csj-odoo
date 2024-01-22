@@ -41,6 +41,14 @@
                        Seleccione otra fecha u hora para realizar el agendamiento.
                    </p>
                </div>
+              <div t-if="message=='process_date_appointment_failed'" class="alert alert-danger mt16" role="alert">
+                <p>
+                    <strong>
+                      Debe seleccionar una fecha correcta.
+                    </strong><br/><br/>
+                    <strong>Fecha seleccionada: </strong><span t-esc="date_start"/><br/>
+                </p>
+              </div>
            </xpath>
            <xpath expr="//div//div//p[1]" position="replace">
              <p>
@@ -322,6 +330,14 @@
                         Seleccione otra fecha u hora para realizar el agendamiento.
                     </p>
                 </div>
+               <div t-if="message=='process_date_appointment_failed'" class="alert alert-danger mt16" role="alert">
+                <p>
+                    <strong>
+                      Debe seleccionar una fecha correcta.
+                    </strong><br/><br/>
+                    <strong>Fecha seleccionada: </strong><span t-esc="date_start"/><br/>
+                </p>
+               </div>
             </xpath>
             <xpath expr="//ul[@class='wizard mt32 float-right']//li[2]" position="replace"/>
             <xpath expr="//div[1]/div[1]/form[1]" position="replace">

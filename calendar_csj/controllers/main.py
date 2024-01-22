@@ -26,6 +26,9 @@ class WebsiteCalendarInherit(WebsiteCalendar):
     def calendar_appointment_choice(self, appointment_type=None, employee_id=None, message=None, types=None, **kwargs):
         partner = request.env.user.partner_id
         judged_id = None
+        
+        _logger.error('********************************************0000000000000********************************')
+        
         if partner.appointment_type != 'scheduler':
             judged_id = partner.parent_id
             if judged_id:
@@ -103,6 +106,9 @@ class WebsiteCalendarInherit(WebsiteCalendar):
     def calendar_appointment_form(self, appointment_type, date_time, duration, types=False, platform=False, **kwargs):
         request.session['timezone'] = appointment_type.appointment_tz or 'UTC'
         partner_data = {}
+        _logger.error('********************************************222222222222222********************************')
+        _logger.error(date_time)
+        _logger.error(duration)
         request.session['timezone'] = appointment_type.appointment_tz
         day_name = format_datetime(datetime.strptime(date_time, "%Y-%m-%d %H:%M"), 'EEE', locale=get_lang(request.env).code)
         date_formated = format_datetime(datetime.strptime(date_time, "%Y-%m-%d %H:%M"), locale=get_lang(request.env).code)
@@ -113,6 +119,24 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         tz_session = pytz.timezone(timezone)
         date_start = tz_session.localize(fields.Datetime.from_string(date_time)).astimezone(pytz.utc)
         date_end = date_start + relativedelta(hours=float(duration))
+        currentdate = datetime.now(pytz.utc)
+        _logger.error(date_start)
+        _logger.error(currentdate)
+        
+        # Ajustar las horas para ambas fechas
+        currentdate = currentdate.replace(hour=0, minute=0, second=0, microsecond=0)
+        date_start_utc = date_start.replace(hour=0, minute=0, second=0, microsecond=0)
+        _logger.error(date_start)
+        # Comparar las fechas sin tener en cuenta las horas
+        if date_start_utc < currentdate:
+            return request.render("website_calendar.index", {
+                'appointment_type': appointment_type,
+                'suggested_appointment_types': request.env['calendar.appointment.type'].sudo().search([('id','=',appointment_type.id)]),
+                'message': 'process_date_appointment_failed',
+                'date_start': date_start,
+                'date_end': date_end,
+                'types': types,
+            })
 
         # check availability calendar.event with partner of appointment_type
         if appointment_type and appointment_type.judged_id:

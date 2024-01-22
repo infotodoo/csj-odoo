@@ -1852,8 +1852,7 @@
                         <strong>Número de proceso no valido: </strong><span t-esc="process_number"/><br/>
                     </p>
                     </div>
-                    
-                    
+
                     <div t-if="message=='recording_content_add_sucessfull'" class="alert alert-danger mt16" role="alert">
                     <p>
                         <strong>
