@@ -111,7 +111,8 @@ $("#button_submit_appointment").on('click', function(e){
   var duration = $(".o_website_appointment_form select[name='duration']").val();
   var search_city = $(".o_website_appointment_form input[name='search_city']").val();
   var calendar_appointment_type_id = $(".o_website_appointment_form input[name='calendar_appointment_type_id']").val();
-    
+  var currentdate = new Date();
+  var formdate = new Date(date_time);
 
   if (search_city === '' || search_city === null || search_city === 'undefined'){
     Dialog.alert(this, 'Por favor selecione una ciudad!');
@@ -119,6 +120,12 @@ $("#button_submit_appointment").on('click', function(e){
   };
   if (calendar_appointment_type_id === '' || calendar_appointment_type_id === null || calendar_appointment_type_id === 'undefined' || calendar_appointment_type_id === '1'){
     Dialog.alert(this, 'Por favor seleccione un Juzgado!');
+    return false;
+  };
+  formdate.setHours(0, 0, 0, 0);
+  currentdate.setHours(0, 0, 0, 0);
+  if (formdate < currentdate) {
+    Dialog.alert(this, 'Por favor registre una fecha correcta!');
     return false;
   };
   if (date_time === '' || date_time === null || date_time === 'undefined'){
