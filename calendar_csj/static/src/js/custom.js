@@ -194,8 +194,8 @@ $("#button_submit_confirm_appointment").on('click', function(e){
     Dialog.alert(this, 'Por favor registre un número telefónico valido entre 7 y 10 digitos!');
     return false;
   };
-  if (res[1] != 'cendoj.ramajudicial.gov.co' && res[1] != 'cortesuprema.ramajudicial.gov.co' && res[1] != 'consejoestado.ramajudicial.gov.co' && res[1] != 'consejosuperior.ramajudicial.gov.co' && res[1] != 'deaj.ramajudicial.gov.co' && res[1] != 'fiscalia.gov.co' && res[1] != 'axede.com.co' && res[1] != 'corteconstitucional.gov.co'){
-    Dialog.alert(this, "Por favor registre un correo valido. Estos son los dominios autorizados:\ncendoj.ramajudicial.gov.co\ncortesuprema.ramajudicial.gov.co\nconsejoestado.ramajudicial.gov.co\nconsejosuperior.ramajudicial.gov.co\ndeaj.ramajudicial.gov.co\nfiscalia.gov.co\naxede.com.co\ncorteconstitucional.gov.co");
+  if (res[1] != 'cendoj.ramajudicial.gov.co' && res[1] != 'cortesuprema.ramajudicial.gov.co' && res[1] != 'consejoestado.ramajudicial.gov.co' && res[1] != 'consejosuperior.ramajudicial.gov.co' && res[1] != 'deaj.ramajudicial.gov.co' && res[1] != 'fiscalia.gov.co' && res[1] != 'cndj.gov.co' && res[1] != 'corteconstitucional.gov.co'){
+    Dialog.alert(this, "Por favor registre un correo valido. Estos son los dominios autorizados:\ncendoj.ramajudicial.gov.co\ncortesuprema.ramajudicial.gov.co\nconsejoestado.ramajudicial.gov.co\nconsejosuperior.ramajudicial.gov.co\ndeaj.ramajudicial.gov.co\nfiscalia.gov.co\ncndj.gov.co\ncorteconstitucional.gov.co");
     return false;
   };
   if (request_type === '' || request_type === null || request_type === 'undefined'){

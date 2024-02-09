@@ -26,9 +26,6 @@ class WebsiteCalendarInherit(WebsiteCalendar):
     def calendar_appointment_choice(self, appointment_type=None, employee_id=None, message=None, types=None, **kwargs):
         partner = request.env.user.partner_id
         judged_id = None
-        
-        _logger.error('********************************************0000000000000********************************')
-        
         if partner.appointment_type != 'scheduler':
             judged_id = partner.parent_id
             if judged_id:
@@ -106,9 +103,6 @@ class WebsiteCalendarInherit(WebsiteCalendar):
     def calendar_appointment_form(self, appointment_type, date_time, duration, types=False, platform=False, **kwargs):
         request.session['timezone'] = appointment_type.appointment_tz or 'UTC'
         partner_data = {}
-        _logger.error('********************************************222222222222222********************************')
-        _logger.error(date_time)
-        _logger.error(duration)
         request.session['timezone'] = appointment_type.appointment_tz
         day_name = format_datetime(datetime.strptime(date_time, "%Y-%m-%d %H:%M"), 'EEE', locale=get_lang(request.env).code)
         date_formated = format_datetime(datetime.strptime(date_time, "%Y-%m-%d %H:%M"), locale=get_lang(request.env).code)
@@ -203,7 +197,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                           "consejosuperior.ramajudicial.gov.co",
                           "deaj.ramajudicial.gov.co",
                           "fiscalia.gov.co",
-                          "axede.com.co",
+                          "cndj.gov.co",
                           "corteconstitucional.gov.co",
         ]
         if email.split('@')[-1] not in domain_emails:
