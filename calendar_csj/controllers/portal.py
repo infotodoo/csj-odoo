@@ -969,9 +969,7 @@ class CustomerPortal(CustomerPortal):
 
         description = ("Updated to: %s " % (
             appointment_obj.calendar_datetime.strftime("%Y%m%d %H%M%S"))
-            )
-        
-        
+        )
         if appointment_obj.teams_ok:
             api = {
                 'method': 'update',
@@ -980,7 +978,6 @@ class CustomerPortal(CustomerPortal):
                 #'ownerExtension': record.lifesize_owner,
                 'teams_uuid': appointment_obj.teams_uuid,
             }
-            
             resp = request.env['api.teams'].api_crud(api)
             #dic = request.env['api.teams'].resp2dict(resp)
         else:

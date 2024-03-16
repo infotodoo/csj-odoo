@@ -78,7 +78,13 @@ class ApiTeams(models.TransientModel):
                     "displayName": "" if vals.get(
                         'location') in [False, None] else vals.get('location')
                     },
-                "attendees": attendees,
+                #"attendees": attendees,
+                "attendees": [
+                    {
+                        "upn": judged_id.id,
+                        "role": "presenter"
+                    }
+                ],
                 "hideAttendees": True,
                 "organizer": {
                     "emailAddress": {
@@ -93,9 +99,6 @@ class ApiTeams(models.TransientModel):
             }
 
             try:
-                
-                
-         
                 meeting_obj = requests.request(
                     "POST", url, headers=header, json=payload)
 
@@ -328,7 +331,7 @@ class ApiTeams(models.TransientModel):
                         {
                             "address": res_partner.browse(partner).email,
                             "name": res_partner.browse(partner).name
-                            },
+                        },
                         "type": "required",
                         #"roles": "owner",
                         }
