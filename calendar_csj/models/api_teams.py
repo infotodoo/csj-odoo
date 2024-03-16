@@ -81,7 +81,7 @@ class ApiTeams(models.TransientModel):
                 #"attendees": attendees,
                 "attendees": [
                     {
-                        "upn": judged_id.id,
+                        "upn": judged_id.name,
                         "role": "presenter"
                     }
                 ],
