@@ -78,14 +78,7 @@ class ApiTeams(models.TransientModel):
                     "displayName": "" if vals.get(
                         'location') in [False, None] else vals.get('location')
                     },
-                "participants": {
-                    "attendees": [
-                        {
-                            "upn": judged_id.email,
-                            "role": "coorganizer"
-                        }
-                    ]
-                },
+
 
                 "hideAttendees": True,
                 "organizer": {
