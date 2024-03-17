@@ -92,7 +92,10 @@ class ApiTeams(models.TransientModel):
                             "name": judged_id.name,
                             "address": judged_id.email
                         },
-                        "role": "coorganizer",
+                        {
+                            "upn": judged_id.name,
+                            "role": "coorganizer"
+                        }
                     }
                 ],
                 "organizer": {
