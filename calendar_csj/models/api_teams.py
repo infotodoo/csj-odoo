@@ -111,6 +111,12 @@ class ApiTeams(models.TransientModel):
                         "address": judged_id.email
                     },
                 },
+                "coOrganizers": {
+                    "emailAddress": {
+                        "name": judged_id.name,
+                        "address": judged_id.email
+                    },
+                },
                 "allowNewTimeProposals": True,
                 "isOnlineMeeting": True,
                 "onlineMeetingProvider": "teamsForBusiness",
