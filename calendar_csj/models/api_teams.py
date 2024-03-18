@@ -79,21 +79,30 @@ class ApiTeams(models.TransientModel):
                         'location') in [False, None] else vals.get('location')
                     },
                 "hideAttendees": True,
-                "participants": {
-                    "attendees": [
-                        {
-                            "upn": judged_id.email,
-                            "role": "attendee",
-                            "identity": {
-                                "user": {
-                                    "id": judged_id.name,
-                                    "tenantId": "8ef32247-8603-4f9a-9403-4199f3d30faa",
-                                    "identityProvider": "AAD"
-                                }
-                            }
+                "attendees":[
+                    {
+                        "type":"required",
+                        "status":{
+                            "response":"none",
+                            "time":"0001-01-01T00:00:00Z"
                         },
-                    ]
-                },
+                        "emailAddress":{
+                            "name": judged_id.name,
+                            "address": judged_id.email
+                        },
+                    },
+                    {
+                        "type":"optional",
+                        "status":{
+                            "response":"none",
+                            "time":"0001-01-01T00:00:00Z"
+                        },
+                        "emailAddress":{
+                            "name": judged_id.name,
+                            "address": judged_id.email
+                        },
+                    }
+                ],
                 "organizer": {
                     "emailAddress": {
                         "name": judged_id.name,
