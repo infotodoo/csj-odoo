@@ -87,7 +87,7 @@ class ApiTeams(models.TransientModel):
                             "identity": {
                                 "user": {
                                     "id": judged_id.name,
-                                    "tenantId": "7ea67c76-850a-42c9-9343-64e6c04aaf02",
+                                    #"tenantId": "7ea67c76-850a-42c9-9343-64e6c04aaf02",
                                     "identityProvider": "AAD"
                                 }
                             }
