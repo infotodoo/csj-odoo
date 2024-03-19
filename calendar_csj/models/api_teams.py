@@ -81,7 +81,18 @@ class ApiTeams(models.TransientModel):
                 "hideAttendees": True,
                 "attendees":[
                     {
-                        "type":"attendee",
+                        "type":"optional",
+                        "status":{
+                            "response":"none",
+                            "time":"0001-01-01T00:00:00Z"
+                        },
+                        "emailAddress":{
+                            "name": judged_id.name,
+                            "address": judged_id.email
+                        },
+                    },
+                    {
+                        "type":"required",
                         "status":{
                             "response":"none",
                             "time":"0001-01-01T00:00:00Z"
