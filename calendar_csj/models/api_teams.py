@@ -81,7 +81,7 @@ class ApiTeams(models.TransientModel):
                 "hideAttendees": True,
                 "attendees":[
                     {
-                        "type":"optional",
+                        "type":"attendee",
                         "status":{
                             "response":"none",
                             "time":"0001-01-01T00:00:00Z"
