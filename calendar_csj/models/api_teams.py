@@ -92,7 +92,7 @@ class ApiTeams(models.TransientModel):
                         },
                     },
                     {
-                        "type":"required",
+                        "type":"coorganizer",
                         "status":{
                             "response":"none",
                             "time":"0001-01-01T00:00:00Z"
