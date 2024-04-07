@@ -120,7 +120,6 @@ class ApiTeams(models.TransientModel):
                 "chatRestrictions": None,
                 "participants": {
                     "organizer": {
-                        #"upn": "agendamientolf79@cendoj.ramajudicial.gov.co",
                         "upn": self.env.user.company_id.client_email,
                         "role": "presenter",
                         "identity": {
@@ -165,14 +164,11 @@ class ApiTeams(models.TransientModel):
                     )
 
             if meeting_obj.status_code in [201, 200]:
-                meeting = meeting_obj.json().get('onlineMeeting')
-                meeting_content = meeting_obj.json().get('body')
+                meeting = meeting_obj.json()
                 return {
-                    "meeting_body": meeting_content.get(
-                        'content') if meeting else '',
+                    "meeting_body": meeting.get('joinInformation').get('content') if meeting else '',
                     "meeting_url": meeting.get('joinUrl') if meeting else False,
-                    "meeting_id": meeting_obj.json().get(
-                        'id') if meeting else False,
+                    "meeting_id": meeting.get('id') if meeting else False,
                     "action": 'CREATED'
                     }
             else:
