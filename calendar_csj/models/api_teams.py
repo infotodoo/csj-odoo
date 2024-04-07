@@ -170,7 +170,7 @@ class ApiTeams(models.TransientModel):
                     "meeting_url": meeting.get('joinUrl') if meeting else False,
                     "meeting_id": meeting.get('id') if meeting else False,
                     "action": 'CREATED'
-                    }
+                }
             else:
                 error_body = meeting_obj.json().get('error')
                 error_message = "Error creating online meeting link" + \
