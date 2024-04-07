@@ -43,14 +43,27 @@ class ApiTeams(models.TransientModel):
                 active_user.refresh_token()
             token = active_user.teams_access_token
 
+            # Primero obtenemos el ID del usuario con el que vamos a crear los teams
+            url = f"https://graph.microsoft.com/v1.0/users/{self.env.user.company_id.client_email}"
+            # Encabezados de la solicitud
+            headers = {
+                "Authorization": f"Bearer {token}"
+            }
+            try:
+                response = requests.get(url, headers=headers)
+                response.raise_for_status()  # Verificar si hay errores en la respuesta HTTP
+                user_data = response.json()
+                user_id = user_data.get('id')
+            except requests.exceptions.RequestException as e:
+                raise ValidationError(f"No se pudo obtener el ID del usuario: {e}")
+
             judged_id = self.env['res.partner'].browse(int(vals.get('judged_id')))
 
             if not active_user.is_authenticated:
                 raise ValidationError("Genere un token de acceso para crear una reunión de Microsoft Teams")
             attendees = self.prepare_attendee_vals(vals.get('partner_ids'))
 
-            url = "https://graph.microsoft.com/v1.0/users/" + \
-            "{}/calendar/events".format(self.env.user.company_id.client_email)
+            url = f"https://graph.microsoft.com/v1.0/users/{user_id}/onlineMeetings"
             header = {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer {}".format(token)
@@ -60,61 +73,71 @@ class ApiTeams(models.TransientModel):
             except:
                 description = vals.get("description")
             payload = {
-                "subject": vals.get("displayName"),
-                "showAs": vals.get('busy'),
-                "body": {
-                    "contentType": "HTML",
-                    "content": vals.get('description')
+                #"creationDateTime": "2024-03-31T03:01:00.8828145Z",
+                "creationDateTime": vals.get('start'),
+                #"startDateTime": "2024-03-31T03:13:00.3317967Z",
+                "startDateTime": vals.get('start'),
+                #"endDateTime": "2024-03-31T04:13:30.3317967Z",
+                "endDateTime": vals.get('stop'),
+                "isBroadcast": False,
+                "autoAdmittedUsers": "everyoneInCompany",
+                "outerMeetingAutoAdmittedUsers": None,
+                "capabilities": [],
+                "externalId": None,
+                "iCalUid": None,
+                "meetingType": None,
+                "meetingsMigrationMode": None,
+                "subject": None,
+                "videoTeleconferenceId": None,
+                "isEntryExitAnnounced": True,
+                "allowedPresenters": "everyone",
+                "allowAttendeeToEnableMic": True,
+                "allowAttendeeToEnableCamera": True,
+                "allowMeetingChat": "enabled",
+                "shareMeetingChatHistoryDefault": "none",
+                "allowTeamworkReactions": True,
+                "anonymizeIdentityForRoles": [],
+                "recordAutomatically": False,
+                "allowParticipantsToChangeName": False,
+                "allowTranscription": True,
+                "allowRecording": True,
+                "meetingTemplateId": None,
+                "broadcastSettings": None,
+                "meetingInfo": None,
+                "audioConferencing": None,
+                "watermarkProtection": None,
+                "chatRestrictions": None,
+                "participants": {
+                    "organizer": {
+                        #"upn": "agendamientolf79@cendoj.ramajudicial.gov.co",
+                        "upn": active_user.email,
+                        "role": "presenter",
+                        "identity": {
+                            "application": None,
+                            "device": None,
+                            "user": {
+                                "id": user_id,
+                                "displayName": None,
+                                "tenantId": "622cba98-80f8-41f3-8df5-8eb99901598b",
+                                "identityProvider": "AAD"
+                            }
+                        }
                     },
-                "start": {
-                    "dateTime": vals.get('start'),
-                    "timeZone": "UTC"
-                    },
-                "end": {
-                    "dateTime": vals.get('stop'),
-                    "timeZone": "UTC"
-                    },
-                "location": {
-                    "displayName": "" if vals.get(
-                        'location') in [False, None] else vals.get('location')
-                    },
-                "hideAttendees": True,
-                "attendees":[
-                    {
-                        "type":"required",
-                        "status":{
-                            "response":"none",
-                            "time":"0001-01-01T00:00:00Z"
+                    "attendees": [
+                        {
+                            "upn": judged_id.email,
+                            "displayName": judged_id.name,
+                            "role": "coorganizer",
                         },
-                        "emailAddress":{
-                            "name": judged_id.name,
-                            "address": judged_id.email
-                        },
-                    },
-                    {
-                        "type":"optional",
-                        "status":{
-                            "response":"none",
-                            "time":"0001-01-01T00:00:00Z"
-                        },
-                        "emailAddress":{
-                            "name": judged_id.name,
-                            "address": judged_id.email
-                        },
-                    }
-                ],
-                "organizer": {
-                    "emailAddress": {
-                        "name": judged_id.name,
-                        "address": judged_id.email
-                    },
-                },
-                "allowNewTimeProposals": True,
-                "isOnlineMeeting": True,
-                "onlineMeetingProvider": "teamsForBusiness",
-                "isAllDay": vals.get('allday')
+                        """
+                        {
+                            "upn": "japulido@sysman.com.co",
+                            "role": "presenter"
+                        }
+                        """
+                    ]
+                }
             }
-
             try:
                 meeting_obj = requests.request(
                     "POST", url, headers=header, json=payload)
