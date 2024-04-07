@@ -165,6 +165,7 @@ class ApiTeams(models.TransientModel):
 
             if meeting_obj.status_code in [201, 200]:
                 meeting = meeting_obj.json()
+                _logger.error(meeting.get('joinUrl'))
                 return {
                     "meeting_body": meeting.get('joinInformation').get('content') if meeting else '',
                     "meeting_url": meeting.get('joinUrl') if meeting else False,
