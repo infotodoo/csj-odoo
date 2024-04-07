@@ -141,7 +141,7 @@ class Meeting(models.Model):
                 event.add('status').value = 'CONFIRMED'
             #event.add('uid').value = self.appointment_id.process_number + datetime.datetime.now().strftime("%Y%m%Y/%H:%M:%S")
             event.add('uid').value = self.appointment_id.process_number + self.appointment_id.calendar_datetime.strftime("%Y%m%d %H%M%S")
-            
+
             event.add('sequence').value = str(self.appointment_id.sequence_icsfile_ctl)
             if meeting.description:
                 event.add('description').value = meeting.description
@@ -151,13 +151,12 @@ class Meeting(models.Model):
                 event.add('rrule').value = meeting.rrule
 
             organizer_add = event.add('organizer')
-            
+
             cn_value = "csj@agendamiento.co"
             for server_id in self.env['ir.mail_server'].search([]):
                 for user_id in server_id.user_ids:
                     if self.env.uid == user_id.id:
                         cn_value = server_id.smtp_user
-            
 
             organizer_add.params['CN'] = ["sistemaaudiencias.ramajudicial.gov.co"]
             organizer_add.params['ROLE'] = ["CHAIR"]
