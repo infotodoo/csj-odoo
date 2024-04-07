@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import pytz
 from dateutil.relativedelta import relativedelta
 import requests
+import urllib.parse
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 import string
@@ -166,8 +167,10 @@ class ApiTeams(models.TransientModel):
             if meeting_obj.status_code in [201, 200]:
                 meeting = meeting_obj.json()
                 _logger.error(meeting.get('joinUrl'))
+                # Decodificar el contenido
+                decoded_content = urllib.parse.unquote(meeting.get('joinInformation').get('content'))
                 return {
-                    "meeting_body": meeting.get('joinInformation').get('content') if meeting else '',
+                    "meeting_body": decoded_content if meeting else '',
                     "meeting_url": meeting.get('joinUrl') if meeting else False,
                     "meeting_id": meeting.get('id') if meeting else False,
                     "action": 'CREATED'
