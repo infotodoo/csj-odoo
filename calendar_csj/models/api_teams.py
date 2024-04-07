@@ -2,6 +2,7 @@
 
 import logging
 from datetime import datetime, timedelta
+import pytz
 from dateutil.relativedelta import relativedelta
 import requests
 from odoo import models, fields, api, _
@@ -72,13 +73,23 @@ class ApiTeams(models.TransientModel):
                 description = vals.get("description").replace("\n", " - ")
             except:
                 description = vals.get("description")
+
+            # Convertir las cadenas de fecha y hora a objetos datetime
+            start_datetime = datetime.strptime(vals.get('start'), '%Y-%m-%d %H:%M:%S')
+            end_datetime = datetime.strptime(vals.get('stop'), '%Y-%m-%d %H:%M:%S')
+
+            # Aplicar la zona horaria UTC a las fechas y horas
+            start_datetime_utc = start_datetime.replace(tzinfo=pytz.timezone('UTC'))
+            end_datetime_utc = end_datetime.replace(tzinfo=pytz.timezone('UTC'))
+
+            # Formatear las fechas y horas en el nuevo formato
+            formatted_start = start_datetime_utc.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+            formatted_end = end_datetime_utc.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
             payload = {
-                #"creationDateTime": "2024-03-31T03:01:00.8828145Z",
-                "creationDateTime": vals.get('start'),
-                #"startDateTime": "2024-03-31T03:13:00.3317967Z",
-                "startDateTime": vals.get('start'),
-                #"endDateTime": "2024-03-31T04:13:30.3317967Z",
-                "endDateTime": vals.get('stop'),
+                "creationDateTime": formatted_start,
+                "startDateTime": formatted_start,
+                "endDateTime": formatted_end,
                 "isBroadcast": False,
                 "autoAdmittedUsers": "everyoneInCompany",
                 "outerMeetingAutoAdmittedUsers": None,
@@ -110,7 +121,7 @@ class ApiTeams(models.TransientModel):
                 "participants": {
                     "organizer": {
                         #"upn": "agendamientolf79@cendoj.ramajudicial.gov.co",
-                        "upn": active_user.email,
+                        "upn": self.env.user.company_id.client_email,
                         "role": "presenter",
                         "identity": {
                             "application": None,
