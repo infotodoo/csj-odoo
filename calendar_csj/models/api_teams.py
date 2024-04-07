@@ -65,6 +65,7 @@ class ApiTeams(models.TransientModel):
                 raise ValidationError("Genere un token de acceso para crear una reunión de Microsoft Teams")
             attendees = self.prepare_attendee_vals(vals.get('partner_ids'))
 
+            tenantId = "622cba98-80f8-41f3-8df5-8eb99901598b"
             url = f"https://graph.microsoft.com/v1.0/users/{user_id}/onlineMeetings"
             header = {
                 "Content-Type": "application/json",
@@ -129,7 +130,7 @@ class ApiTeams(models.TransientModel):
                             "user": {
                                 "id": user_id,
                                 "displayName": None,
-                                "tenantId": "622cba98-80f8-41f3-8df5-8eb99901598b",
+                                "tenantId": tenantId,
                                 "identityProvider": "AAD"
                             }
                         }
@@ -142,17 +143,15 @@ class ApiTeams(models.TransientModel):
                     ]
                 }
             }
-            _logger.error(payload)
+            #_logger.error(payload)
             try:
                 meeting_obj = requests.request(
                     "POST", url, headers=header, json=payload)
-
             except requests.exceptions.ConnectionError:
                 _logger.exception("No se pudo establecer la conexión en %s", url)
                 raise ValidationError(
                     _("No se pudo establecer la conexión con Microsoft Teams.")
                     )
-
             except requests.exceptions.HTTPError:
                 _logger.exception(
                     "Invalid API request at %s", url
@@ -163,16 +162,50 @@ class ApiTeams(models.TransientModel):
                         url,
                         )
                     )
-
             if meeting_obj.status_code in [201, 200]:
                 meeting = meeting_obj.json()
-                _logger.error(meeting.get('joinUrl'))
+                #_logger.error(meeting.get('joinUrl'))
                 # Decodificar el contenido
                 decoded_content = urllib.parse.unquote(meeting.get('joinInformation').get('content'))
+                meeting_id = meeting.get('id')
+                join_url = meeting.get('joinUrl')
+                organizer_id = user_id
+                tenant_id = tenantId
+                thread_id = meeting.get('chatInfo').get('threadId')
+                content_html = """
+                    <div style="max-width: 520px; color: #242424; font-family:'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" class="me-email-text">
+                    <div style="margin-bottom:24px;overflow:hidden;white-space:nowrap;">________________________________________________________________________________</div>
+
+                    <div style="margin-bottom:12px;">
+                        <span class="me-email-text" style="font-size: 24px;font-weight: 700;margin-right:12px;">Microsoft Teams</span>
+                        <a id="meet_invite_block.action.help" class="me-email-link" style="font-size:14px;text-decoration:underline;color: #5B5FC7;" href="https://aka.ms/JoinTeamsMeeting?omkt=en-US">Need help?</a>
+                    </div>
+
+                    <div style="margin-bottom:6px;">
+                        <a id="meet_invite_block.action.join_link" class="me-email-headline" style="font-size: 20px;font-weight:600;text-decoration:underline;color: #5B5FC7;" href="{joinUrl}" target="_blank" rel="noreferrer noopener">Join the meeting now</a>
+                    </div>
+
+                    <div style="margin-bottom:6px;">
+                        <span class="me-email-text-secondary" style="font-size: 14px;color: #616161;">Meeting ID: </span>
+                        <span class="me-email-text" style="font-size: 14px;color: #242424;">{meeting_id}</span>
+                    </div>
+
+                    <div style="margin-bottom:24px;max-width: 532px;">
+                        <hr style="border: 0;background: #D1D1D1;height: 1px;">
+                    </div>
+
+                    <div>
+                        <span class="me-email-text-secondary" style="font-size: 14px;color: #616161;">For organizers: </span>
+                        <a id="meet_invite_block.action.organizer_meet_options" class="me-email-link" style="font-size: 14px;text-decoration:underline;color: #5B5FC7;" target="_blank" href="https://teams.microsoft.com/meetingOptions/?organizerId={organizer_id}&tenantId={tenant_id}&threadId={thread_id}&messageId=0&language=en-US" rel="noreferrer noopener">Meeting options</a>
+                        <span style="color: #D1D1D1">|</span>
+                        <a id="meet_invite_block.action.organizer_reset_dialin_pin" class="me-email-link" style="font-size: 14px;text-decoration:underline;color: #5B5FC7;" target="_blank" href="https://dialin.teams.microsoft.com/usp/pstnconferencing" rel="noreferrer noopener">Reset dial-in PIN</a>
+                    </div>
+                """.format(meeting_id=meeting_id, joinUrl=join_url, organizer_id=organizer_id, tenant_id=tenant_id, thread_id=thread_id)
+
                 return {
-                    "meeting_body": decoded_content if meeting else '',
-                    "meeting_url": meeting.get('joinUrl') if meeting else False,
-                    "meeting_id": meeting.get('id') if meeting else False,
+                    "meeting_body": content_html if meeting else '',
+                    "meeting_url": join_url if meeting else False,
+                    "meeting_id": meeting_id if meeting else False,
                     "action": 'CREATED'
                 }
             else:
