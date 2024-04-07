@@ -126,18 +126,12 @@ class ApiTeams(models.TransientModel):
                     "attendees": [
                         {
                             "upn": judged_id.email,
-                            "displayName": judged_id.name,
                             "role": "coorganizer",
                         },
-                        """
-                        {
-                            "upn": "japulido@sysman.com.co",
-                            "role": "presenter"
-                        }
-                        """
                     ]
                 }
             }
+            _logger.error(payload)
             try:
                 meeting_obj = requests.request(
                     "POST", url, headers=header, json=payload)
