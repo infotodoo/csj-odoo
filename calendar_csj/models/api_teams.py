@@ -100,7 +100,7 @@ class ApiTeams(models.TransientModel):
                 "iCalUid": None,
                 "meetingType": None,
                 "meetingsMigrationMode": None,
-                "subject": None,
+                "subject": vals.get("displayName") if vals.get("displayName") else None,
                 "videoTeleconferenceId": None,
                 "isEntryExitAnnounced": True,
                 "allowedPresenters": "everyone",
@@ -178,7 +178,7 @@ class ApiTeams(models.TransientModel):
 
                     <div style="margin-bottom:12px;">
                         <span class="me-email-text" style="font-size: 24px;font-weight: 700;margin-right:12px;">Reunión de Microsoft Teams</span>
-                        <a id="meet_invite_block.action.help" class="me-email-link" style="font-size:14px;text-decoration:underline;color: #5B5FC7;" href="https://aka.ms/JoinTeamsMeeting?omkt=en-US">Need help?</a>
+                        <a id="meet_invite_block.action.help" class="me-email-link" style="font-size:14px;text-decoration:underline;color: #5B5FC7;" href="https://aka.ms/JoinTeamsMeeting?omkt=en-US">Necesita Ayuda?</a>
                     </div>
                     <div style="margin-top:0px; margin-bottom:0px; font-weight:bold">
                         <span style="font-size:14px; color:#252424">
@@ -209,14 +209,16 @@ class ApiTeams(models.TransientModel):
                             Opciones de la réunion
                         </a>
                         <span style="color: #D1D1D1">|</span>
-                        <a id="meet_invite_block.action.organizer_reset_dialin_pin" class="me-email-link" style="font-size: 14px;text-decoration:underline;color: #5B5FC7;" target="_blank" href="https://dialin.teams.microsoft.com/usp/pstnconferencing" rel="noreferrer noopener">Reset dial-in PIN</a>
+                        <a id="meet_invite_block.action.organizer_reset_dialin_pin" class="me-email-link" style="font-size: 14px;text-decoration:underline;color: #5B5FC7;" target="_blank" href="https://dialin.teams.microsoft.com/usp/pstnconferencing" rel="noreferrer noopener">
+                            Reset dial-in PIN
+                        </a>
                     </div>
                 """.format(meeting_id=meeting_id, joinUrl=join_url, organizer_id=organizer_id, tenant_id=tenant_id, thread_id=thread_id)
 
                 return {
-                    "meeting_body": content_html if meeting else '',
-                    "meeting_url": join_url if meeting else False,
-                    "meeting_id": meeting_id if meeting else False,
+                    "meeting_body": content_html if content_html else '',
+                    "meeting_url": join_url if join_url else False,
+                    "meeting_id": meeting_id if meeting_id else False,
                     "action": 'CREATED'
                 }
             else:

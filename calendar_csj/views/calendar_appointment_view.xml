@@ -167,11 +167,14 @@
                                 <!--<field name="link_streaming" attrs="{'invisible': [('type','!=','streaming'),('state','!=','realized')]}" />-->
                             </group>
                             <group>
+                                <field name="platform_type" readonly="False"/>
+                            </group>
+                            <group attrs="{'invisible': [('platform_type','!=','teams')]}">
                                 <field name="lifesize_meeting_ext" readonly="True" string="Ext reunión Lifesize"/>
                                 <field name="lifesize_url" readonly="True" />
                                 <field name="name" readonly="True" string="API Lifesize "/>
                             </group>
-                            <group groups="base.group_no_one">
+                            <group groups="base.group_no_one" attrs="{'invisible': [('platform_type','!=','teams')]}">
                                 <field name="event_id" readonly="True" />
                                 <field name="lifesize_uuid" readonly="True" />
                                 <field name="lifesize_pin" readonly="True" />
@@ -179,7 +182,7 @@
                                 <field name="lifesize_moderator" readonly="True" />
                                 <field name="lifesize_modified" readonly="True" />
                             </group>
-                            <group groups="base.group_no_one" string="Teams">
+                            <group groups="base.group_no_one" string="Teams" attrs="{'invisible': [('platform_type','==','teams')]}">
                                 <field name="teams_url" readonly="True" />
                                 <field name="teams_uuid" readonly="True" />
                                 <field name="teams_moderator" readonly="True" />
