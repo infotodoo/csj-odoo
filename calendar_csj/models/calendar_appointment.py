@@ -200,7 +200,7 @@ class CalendarAppointment(models.Model):
     ], 'Api de Agendamiento', compute='_compute_platform_type')
 
     @api.depends('teams_ok')
-    def _compute_platform_type():
+    def _compute_platform_type(self):
         for rec in self:
             if rec.teams_ok:
                 rec.platform_type = 'teams'
