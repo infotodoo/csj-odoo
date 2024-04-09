@@ -116,7 +116,7 @@ class ApiTeams(models.TransientModel):
                 "allowRecording": True,
                 "meetingTemplateId": None,
                 "broadcastSettings": None,
-                "meetingInfo": None,
+                "meetingInfo": vals.get("description") if vals.get("description") else None,
                 "audioConferencing": None,
                 "watermarkProtection": None,
                 "chatRestrictions": None,
