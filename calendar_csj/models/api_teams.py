@@ -147,7 +147,7 @@ class ApiTeams(models.TransientModel):
                     ]
                 }
             }
-            #_logger.error(payload)
+            _logger.error(payload)
             try:
                 meeting_obj = requests.request(
                     "POST", url, headers=header, json=payload)
