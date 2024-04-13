@@ -103,7 +103,7 @@ class ApiTeams(models.TransientModel):
                 "subject": vals.get("displayName") if vals.get("displayName") else None,
                 "videoTeleconferenceId": None,
                 "isEntryExitAnnounced": True,
-                "allowedPresenters": "everyone",
+                "allowedPresenters": "roleIsPresenter",
                 "allowAttendeeToEnableMic": True,
                 "allowAttendeeToEnableCamera": True,
                 "allowMeetingChat": "enabled",
@@ -140,10 +140,14 @@ class ApiTeams(models.TransientModel):
                             "upn": judged_id.email,
                             "role": "coorganizer",
                         },
+                        {
+                            "upn": judged_id.email,
+                            "role": "presenter",
+                        },
                     ]
                 }
             }
-            #_logger.error(payload)
+            _logger.error(payload)
             try:
                 meeting_obj = requests.request(
                     "POST", url, headers=header, json=payload)
