@@ -167,6 +167,9 @@
                                 <!--<field name="link_streaming" attrs="{'invisible': [('type','!=','streaming'),('state','!=','realized')]}" />-->
                             </group>
                             <group>
+                                <field name="coorganizer" readonly="False"/>
+                            </group>
+                            <group>
                                 <field name="platform_type" readonly="False"/>
                             </group>
                             <group attrs="{'invisible': [('platform_type','==','teams')]}">

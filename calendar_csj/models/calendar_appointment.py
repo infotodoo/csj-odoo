@@ -198,6 +198,7 @@ class CalendarAppointment(models.Model):
     platform_type = fields.Selection([
         ('teams', 'TEAMS'), ('lifesize', 'LIFESIZE')
     ], 'Api de Agendamiento', compute='_compute_platform_type')
+    coorganizer = fields.Char('Listas de Coorganizadores')
 
     @api.depends('teams_ok')
     def _compute_platform_type(self):
