@@ -362,6 +362,21 @@ class CalendarAppointment(models.Model):
             else:
                 continue
 
+    def validateCoorganizer(self, coOrganizers):
+        emails = coOrganizers.split(',')
+        domain_emails = [ "cendoj.ramajudicial.gov.co",
+                          "cortesuprema.ramajudicial.gov.co",
+                          "consejoestado.ramajudicial.gov.co",
+                          "consejosuperior.ramajudicial.gov.co",
+                          "deaj.ramajudicial.gov.co",
+                          "fiscalia.gov.co",
+                          "cndj.gov.co",
+                          "corteconstitucional.gov.co",
+        ]
+        for email in emails:
+            email = email.strip()
+        if email.split('@')[-1] not in domain_emails:
+            raise UserError('Los correos de la lista de Coorganizadores deben pertenecer a un dominio de organización valido.')
 
     @api.model
     def create(self, vals):
@@ -373,6 +388,10 @@ class CalendarAppointment(models.Model):
         vals["appointment_code"] = self.env["ir.sequence"].next_by_code(
             "calendar.appointment.document.number"
         )
+
+        if vals.get('coorganizer'):
+            self.validateCoorganizer(vals.get('coorganizer'))
+
         online_appointment_type = self.env["calendar.appointment.type"].search(
             [("id", "=", vals.get("appointment_type_id"))]
         )[0]
@@ -460,9 +479,10 @@ class CalendarAppointment(models.Model):
 
     def write(self, vals):
         res = super(CalendarAppointment, self).write(vals)
+        if vals.get('coorganizer'):
+            self.validateCoorganizer(vals.get('coorganizer'))
         if vals.get('calendar_datetime'):
             if self.teams_ok:
-                
                 tag_number = self.name
                 if self.city_id and self.city_id.zipcode \
                     and (self.room_id or self.type != 'audience') \
