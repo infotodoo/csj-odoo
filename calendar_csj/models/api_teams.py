@@ -103,7 +103,7 @@ class ApiTeams(models.TransientModel):
                 "subject": vals.get("displayName") if vals.get("displayName") else None,
                 "videoTeleconferenceId": None,
                 "isEntryExitAnnounced": True,
-                "allowedPresenters": ["organizador", "coorganizador"],
+                "allowedPresenters": "roleIsPresenter",
                 "allowAttendeeToEnableMic": True,
                 "allowAttendeeToEnableCamera": True,
                 "allowMeetingChat": "enabled",
@@ -113,7 +113,7 @@ class ApiTeams(models.TransientModel):
                 "recordAutomatically": False,
                 "allowParticipantsToChangeName": False,
                 "allowTranscription": True,
-                "allowRecording": ["organizador", "coorganizador"],
+                "allowRecording": True,
                 "meetingTemplateId": None,
                 "broadcastSettings": None,
                 "meetingInfo": vals.get("description") if vals.get("description") else None,
@@ -139,6 +139,10 @@ class ApiTeams(models.TransientModel):
                         {
                             "upn": judged_id.email,
                             "role": "coorganizer",
+                        },
+                        {
+                            "upn": judged_id.email,
+                            "role": "presenter",
                         },
                     ]
                 }
