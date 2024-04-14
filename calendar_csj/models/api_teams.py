@@ -93,8 +93,8 @@ class ApiTeams(models.TransientModel):
                 "startDateTime": formatted_start,
                 "endDateTime": formatted_end,
                 "isBroadcast": False,
-                "autoAdmittedUsers": "everyone",
-                "outerMeetingAutoAdmittedUsers": "everyone",
+                #"autoAdmittedUsers": "everyone",
+                #"outerMeetingAutoAdmittedUsers": "everyone",
                 "capabilities": [],
                 "externalId": None,
                 "iCalUid": None,
@@ -120,6 +120,11 @@ class ApiTeams(models.TransientModel):
                 "audioConferencing": None,
                 "watermarkProtection": None,
                 "chatRestrictions": None,
+                "isDialInBypassEnabled": True,
+                "isEntryExitAnnounced": True,
+                "lobbyBypassSettings": {
+                    "scope": "everyone"
+                },
                 "participants": {
                     "organizer": {
                         "upn": self.env.user.company_id.client_email,
