@@ -121,7 +121,7 @@ class ApiTeams(models.TransientModel):
                 "watermarkProtection": None,
                 "chatRestrictions": None,
                 "isDialInBypassEnabled": True,
-                "isEntryExitAnnounced": True,
+                "isEntryExitAnnounced": False,
                 "lobbyBypassSettings": {
                     "scope": "everyone"
                 },
