@@ -49,6 +49,7 @@ class CalendarEvent(models.Model):
         vals.pop('room_id', None)
         vals.pop('applicant_raw_name', None)
         vals.pop('platform')
+        vals.pop('coorganizer')
         res = super(CalendarEvent, self).create(vals)
         res.appointment_id.write({'event_id': res.id})
         return res
@@ -95,6 +96,7 @@ class CalendarEvent(models.Model):
             'connection_type': vals.get('connection_type'),
             'applicant_raw_name': vals.get('applicant_raw_name'),
             'platform': vals.get('platform'),
+            'coorganizer': vals.get('coorganizer'),
         })
         dic.update(appointment_id=appointment.id)
         return dic

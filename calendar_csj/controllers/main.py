@@ -179,7 +179,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
     def calendar_appointment_submit(self, appointment_type, datetime_str, employee_id, types, class_id, reception_detail,
                                     reception_id, process_number, request_type, duration, request_date, connection_type,
                                     room_id, help_id, name, email, phone, guestcont, destinationcont, partaker_type,
-                                    declarant_text=False, indicted_text=False, description=False,
+                                    declarant_text=False, indicted_text=False, description=False, coorganizer=False,
                                     country_id=False, platform=False, **kwargs):
 
         timezone = request.session['timezone']
@@ -208,6 +208,16 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                 'duration': duration,
                 'types': types,
             })
+        if coorganizer:
+            coorganizer_emails = coorganizer.split(',')
+            if coorganizer_emails.split('@')[-1] not in domain_emails:
+                return request.render("website_calendar.appointment_form", {
+                    'appointment_type': appointment_type,
+                    'message': 'process_email_failed',
+                    'date_start': date_start,
+                    'duration': duration,
+                    'types': types,
+                })
 
         # check availability of the employee again (in case someone else booked while the client was entering the form)
         Employee = request.env['hr.employee'].sudo().browse(int(employee_id))
@@ -387,6 +397,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'connection_type': connection_type,
             'applicant_raw_name': name,
             'platform': platform,
+            'coorganizer': coorganizer,
         })
         event.attendee_ids.write({'state': 'accepted'})
         return request.redirect('/website/calendar/view/' + event.access_token + '?message=new')

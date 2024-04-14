@@ -183,10 +183,10 @@
                                 <field name="lifesize_modified" readonly="True" />
                             </group>
                             <group groups="base.group_no_one" string="Teams" attrs="{'invisible': [('platform_type','!=','teams')]}">
-                                <field name="coorganizer" readonly="False"/>
                                 <field name="teams_url" readonly="True" />
                                 <field name="teams_uuid" readonly="True" />
                                 <field name="teams_moderator" readonly="True" />
+                                <field name="coorganizer" readonly="False"/>
                             </group>
                         </group>
                         <notebook>

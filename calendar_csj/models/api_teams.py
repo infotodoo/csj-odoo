@@ -88,6 +88,8 @@ class ApiTeams(models.TransientModel):
             formatted_start = start_datetime_utc.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
             formatted_end = end_datetime_utc.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
+            coorganizers = vals.get('coorganizer')
+
             payload = {
                 "creationDateTime": formatted_start,
                 "startDateTime": formatted_start,
@@ -152,6 +154,18 @@ class ApiTeams(models.TransientModel):
                     ]
                 }
             }
+
+            # Agregar los coorganizadores adicionales como coorganizadores y presentadores
+            for email in coorganizers.split(','):
+                payload["participants"]["attendees"].append({
+                    "upn": email.strip(),
+                    "role": "coorganizer",
+                })
+                payload["participants"]["attendees"].append({
+                    "upn": email.strip(),
+                    "role": "presenter",
+                })
+
             _logger.error(payload)
             try:
                 meeting_obj = requests.request(

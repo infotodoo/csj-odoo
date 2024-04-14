@@ -463,6 +463,7 @@ class CalendarAppointment(models.Model):
                     'stop': date_end,
                     'teams_ok': True if vals.get('platform') == 'Teams' else False,
                     'judged_id': online_appointment_type.judged_id.id,
+                    'coorganizer': '' if vals.get('coorganizer') else False,
                 })
                 vals.update(self.create_teams(vals))
                 if 'start' in vals:
@@ -591,8 +592,9 @@ class CalendarAppointment(models.Model):
             'stop': str(datetime.datetime.strptime(str(vals.get('stop')), '%Y-%m-%d %H:%M:%S')),
             'partner_ids': vals.get('partners_ids'),
             'judged_id': vals.get('judged_id'),
+            'coorganizer': vals.get('coorganizer'),
         }
-            
+
         judged_extension_lifesize = False
         if vals.get('appointment_type_id'):
             online_appointment_type = self.env['calendar.appointment.type'].search(
