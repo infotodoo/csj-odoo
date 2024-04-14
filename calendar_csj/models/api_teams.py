@@ -106,7 +106,7 @@ class ApiTeams(models.TransientModel):
                 "allowedPresenters": "roleIsPresenter",
                 "allowAttendeeToEnableMic": True,
                 "allowAttendeeToEnableCamera": True,
-                "allowMeetingChat": "enabled",
+                "allowMeetingChat": "limited",
                 "shareMeetingChatHistoryDefault": "none",
                 "allowTeamworkReactions": True,
                 "anonymizeIdentityForRoles": [],
