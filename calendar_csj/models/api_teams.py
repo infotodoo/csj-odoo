@@ -94,7 +94,7 @@ class ApiTeams(models.TransientModel):
                 "endDateTime": formatted_end,
                 "isBroadcast": False,
                 "autoAdmittedUsers": "everyone",
-                "outerMeetingAutoAdmittedUsers": None,
+                "outerMeetingAutoAdmittedUsers": "everyone",
                 "capabilities": [],
                 "externalId": None,
                 "iCalUid": None,
