@@ -173,7 +173,7 @@ class ApiTeams(models.TransientModel):
                     )
             if meeting_obj.status_code in [201, 200]:
                 meeting = meeting_obj.json()
-                #_logger.error(meeting.get('joinUrl'))
+                _logger.error(meeting)
                 # Decodificar el contenido
                 decoded_content = urllib.parse.unquote(meeting.get('joinInformation').get('content'))
                 meeting_id = meeting.get('meetingCode')
