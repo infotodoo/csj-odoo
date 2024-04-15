@@ -415,6 +415,8 @@ class ApiTeams(models.TransientModel):
 
 
         if vals["method"] == "create":
+            _logger.error('666666666666666666666666666666666666666666666666666666666666666')
+            _logger.error(vals)
             return api_create(vals)
         elif vals["method"] == "update":
             return api_update(vals)
