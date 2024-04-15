@@ -461,7 +461,7 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <div class="form-group row" style="margin-top:4vh;">
                         <label for="types" class="col-md-3 col-form-label">Solicitud*</label>
                         <div class="col-md-9" style="padding-left:8px;">
@@ -472,7 +472,7 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <t t-call="website_calendar.employee_select" />
                     <div class="form-group row">
                         <div class="offset-md-6 col-md-6">

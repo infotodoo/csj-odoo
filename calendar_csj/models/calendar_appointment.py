@@ -391,7 +391,8 @@ class CalendarAppointment(models.Model):
 
         if vals.get('coorganizer'):
             self.validateCoorganizer(vals.get('coorganizer'))
-
+        vals['coorganizer'] = vals.get('coorganizer')
+        _logger.error('-_._._.........................................')
         online_appointment_type = self.env["calendar.appointment.type"].search(
             [("id", "=", vals.get("appointment_type_id"))]
         )[0]
