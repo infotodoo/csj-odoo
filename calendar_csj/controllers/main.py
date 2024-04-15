@@ -210,14 +210,15 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             })
         if coorganizer:
             coorganizer_emails = coorganizer.split(',')
-            if coorganizer_emails.split('@')[-1] not in domain_emails:
-                return request.render("website_calendar.appointment_form", {
-                    'appointment_type': appointment_type,
-                    'message': 'process_email_failed',
-                    'date_start': date_start,
-                    'duration': duration,
-                    'types': types,
-                })
+            for email in coorganizer_emails:
+                if email.strip().split('@')[-1] not in domain_emails:
+                    return request.render("website_calendar.appointment_form", {
+                        'appointment_type': appointment_type,
+                        'message': 'process_email_failed',
+                        'date_start': date_start,
+                        'duration': duration,
+                        'types': types,
+                    })
 
         # check availability of the employee again (in case someone else booked while the client was entering the form)
         Employee = request.env['hr.employee'].sudo().browse(int(employee_id))
