@@ -319,7 +319,6 @@ class ApiTeams(models.TransientModel):
             coorganizers = calendar_appointment.coorganizer
 
             payload = {
-                "creationDateTime": formatted_start,
                 "startDateTime": formatted_start,
                 "endDateTime": formatted_end,
             }
