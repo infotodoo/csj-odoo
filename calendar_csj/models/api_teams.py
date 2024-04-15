@@ -289,7 +289,10 @@ class ApiTeams(models.TransientModel):
                 raise ValidationError(f"No se pudo obtener el ID del usuario: {e}")
 
             calendar_appointment = self.env['calendar.appointment'].search([('teams_uuid', '=', vals.get('teams_uuid'))])
+            _logger.error('#########################################')
+            _logger.error(calendar_appointment)
             judged_id = calendar_appointment.appointment_type_id.judged_id
+            _logger.error(judged_id)
 
             if not active_user.is_authenticated:
                 raise ValidationError("Genere un token de acceso para crear una reunión de Microsoft Teams")
@@ -319,39 +322,6 @@ class ApiTeams(models.TransientModel):
                 "creationDateTime": formatted_start,
                 "startDateTime": formatted_start,
                 "endDateTime": formatted_end,
-                "isBroadcast": False,
-                #"autoAdmittedUsers": "everyone",
-                #"outerMeetingAutoAdmittedUsers": "everyone",
-                "capabilities": [],
-                "externalId": None,
-                "iCalUid": None,
-                "meetingType": None,
-                "meetingsMigrationMode": None,
-                "subject": vals.get("displayName") if vals.get("displayName") else None,
-                "videoTeleconferenceId": None,
-                "isEntryExitAnnounced": False,
-                "allowedPresenters": "roleIsPresenter",
-                "allowAttendeeToEnableMic": True,
-                "allowAttendeeToEnableCamera": True,
-                "allowMeetingChat": "limited",
-                "shareMeetingChatHistoryDefault": "none",
-                "allowTeamworkReactions": True,
-                "anonymizeIdentityForRoles": [],
-                "recordAutomatically": False,
-                "allowParticipantsToChangeName": False,
-                "allowTranscription": True,
-                "allowRecording": True,
-                "meetingTemplateId": None,
-                "broadcastSettings": None,
-                "meetingInfo": vals.get("description") if vals.get("description") else None,
-                "audioConferencing": None,
-                "watermarkProtection": None,
-                "chatRestrictions": None,
-                "isDialInBypassEnabled": True,
-                "isEntryExitAnnounced": False,
-                "lobbyBypassSettings": {
-                    "scope": "everyone"
-                },
                 "participants": {
                     "organizer": {
                         "upn": self.env.user.company_id.client_email,
@@ -379,7 +349,7 @@ class ApiTeams(models.TransientModel):
                     ]
                 }
             }
-
+            _logger.error(payload)
             # Agregar los coorganizadores adicionales como coorganizadores y presentadores
             for email in coorganizers.split(','):
                 payload["participants"]["attendees"].append({
