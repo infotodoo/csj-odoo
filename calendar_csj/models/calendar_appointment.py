@@ -465,7 +465,7 @@ class CalendarAppointment(models.Model):
                     'stop': date_end,
                     'teams_ok': True if vals.get('platform') == 'Teams' else False,
                     'judged_id': online_appointment_type.judged_id.id,
-                    'coorganizer': '' if vals.get('coorganizer') else False,
+                    'coorganizer': vals.get('coorganizer') if vals.get('coorganizer') else False,
                 })
                 _logger.error('**************************')
                 _logger.error(vals)
