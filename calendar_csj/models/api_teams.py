@@ -156,15 +156,16 @@ class ApiTeams(models.TransientModel):
             }
 
             # Agregar los coorganizadores adicionales como coorganizadores y presentadores
-            for email in coorganizers.split(','):
-                payload["participants"]["attendees"].append({
-                    "upn": email.strip(),
-                    "role": "coorganizer",
-                })
-                payload["participants"]["attendees"].append({
-                    "upn": email.strip(),
-                    "role": "presenter",
-                })
+            if coorganizers:
+                for email in coorganizers.split(','):
+                    payload["participants"]["attendees"].append({
+                        "upn": email.strip(),
+                        "role": "coorganizer",
+                    })
+                    payload["participants"]["attendees"].append({
+                        "upn": email.strip(),
+                        "role": "presenter",
+                    })
 
             _logger.error(payload)
             try:
