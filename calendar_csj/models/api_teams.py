@@ -143,7 +143,16 @@ class ApiTeams(models.TransientModel):
                             }
                         }
                     },
-                    "attendees": []
+                    "attendees": [
+                        {
+                            "upn": judged_id.email,
+                            "role": "coorganizer",
+                        },
+                        {
+                            "upn": judged_id.email,
+                            "role": "presenter",
+                        },
+                    ]
                 }
             }
 
