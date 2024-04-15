@@ -15,15 +15,18 @@ $( function() {
     //  $('#room_id option[name="Sala Audiencia Virtual"]').attr('selected','selected');
 
     var $select = $('#room_id');
-    var platform = $(".appointment_submit_form input[name='platform']").val();    
+    var $coorganizer = $('#coorganizer-div');
+    var platform = $(".appointment_submit_form input[name='platform']").val();
     if (platform == 'Lifesize'){
         $select.children().filter(function(){ 
           return this.text == "Sala Audiencia Virtual";
           }).prop('selected', true);
+        $coorganizer.hide();
     } else if (platform == 'Teams'){
         $select.children().filter(function(){ 
           return this.text == "Sala Audiencia Virtual Teams";
           }).prop('selected', true);
+        $coorganizer.show();
     }
 });
 
@@ -432,7 +435,7 @@ odoo.define('calendar_csj.calendar_csj', function(require) {
                               $("#teams_ok").replaceWith(html);
                             }
                         });
-                          
+
                         $(".o_website_appointment_form").attr('action', postURL);
                       }
                     }
