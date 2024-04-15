@@ -288,7 +288,7 @@ class ApiTeams(models.TransientModel):
             except requests.exceptions.RequestException as e:
                 raise ValidationError(f"No se pudo obtener el ID del usuario: {e}")
 
-            judged_id = self.env['res.partner'].browse(int(vals.get('judged_id')))
+            judged_id = self.env['calendar.appointment'].search([('teams_uuid', '=', vals.get('teams_uuid'))]).judged_id
 
             if not active_user.is_authenticated:
                 raise ValidationError("Genere un token de acceso para crear una reunión de Microsoft Teams")
