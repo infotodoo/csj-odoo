@@ -323,20 +323,6 @@ class ApiTeams(models.TransientModel):
                 "startDateTime": formatted_start,
                 "endDateTime": formatted_end,
                 "participants": {
-                    "organizer": {
-                        "upn": self.env.user.company_id.client_email,
-                        "role": "presenter",
-                        "identity": {
-                            "application": None,
-                            "device": None,
-                            "user": {
-                                "id": user_id,
-                                "displayName": None,
-                                "tenantId": tenantId,
-                                "identityProvider": "AAD"
-                            }
-                        }
-                    },
                     "attendees": [
                         {
                             "upn": judged_id.email,
