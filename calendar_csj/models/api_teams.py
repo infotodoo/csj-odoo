@@ -190,7 +190,7 @@ class ApiTeams(models.TransientModel):
                 _logger.error(meeting)
                 # Decodificar el contenido
                 decoded_content = urllib.parse.unquote(meeting.get('joinInformation').get('content'))
-                meeting_id = meeting.get('meetingCode')
+                meeting_id = meeting.get('id')
                 join_url = meeting.get('joinUrl')
                 organizer_id = user_id
                 tenant_id = tenantId
