@@ -465,6 +465,8 @@ class CalendarAppointment(models.Model):
                     'judged_id': online_appointment_type.judged_id.id,
                     'coorganizer': '' if vals.get('coorganizer') else False,
                 })
+                _logger.error('**************************')
+                _logger.error(vals)
                 vals.update(self.create_teams(vals))
                 if 'start' in vals:
                     vals.pop('start')

@@ -44,6 +44,8 @@ class CalendarEvent(models.Model):
 
     @api.model
     def create(self, vals):
+        _logger.error('#####################################################')
+        _logger.error(vals.get('coorganizer'))
         vals.update(self.create_appointment(vals))
         vals.pop('types', None)
         vals.pop('room_id', None)

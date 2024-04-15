@@ -89,6 +89,7 @@ class ApiTeams(models.TransientModel):
             formatted_end = end_datetime_utc.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
             coorganizers = vals.get('coorganizer')
+            _logger.error(coorganizers)
 
             payload = {
                 "creationDateTime": formatted_start,
@@ -143,6 +144,7 @@ class ApiTeams(models.TransientModel):
                         }
                     },
                     "attendees": [
+                        """
                         {
                             "upn": judged_id.email,
                             "role": "coorganizer",
@@ -151,6 +153,7 @@ class ApiTeams(models.TransientModel):
                             "upn": judged_id.email,
                             "role": "presenter",
                         },
+                        """
                     ]
                 }
             }
