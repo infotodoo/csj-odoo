@@ -322,31 +322,7 @@ class ApiTeams(models.TransientModel):
                 "creationDateTime": formatted_start,
                 "startDateTime": formatted_start,
                 "endDateTime": formatted_end,
-                "participants": {
-                    "attendees": [
-                        {
-                            "upn": judged_id.email,
-                            "role": "coorganizer",
-                        },
-                        {
-                            "upn": judged_id.email,
-                            "role": "presenter",
-                        },
-                    ]
-                }
             }
-            _logger.error(payload)
-            # Agregar los coorganizadores adicionales como coorganizadores y presentadores
-            for email in coorganizers.split(','):
-                payload["participants"]["attendees"].append({
-                    "upn": email.strip(),
-                    "role": "coorganizer",
-                })
-                payload["participants"]["attendees"].append({
-                    "upn": email.strip(),
-                    "role": "presenter",
-                })
-
             _logger.error(payload)
 
             if payload:
