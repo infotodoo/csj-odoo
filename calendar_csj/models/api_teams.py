@@ -293,7 +293,6 @@ class ApiTeams(models.TransientModel):
 
             if not active_user.is_authenticated:
                 raise ValidationError("Genere un token de acceso para crear una reunión de Microsoft Teams")
-            attendees = self.prepare_attendee_vals(vals.get('partner_ids'))
 
             tenantId = "622cba98-80f8-41f3-8df5-8eb99901598b"
             update_url = f"https://graph.microsoft.com/v1.0/users/{user_id}/onlineMeetings/{values.get('teams_uuid')}"
@@ -301,10 +300,6 @@ class ApiTeams(models.TransientModel):
                 "Content-Type": "application/json",
                 "Authorization": "Bearer {}".format(token)
             }
-            try:
-                description = vals.get("description").replace("\n", " - ")
-            except:
-                description = vals.get("description")
 
             # Convertir las cadenas de fecha y hora a objetos datetime
             start_datetime = datetime.strptime(vals.get('start'), '%Y-%m-%d %H:%M:%S')
@@ -489,10 +484,7 @@ class ApiTeams(models.TransientModel):
                                 error_body.get('code'), error_body.get('message'))
                 raise ValidationError(error_message)
 
-
         if vals["method"] == "create":
-            _logger.error('666666666666666666666666666666666666666666666666666666666666666')
-            _logger.error(vals)
             return api_create(vals)
         elif vals["method"] == "update":
             return api_update(vals)
