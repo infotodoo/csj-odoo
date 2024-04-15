@@ -44,8 +44,6 @@ class CalendarEvent(models.Model):
 
     @api.model
     def create(self, vals):
-        _logger.error('#####################################################')
-        _logger.error(vals.get('coorganizer'))
         vals.update(self.create_appointment(vals))
         vals.pop('types', None)
         vals.pop('room_id', None)
@@ -74,8 +72,7 @@ class CalendarEvent(models.Model):
                 types = 'streaming'
         else:
             types = False
-        _logger.error('----------------------------------------------------')
-        _logger.error(vals.get('coorganizer'))
+
         appointment = self.env['calendar.appointment'].sudo().create({
             'state': vals.get('state'),
             'calendar_datetime': vals.get('start_datetime'),

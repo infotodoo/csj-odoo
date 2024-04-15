@@ -39,8 +39,7 @@ class CalendarReception(models.Model):
 
     name = fields.Char('Name', required=True)
     active = fields.Boolean(default=True)
-    
-    
+
 class CalendarRecording(models.Model):
     _name = 'calendar.recording'
     _description = 'Calendar recording'
@@ -392,8 +391,7 @@ class CalendarAppointment(models.Model):
         if vals.get('coorganizer'):
             self.validateCoorganizer(vals.get('coorganizer'))
         vals['coorganizer'] = vals.get('coorganizer')
-        _logger.error('-_._._.........................................')
-        _logger.error(vals['coorganizer'])
+
         online_appointment_type = self.env["calendar.appointment.type"].search(
             [("id", "=", vals.get("appointment_type_id"))]
         )[0]
@@ -467,8 +465,6 @@ class CalendarAppointment(models.Model):
                     'judged_id': online_appointment_type.judged_id.id,
                     'coorganizer': vals.get('coorganizer') if vals.get('coorganizer') else False,
                 })
-                _logger.error('**************************')
-                _logger.error(vals)
                 vals.update(self.create_teams(vals))
                 if 'start' in vals:
                     vals.pop('start')
@@ -650,8 +646,7 @@ class CalendarAppointment(models.Model):
                 partner = record.appointment_type_id.judged_id if record.appointment_type_id else False
                 if partner and partner.extension_lifesize:
                     judged_extension_lifesize = partner.extension_lifesize
-                
-                
+
                 tag_number = record.name
                 if record.city_id and record.city_id.zipcode \
                     and (record.room_id or record.type != 'audience') \

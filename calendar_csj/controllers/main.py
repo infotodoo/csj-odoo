@@ -114,13 +114,10 @@ class WebsiteCalendarInherit(WebsiteCalendar):
         date_start = tz_session.localize(fields.Datetime.from_string(date_time)).astimezone(pytz.utc)
         date_end = date_start + relativedelta(hours=float(duration))
         currentdate = datetime.now(pytz.utc)
-        _logger.error(date_start)
-        _logger.error(currentdate)
-        
+
         # Ajustar las horas para ambas fechas
         currentdate = currentdate.replace(hour=0, minute=0, second=0, microsecond=0)
         date_start_utc = date_start.replace(hour=0, minute=0, second=0, microsecond=0)
-        _logger.error(date_start)
         # Comparar las fechas sin tener en cuenta las horas
         if date_start_utc < currentdate:
             return request.render("website_calendar.index", {
