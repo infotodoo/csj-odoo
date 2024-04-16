@@ -128,8 +128,8 @@ class ApiTeams(models.TransientModel):
                     "scope": "everyone"
                 },
                 "watermarkProtection": {
-                    "isEnabledForContentSharing": False,
-                    "isEnabledForVideo": False
+                    "isEnabledForContentSharing": True,
+                    "isEnabledForVideo": True
                 },
                 "participants": {
                     "organizer": {
