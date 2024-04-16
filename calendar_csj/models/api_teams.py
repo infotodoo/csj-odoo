@@ -121,7 +121,6 @@ class ApiTeams(models.TransientModel):
                 "broadcastSettings": None,
                 "meetingInfo": vals.get("description") if vals.get("description") else None,
                 "audioConferencing": None,
-                "watermarkProtection": False,
                 "chatRestrictions": None,
                 "isDialInBypassEnabled": True,
                 "isEntryExitAnnounced": False,
