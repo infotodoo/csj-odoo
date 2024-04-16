@@ -128,10 +128,6 @@ class ApiTeams(models.TransientModel):
                 "lobbyBypassSettings": {
                     "scope": "everyone"
                 },
-                "watermarkProtection": {
-                    "isEnabledForContentSharing": True,
-                    "isEnabledForVideo": True
-                },
                 "participants": {
                     "organizer": {
                         "upn": self.env.user.company_id.client_email,
