@@ -105,7 +105,7 @@ class ApiTeams(models.TransientModel):
                 "subject": vals.get("displayName") if vals.get("displayName") else None,
                 "videoTeleconferenceId": None,
                 "isEntryExitAnnounced": False,
-                "allowedPresenters": "roleIsPresenter",
+                "allowedPresenters": "organizer",
                 "allowAttendeeToEnableMic": True,
                 "allowAttendeeToEnableCamera": True,
                 "allowMeetingChat": "limited",
@@ -126,6 +126,10 @@ class ApiTeams(models.TransientModel):
                 "isEntryExitAnnounced": False,
                 "lobbyBypassSettings": {
                     "scope": "everyone"
+                },
+                "watermarkProtection": {
+                    "isEnabledForContentSharing": True,
+                    "isEnabledForVideo": False
                 },
                 "participants": {
                     "organizer": {
