@@ -110,7 +110,7 @@ class ApiTeams(models.TransientModel):
                 "allowAttendeeToEnableCamera": True,
                 "allowMeetingChat": "limited",
                 "shareMeetingChatHistoryDefault": "none",
-                "allowTeamworkReactions": True,
+                "allowTeamworkReactions": False,
                 "anonymizeIdentityForRoles": [],
                 "recordAutomatically": False,
                 "allowParticipantsToChangeName": False,
@@ -129,7 +129,7 @@ class ApiTeams(models.TransientModel):
                     "scope": "everyone"
                 },
                 "watermarkProtection": {
-                    "isEnabledForContentSharing": True,
+                    "isEnabledForContentSharing": False,
                     "isEnabledForVideo": False
                 },
                 "participants": {
