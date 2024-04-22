@@ -480,50 +480,59 @@ class CalendarAppointment(models.Model):
 
     def write(self, vals):
         res = super(CalendarAppointment, self).write(vals)
+
+        if vals.get('calendar_datetime') and not self.teams_ok and not vals.get('platform_type'):
+            #Comportamiento estándar con Lifesize
+            vals.update(self.write_lifesize(vals))
+
         if vals.get('coorganizer'):
             self.validateCoorganizer(vals.get('coorganizer'))
-        if vals.get('calendar_datetime'):
-            if self.teams_ok:
-                tag_number = self.name
-                if self.city_id and self.city_id.zipcode \
-                    and (self.room_id or self.type != 'audience') \
-                        and self.process_number and self.partner_id \
-                            and self.partner_id.entity_id \
-                                and self.partner_id.specialty_id \
-                                    and self.partner_id.code:
-                    room_code = self.room_id.mame if self.room_id else _(None)
-                    res = '%s_%s%s%s%s%s%s' % (self.process_number,
-                                                str(self.request_type).upper(),
-                                                self.city_id.zipcode,
-                                                self.partner_id.entity_id.code,
-                                                self.partner_id.specialty_id.code,
-                                                self.partner_id.code,
-                                                room_code)
-                    if self.record_data:
-                        res += '_' + self.record_data
-                    tag_number = res
 
-                tz_offset = self.env.user.tz_offset if self.env.user.tz_offset else False
-                tz = int(tz_offset)/100 if tz_offset else 0
-                calendar_datetime = fields.Datetime.from_string(vals.get('calendar_datetime'))
-                date_end = calendar_datetime + relativedelta(hours=float(self.calendar_duration)) if calendar_datetime else False
+        if vals.get('platform_type') and vals.get('platform_type') == 'teams':
+            vals.update(self.write_lifesize(vals))
 
-                vals.update({
-                    'start': calendar_datetime,
-                    'stop': date_end,
-                    'teams_ok': True,
-                    'name': tag_number,
-                    #'judged_id': online_appointment_type.judged_id.id,
-                })
-                vals.update(self.write_teams(vals))
-                if 'start' in vals:
-                    vals.pop('start')
-                if 'stop' in vals:
-                    vals.pop('stop')
-                if 'judged_id' in vals:
-                    vals.pop('judged_id')
-            else:
-                vals.update(self.write_lifesize(vals))
+
+            tag_number = self.name
+            if self.city_id and self.city_id.zipcode \
+                and (self.room_id or self.type != 'audience') \
+                    and self.process_number and self.partner_id \
+                        and self.partner_id.entity_id \
+                            and self.partner_id.specialty_id \
+                                and self.partner_id.code:
+                room_code = self.room_id.mame if self.room_id else _(None)
+                res = '%s_%s%s%s%s%s%s' % (self.process_number,
+                                            str(self.request_type).upper(),
+                                            self.city_id.zipcode,
+                                            self.partner_id.entity_id.code,
+                                            self.partner_id.specialty_id.code,
+                                            self.partner_id.code,
+                                            room_code)
+                if self.record_data:
+                    res += '_' + self.record_data
+                tag_number = res
+
+            tz_offset = self.env.user.tz_offset if self.env.user.tz_offset else False
+            tz = int(tz_offset)/100 if tz_offset else 0
+            calendar_datetime = fields.Datetime.from_string(vals.get('calendar_datetime'))
+            date_end = calendar_datetime + relativedelta(hours=float(self.calendar_duration)) if calendar_datetime else False
+
+            vals.update({
+                'start': calendar_datetime,
+                'stop': date_end,
+                'teams_ok': True,
+                'judged_id': self.judged_id.id,
+                'coorganizer': vals.get('coorganizer') if vals.get('coorganizer') else False,
+            })
+            vals.update(self.create_teams(vals))
+            if 'start' in vals:
+                vals.pop('start')
+            if 'stop' in vals:
+                vals.pop('stop')
+            if 'judged_id' in vals:
+                vals.pop('judged_id')
+
+
+        if vals.get('calendar_datetime') or vals.get('platform_type'):
             vals['sequence_icsfile_ctl'] = self.sequence_icsfile_ctl + 1 if int(self.sequence_icsfile_ctl) else 1
             self.write_event(vals)
         return res
