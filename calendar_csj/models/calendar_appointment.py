@@ -820,7 +820,10 @@ class CalendarAppointment(models.Model):
     def write_event(self, vals):
         for record in self:
             if record.event_id and vals.get('calendar_datetime') or vals.get('platform_type'):
-                start_datetime = fields.Datetime.from_string(vals.get('calendar_datetime'))
+                if vals.get('calendar_datetime'):
+                    start_datetime = fields.Datetime.from_string(vals.get('calendar_datetime'))
+                else:
+                    start_datetime = fields.Datetime.from_string(self.calendar_datetime)
                 stop_datetime = start_datetime + datetime.timedelta(hours=1)
                 dic = {
                     'start_datetime': start_datetime,
