@@ -49,6 +49,7 @@ class CalendarEvent(models.Model):
         vals.pop('room_id', None)
         vals.pop('applicant_raw_name', None)
         vals.pop('platform')
+        vals.pop('platform_type')
         vals.pop('coorganizer')
         res = super(CalendarEvent, self).create(vals)
         res.appointment_id.write({'event_id': res.id})

@@ -396,6 +396,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             'applicant_raw_name': name,
             'platform': platform,
             'coorganizer': coorganizer,
+            'platform_type': 'Lifesize' if platform=='Lifesize' else 'Teams',
         })
         event.attendee_ids.write({'state': 'accepted'})
         return request.redirect('/website/calendar/view/' + event.access_token + '?message=new')
