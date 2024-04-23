@@ -196,7 +196,7 @@ class CalendarEvent(models.Model):
 
 class Meeting(models.Model):
     _name = 'calendar.meeting'
-    
+
     def write(self, values):
         # FIXME: neverending recurring events
         if 'rrule' in values:

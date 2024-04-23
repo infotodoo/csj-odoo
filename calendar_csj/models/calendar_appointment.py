@@ -392,10 +392,6 @@ class CalendarAppointment(models.Model):
             vals['platform_type'] = 'lifesize'
         elif vals.get('platform') and vals.get('platform') == 'Teams':
             vals['platform_type'] = 'teams'
-        else:
-            vals['platform_type'] = 'lifesize'
-        _logger.error('---------------------------------------------')
-        _logger.error(vals.get('platform'))
 
         if vals.get('coorganizer'):
             self.validateCoorganizer(vals.get('coorganizer'))
@@ -489,6 +485,7 @@ class CalendarAppointment(models.Model):
 
     def write(self, vals):
         if vals.get('platform_type') and vals.get('platform_type') == 'teams':
+            vals['teams_ok'] = True
             vals['platform'] = 'Teams'
         res = super(CalendarAppointment, self).write(vals)
 
