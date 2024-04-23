@@ -63,7 +63,7 @@ class ApiTeams(models.TransientModel):
 
             if not active_user.is_authenticated:
                 raise ValidationError("Genere un token de acceso para crear una reunión de Microsoft Teams")
-            attendees = self.prepare_attendee_vals(vals.get('partner_ids'))
+            #attendees = self.prepare_attendee_vals(vals.get('partner_ids'))
 
             tenantId = "622cba98-80f8-41f3-8df5-8eb99901598b"
             url = f"https://graph.microsoft.com/v1.0/users/{user_id}/onlineMeetings"
