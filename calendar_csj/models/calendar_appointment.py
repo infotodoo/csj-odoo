@@ -523,6 +523,8 @@ class CalendarAppointment(models.Model):
                 'start': calendar_datetime,
                 'stop': date_end,
                 'teams_ok': True,
+                'platform_type': 'teams',
+                'platform': 'Teams',
                 'judged_id': self.appointment_type_id.judged_id.id,
                 'coorganizer': vals.get('coorganizer') if vals.get('coorganizer') else False,
             })
@@ -817,7 +819,7 @@ class CalendarAppointment(models.Model):
 
     def write_event(self, vals):
         for record in self:
-            if record.event_id and vals.get('calendar_datetime'):
+            if record.event_id and vals.get('calendar_datetime') or vals.get('platform_type'):
                 start_datetime = fields.Datetime.from_string(vals.get('calendar_datetime'))
                 stop_datetime = start_datetime + datetime.timedelta(hours=1)
                 dic = {
