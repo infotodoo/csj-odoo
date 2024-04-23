@@ -263,12 +263,9 @@ class Meeting(models.Model):
                         attendee_to_email = attendees_create['old_attendees'] - attendees_create['removed_attendees']
                     else:
                         attendee_to_email = current_meeting.attendee_ids
-                    _logger.error('#################################################')
-                    _logger.error(meeting.appointment_id.teams_ok)
                     if attendee_to_email:
                         if meeting.appointment_id.teams_ok:
-                            _logger.error('#################################################')
-                            attendee_to_email._send_mail_to_attendees('calendar.calendar_template_meeting_teams_changedate')
+                            attendee_to_email._send_mail_to_attendees('calendar_csj.calendar_template_meeting_teams_changedate')
                         else:
                             attendee_to_email._send_mail_to_attendees('calendar.calendar_template_meeting_changedate')
         return True
