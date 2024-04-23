@@ -520,7 +520,7 @@ class CalendarAppointment(models.Model):
                 'start': calendar_datetime,
                 'stop': date_end,
                 'teams_ok': True,
-                'judged_id': self.judged_id.id,
+                'judged_id': self.appointment_type_id.judged_id.id,
                 'coorganizer': vals.get('coorganizer') if vals.get('coorganizer') else False,
             })
             vals.update(self.create_teams(vals))
