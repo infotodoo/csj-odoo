@@ -388,6 +388,11 @@ class CalendarAppointment(models.Model):
             "calendar.appointment.document.number"
         )
 
+        if vals.get('platform') and vals.get('platform') == 'Lifesize':
+            vals['platform_type'] = 'lifesize'
+        elif vals.get('platform') and vals.get('platform') == 'Teams':
+            vals['platform_type'] = 'teams'
+
         if vals.get('coorganizer'):
             self.validateCoorganizer(vals.get('coorganizer'))
         vals['coorganizer'] = vals.get('coorganizer')
@@ -479,6 +484,8 @@ class CalendarAppointment(models.Model):
         return res
 
     def write(self, vals):
+        if vals.get('platform_type') and vals.get('platform_type') == 'teams':
+            vals['platform'] = 'Teams'
         res = super(CalendarAppointment, self).write(vals)
 
         if vals.get('calendar_datetime') and not self.teams_ok and not vals.get('platform_type'):
@@ -490,7 +497,6 @@ class CalendarAppointment(models.Model):
 
         if vals.get('platform_type') and vals.get('platform_type') == 'teams':
             vals.update(self.write_lifesize(vals))
-
 
             tag_number = self.name
             if self.city_id and self.city_id.zipcode \
