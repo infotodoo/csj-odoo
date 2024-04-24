@@ -542,11 +542,11 @@ class CalendarAppointment(models.Model):
             if 'judged_id' in vals:
                 vals.pop('judged_id')
 
+        res = super(CalendarAppointment, self).write(vals)
 
         if vals.get('calendar_datetime') or vals.get('platform_type'):
             vals['sequence_icsfile_ctl'] = self.sequence_icsfile_ctl + 1 if int(self.sequence_icsfile_ctl) else 1
             self.write_event(vals)
-        res = super(CalendarAppointment, self).write(vals)
 
         return res
 
