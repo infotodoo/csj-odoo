@@ -259,6 +259,24 @@
             <field name="view_mode">pivot</field>
         </record>
 
+
+        <record id="action_platform_change_teams" model="ir.actions.act_window">
+            <field name="name">Cambiar a Teams</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">calendar.appointment</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="action_platform_change_lifesize" model="ir.actions.act_window">
+            <field name="name">Cambiar a Lifesize</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">calendar.appointment</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+
         <menuitem id="appointment_menu" name="Appointments" parent="calendar.mail_menu_calendar" sequence="10" />
 
         <menuitem id="calendar_appointment_menu" name="Appointments" parent="appointment_menu" action="calendar_appointment_action" sequence="5"/>
