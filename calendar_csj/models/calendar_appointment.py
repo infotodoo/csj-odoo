@@ -506,7 +506,7 @@ class CalendarAppointment(models.Model):
                             and self.partner_id.specialty_id \
                                 and self.partner_id.code:
                 room_code = self.room_id.mame if self.room_id else _(None)
-                tag = '%s_%s%s%s%s%s%s' % (self.process_number,
+                res = '%s_%s%s%s%s%s%s' % (self.process_number,
                                             str(self.request_type).upper(),
                                             self.city_id.zipcode,
                                             self.partner_id.entity_id.code,
