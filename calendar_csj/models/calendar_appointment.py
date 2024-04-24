@@ -513,16 +513,9 @@ class CalendarAppointment(models.Model):
                                             self.partner_id.specialty_id.code,
                                             self.partner_id.code,
                                             room_code)
-                tz_offset = self.env.user.tz_offset if self.env.user.tz_offset else False
-                tz = int(tz_offset)/100 if tz_offset else 0
-                calendar_datetime = fields.Datetime.from_string(vals.get('calendar_datetime'))
-                date = calendar_datetime + datetime.timedelta(hours=tz) if calendar_datetime else False
-                record_date = date.strftime("%Y%m%d_%H%M%S")
-                vals['record_data'] = '01_' + record_date + '_V'
-                if vals.get('record_data'):
-                    tag += '_' + vals.get('record_data')
-                if tag:
-                    vals['name'] = tag
+                if self.record_data:
+                    res += '_' + self.record_data
+                tag_number = res
 
             tz_offset = self.env.user.tz_offset if self.env.user.tz_offset else False
             tz = int(tz_offset)/100 if tz_offset else 0
