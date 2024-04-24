@@ -487,7 +487,6 @@ class CalendarAppointment(models.Model):
         if vals.get('platform_type') and vals.get('platform_type') == 'teams':
             vals['teams_ok'] = True
             vals['platform'] = 'Teams'
-        res = super(CalendarAppointment, self).write(vals)
 
         if vals.get('calendar_datetime') and not self.teams_ok and not vals.get('platform_type'):
             #Comportamiento estándar con Lifesize
@@ -547,6 +546,8 @@ class CalendarAppointment(models.Model):
         if vals.get('calendar_datetime') or vals.get('platform_type'):
             vals['sequence_icsfile_ctl'] = self.sequence_icsfile_ctl + 1 if int(self.sequence_icsfile_ctl) else 1
             self.write_event(vals)
+        res = super(CalendarAppointment, self).write(vals)
+
         return res
 
     def unlink(self):
