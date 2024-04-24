@@ -263,11 +263,13 @@ class Meeting(models.Model):
                         attendee_to_email = current_meeting.attendee_ids
 
                     if attendee_to_email:
-                        _logger.error('777777--------------------------------00000000000000000000000000')
+                        
                         _logger.error(meeting.appointment_id.teams_ok)
                         if meeting.appointment_id.teams_ok:
+                            _logger.error('777777--------------------------------00000000000000000000000000')
                             attendee_to_email._send_mail_to_attendees('calendar_csj.calendar_template_meeting_teams_changedate')
                         else:
+                            _logger.error('88888--------------------------------00000000000000000000000000')
                             attendee_to_email._send_mail_to_attendees('calendar.calendar_template_meeting_changedate')
         return True
 
