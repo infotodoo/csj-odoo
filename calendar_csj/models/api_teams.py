@@ -198,6 +198,8 @@ class ApiTeams(models.TransientModel):
                 decoded_content = urllib.parse.unquote(meeting.get('joinInformation').get('content'))
                 meeting_id = meeting.get('id')
                 join_url = meeting.get('joinUrl')
+                _logger.error('########################################################################33')
+                _logger.error(join_url)
                 organizer_id = user_id
                 tenant_id = tenantId
                 thread_id = meeting.get('chatInfo').get('threadId')
@@ -243,7 +245,7 @@ class ApiTeams(models.TransientModel):
                         </a>
                     </div>
                 """.format(meeting_id=meeting_id, joinUrl=join_url, organizer_id=organizer_id, tenant_id=tenant_id, thread_id=thread_id)
-
+                _logger.error(join_url if join_url else False)
                 return {
                     "meeting_body": content_html if content_html else '',
                     "meeting_url": join_url if join_url else False,
@@ -295,10 +297,7 @@ class ApiTeams(models.TransientModel):
                 raise ValidationError(f"No se pudo obtener el ID del usuario: {e}")
 
             calendar_appointment = self.env['calendar.appointment'].search([('teams_uuid', '=', vals.get('teams_uuid'))])
-            _logger.error('#########################################')
-            _logger.error(calendar_appointment)
             judged_id = calendar_appointment.appointment_type_id.judged_id
-            _logger.error(judged_id)
 
             if not active_user.is_authenticated:
                 raise ValidationError("Genere un token de acceso para crear una reunión de Microsoft Teams")

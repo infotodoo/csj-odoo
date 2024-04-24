@@ -615,7 +615,8 @@ class CalendarAppointment(models.Model):
             'judged_id': vals.get('judged_id'),
             'coorganizer': vals.get('coorganizer'),
         }
-
+        _logger.error('**********************************************************')
+        _logger.error(api)
         judged_extension_lifesize = False
         if vals.get('appointment_type_id'):
             online_appointment_type = self.env['calendar.appointment.type'].search(
@@ -651,6 +652,7 @@ class CalendarAppointment(models.Model):
             api.update(lecturerExtension=self.env.user.company_id.lecturer_extension)
 
         resp = self.env['api.teams'].api_crud(api)
+        _logger.error(resp)
         dic = self.env['api.teams'].resp2dict(resp)
         return dic
 
