@@ -533,6 +533,8 @@ class CalendarAppointment(models.Model):
             date_end = calendar_datetime + relativedelta(hours=float(self.calendar_duration)) if calendar_datetime else False
 
             vals.update({
+                'tag_number': self.tag_number,
+                'name': self.tag_number,
                 'start': calendar_datetime,
                 'stop': date_end,
                 'teams_ok': True,
