@@ -535,8 +535,15 @@ class CalendarAppointment(models.Model):
                 'platform': 'Teams',
                 'judged_id': self.appointment_type_id.judged_id.id,
                 'coorganizer': vals.get('coorganizer') if vals.get('coorganizer') else False,
+                'lifesize_uuid': None,
+                'lifesize_url': None,
+                'lifesize_owner': None,
+                'lifesize_modified': None,
+                'lifesize_meeting_ext': None,
+                'lifesize_moderator': None,
             })
             vals.update(self.create_teams(vals))
+            self.unlink_lifesize()
             if 'start' in vals:
                 vals.pop('start')
             if 'stop' in vals:
