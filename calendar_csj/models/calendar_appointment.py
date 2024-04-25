@@ -844,7 +844,7 @@ class CalendarAppointment(models.Model):
                     start_datetime = fields.Datetime.from_string(vals.get('calendar_datetime'))
                 else:
                     start_datetime = fields.Datetime.from_string(self.calendar_datetime)
-                stop_datetime = start_datetime + datetime.timedelta(hours=1)
+                stop_datetime = start_datetime + datetime.timedelta(hours=self.calendar_duration)
                 dic = {
                     'start_datetime': start_datetime,
                     'stop_datetime': stop_datetime,
