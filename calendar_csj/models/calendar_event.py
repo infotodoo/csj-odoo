@@ -171,6 +171,7 @@ class CalendarEvent(models.Model):
             if meeting_attendees:
                 meeting.write({'attendee_ids': [(4, meeting_attendee.id) for meeting_attendee in meeting_attendees]})
 
+
             if meeting_partners:
                 meeting.message_subscribe(partner_ids=meeting_partners.ids)
 
