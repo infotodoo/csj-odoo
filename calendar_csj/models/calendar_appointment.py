@@ -462,6 +462,7 @@ class CalendarAppointment(models.Model):
                 tz_offset = self.env.user.tz_offset if self.env.user.tz_offset else False
                 tz = int(tz_offset)/100 if tz_offset else 0
                 calendar_datetime = fields.Datetime.from_string(vals.get('calendar_datetime'))
+                vals['calendar_duration'] = '0.083333333333333'
                 date_end = calendar_datetime + relativedelta(hours=float(vals.get('calendar_duration'))) if calendar_datetime else False
                 vals.update({
                     'start': calendar_datetime,
