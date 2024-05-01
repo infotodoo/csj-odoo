@@ -263,7 +263,6 @@ class Meeting(models.Model):
                         attendee_to_email = current_meeting.attendee_ids
 
                     if attendee_to_email:
-                        
                         _logger.error(meeting.appointment_id.teams_ok)
                         if meeting.appointment_id.teams_ok:
                             _logger.error('777777--------------------------------00000000000000000000000000')
