@@ -1091,13 +1091,12 @@ class CalendarAppointment(models.Model):
 
 
     def change_lifesize_to_teams_multi(self):
-        vals = []
-        vals.append({'platform_type': 'teams'})
-        self.write(vals)
-        vals['sequence_icsfile_ctl'] = self.sequence_icsfile_ctl + 1 if int(self.sequence_icsfile_ctl) else 1
-        self.write_event(vals)
+        vals = [{'platform_type': 'teams'}]
+        self.write(vals[0])
+        #vals['sequence_icsfile_ctl'] = self.sequence_icsfile_ctl + 1 if int(self.sequence_icsfile_ctl) else 1
+        #self.write_event(vals)
 
-        return res
+        return
 
 
 class CalendarAppointmentType(models.Model):
