@@ -1092,7 +1092,7 @@ class CalendarAppointment(models.Model):
         vals.append({'teams_ok': True})
         vals.append({'platform': 'Teams'})
 
-        if self.coorganizer'):
+        if self.coorganizer:
             self.validateCoorganizer(self.coorganizer)
 
             tag_number = self.name
