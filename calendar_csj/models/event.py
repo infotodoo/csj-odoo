@@ -193,22 +193,9 @@ class Meeting(models.Model):
 
         return result
 
-    """
     def write(self, values):
-        # FIXME: neverending recurring events
-        if 'rrule' in values:
-            values['rrule'] = self._fix_rrule(values)
-
-        # compute duration, only if start and stop are modified
-        if not 'duration' in values and 'start' in values and 'stop' in values:
-            values['duration'] = self._get_duration(values['start'], values['stop'])
-
-        self._sync_activities(values)
-
         # process events one by one
         for meeting in self:
-            _logger.error('66666--------------------------------00000000000000000000000000')
-            _logger.error(meeting)
             # special write of complex IDS
             real_ids = []
             new_ids = []
@@ -232,47 +219,14 @@ class Meeting(models.Model):
             real_meetings = self.browse(real_ids)
             all_meetings = real_meetings + new_meetings
             super(Meeting, real_meetings).write(values)
-
-            # set end_date for calendar searching
-            if any(field in values for field in ['recurrency', 'end_type', 'count', 'rrule_type', 'start', 'stop']):
-                for real_meeting in real_meetings:
-                    if real_meeting.recurrency and real_meeting.end_type == u'count':
-                        final_date = real_meeting._get_recurrency_end_date()
-                        super(Meeting, real_meeting).write({'final_date': final_date})
-
-            attendees_create = False
-            if values.get('partner_ids', False):
-                attendees_create = all_meetings.with_context(dont_notify=True).create_attendees()  # to prevent multiple _notify_next_alarm
-
-            # Notify attendees if there is an alarm on the modified event, or if there was an alarm
-            # that has just been removed, as it might have changed their next event notification
-            if not self._context.get('dont_notify'):
-                if len(meeting.alarm_ids) > 0 or values.get('alarm_ids'):
-                    partners_to_notify = meeting.partner_ids.ids
-                    event_attendees_changes = attendees_create and real_ids and attendees_create[real_ids[0]]
-                    if event_attendees_changes:
-                        partners_to_notify.extend(event_attendees_changes['removed_partners'].ids)
-                    self.env['calendar.alarm_manager']._notify_next_alarm(partners_to_notify)
-
             if (values.get('start_date') or values.get('start_datetime') or
                     (values.get('start') and self.env.context.get('from_ui'))) and values.get('active', True):
                 for current_meeting in all_meetings:
-                    if attendees_create:
-                        attendees_create = attendees_create[current_meeting.id]
-                        attendee_to_email = attendees_create['old_attendees'] - attendees_create['removed_attendees']
-                    else:
-                        attendee_to_email = current_meeting.attendee_ids
-
+                    attendee_to_email = current_meeting.attendee_ids
                     if attendee_to_email:
                         _logger.error(meeting.appointment_id.teams_ok)
                         if meeting.appointment_id.teams_ok:
-                            _logger.error('777777--------------------------------00000000000000000000000000')
                             attendee_to_email._send_mail_to_attendees('calendar_csj.calendar_template_meeting_teams_changedate')
-                        else:
-                            _logger.error('88888--------------------------------00000000000000000000000000')
-                            attendee_to_email._send_mail_to_attendees('calendar.calendar_template_meeting_changedate')
-        return True
-    """
 
 
 class Attendee(models.Model):
