@@ -1144,7 +1144,7 @@ class CalendarAppointment(models.Model):
             vals.pop('stop')
             vals.pop('judged_id')
 
-        res = super(CalendarAppointment, self).write(vals)
+        self.write(vals)
         vals['sequence_icsfile_ctl'] = self.sequence_icsfile_ctl + 1 if int(self.sequence_icsfile_ctl) else 1
         self.write_event(vals)
 
