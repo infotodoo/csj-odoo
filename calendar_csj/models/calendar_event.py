@@ -199,8 +199,6 @@ class Meeting(models.Model):
     _name = 'calendar.meeting'
 
     def write(self, values):
-        _logger.error('55555--------------------------------00000000000000000000000000')
-        _logger.error(values)
         # FIXME: neverending recurring events
         if 'rrule' in values:
             values['rrule'] = self._fix_rrule(values)
