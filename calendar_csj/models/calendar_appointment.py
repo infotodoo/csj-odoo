@@ -856,7 +856,7 @@ class CalendarAppointment(models.Model):
 
     def write(self, vals):
         #TODO: falta agregar cuando se edita de teams a lifesize
-        if ('calendar_datetime' in vals and vals.get('calendar_datetime') and self.platform_type == 'lifesize'):
+        if ('calendar_datetime' in vals and vals.get('calendar_datetime') and self.platform_type == 'lifesize' and 'platform_type' not in vals):
             #Comportamiento estándar con Lifesize
             vals.update(self.write_lifesize(vals))
 
