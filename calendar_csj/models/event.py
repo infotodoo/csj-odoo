@@ -227,12 +227,15 @@ class Meeting(models.Model):
                         if ('platform_type' in values and values.get('platform_type') == 'teams') or meeting.appointment_id.platform_type == 'teams':
                             attendee_to_email._send_mail_to_attendees('calendar_csj.calendar_template_meeting_teams_changedate')
             if ('platform_type' in values and values.get('platform_type') == 'teams') or meeting.appointment_id.platform_type == 'teams':
-                values.pop('start_date')
-                values.pop('start_datetime')
-                values.pop('active')
-                values.pop('start')
+                if values.get('start_date'):
+                    values.pop('start_date')
+                if values.get('start_datetime'):
+                    values.pop('start_datetime')
+                if values.get('active'):
+                    values.pop('active')
+                if values.get('start'):
+                    values.pop('start')
             super(Meeting, real_meetings).write(values)
-            
 
 
 class Attendee(models.Model):
