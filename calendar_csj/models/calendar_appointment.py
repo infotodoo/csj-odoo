@@ -1089,14 +1089,11 @@ class CalendarAppointment(models.Model):
 
     def change_lifesize_to_teams_multi(self):
         vals = []
-        vals['teams_ok'] = True
-        vals['platform'] = 'Teams'
+        vals.append({'teams_ok': True})
+        vals.append({'platform': 'Teams'})
 
-        if vals.get('coorganizer'):
-            self.validateCoorganizer(vals.get('coorganizer'))
-
-        if vals.get('platform_type') and vals.get('platform_type') == 'teams':
-            vals.update(self.write_lifesize(vals))
+        if self.coorganizer'):
+            self.validateCoorganizer(self.coorganizer)
 
             tag_number = self.name
             if self.city_id and self.city_id.zipcode \
@@ -1148,10 +1145,8 @@ class CalendarAppointment(models.Model):
             vals.pop('judged_id')
 
         res = super(CalendarAppointment, self).write(vals)
-
-        if vals.get('calendar_datetime') or vals.get('platform_type'):
-            vals['sequence_icsfile_ctl'] = self.sequence_icsfile_ctl + 1 if int(self.sequence_icsfile_ctl) else 1
-            self.write_event(vals)
+        vals['sequence_icsfile_ctl'] = self.sequence_icsfile_ctl + 1 if int(self.sequence_icsfile_ctl) else 1
+        self.write_event(vals)
 
         return res
 
