@@ -1088,9 +1088,9 @@ class CalendarAppointment(models.Model):
             record.state_copy=record.state
 
     @api.model_create_multi
-    def change_lifesize_to_teams_multi(self, ids):
-        appointments = self.browse(ids)
-        for appointment in appointments:
+    def change_lifesize_to_teams_multi(self):
+        #appointments = self.browse(self)
+        for appointment in self:
             vals = {}
             if appointment.platform_type == 'teams':
                 vals['teams_ok'] = True
