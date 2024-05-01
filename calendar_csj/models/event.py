@@ -218,7 +218,6 @@ class Meeting(models.Model):
             new_meetings = self.browse(new_ids)
             real_meetings = self.browse(real_ids)
             all_meetings = real_meetings + new_meetings
-            super(Meeting, real_meetings).write(values)
             if (values.get('start_date') or values.get('start_datetime') or
                     (values.get('start') and self.env.context.get('from_ui'))) and values.get('active', True):
                 for current_meeting in all_meetings:
@@ -227,6 +226,13 @@ class Meeting(models.Model):
                         _logger.error(meeting.appointment_id.teams_ok)
                         if meeting.appointment_id.teams_ok:
                             attendee_to_email._send_mail_to_attendees('calendar_csj.calendar_template_meeting_teams_changedate')
+            if values.get('platform_type') == 'teams' or meeting.platform_type == 'teams':
+                values.pop('start_date')
+                values.pop('start_datetime')
+                values.pop('active')
+                values.pop('start')
+            super(Meeting, real_meetings).write(values)
+            
 
 
 class Attendee(models.Model):
