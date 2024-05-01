@@ -855,17 +855,17 @@ class CalendarAppointment(models.Model):
 
 
     def write(self, vals):
-        if vals.get('platform_type') and vals.get('platform_type') == 'teams':
-            vals['teams_ok'] = True
-            vals['platform'] = 'Teams'
-        if vals.get('calendar_datetime') and not self.teams_ok and vals.get('platform_type') == 'lifesize':
+        #TODO: falta agregar cuando se edita de teams a lifesize
+        if ('calendar_datetime' in vals and vals.get('calendar_datetime') and self.platform_type == 'lifesize'):
             #Comportamiento estándar con Lifesize
             vals.update(self.write_lifesize(vals))
 
         if vals.get('coorganizer'):
             self.validateCoorganizer(vals.get('coorganizer'))
 
-        if vals.get('platform_type') and vals.get('platform_type') == 'teams':
+        if vals.get('platform_type') and vals.get('platform_type') == 'teams' and self.platform_type == 'lifesize':
+            vals['teams_ok'] = True
+            vals['platform'] = 'Teams'
             #vals.update(self.write_lifesize(vals))
 
             tag_number = self.name
@@ -1089,61 +1089,7 @@ class CalendarAppointment(models.Model):
 
     def change_lifesize_to_teams_multi(self):
         vals = []
-        vals.append({'teams_ok': True})
-        vals.append({'platform': 'Teams'})
-
-        if self.coorganizer:
-            self.validateCoorganizer(self.coorganizer)
-
-            tag_number = self.name
-            if self.city_id and self.city_id.zipcode \
-                and (self.room_id or self.type != 'audience') \
-                    and self.process_number and self.partner_id \
-                        and self.partner_id.entity_id \
-                            and self.partner_id.specialty_id \
-                                and self.partner_id.code:
-                room_code = self.room_id.mame if self.room_id else _(None)
-                res = '%s_%s%s%s%s%s%s' % (self.process_number,
-                                            str(self.request_type).upper(),
-                                            self.city_id.zipcode,
-                                            self.partner_id.entity_id.code,
-                                            self.partner_id.specialty_id.code,
-                                            self.partner_id.code,
-                                            room_code)
-                if self.record_data:
-                    res += '_' + self.record_data
-                tag_number = res
-
-            tz_offset = self.env.user.tz_offset if self.env.user.tz_offset else False
-            tz = int(tz_offset)/100 if tz_offset else 0
-            if self.calendar_datetime:
-                calendar_datetime = fields.Datetime.from_string(self.calendar_datetime)
-
-            date_end = calendar_datetime + relativedelta(hours=float(self.calendar_duration)) if calendar_datetime else False
-
-            vals.update({
-                'tag_number': self.tag_number,
-                'name': self.tag_number,
-                'start': calendar_datetime,
-                'stop': date_end,
-                'teams_ok': True,
-                'platform_type': 'teams',
-                'platform': 'Teams',
-                'judged_id': self.appointment_type_id.judged_id.id,
-                'coorganizer': self.coorganizer,
-                'lifesize_uuid': None,
-                'lifesize_url': None,
-                'lifesize_owner': None,
-                'lifesize_modified': None,
-                'lifesize_meeting_ext': None,
-                'lifesize_moderator': None,
-            })
-            vals.update(self.create_teams(vals))
-            self.unlink_lifesize()
-            vals.pop('start')
-            vals.pop('stop')
-            vals.pop('judged_id')
-
+        vals.append({'platform_type': 'teams'})
         self.write(vals)
         vals['sequence_icsfile_ctl'] = self.sequence_icsfile_ctl + 1 if int(self.sequence_icsfile_ctl) else 1
         self.write_event(vals)
