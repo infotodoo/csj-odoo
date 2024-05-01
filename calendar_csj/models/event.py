@@ -226,7 +226,7 @@ class Meeting(models.Model):
                         _logger.error(meeting.appointment_id.teams_ok)
                         if meeting.appointment_id.teams_ok:
                             attendee_to_email._send_mail_to_attendees('calendar_csj.calendar_template_meeting_teams_changedate')
-            if values.get('platform_type') == 'teams' or meeting.platform_type == 'teams':
+            if ('platform_type' in values and values.get('platform_type') == 'teams') or meeting.platform_type == 'teams':
                 values.pop('start_date')
                 values.pop('start_datetime')
                 values.pop('active')
