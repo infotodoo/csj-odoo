@@ -193,6 +193,7 @@ class Meeting(models.Model):
 
         return result
 
+    """
     def write(self, values):
         # FIXME: neverending recurring events
         if 'rrule' in values:
@@ -271,6 +272,7 @@ class Meeting(models.Model):
                             _logger.error('88888--------------------------------00000000000000000000000000')
                             attendee_to_email._send_mail_to_attendees('calendar.calendar_template_meeting_changedate')
         return True
+    """
 
 
 class Attendee(models.Model):
