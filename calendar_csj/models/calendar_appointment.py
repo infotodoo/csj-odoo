@@ -920,7 +920,8 @@ class CalendarAppointment(models.Model):
                 vals.pop('stop')
             if 'judged_id' in vals:
                 vals.pop('judged_id')
-
+        _logger.error('****************#########################')
+        _logger.error(vals)
         res = super(CalendarAppointment, self).write(vals)
 
         if vals.get('calendar_datetime') or vals.get('platform_type'):
