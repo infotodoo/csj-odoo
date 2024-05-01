@@ -858,11 +858,6 @@ class CalendarAppointment(models.Model):
 
     def write(self, vals):
         #TODO: falta agregar cuando se edita de teams a lifesize
-        if ('calendar_datetime' in vals and vals.get('calendar_datetime') and self.platform_type == 'lifesize' and 'platform_type' not in vals):
-            #Comportamiento estándar con Lifesize
-            _logger.error('-----------------------------------------')
-            #vals.update(self.write_lifesize(vals))
-
         if 'coorganizer' in vals and vals.get('coorganizer'):
             self.validateCoorganizer(vals.get('coorganizer'))
 
@@ -916,17 +911,14 @@ class CalendarAppointment(models.Model):
                 'lifesize_moderator': None,
             })
             vals.update(self.create_teams(vals))
-            self.unlink_lifesize()
+            #self.unlink_lifesize()
             if 'start' in vals:
                 vals.pop('start')
             if 'stop' in vals:
                 vals.pop('stop')
             if 'judged_id' in vals:
                 vals.pop('judged_id')
-        _logger.error('****************#########################')
-        _logger.error(self.platform_type)
-        _logger.error(vals.get('platform_type'))
-        _logger.error(vals)
+
         res = super(CalendarAppointment, self).write(vals)
 
         if vals.get('calendar_datetime') or vals.get('platform_type'):
