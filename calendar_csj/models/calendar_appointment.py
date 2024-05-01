@@ -1087,7 +1087,7 @@ class CalendarAppointment(models.Model):
         for record in self:
             record.state_copy=record.state
 
-    @api.model
+    @api.model_create_multi
     def change_lifesize_to_teams_multi(self, ids):
         appointments = self.browse(ids)
         for appointment in appointments:
