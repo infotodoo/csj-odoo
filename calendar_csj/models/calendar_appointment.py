@@ -858,7 +858,8 @@ class CalendarAppointment(models.Model):
         #TODO: falta agregar cuando se edita de teams a lifesize
         if ('calendar_datetime' in vals and vals.get('calendar_datetime') and self.platform_type == 'lifesize' and 'platform_type' not in vals):
             #Comportamiento estándar con Lifesize
-            vals.update(self.write_lifesize(vals))
+            _logger.error(vals)
+            #vals.update(self.write_lifesize(vals))
 
         if 'coorganizer' in vals and vals.get('coorganizer'):
             self.validateCoorganizer(vals.get('coorganizer'))
