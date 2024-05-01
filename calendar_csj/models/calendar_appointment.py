@@ -860,10 +860,10 @@ class CalendarAppointment(models.Model):
             #Comportamiento estándar con Lifesize
             vals.update(self.write_lifesize(vals))
 
-        if vals.get('coorganizer'):
+        if 'coorganizer' in vals and vals.get('coorganizer'):
             self.validateCoorganizer(vals.get('coorganizer'))
 
-        if vals.get('platform_type') and vals.get('platform_type') == 'teams' and self.platform_type == 'lifesize':
+        if 'platform_type' in vals and vals.get('platform_type') == 'teams' and self.platform_type == 'lifesize':
             vals['teams_ok'] = True
             vals['platform'] = 'Teams'
             #vals.update(self.write_lifesize(vals))
