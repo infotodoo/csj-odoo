@@ -921,6 +921,8 @@ class CalendarAppointment(models.Model):
             if 'judged_id' in vals:
                 vals.pop('judged_id')
         _logger.error('****************#########################')
+        _logger.error(self.platform_type)
+        _logger.error(vals.get('platform_type'))
         _logger.error(vals)
         res = super(CalendarAppointment, self).write(vals)
 
