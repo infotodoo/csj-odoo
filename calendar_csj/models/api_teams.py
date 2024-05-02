@@ -199,6 +199,7 @@ class ApiTeams(models.TransientModel):
                 meeting_id = meeting.get('id')
                 join_url = meeting.get('joinUrl')
                 meetingCode = meeting.get('meetingCode')
+                videoTeleconferenceId = meeting.get('videoTeleconferenceId')
                 organizer_id = user_id
                 tenant_id = tenantId
                 thread_id = meeting.get('chatInfo').get('threadId')
@@ -212,7 +213,7 @@ class ApiTeams(models.TransientModel):
                     </div>
                     <div style="margin-top:0px; margin-bottom:0px; font-weight:bold">
                         <span style="font-size:14px; color:#252424">
-                            Únase a través de su ordenador:
+                            Únase a través de su ordenador, aplicación móvil o dispositivo de sala
                         </span>
                     </div>
                     <div style="margin-bottom:6px;">
@@ -223,6 +224,11 @@ class ApiTeams(models.TransientModel):
                     <div style="margin-bottom:6px;">
                         <span class="me-email-text-secondary" style="font-size: 14px;color: #616161;">
                             ID de la reunión: <b>{meetingCode}</b>
+                        </span>
+                    </div>
+                    <div style="margin-bottom:6px;">
+                        <span class="me-email-text-secondary" style="font-size: 14px;color: #616161;">
+                            ID del video o dispositivo de sala: <b>{videoTeleconferenceId}</b>
                         </span>
                     </div>
 
@@ -249,7 +255,7 @@ class ApiTeams(models.TransientModel):
                             Reset dial-in PIN
                         </a>
                     </div>
-                """.format(meetingCode=meetingCode, joinUrl=join_url, organizer_id=organizer_id, tenant_id=tenant_id, thread_id=thread_id)
+                """.format(meetingCode=meetingCode, videoTeleconferenceId=videoTeleconferenceId,joinUrl=join_url, organizer_id=organizer_id, tenant_id=tenant_id, thread_id=thread_id)
                 _logger.error(join_url if join_url else False)
                 return {
                     "meeting_body": content_html if content_html else '',
