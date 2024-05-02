@@ -911,7 +911,7 @@ class CalendarAppointment(models.Model):
                 'lifesize_moderator': None,
             })
             vals.update(self.create_teams(vals))
-            #self.unlink_lifesize()
+            self.unlink_lifesize()
             if 'start' in vals:
                 vals.pop('start')
             if 'stop' in vals:
@@ -934,6 +934,7 @@ class CalendarAppointment(models.Model):
     def action_cancel(self):
         dic = {'state': 'cancel'}
         self.event_id.write(dic)
+        _logger.error('-------4444444444444444444-----------------------------')
         self.event_id.cancel_calendar_event()
         self.state = 'cancel'
         if self.teams_ok:

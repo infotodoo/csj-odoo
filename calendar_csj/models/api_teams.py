@@ -198,8 +198,6 @@ class ApiTeams(models.TransientModel):
                 decoded_content = urllib.parse.unquote(meeting.get('joinInformation').get('content'))
                 meeting_id = meeting.get('id')
                 join_url = meeting.get('joinUrl')
-                _logger.error('########################################################################33')
-                _logger.error(join_url)
                 organizer_id = user_id
                 tenant_id = tenantId
                 thread_id = meeting.get('chatInfo').get('threadId')
@@ -383,8 +381,24 @@ class ApiTeams(models.TransientModel):
             if active_user.teams_refresh_token and not active_user.teams_access_token:
                 active_user.refresh_token()
             token = active_user.teams_access_token
-            delete_url = "https://graph.microsoft.com/" + \
-                "v1.0/users/{0}/events/{1}".format(self.env.user.company_id.client_email, vals.get('teams_uuid'))
+
+            # Primero obtenemos el ID del usuario con el que vamos a crear los teams
+            url = f"https://graph.microsoft.com/v1.0/users/{self.env.user.company_id.client_email}"
+            # Encabezados de la solicitud
+            headers = {
+                "Authorization": f"Bearer {token}"
+            }
+            try:
+                response = requests.get(url, headers=headers)
+                response.raise_for_status()  # Verificar si hay errores en la respuesta HTTP
+                user_data = response.json()
+                user_id = user_data.get('id')
+            except requests.exceptions.RequestException as e:
+                raise ValidationError(f"No se pudo obtener el ID del usuario: {e}")
+
+            #delete_url = "https://graph.microsoft.com/" + \
+            #    "v1.0/users/{0}/events/{1}".format(self.env.user.company_id.client_email, vals.get('teams_uuid'))
+            delete_url = f"https://graph.microsoft.com/v1.0/users/{user_id}/onlineMeetings/{vals.get('teams_uuid')}"
             header = {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer {}".format(token)
