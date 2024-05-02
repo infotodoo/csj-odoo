@@ -54,9 +54,8 @@
             <field name="user_signature" eval="False"/>
         </record>
     </data>
-    
+
     <data noupdate="1">
-        
         <record id="calendar_csj_template_meeting_cancel" model="mail.template">
             <field name="name">Calendar: Cancel event</field>
             <field name="model_id" ref="calendar.model_calendar_attendee"/>

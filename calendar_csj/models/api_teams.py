@@ -198,6 +198,7 @@ class ApiTeams(models.TransientModel):
                 decoded_content = urllib.parse.unquote(meeting.get('joinInformation').get('content'))
                 meeting_id = meeting.get('id')
                 join_url = meeting.get('joinUrl')
+                meetingCode = meeting.get('meetingCode')
                 organizer_id = user_id
                 tenant_id = tenantId
                 thread_id = meeting.get('chatInfo').get('threadId')
@@ -211,7 +212,7 @@ class ApiTeams(models.TransientModel):
                     </div>
                     <div style="margin-top:0px; margin-bottom:0px; font-weight:bold">
                         <span style="font-size:14px; color:#252424">
-                            Únase a través de su ordenador, aplicación móvil o dispositivo de sala
+                            Únase a través de su ordenador:
                         </span>
                     </div>
                     <div style="margin-bottom:6px;">
@@ -221,9 +222,15 @@ class ApiTeams(models.TransientModel):
                     </div>
                     <div style="margin-bottom:6px;">
                         <span class="me-email-text-secondary" style="font-size: 14px;color: #616161;">
-                            ID de la reunión: <b>{meeting_id}</b>
+                            ID de la reunión: <b>{meetingCode}</b>
                         </span>
                     </div>
+
+                    <div style="margin-bottom: 6px;">
+        <span class="me-email-text-secondary" style="font-size: 14px; color: #616161;">Video ID: </span>
+        <span class="me-email-text" style="font-size: 14px; color: #242424;">111 108 139 5</span>
+    </div>
+
                     <div style="font-size:14px">
                         <a href="https://www.microsoft.com/en-us/microsoft-teams/download-app" class="me-email-link" style="font-size:14px; text-decoration:underline;color:#6264a7; font-family:'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif">
                             Descargar Teams
@@ -242,7 +249,7 @@ class ApiTeams(models.TransientModel):
                             Reset dial-in PIN
                         </a>
                     </div>
-                """.format(meeting_id=meeting_id, joinUrl=join_url, organizer_id=organizer_id, tenant_id=tenant_id, thread_id=thread_id)
+                """.format(meetingCode=meetingCode, joinUrl=join_url, organizer_id=organizer_id, tenant_id=tenant_id, thread_id=thread_id)
                 _logger.error(join_url if join_url else False)
                 return {
                     "meeting_body": content_html if content_html else '',

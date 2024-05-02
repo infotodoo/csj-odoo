@@ -484,84 +484,6 @@ class CalendarAppointment(models.Model):
         res = super(CalendarAppointment, self).create(vals)
         return res
 
-    """
-    def write(self, vals):
-        if vals.get('platform_type') and vals.get('platform_type') == 'teams':
-            vals['teams_ok'] = True
-            vals['platform'] = 'Teams'
-
-        if vals.get('calendar_datetime') and not self.teams_ok and not vals.get('platform_type'):
-            #Comportamiento estándar con Lifesize
-            vals.update(self.write_lifesize(vals))
-
-        if vals.get('coorganizer'):
-            self.validateCoorganizer(vals.get('coorganizer'))
-
-        if vals.get('platform_type') and vals.get('platform_type') == 'teams':
-            vals.update(self.write_lifesize(vals))
-
-            tag_number = self.name
-            if self.city_id and self.city_id.zipcode \
-                and (self.room_id or self.type != 'audience') \
-                    and self.process_number and self.partner_id \
-                        and self.partner_id.entity_id \
-                            and self.partner_id.specialty_id \
-                                and self.partner_id.code:
-                room_code = self.room_id.mame if self.room_id else _(None)
-                res = '%s_%s%s%s%s%s%s' % (self.process_number,
-                                            str(self.request_type).upper(),
-                                            self.city_id.zipcode,
-                                            self.partner_id.entity_id.code,
-                                            self.partner_id.specialty_id.code,
-                                            self.partner_id.code,
-                                            room_code)
-                if self.record_data:
-                    res += '_' + self.record_data
-                tag_number = res
-
-            tz_offset = self.env.user.tz_offset if self.env.user.tz_offset else False
-            tz = int(tz_offset)/100 if tz_offset else 0
-            if vals.get('calendar_datetime'):
-                calendar_datetime = fields.Datetime.from_string(vals.get('calendar_datetime'))
-            else:
-                calendar_datetime = fields.Datetime.from_string(self.calendar_datetime)
-            date_end = calendar_datetime + relativedelta(hours=float(self.calendar_duration)) if calendar_datetime else False
-
-            vals.update({
-                'tag_number': self.tag_number,
-                'name': self.tag_number,
-                'start': calendar_datetime,
-                'stop': date_end,
-                'teams_ok': True,
-                'platform_type': 'teams',
-                'platform': 'Teams',
-                'judged_id': self.appointment_type_id.judged_id.id,
-                'coorganizer': vals.get('coorganizer') if vals.get('coorganizer') else False,
-                'lifesize_uuid': None,
-                'lifesize_url': None,
-                'lifesize_owner': None,
-                'lifesize_modified': None,
-                'lifesize_meeting_ext': None,
-                'lifesize_moderator': None,
-            })
-            vals.update(self.create_teams(vals))
-            self.unlink_lifesize()
-            if 'start' in vals:
-                vals.pop('start')
-            if 'stop' in vals:
-                vals.pop('stop')
-            if 'judged_id' in vals:
-                vals.pop('judged_id')
-
-        res = super(CalendarAppointment, self).write(vals)
-
-        if vals.get('calendar_datetime') or vals.get('platform_type'):
-            vals['sequence_icsfile_ctl'] = self.sequence_icsfile_ctl + 1 if int(self.sequence_icsfile_ctl) else 1
-            self.write_event(vals)
-
-        return res
-    """
-
     def unlink(self):
         if self.teams_ok:
             self.unlink_teams()
@@ -628,8 +550,7 @@ class CalendarAppointment(models.Model):
             'judged_id': vals.get('judged_id'),
             'coorganizer': vals.get('coorganizer'),
         }
-        _logger.error('**********************************************************')
-        _logger.error(api)
+
         judged_extension_lifesize = False
         if vals.get('appointment_type_id'):
             online_appointment_type = self.env['calendar.appointment.type'].search(
@@ -665,7 +586,6 @@ class CalendarAppointment(models.Model):
             api.update(lecturerExtension=self.env.user.company_id.lecturer_extension)
 
         resp = self.env['api.teams'].api_crud(api)
-        _logger.error(resp)
         dic = self.env['api.teams'].resp2dict(resp)
         return dic
 
@@ -934,7 +854,6 @@ class CalendarAppointment(models.Model):
     def action_cancel(self):
         dic = {'state': 'cancel'}
         self.event_id.write(dic)
-        _logger.error('-------4444444444444444444-----------------------------')
         self.event_id.cancel_calendar_event()
         self.state = 'cancel'
         if self.teams_ok:
