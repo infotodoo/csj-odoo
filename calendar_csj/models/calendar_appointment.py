@@ -485,7 +485,7 @@ class CalendarAppointment(models.Model):
         return res
 
     def unlink(self):
-        if self.teams_ok:
+        if self.platform_type == 'teams':
             self.unlink_teams()
         else:
             self.unlink_lifesize()

@@ -117,7 +117,7 @@ class ApiTeams(models.TransientModel):
                 "allowTranscription": True,
                 "allowRecording": True,
                 "allowCloudRecording": True,
-                "meetingTemplateId": None,
+                "meetingTemplateId": "customtemplate_b37c308d-4d3b-4ef5-ab65-3cb86a438436",
                 "broadcastSettings": None,
                 "meetingInfo": vals.get("description") if vals.get("description") else None,
                 "audioConferencing": None,
