@@ -317,6 +317,19 @@ class WebsiteCalendarInherit(WebsiteCalendar):
             else:
                 pass
 
+        #agregando listado de coorganizadores
+        if coorganizer:
+            coorganizer_emails = coorganizer.split(',')
+            for email in coorganizer_emails:
+                partner_n = request.env['res.partner'].sudo().search([('email', '=like', email)], limit=1)
+                if not partner_n:
+                    partner_n = partner_n.create({
+                        'name': name_n,
+                        'email': email,
+                        'company_type': 'guest',
+                    })
+                partner_ids.append(partner_n.id)
+
         destination_ids = []
         for i in range(1,int(destinationcont)):
             destination_name = kwargs['destino%s'%i] if kwargs['destino%s'%i] != '' else False
