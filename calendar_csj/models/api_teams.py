@@ -246,9 +246,29 @@ class ApiTeams(models.TransientModel):
                         </span>
                     </div>
                     <div style="margin-bottom:6px;">
-                        <a id="meet_invite_block.action.join_link" class="me-email-headline" style="font-size: 20px;font-weight:600;text-decoration:underline;color: #5B5FC7;" href="{dialinUrl}" target="_blank" rel="noreferrer noopener">
+                        <a id="meet_invite_block.action.join_link" class="me-email-headline" style="font-size: 20px;font-weight:600;text-decoration:underline;color: #5B5FC7;" href="{tollNumber},,{conferenceId}#" target="_blank" rel="noreferrer noopener">
                             {tollNumber},,{conferenceId}# Colombia, Bogotá
                         </a>
+                    </div>
+                    <div style="margin-bottom:6px;">
+                        <a id="meet_invite_block.action.join_link" class="me-email-headline" style="font-size: 20px;font-weight:600;text-decoration:underline;color: #5B5FC7;" href="{dialinUrl}" target="_blank" rel="noreferrer noopener">
+                            Buscar un número local
+                        </a>
+                    </div>
+                    <div style="margin-bottom:6px;">
+                        <span class="me-email-text-secondary" style="font-size: 14px;color: #616161;">
+                            Id. de conferencia telefónica: <b>{meetingCode}#</b>
+                        </span>
+                    </div>
+                    <div style="margin-top:10px; margin-bottom:0px; font-weight:bold">
+                        <span style="font-size:14px; color:#252424">
+                            Unirse en un dispositivo de videoconferencia
+                        </span>
+                    </div>
+                    <div style="margin-bottom:6px;">
+                        <span class="me-email-text-secondary" style="font-size: 14px;color: #616161;">
+                            Clave de inquilino: <a href="mailto:teams@cendoj.onpexip.com">teams@cendoj.onpexip.com</a>
+                        </span>
                     </div>
                     <div style="margin-bottom:6px;">
                         <span class="me-email-text-secondary" style="font-size: 14px;color: #616161;">
