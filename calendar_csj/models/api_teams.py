@@ -132,6 +132,9 @@ class ApiTeams(models.TransientModel):
                     "isEnabledForContentSharing": False,
                     "isEnabledForVideo": False
                 },
+                "joinMeetingIdSettings": {
+                    "isPasscodeRequired": True
+                },
                 "participants": {
                     "organizer": {
                         "upn": self.env.user.company_id.client_email,
@@ -203,6 +206,11 @@ class ApiTeams(models.TransientModel):
                 organizer_id = user_id
                 tenant_id = tenantId
                 thread_id = meeting.get('chatInfo').get('threadId')
+                passCode = meeting.get('joinMeetingIdSettings').get('passcode')
+                conferenceId = meeting.get('audioConferencing').get('conferenceId')
+                tollNumber = meeting.get('audioConferencing').get('tollNumber')
+                dialinUrl = meeting.get('audioConferencing').get('dialinUrl')
+
                 content_html = """
                     <div style="max-width: 520px; color: #242424; font-family:'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" class="me-email-text">
                     <div style="margin-bottom:24px;overflow:hidden;white-space:nowrap;">________________________________________________________________________________</div>
@@ -225,6 +233,22 @@ class ApiTeams(models.TransientModel):
                         <span class="me-email-text-secondary" style="font-size: 14px;color: #616161;">
                             ID de la reunión: <b>{meetingCode}</b>
                         </span>
+                    </div>
+                    <div style="margin-bottom:6px;">
+                        <span class="me-email-text-secondary" style="font-size: 14px;color: #616161;">
+                            Código de acceso: <b>{passCode}</b>
+                        </span>
+                    </div>
+                    <div style="margin-bottom:24px;overflow:hidden;white-space:nowrap;">________________________________________________________________________________</div>
+                    <div style="margin-top:0px; margin-bottom:0px; font-weight:bold">
+                        <span style="font-size:14px; color:#252424">
+                            Marcar por teléfono
+                        </span>
+                    </div>
+                    <div style="margin-bottom:6px;">
+                        <a id="meet_invite_block.action.join_link" class="me-email-headline" style="font-size: 20px;font-weight:600;text-decoration:underline;color: #5B5FC7;" href="{dialinUrl}" target="_blank" rel="noreferrer noopener">
+                            {tollNumber},,{conferenceId}# Colombia, Bogotá
+                        </a>
                     </div>
                     <div style="margin-bottom:6px;">
                         <span class="me-email-text-secondary" style="font-size: 14px;color: #616161;">
@@ -255,12 +279,27 @@ class ApiTeams(models.TransientModel):
                             Reset dial-in PIN
                         </a>
                     </div>
-                """.format(meetingCode=meetingCode, videoTeleconferenceId=videoTeleconferenceId,joinUrl=join_url, organizer_id=organizer_id, tenant_id=tenant_id, thread_id=thread_id)
+                """.format(
+                        meetingCode=meetingCode,
+                        passCode=passCode,
+                        dialinUrl=dialinUrl,
+                        tollNumber=tollNumber,
+                        conferenceId=conferenceId,
+                        videoTeleconferenceId=videoTeleconferenceId,
+                        joinUrl=join_url,
+                        organizer_id=organizer_id,
+                        tenant_id=tenant_id,
+                        thread_id=thread_id
+                    )
                 _logger.error(join_url if join_url else False)
                 return {
                     "meeting_body": content_html if content_html else '',
                     "meeting_url": join_url if join_url else False,
                     "meeting_id": meeting_id if meeting_id else False,
+                    "meeting_passcode": passCode if passCode else False,
+                    "meeting_conference_id": conferenceId if conferenceId else False,
+                    "meeting_toll_number": tollNumber if tollNumber else False,
+                    "meeting_dial_url": dialinUrl if dialinUrl else False,
                     "action": 'CREATED'
                 }
             else:
@@ -463,7 +502,11 @@ class ApiTeams(models.TransientModel):
             res = dict(
                 teams_url=resp.get("meeting_url"),
                 teams_uuid=resp.get("meeting_id"),
-                teams_description=resp.get("meeting_body"),
+                teams_passcode=resp.get("meeting_passcode"),
+                teams_passcode=resp.get("meeting_passcode"),
+                teams_dialinurl=resp.get("meeting_dial_url"),
+                teams_tollnumber=resp.get("meeting_toll_number"),
+                teams_conference_id=resp.get("meeting_conference_id"),
             )
             return res
 

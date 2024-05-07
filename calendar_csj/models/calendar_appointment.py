@@ -198,6 +198,10 @@ class CalendarAppointment(models.Model):
         ('teams', 'TEAMS'), ('lifesize', 'LIFESIZE')
     ], 'Api de Agendamiento')
     coorganizer = fields.Char('Listas de Coorganizadores')
+    teams_passcode = fields.Char('Código de Acceso')
+    teams_tollnumber = fields.Char('Conexión telefónica')
+    teams_dialinurl = fields.Char('Dial URL')
+    teams_conference_id = fields.Char('ID Conferencia')
 
     @api.depends('teams_ok')
     def _compute_platform_type(self):
