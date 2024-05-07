@@ -210,6 +210,7 @@ class ApiTeams(models.TransientModel):
                 conferenceId = meeting.get('audioConferencing').get('conferenceId')
                 tollNumber = meeting.get('audioConferencing').get('tollNumber')
                 dialinUrl = meeting.get('audioConferencing').get('dialinUrl')
+                tel = f"tel:{tollNumber},,{conferenceId}#"
 
                 content_html = """
                     <div style="max-width: 520px; color: #242424; font-family:'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif" class="me-email-text">
@@ -246,7 +247,7 @@ class ApiTeams(models.TransientModel):
                         </span>
                     </div>
                     <div style="margin-bottom:6px;">
-                        <a id="meet_invite_block.action.join_link" class="me-email-headline" style="font-size: 20px;font-weight:600;text-decoration:underline;color: #5B5FC7;" href="{tollNumber},,{conferenceId}#" target="_blank" rel="noreferrer noopener">
+                        <a id="meet_invite_block.action.join_link" class="me-email-headline" style="font-size: 20px;font-weight:600;text-decoration:underline;color: #5B5FC7;" href="{tel}" target="_blank" rel="noreferrer noopener">
                             {tollNumber},,{conferenceId}# Colombia, Bogotá
                         </a>
                     </div>
@@ -294,10 +295,6 @@ class ApiTeams(models.TransientModel):
                         <a id="meet_invite_block.action.organizer_meet_options" class="me-email-link" style="font-size: 14px;text-decoration:underline;color: #5B5FC7;" target="_blank" href="https://teams.microsoft.com/meetingOptions/?organizerId={organizer_id}&tenantId={tenant_id}&threadId={thread_id}&messageId=0&language=en-US" rel="noreferrer noopener">
                             Opciones de la réunion
                         </a>
-                        <span style="color: #D1D1D1">|</span>
-                        <a id="meet_invite_block.action.organizer_reset_dialin_pin" class="me-email-link" style="font-size: 14px;text-decoration:underline;color: #5B5FC7;" target="_blank" href="https://dialin.teams.microsoft.com/usp/pstnconferencing" rel="noreferrer noopener">
-                            Reset dial-in PIN
-                        </a>
                     </div>
                 """.format(
                         meetingCode=meetingCode,
@@ -305,6 +302,7 @@ class ApiTeams(models.TransientModel):
                         dialinUrl=dialinUrl,
                         tollNumber=tollNumber,
                         conferenceId=conferenceId,
+                        tel=tel,
                         videoTeleconferenceId=videoTeleconferenceId,
                         joinUrl=join_url,
                         organizer_id=organizer_id,
