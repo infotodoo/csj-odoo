@@ -502,7 +502,7 @@ class ApiTeams(models.TransientModel):
             res = dict(
                 teams_url=resp.get("meeting_url"),
                 teams_uuid=resp.get("meeting_id"),
-                teams_passcode=resp.get("meeting_passcode"),
+                teams_description=resp.get("meeting_body"),
                 teams_passcode=resp.get("meeting_passcode"),
                 teams_dialinurl=resp.get("meeting_dial_url"),
                 teams_tollnumber=resp.get("meeting_toll_number"),
