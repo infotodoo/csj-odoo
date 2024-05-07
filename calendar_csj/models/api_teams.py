@@ -241,18 +241,18 @@ class ApiTeams(models.TransientModel):
                         </span>
                     </div>
                     <div style="margin-bottom:24px;overflow:hidden;white-space:nowrap;">________________________________________________________________________________</div>
-                    <div style="margin-top:0px; margin-bottom:0px; font-weight:bold">
+                    <div style="margin-top:0px; margin-bottom:10px; font-weight:bold">
                         <span style="font-size:14px; color:#252424">
                             Marcar por teléfono
                         </span>
                     </div>
                     <div style="margin-bottom:6px;">
-                        <a id="meet_invite_block.action.join_link" class="me-email-headline" style="font-size: 20px;font-weight:600;text-decoration:underline;color: #5B5FC7;" href="{tel}" target="_blank" rel="noreferrer noopener">
+                        <a id="meet_invite_block.action.join_link" class="me-email-headline" style="font-size: 16px;font-weight:600;text-decoration:underline;color: #5B5FC7;" href="{tel}" target="_blank" rel="noreferrer noopener">
                             {tollNumber},,{conferenceId}# Colombia, Bogotá
                         </a>
                     </div>
                     <div style="margin-bottom:6px;">
-                        <a id="meet_invite_block.action.join_link" class="me-email-headline" style="font-size: 20px;font-weight:600;text-decoration:underline;color: #5B5FC7;" href="{dialinUrl}" target="_blank" rel="noreferrer noopener">
+                        <a id="meet_invite_block.action.join_link" class="me-email-headline" style="font-size: 16px;font-weight:600;text-decoration:underline;color: #5B5FC7;" href="{dialinUrl}" target="_blank" rel="noreferrer noopener">
                             Buscar un número local
                         </a>
                     </div>
@@ -278,9 +278,9 @@ class ApiTeams(models.TransientModel):
                     </div>
 
                     <div style="margin-bottom: 6px;">
-        <span class="me-email-text-secondary" style="font-size: 14px; color: #616161;">Video ID: </span>
-        <span class="me-email-text" style="font-size: 14px; color: #242424;">111 108 139 5</span>
-    </div>
+                        <span class="me-email-text-secondary" style="font-size: 14px; color: #616161;">Video ID: </span>
+                        <span class="me-email-text" style="font-size: 14px; color: #242424;">111 108 139 5</span>
+                    </div>
 
                     <div style="font-size:14px">
                         <a href="https://www.microsoft.com/en-us/microsoft-teams/download-app" class="me-email-link" style="font-size:14px; text-decoration:underline;color:#6264a7; font-family:'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif">
@@ -294,6 +294,16 @@ class ApiTeams(models.TransientModel):
                         <span class="me-email-text-secondary" style="font-size: 14px;color: #616161;">Para organizadores: </span>
                         <a id="meet_invite_block.action.organizer_meet_options" class="me-email-link" style="font-size: 14px;text-decoration:underline;color: #5B5FC7;" target="_blank" href="https://teams.microsoft.com/meetingOptions/?organizerId={organizer_id}&tenantId={tenant_id}&threadId={thread_id}&messageId=0&language=en-US" rel="noreferrer noopener">
                             Opciones de la réunion
+                        </a>
+                        <span style="color: #D1D1D1">|</span>
+                        <a id="meet_invite_block.action.organizer_reset_dialin_pin" class="me-email-link" style="font-size: 14px;text-decoration:underline;color: #5B5FC7;" target="_blank" href="https://dialin.teams.microsoft.com/usp/pstnconferencing" rel="noreferrer noopener">
+                            Restablecer PIN de acceso telefónico
+                        </a>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <span class="me-email-text-secondary" style="font-size: 14px;color: #616161;">Para organizadores: </span>
+                        <a id="meet_invite_block.action.organizer_meet_options" class="me-email-link" style="font-size: 14px;text-decoration:underline;color: #5B5FC7;" target="_blank" href="https://www.ramajudicial.gov.co/portal/politicas-de-privacidad-y-condiciones-de-uso" rel="noreferrer noopener">
+                            Privacidad y seguridad
                         </a>
                     </div>
                 """.format(
