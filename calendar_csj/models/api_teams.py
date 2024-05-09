@@ -44,7 +44,7 @@ class ApiTeams(models.TransientModel):
             if active_user.teams_refresh_token and not active_user.teams_access_token:
                 active_user.refresh_token()
             token = active_user.teams_access_token
-
+            _logger.error(token)
             # Primero obtenemos el ID del usuario con el que vamos a crear los teams
             url = f"https://graph.microsoft.com/v1.0/users/{self.env.user.company_id.client_email}"
             # Encabezados de la solicitud
@@ -176,6 +176,8 @@ class ApiTeams(models.TransientModel):
                     })
 
             _logger.error(payload)
+            _logger.error(header)
+            _logger.error(url)
             try:
                 meeting_obj = requests.request(
                     "POST", url, headers=header, json=payload)
