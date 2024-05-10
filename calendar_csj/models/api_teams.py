@@ -276,9 +276,14 @@ class ApiTeams(models.TransientModel):
                         </span>
                     </div>
 
-                    <div style="margin-bottom: 6px;">
+                    <!--<div style="margin-bottom: 6px;">
                         <span class="me-email-text-secondary" style="font-size: 14px; color: #616161;">Video ID: </span>
                         <span class="me-email-text" style="font-size: 14px; color: #242424;">111 108 139 5</span>
+                    </div>-->
+                    <div style="font-size:14px">
+                        <a href="https://pexip.me/teams/cendoj.onpexip.com/{videoTeleconferenceId}" class="me-email-link" style="font-size:14px; text-decoration:underline;color:#6264a7; font-family:'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif">
+                            Más información
+                        </a>
                     </div>
 
                     <div style="font-size:14px">
