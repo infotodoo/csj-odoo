@@ -281,7 +281,7 @@ class ApiTeams(models.TransientModel):
                         <span class="me-email-text" style="font-size: 14px; color: #242424;">111 108 139 5</span>
                     </div>-->
                     <div style="font-size:14px">
-                        <a href="https://pexip.me/teams/cendoj.onpexip.com/{videoTeleconferenceId}" class="me-email-link" style="font-size:14px; text-decoration:underline;color:#6264a7; font-family:'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif">
+                        <a href="https://pexip.me/teams/cendoj.onpexip.com/{videoTeleconferenceId2}" class="me-email-link" style="font-size:14px; text-decoration:underline;color:#6264a7; font-family:'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif">
                             Más información
                         </a>
                     </div>
@@ -318,7 +318,7 @@ class ApiTeams(models.TransientModel):
                         conferenceId=conferenceId,
                         tel=tel,
                         videoTeleconferenceId=videoTeleconferenceId,
-                        videoTeleconferenceId=videoTeleconferenceId,
+                        videoTeleconferenceId2=videoTeleconferenceId,
                         joinUrl=join_url,
                         organizer_id=organizer_id,
                         tenant_id=tenant_id,
