@@ -318,6 +318,7 @@ class ApiTeams(models.TransientModel):
                         conferenceId=conferenceId,
                         tel=tel,
                         videoTeleconferenceId=videoTeleconferenceId,
+                        videoTeleconferenceId=videoTeleconferenceId,
                         joinUrl=join_url,
                         organizer_id=organizer_id,
                         tenant_id=tenant_id,
