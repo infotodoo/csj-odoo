@@ -92,7 +92,7 @@
                             </div>
                       </div>
                     </div>
-                     <!--<div class="form-group row col-xl-12 col-md-12">
+                     <div class="form-group row col-xl-12 col-md-12">
                         <div class="form-group row col-xl-12">
                             <label class="col-md-12 col-form-label" style="width:100%;background-color:#00a09d; color:#FFF;">
                               <span class="fa fa-hand-o-right" style="padding-right:3px;">SOLICITANTE:</span></label>
@@ -121,7 +121,7 @@
                               <input type="email" class="form-control text-uppercase" name="email" />
                           </div>
                         </div>
-                    </div>-->
+                    </div>
                     <div class="form-group row col-xl-12 col-md-12">
                       <div class="form-group row col-xl-12">
                           <label class="col-md-12 col-form-label" style="width:100%;background-color:#00a09d; color:#FFF;">
@@ -156,7 +156,7 @@
                               <input type="char" class="form-control text-uppercase" name="process_number" required="1"/>
                           </div>
                       </div>
-                      <!--<div class="form-group row col-xl-6 col-md-6">
+                      <div class="form-group row col-xl-6 col-md-6">
                           <label for="reception_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">MEDIO DE RECEPCIÓN*</label>
                           <div class="col-md-12 row">
                               <select class="form-control" name="reception_id" id="reception_id">
@@ -171,9 +171,9 @@
                             <div class="col-md-12 row eception_detail">
                                 <input type="char" class="form-control text-uppercase" name="reception_detail" id="reception_detail" required="0" />
                             </div>
-                      </div>-->
+                      </div>
                       <div class="form-group row col-xl-6 col-md-6">
-                          <label for="help_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">APOYO ESPECIAL POR DEMANDA*</label>
+                          <label for="help_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">APOYO EN SITIO*</label>
                           <div class="col-md-12 row">
                               <select class="form-control" name="help_id" id="help_id">
                                   <t t-foreach="suggested_help1" t-as="res">
@@ -182,7 +182,7 @@
                               </select>
                           </div>
                       </div>
-                      <!--<div class="form-group row col-xl-6 col-md-6">
+                      <div class="form-group row col-xl-6 col-md-6">
                           <label for="help_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">TIPO DE PARTICIPANTE*</label>
                           <div class="col-md-12 row">
                               <select class="form-control" name="partaker_type" id="partaker_type">
@@ -191,7 +191,7 @@
                                   </t>
                               </select>
                           </div>
-                      </div>-->
+                      </div>
                       <div class="form-group row col-xl-6 col-md-6" style="display: none">
                           <label for="help_id" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5)">TIPO DE CONEXIÓN</label>
                           <div class="col-md-12 row">
@@ -214,11 +214,12 @@
                             <textarea class="form-control text-uppercase" rows="8" t-att-required="False" t-attf-name="description" />
                         </div>
                     </div>
-                    <!-- <div class="form-group row col-xl-12">
+                      <div class="form-group row col-xl-12">
                           <label class="col-md-12 col-form-label" style="width:100%;background-color:#00a09d; color:#FFF;">
                           <span class="fa fa-hand-o-right" style="padding-right:3px;">DESTINOS:</span></label>
                       </div>
                       <div class="form-group row col-xl-12 col-md-12">
+                        <!--<label for="destino" class="col-md-12 row col-form-label" style="color: rgba(0, 0, 0, 0.5);">Destination</label>-->
                         <div class="col-md-12 row">
                             <input type="char" class="form-control search-destino text-uppercase" name="destino" id="destino" autocomplete="on"/>
                         </div>
@@ -235,7 +236,7 @@
                           <div id="destination_fields" class="col-md-8" style="width:100%;padding-top:10px;">
                           </div>
                         </div>
-                      </div>-->
+                      </div>
 
                       <div class="form-group row col-xl-12">
                           <label class="col-md-12 col-form-label" style="width:100%;background-color:#00a09d; color:#FFF;">
@@ -244,10 +245,10 @@
                       <div class="form-group row col-xl-12">
 
                         <div class="row guest_add_form" style="width:100%">
-                          <!--<div class="col-md-5">
+                          <div class="col-md-5">
                               <label for="nameguest0" class="col-md-5 col-form-label" style="color: rgba(0, 0, 0, 0.5);">NOMBRE</label>
                               <input type="char" class="form-control text-uppercase" name="nameguest0" id="nameguest" />
-                          </div>-->
+                          </div>
                           <div class="col-md-5">
                               <label for="emailguest0" class="col-md-5 col-form-label" style="color: rgba(0, 0, 0, 0.5);">CORREO</label>
                               <input type="email" class="form-control text-uppercase" name="emailguest0" id="emailguest" />
@@ -364,7 +365,7 @@
                        .typeahead__cancel-button{padding: 0.5rem 1.5rem;}
                     </style>
                     <div t-attf-class="input-group row">
-                      <label for="city_id" class="col-md-3 col-form-label">Ciudad del Despacho*</label>
+                      <label for="city_id" class="col-md-3 col-form-label">Ciudad Origen*</label>
                       <t t-if="calendar_appointment_type_id == 1">
                         <div class="col-md-9">
                           <input
@@ -462,7 +463,7 @@
                     </div>
 
                     <div class="form-group row" style="margin-top:4vh;">
-                        <label for="types" class="col-md-3 col-form-label">Evento Virtual*</label>
+                        <label for="types" class="col-md-3 col-form-label">Solicitud*</label>
                         <div class="col-md-9" style="padding-left:8px;">
                             <select name="types" class="form-control" id="types" style="width:50%">
                                 <option t-att-value="audiencia" t-att-selected="types">Audiencia</option>
