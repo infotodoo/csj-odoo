@@ -374,12 +374,13 @@ class ResPartner(models.Model):
         if bool(self.env['calendar.event'].search_count([
             ('partner_ids', 'in', self.ids),
             ('state', 'not in', ['cancel',]),
-            '|', '&', ('start_datetime', '<', fields.Datetime.to_string(date_end)),
-                      ('stop_datetime', '>', fields.Datetime.to_string(date_start)),
-                 '&', ('allday', '=', True),
-                      '|', ('start_date', '=', fields.Date.to_string(date_end)),
-                           ('start_date', '=', fields.Date.to_string(date_start))])):
-            return False
+            '|', '&', ('start_datetime', '<=', fields.Datetime.to_string(date_end)),
+                      ('stop_datetime', '>=', fields.Datetime.to_string(date_start)),
+
+                 '&', ('stop_datetime', '<=', fields.Date.to_string(date_end)),
+                      ('stop_datetime', '>=', fields.Date.to_string(date_start))])):
+            #return False
+            return True
         return True
 
 

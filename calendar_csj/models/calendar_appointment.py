@@ -970,10 +970,6 @@ class CalendarAppointment(models.Model):
         date_end = date_start + relativedelta(hours=float(duration))
         calendar_appointment_type_obj = self.env['calendar.appointment.type'].browse(int(calendar_appointment_type_id))
         if not calendar_appointment_type_obj.judged_id.calendar_verify_availability(date_start,date_end):
-            _logger.error('###################################################################\n\n')
-            _logger.error(calendar_appointment_type_obj.judged_id)
-            _logger.error(date_start)
-            _logger.error(date_end)
             return False
         return True
 
