@@ -196,6 +196,7 @@ class WebsiteCalendarInherit(WebsiteCalendar):
                           "fiscalia.gov.co",
                           "cndj.gov.co",
                           "corteconstitucional.gov.co",
+                          "consejodeestado.ramajudicial.gov.co",
         ]
         if email.split('@')[-1] not in domain_emails:
             return request.render("website_calendar.appointment_form", {

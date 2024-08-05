@@ -375,6 +375,7 @@ class CalendarAppointment(models.Model):
                           "fiscalia.gov.co",
                           "cndj.gov.co",
                           "corteconstitucional.gov.co",
+                          "consejodeestado.ramajudicial.gov.co",
         ]
         for email in emails:
             email = email.strip()
