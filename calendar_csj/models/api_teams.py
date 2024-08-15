@@ -174,7 +174,7 @@ class ApiTeams(models.TransientModel):
                         "role": "presenter",
                     })
 
-            _logger.error(payload)
+            #_logger.error(payload)
             try:
                 meeting_obj = requests.request(
                     "POST", url, headers=header, json=payload)
@@ -195,7 +195,7 @@ class ApiTeams(models.TransientModel):
                     )
             if meeting_obj.status_code in [201, 200]:
                 meeting = meeting_obj.json()
-                _logger.error(meeting)
+                #_logger.error(meeting)
                 # Decodificar el contenido
                 decoded_content = urllib.parse.unquote(meeting.get('joinInformation').get('content'))
                 meeting_id = meeting.get('id')
@@ -324,7 +324,7 @@ class ApiTeams(models.TransientModel):
                         tenant_id=tenant_id,
                         thread_id=thread_id
                     )
-                _logger.error(join_url if join_url else False)
+
                 return {
                     "meeting_body": content_html if content_html else '',
                     "meeting_url": join_url if join_url else False,
@@ -410,7 +410,7 @@ class ApiTeams(models.TransientModel):
                 "startDateTime": formatted_start,
                 "endDateTime": formatted_end,
             }
-            _logger.error(payload)
+            #_logger.error(payload)
 
             if payload:
                 try:
@@ -460,8 +460,8 @@ class ApiTeams(models.TransientModel):
                         active_user.refresh_token()
                 else:
                     raise ValidationError("Generate new token for Microsoft teams meeting.")
-            else:
-                raise ValidationError("Generate an access token to delete a Microsoft Teams meeting.")
+            #else:
+            #    raise ValidationError("Generate an access token to delete a Microsoft Teams meeting.")
 
             if active_user.teams_refresh_token and not active_user.teams_access_token:
                 active_user.refresh_token()
